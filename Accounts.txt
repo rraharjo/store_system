@@ -1,0 +1,30 @@
+Accounts
+-DrCr: enum DrCr
+-getTotal(): double
+
+Asset
+
+Liability
+
+StockholdersEquity
+
+T-Account
+-title: String 
+-DrCr: enum DrCr
+
+Transaction
+-title: String
+-date: date
+-addEvent(): void
+-isBalanced(): boolean
+
+Event
+-DrCr: enum DrCr
+-amount: double
+
+
+
+*T-account can have 0 to many event; 1 event belongs to 1 t-account.
+*Transaction can have 1 to many event; 1 event belongs to 1 transactions
+*StockholdersEquity consists of 3 common stock, additional paid in capital, expenses, and revenue
+*expenses and revenue always zeroed at the end of accounting period

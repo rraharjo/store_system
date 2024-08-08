@@ -1,0 +1,73 @@
+#include "inventory/inventory_system.hpp"
+using namespace inventory;
+
+int inventory::binSearch(std::vector<Sellable *> sellables, int dbCode)
+{
+    int start = 0;
+    int end = sellables.size() - 1;
+    int mid;
+    while (start <= end)
+    {
+        mid = (start + end) / 2;
+        if (sellables[mid]->getDBCode() < dbCode)
+        {
+            start = mid + 1;
+        }
+        else if (sellables[mid]->getDBCode() > dbCode)
+        {
+            end = mid - 1;
+        }
+        else
+        {
+            return mid;
+        }
+    }
+    return -1;
+};
+
+InventorySystem::InventorySystem()
+{
+    this->purchaseTransactions = {};
+    this->sellables = {};
+}
+
+double InventorySystem::sellItem(TransactionEntry *newEntry)
+{
+    int index = this->itemExist(newEntry->itemDBCode);
+    if (index == -1)
+    {
+        return -1;
+    }
+    return this->sellables[index]->removeItem(newEntry->itemDBCode);
+}
+
+int InventorySystem::itemExist(int dbCode)
+{
+    int index = inventory::binSearch(this->sellables, dbCode);
+    return index;
+}
+
+void InventorySystem::purchaseItem(TransactionEntry *newEntry)
+{
+    int index = this->itemExist(newEntry->itemDBCode);
+    if (index == -1)
+    {
+        return;
+    }
+    this->sellables[index]->addPurchase(newEntry);
+}
+
+void InventorySystem::addNewItem(Sellable *newSellable)
+{
+    this->sellables.push_back(newSellable);
+}
+
+std::string InventorySystem::to_string()
+{
+    std::string toRet = "";
+    for (Sellable *sellable : this->sellables)
+    {
+        toRet += sellable->to_string();
+    }
+    return toRet;
+}
