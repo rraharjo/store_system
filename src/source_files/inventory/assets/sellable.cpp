@@ -5,15 +5,20 @@ using namespace inventory;
 
 Sellable::Sellable(std::string name, std::string itemCode, double sellingPrice) : Item::Item(name, itemCode)
 {
+    this->setTable();
     this->sellingPrice = sellingPrice;
     this->qty = 0;
-    this->history = new PurchaseHistory();
-    // needs refactoring
-    std::vector<std::vector<std::string>> result = util::DB::get_instance()->execute_query(
-        "insert into sellable(item_code, item_name, selling_price) values('" +
-        this->itemCode + "', '" + this->name + "', " + std::to_string(this->sellingPrice) + ") returning *;");
-    // insert to database
-    this->databaseCode = std::stoi(result[0][0]); // take from database
+    this->purchaseHistory = new PurchaseHistory();
+    this->sellingHistory = new SellingHistory();
+    std::vector<std::string> args;
+    args.push_back(itemCode);
+    args.push_back(name);
+    args.push_back(std::to_string(sellingPrice));
+    this->databaseCode = this->insertToDB(args);
+}
+
+void Sellable::setTable(){
+    this->table = util::SellableTable::getInstance();
 }
 
 int Sellable::getDBCode(){
@@ -37,13 +42,13 @@ double Sellable::removeItem(int qty)
         return -1;
     }
     this->qty -= qty;
-    return this->history->sellItemFirstIn(qty);
+    return this->purchaseHistory->sellItemFirstIn(qty);
 }
 
 void Sellable::addPurchase(TransactionEntry *entry)
 {
     this->qty += entry->qty;
-    this->history->addEntry(entry);
+    this->purchaseHistory->addEntry(entry);
     std::vector<std::vector<std::string>> result = util::DB::get_instance()->execute_query(
         "insert into purchase_entry(sellable_db_code, purchase_db_code, purchase_price, qty, available_qty) values(" + 
         std::to_string(this->databaseCode) + ", " + std::to_string(entry->transactionDBCode) + ", " +

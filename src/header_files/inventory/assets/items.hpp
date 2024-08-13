@@ -1,9 +1,10 @@
 #include <string>
+#include "util/class/base_class.hpp"
 #ifndef ITEMINVENTORY_HPP
 #define ITEMINVENTORY_HPP
 namespace inventory
 {
-    class Item
+    class Item : public util::baseclass::HasTable
     {
         protected:
             std::string name;

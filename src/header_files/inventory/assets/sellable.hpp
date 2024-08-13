@@ -1,7 +1,9 @@
 #include <deque>
+#include <string>
 #include "./items.hpp"
-#include "../transaction/purchase_history.hpp"
+#include "../transaction/transaction_history.hpp"
 #include "../constants/structs.hpp"
+#include "util/database/tables.hpp"
 #include "util/database/db.hpp"
 
 #ifndef SELLABLEINVENTORY_HPP
@@ -14,8 +16,12 @@ namespace inventory
     private:
         double sellingPrice;
         int qty;
-        PurchaseHistory *history;
+        PurchaseHistory *purchaseHistory;
+        SellingHistory *sellingHistory;
         // tax
+
+    protected:
+        void setTable() override;
 
     public:
         Sellable(std::string name, std::string itemCode, double sellingPrice);

@@ -34,7 +34,7 @@ PurchaseTransaction::PurchaseTransaction(std::string seller, util::Date *purchas
 }
 
 void PurchaseTransaction::setTable(){
-    this->table = util::PurchaseEntryTable::getInstance();
+    this->table = util::PurchaseTransactionTable::getInstance();
 }
 
 SellingTransaction::SellingTransaction(util::Date *transactionDate) : Transaction::Transaction(transactionDate)

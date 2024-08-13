@@ -23,8 +23,14 @@ int main(){
     std::cout << system->to_string() << std::endl;
     system->purchaseItem(entry1);
     system->purchaseItem(entry2);
+    TransactionEntry *sellEntry = new TransactionEntry();
+    sellEntry->itemDBCode = dbCode1;
+    sellEntry->purchaseDate = new util::Date();
+    sellEntry->price = sellable1->getSellingPrice();
+    sellEntry->qty = 6;
+    sellEntry->transactionDBCode = 1;
     std::cout << system->to_string() << std::endl;
-    double cost = system->sellItem(dbCode1, 6);
+    double cost = system->sellItem(sellEntry);
     std::cout << "COGS: " << cost << std::endl;
     std::cout << system->to_string() << std::endl;
     return 0;
