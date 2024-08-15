@@ -1,9 +1,7 @@
-#include <iostream>
-#include <string>
 #include "accounting/accounting_transaction/entry.hpp"
 using namespace accounting;
 
-Entry::Entry(bool debit, double amount, enums::AccountTitles account, int tAccount)
+Entry::Entry(bool debit, double amount, util::enums::AccountTitles account, int tAccount)
 {
     this->debit = debit;
     this->amount = amount;
@@ -46,7 +44,7 @@ void Entry::setTransactionRef(long long &reference)
     this->transactionRef = reference;
 }
 
-enums::AccountTitles Entry::getAccountTitle()
+util::enums::AccountTitles Entry::getAccountTitle()
 {
     return this->account;
 }
@@ -55,12 +53,12 @@ std::string Entry::getTAccountName()
 {
     switch (this->account)
     {
-    case enums::AccountTitles::ASSETS:
-        return enums::assetTAccountNames[static_cast<enums::AssetTAccount>(this->tAccount)];
-    case enums::AccountTitles::LIABILITIES:
-        return enums::liabilitiesTAccountNames[static_cast<enums::LiabilitiesTAccount>(this->tAccount)];
-    case enums::AccountTitles::STOCKHOLDERSEQUITY:
-        return enums::stockholdersTAccountNames[static_cast<enums::StockholdersTAccount>(this->tAccount)];
+    case util::enums::AccountTitles::ASSETS:
+        return util::enums::assetTAccountNames[static_cast<util::enums::AssetTAccount>(this->tAccount)];
+    case util::enums::AccountTitles::LIABILITIES:
+        return util::enums::liabilitiesTAccountNames[static_cast<util::enums::LiabilitiesTAccount>(this->tAccount)];
+    case util::enums::AccountTitles::STOCKHOLDERSEQUITY:
+        return util::enums::stockholdersTAccountNames[static_cast<util::enums::StockholdersTAccount>(this->tAccount)];
     }
     return NULL;
 }

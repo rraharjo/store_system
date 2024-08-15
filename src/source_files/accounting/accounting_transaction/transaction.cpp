@@ -1,7 +1,3 @@
-#include <iostream>
-#include <algorithm>
-#include <vector>
-#include <chrono>
 #include "accounting/accounting_transaction/transaction.hpp"
 using namespace accounting;
 

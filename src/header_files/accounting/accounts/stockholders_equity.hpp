@@ -1,6 +1,6 @@
 #include <iostream>
 #include "./account.hpp"
-#include "../enums/stockholders_t_accounts.hpp"
+#include "util/enums/accounting/stockholders_t_accounts.hpp"
 
 #ifndef STOCKHOLDERSEQUITYACCOUNT_HPP
 #define STOCKHOLDERSEQUITYACCOUNT_HPP

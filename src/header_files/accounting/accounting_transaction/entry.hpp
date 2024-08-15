@@ -1,9 +1,9 @@
 #include <iostream>
 #include <string>
-#include "../enums/account_titles.hpp"
-#include "../enums/assets_t_accounts.hpp"
-#include "../enums/liabilities_t_accounts.hpp"
-#include "../enums/stockholders_t_accounts.hpp"
+#include "util/enums/accounting/account_titles.hpp"
+#include "util/enums/accounting/assets_t_accounts.hpp"
+#include "util/enums/accounting/liabilities_t_accounts.hpp"
+#include "util/enums/accounting/stockholders_t_accounts.hpp"
 
 #ifndef ENTRY_HPP
 #define ENTRY_HPP
@@ -17,10 +17,10 @@ namespace accounting
         int tAccount;
         long long transactionRef;
         std::string transactionTitle;
-        enums::AccountTitles account;
+        util::enums::AccountTitles account;
 
     public:
-        Entry(bool debit, double amount, enums::AccountTitles account, int tAccount);
+        Entry(bool debit, double amount, util::enums::AccountTitles account, int tAccount);
 
         bool isDebit();
 
@@ -36,7 +36,7 @@ namespace accounting
 
         void setTransactionRef(long long &reference);
 
-        enums::AccountTitles getAccountTitle();
+        util::enums::AccountTitles getAccountTitle();
 
         std::string getTAccountName();
 

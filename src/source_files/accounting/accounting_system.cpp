@@ -12,13 +12,13 @@ void AccountingSystem::addEntry(Entry *entry)
 {
     switch ((*entry).getAccountTitle())
     {
-    case enums::AccountTitles::ASSETS:
+    case util::enums::AccountTitles::ASSETS:
         (*this->assets).addEntry(entry);
         break;
-    case enums::AccountTitles::LIABILITIES:
+    case util::enums::AccountTitles::LIABILITIES:
         (*this->liabilities).addEntry(entry);
         break;
-    case enums::AccountTitles::STOCKHOLDERSEQUITY:
+    case util::enums::AccountTitles::STOCKHOLDERSEQUITY:
         (*this->stockholdersEquity).addEntry(entry);
         break;
     }

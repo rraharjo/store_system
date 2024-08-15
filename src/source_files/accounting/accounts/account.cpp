@@ -1,6 +1,3 @@
-#include <iostream>
-#include <vector>
-#include <map>
 #include "accounting/accounts/account.hpp"
 using namespace accounting;
 

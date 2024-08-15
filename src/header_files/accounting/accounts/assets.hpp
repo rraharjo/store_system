@@ -1,6 +1,6 @@
 #include <iostream>
 #include "./account.hpp"
-#include "../enums/assets_t_accounts.hpp"
+#include "util/enums/accounting/assets_t_accounts.hpp"
 
 #ifndef ASSETSACCOUNT_HPP
 #define ASSETSACCOUNT_HPP

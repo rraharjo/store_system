@@ -4,7 +4,7 @@
 
 #ifndef ASSETSTACCOUNTS_HPP
 #define ASSETSTACCOUNTS_HPP
-namespace accounting
+namespace util
 {
     namespace enums
     {

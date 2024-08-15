@@ -4,7 +4,7 @@
 
 #ifndef STOCKHOLDERSTACCOUNTS_HPP
 #define STOCKHOLDERSTACCOUNTS_HPP
-namespace accounting
+namespace util
 {
     namespace enums
     {

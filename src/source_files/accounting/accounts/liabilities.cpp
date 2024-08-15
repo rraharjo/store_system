@@ -3,15 +3,15 @@
 
 using namespace accounting;
 
-Liabilities::Liabilities() : Account(false, enums::accountTitlesMap[enums::AccountTitles::LIABILITIES])
+Liabilities::Liabilities() : Account(false, util::enums::accountTitlesMap[util::enums::AccountTitles::LIABILITIES])
 {
     this->initiateTAccount();
 }
 
 void Liabilities::initiateTAccount()
 {
-    for (auto tAccount : enums::allLiabilitiesTAccounts)
+    for (auto tAccount : util::enums::allLiabilitiesTAccounts)
     {
-        this->addTAccount(new TAccount(enums::liabilitiesTAccountNames[tAccount]));
+        this->addTAccount(new TAccount(util::enums::liabilitiesTAccountNames[tAccount]));
     }
 }

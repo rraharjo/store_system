@@ -4,7 +4,7 @@
 
 #ifndef LIABILITIESTACCOUNTS_HPP
 #define LIABILITIESTACCOUNTS_HPP
-namespace accounting
+namespace util
 {
     namespace enums
     {

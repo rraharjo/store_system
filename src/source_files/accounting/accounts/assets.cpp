@@ -1,17 +1,16 @@
-#include <iostream>
 #include "accounting/accounts/assets.hpp"
 
 using namespace accounting;
 
-Assets::Assets() : Account(true, enums::accountTitlesMap[enums::AccountTitles::ASSETS])
+Assets::Assets() : Account(true, util::enums::accountTitlesMap[util::enums::AccountTitles::ASSETS])
 {
     this->initiateTAccount();
 }
 
 void Assets::initiateTAccount()
 {
-    for (auto tAccount : enums::allAssetsTAccounts)
+    for (auto tAccount : util::enums::allAssetsTAccounts)
     {
-        this->addTAccount(new TAccount(enums::assetTAccountNames[tAccount]));
+        this->addTAccount(new TAccount(util::enums::assetTAccountNames[tAccount]));
     }
 }

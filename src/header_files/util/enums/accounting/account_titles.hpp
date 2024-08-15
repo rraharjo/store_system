@@ -4,7 +4,7 @@
 
 #ifndef ACCOUNTTITLES_HPP
 #define ACCOUNTTITLES_HPP
-namespace accounting
+namespace util
 {
     namespace enums
     {
