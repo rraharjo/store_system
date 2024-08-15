@@ -11,16 +11,12 @@ namespace util
         {
         protected:
             util::Table *table;
-            int dbCode;
 
             HasTable();
 
             virtual void setTable() = 0;
 
             int insertToDB(std::vector<std::string> &values);
-
-        public:
-            int getDBCode();
         };
     };
 };

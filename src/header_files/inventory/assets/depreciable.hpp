@@ -16,6 +16,8 @@ namespace inventory
         util::DepreciationMethod *depreciationMethod;
 
     protected:
+        void setTable() override;
+
         Depreciable(std::string name, std::string itemCode, double purchaseCost, double residualValue, int yearUsefulLife, util::Date *dateBought);
 
         double getDepreciationExpenseAtYear(int year);

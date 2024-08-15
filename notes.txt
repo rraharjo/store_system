@@ -8,6 +8,6 @@ with postgres, include this line:
 "C:/Program Files/PostgreSQL/16/lib/libpq.lib" is the source file
 
 compile inventory_test:
-g++ ./src/inventory_test.cpp -I ./src/header_files ./src/source_files/inventory/*.cpp ./src/source_files/inventory/assets/*.cpp ./src/source_files/inventory/transaction/*.cpp ./src/source_files/util/database/*.cpp ./src/source_files/util/enums/date/*.cpp ./src/source_files/util/*.cpp ./src/source_files/util/enums/database/*.cpp -I "C:/Program Files/PostgreSQL/16/include" "C:/Program Files/PostgreSQL/16/lib/libpq.lib"
+g++ ./src/inventory_test.cpp -I ./src/header_files ./src/source_files/inventory/*.cpp ./src/source_files/inventory/assets/*.cpp ./src/source_files/inventory/transaction/*.cpp ./src/source_files/util/database/*.cpp ./src/source_files/util/enums/date/*.cpp ./src/source_files/util/*.cpp ./src/source_files/util/enums/database/*.cpp ./src/source_files/util/class/*.cpp -I "C:/Program Files/PostgreSQL/16/include" "C:/Program Files/PostgreSQL/16/lib/libpq.lib"
 database reset:
 delete * from purchase_entry ; delete * from sellable ; 

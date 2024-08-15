@@ -12,12 +12,13 @@ namespace inventory
     {
     private:
         util::Date *transactionDate;
-        
         std::vector<TransactionEntry *> entries;
 
-    public:
+    protected:
+        int dbCode;
         Transaction(util::Date *transaction_date);
 
+    public:
         util::Date *getDate();
 
         void addEntry(int itemDBCode, int qty, double price);
@@ -34,7 +35,7 @@ namespace inventory
     public:
         PurchaseTransaction(std::string seller, util::Date *purchaseDate);
     };
-    
+
     class SellingTransaction : public Transaction
     {
 

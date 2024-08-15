@@ -35,7 +35,7 @@ void Sellable::setSellingPrice(double newPrice)
     this->sellingPrice = newPrice;
 }
 
-double Sellable::removeItem(int qty)
+double Sellable::sellItems(int qty)
 {
     if (this->qty < qty){
         throw std::invalid_argument("Purchasing quantity exceeds available quantity");
@@ -49,6 +49,7 @@ void Sellable::addPurchase(TransactionEntry *entry)
 {
     this->qty += entry->qty;
     this->purchaseHistory->addEntry(entry);
+    //refactor this
     std::vector<std::vector<std::string>> result = util::DB::get_instance()->execute_query(
         "insert into purchase_entry(sellable_db_code, purchase_db_code, purchase_price, qty, available_qty) values(" + 
         std::to_string(this->databaseCode) + ", " + std::to_string(entry->transactionDBCode) + ", " +

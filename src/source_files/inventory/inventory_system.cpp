@@ -38,7 +38,7 @@ double InventorySystem::sellItem(TransactionEntry *newEntry)
     {
         return -1;
     }
-    return this->sellables[index]->removeItem(newEntry->qty);
+    return this->sellables[index]->sellItems(newEntry->qty);
 }
 
 int InventorySystem::itemExist(int dbCode)

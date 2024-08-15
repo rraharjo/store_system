@@ -5,9 +5,6 @@ baseclass::HasTable::HasTable(){
 };
 
 int util::baseclass::HasTable::insertToDB(std::vector<std::string> &values){
+    //return the DBCode
     return std::stoi(this->table->insertRow(values)[0]);
-}
-
-int util::baseclass::HasTable::getDBCode(){
-    return this->dbCode;
 }

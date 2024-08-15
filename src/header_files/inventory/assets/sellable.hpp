@@ -32,7 +32,7 @@ namespace inventory
 
         void setSellingPrice(double newPrice);
 
-        double removeItem(int qty);
+        double sellItems(int qty);
 
         void addPurchase(TransactionEntry *entry);
 

@@ -14,6 +14,10 @@ Depreciable::Depreciable(std::string name, std::string itemCode, double purchase
     this->databaseCode = 0; // take from database insert
 }
 
+void Depreciable::setTable(){
+    
+}
+
 double Depreciable::getDepreciationExpenseAtYear(int year)
 {
     if (year < 0 || year > this->yearUsefulLife)
