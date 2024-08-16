@@ -1,4 +1,3 @@
-#include <iostream>
 #include "accounting/accounts/liabilities.hpp"
 
 using namespace accounting;

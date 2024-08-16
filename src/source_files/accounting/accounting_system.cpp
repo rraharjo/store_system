@@ -48,11 +48,11 @@ void AccountingSystem::addTransaction(Transaction *transaction)
 std::string AccountingSystem::to_string()
 {
     std::string toRet = "";
-    toRet += (*this->assets).to_string();
+    toRet += this->assets->to_string();
     toRet += "\n";
-    toRet += (*this->liabilities).to_string();
+    toRet += this->liabilities->to_string();
     toRet += "\n";
-    toRet += (*this->stockholdersEquity).to_string();
+    toRet += this->stockholdersEquity->to_string();
     return toRet;
 }
 

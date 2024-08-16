@@ -12,7 +12,7 @@ namespace accounting
     public:
         StockholdersEquityAccount();
 
-        void initiateTAccount();
+        void initiateTAccount() override;
     };
 };
 #endif

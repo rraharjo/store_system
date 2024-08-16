@@ -15,12 +15,13 @@ namespace accounting
         std::string name;
 
     protected:
+        Account(bool debit, std::string name);
+        
         std::vector<TAccount *> tAccounts;
 
         void addTAccount(TAccount *tAccount);
 
     public:
-        Account(bool debit, std::string name);
         std::string getName();
 
         void addEntry(Entry *entry);
