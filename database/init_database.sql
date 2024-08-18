@@ -5,6 +5,8 @@ drop table purchase_entry;
 drop table selling_transaction;
 drop table purchase_transaction;
 drop table sellable;
+drop table accounting_transaction_entry;
+drop table accounting_transaction;
 
 create table sellable(
     database_code    serial          primary key,
@@ -55,3 +57,22 @@ add constraint fk_sellable_selling_entry foreign key (sellable_db_code)
 alter table selling_entry
 add constraint fk_selling_transaction foreign key (selling_transaction_db_code)
     references selling_transaction (database_code);
+
+create table accounting_transaction(
+    database_code       serial          primary key,
+    transaction_name    varchar(50),
+    transaction_date    date
+);
+
+create table accounting_transaction_entry(
+    database_code       serial          primary key,
+    at_db_code          int             not null,
+    debit               boolean         not null,
+    amount              numeric(12, 2)  not null,
+    t_account_number    varchar(25),
+    account_title       varchar(10)
+);
+
+alter table accounting_transaction_entry
+add constraint fk_accounting_transaction foreign key (at_db_code)
+    references accounting_transaction (database_code);
