@@ -51,6 +51,7 @@ std::vector<std::string> Table::insertRow(std::vector<std::string> &values)
             break;
         case util::enums::ColumnTypes::FLOATCOL:
         case util::enums::ColumnTypes::NUMBERCOL:
+        case util::enums::ColumnTypes::BOOLCOL:
             query += values[curValue++] + ", ";
             break;
         }
@@ -67,6 +68,7 @@ std::vector<std::string> Table::insertRow(std::vector<std::string> &values)
         break;
     case util::enums::ColumnTypes::FLOATCOL:
     case util::enums::ColumnTypes::NUMBERCOL:
+    case util::enums::ColumnTypes::BOOLCOL:
         query += values[curValue++] + ") ";
         break;
     }
@@ -160,4 +162,38 @@ SellingTransactionTable *SellingTransactionTable::getInstance()
         SellingTransactionTable::instance = new SellingTransactionTable(util::enums::tableNamesMap[util::enums::TableNames::SELLINGTRANSACTION]);
     }
     return SellingTransactionTable::instance;
+}
+
+// accounting transaction table
+AccountingTransactionTable::AccountingTransactionTable(std::string tableName) : Table::Table(tableName)
+{
+    for (auto it = util::enums::accountingEntryTableColumns.begin(); it != util::enums::accountingEntryTableColumns.end(); it++)
+    {
+        this->schema.push_back(it->second);
+    }
+}
+AccountingTransactionTable *AccountingTransactionTable::getInstance()
+{
+    if (AccountingTransactionTable::instance == NULL)
+    {
+        AccountingTransactionTable::instance = new AccountingTransactionTable(util::enums::tableNamesMap[util::enums::TableNames::ACCOUNTINGTRANSACTION]);
+    }
+    return AccountingTransactionTable::instance;
+}
+
+//accounting entry table
+AccountingEntryTable::AccountingEntryTable(std::string tableName) : Table::Table(tableName)
+{
+    for (auto it = util::enums::accountingEntryTableColumns.begin(); it != util::enums::accountingEntryTableColumns.end(); it++)
+    {
+        this->schema.push_back(it->second);
+    }
+}
+AccountingEntryTable *AccountingEntryTable::getInstance()
+{
+    if (AccountingEntryTable::instance == NULL)
+    {
+        AccountingEntryTable::instance = new AccountingEntryTable(util::enums::tableNamesMap[util::enums::TableNames::ACCOUNTINGENTRY]);
+    }
+    return AccountingEntryTable::instance;
 }

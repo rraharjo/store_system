@@ -13,6 +13,7 @@ namespace util
             FLOATCOL,
             TEXTCOL,
             DATECOL,
+            BOOLCOL
         };
     }
     typedef struct columnSchema

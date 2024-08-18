@@ -83,5 +83,29 @@ namespace util
     public:
         static SellingTransactionTable *getInstance();
     };
+
+    class AccountingTransactionTable : public Table
+    {
+    private:
+        static AccountingTransactionTable *instance;
+
+    protected:
+        AccountingTransactionTable(std::string tableName);
+
+    public:
+        static AccountingTransactionTable *getInstance();
+    };
+
+    class AccountingEntryTable : public Table
+    {
+    private:
+        static AccountingEntryTable *instance;
+
+    protected:
+        AccountingEntryTable(std::string tableName);
+
+    public:
+        static AccountingEntryTable *getInstance();
+    };
 };
 #endif

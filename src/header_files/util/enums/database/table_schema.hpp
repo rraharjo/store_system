@@ -12,7 +12,9 @@ namespace util
             PURCHASEENTRY,
             PURCHASETRANSACTION,
             SELLINGENTRY,
-            SELLINGTRANSACTION
+            SELLINGTRANSACTION,
+            ACCOUNTINGTRANSACTION,
+            ACCOUNTINGENTRY
         };
 
         extern std::map<TableNames, std::string> tableNamesMap;
@@ -65,6 +67,27 @@ namespace util
         };
 
         extern std::map<SellingTransactionTable, ColumnSchema> sellingTransactionTableColumns;
+
+        enum class AccountingTransactionTable
+        {
+            DATABASECODE = 0,
+            TRANSACTIONNAME,
+            TRANSACTIONDATE
+        };
+
+        extern std::map<AccountingTransactionTable, ColumnSchema> accountingTransactionTableColumns;
+
+        enum class AccountingEntryTable
+        {
+            DATABASECODE = 0,
+            ATDBCODE,
+            DEBIT,
+            AMOUNT,
+            TACCOUNTNUM,
+            ACCOUNTTITLE
+        };
+
+        extern std::map<AccountingEntryTable, ColumnSchema> accountingEntryTableColumns;
     }
 }
 #endif

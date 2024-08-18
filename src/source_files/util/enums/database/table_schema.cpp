@@ -7,9 +7,11 @@ std::map<TableNames, std::string> util::enums::tableNamesMap = {
     {TableNames::PURCHASEENTRY, "purchase_entry"},
     {TableNames::PURCHASETRANSACTION, "purchase_transaction"},
     {TableNames::SELLINGENTRY, "selling_entry"},
-    {TableNames::SELLINGTRANSACTION, "selling_transaction"}
+    {TableNames::SELLINGTRANSACTION, "selling_transaction"},
+    {TableNames::ACCOUNTINGTRANSACTION, "accounting_transaction"},
+    {TableNames::ACCOUNTINGENTRY, "accounting_transaction_entry"}
 };
-
+/**************************************************************************************************************************/
 std::map<SellableTable, ColumnSchema> util::enums::sellableTableColumns = {
     {SellableTable::DATABASECODE, ColumnSchema{"database_code", ColumnTypes::SERIALCOL}},
     {SellableTable::ITEMCODE, ColumnSchema{"item_code", ColumnTypes::TEXTCOL}},
@@ -42,4 +44,19 @@ std::map<SellingEntryTable, ColumnSchema> util::enums::sellingEntryTableColumns 
 std::map<SellingTransactionTable, ColumnSchema> util::enums::sellingTransactionTableColumns = {
     {SellingTransactionTable::DATABASECODE, ColumnSchema{"database_code", ColumnTypes::SERIALCOL}},
     {SellingTransactionTable::TRANSACTIONDATE, ColumnSchema{"transaction_date", ColumnTypes::DATECOL}}  
+};
+
+std::map<AccountingTransactionTable, ColumnSchema> util::enums::accountingTransactionTableColumns = {
+    {AccountingTransactionTable::DATABASECODE, ColumnSchema{"database_code", ColumnTypes::SERIALCOL}},
+    {AccountingTransactionTable::TRANSACTIONNAME, ColumnSchema{"transaction_name", ColumnTypes::TEXTCOL}},
+    {AccountingTransactionTable::TRANSACTIONDATE, ColumnSchema{"transaction_date", ColumnTypes::DATECOL}}
+};
+
+std::map<AccountingEntryTable, ColumnSchema> util::enums::accountingEntryTableColumns = {
+    {AccountingEntryTable::DATABASECODE, ColumnSchema{"database_code", ColumnTypes::SERIALCOL}},
+    {AccountingEntryTable::ATDBCODE, ColumnSchema{"at_db_code", ColumnTypes::NUMBERCOL}},
+    {AccountingEntryTable::DEBIT, ColumnSchema{"debit", ColumnTypes::BOOLCOL}},
+    {AccountingEntryTable::AMOUNT, ColumnSchema{"amount", ColumnTypes::FLOATCOL}},
+    {AccountingEntryTable::TACCOUNTNUM, ColumnSchema{"t_account_number", ColumnTypes::TEXTCOL}},
+    {AccountingEntryTable::ACCOUNTTITLE, ColumnSchema{"account_title", ColumnTypes::TEXTCOL}}
 };
