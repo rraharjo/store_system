@@ -1,58 +1,24 @@
 #include "accounting/accounting_transaction/transaction.hpp"
 using namespace accounting;
 
-Transaction::Transaction(std::string name)
+Transaction::Transaction(std::string name, util::Date* transactionDate)
 {
     this->name = name;
     this->debitEntries = {};
     this->creditEntries = {};
-    this->timeStamp = util::Date::getUniqueTimestamp();
+    this->transactionDate = transactionDate;
 }
 
-long long Transaction::getTimestamp()
-{
-    return this->timeStamp;
+void Transaction::setDBCode(int dbCode){
+    this->dbCode = dbCode;
 }
 
-void Transaction::addEntry(Entry *entry)
-{
-    if ((*entry).isDebit())
-    {
-        this->debitEntries.push_back(entry);
-    }
-    else
-    {
-        this->creditEntries.push_back(entry);
-    }
-    (*entry).setTransactionRef(this->timeStamp);
-    (*entry).setTransactionTitle(this->name);
+void Transaction::setTable() {
+    this->table = util::AccountingTransactionTable::getInstance();
 }
 
-double Transaction::getDebitAmount()
-{
-    // fold_left
-    double total = 0;
-    for (Entry *entry : this->debitEntries)
-    {
-        total += (*entry).getAmount();
-    }
-    return total;
-}
-
-double Transaction::getCreditAmount()
-{
-    // fold_left
-    double total = 0;
-    for (Entry *entry : this->creditEntries)
-    {
-        total += (*entry).getAmount();
-    }
-    return total;
-}
-
-bool Transaction::isBalanced()
-{
-    return this->getDebitAmount() == this->getCreditAmount();
+int Transaction::getDBCode(){
+    return this->dbCode;
 }
 
 std::vector<Entry *> &Transaction::getDebitEntries()
@@ -64,3 +30,45 @@ std::vector<Entry *> &Transaction::getCreditEntries()
 {
     return this->creditEntries;
 }
+
+double Transaction::getDebitAmount()
+{
+    double total = 0;
+    for (Entry *entry : this->debitEntries)
+    {
+        total += (*entry).getAmount();
+    }
+    return total;
+}
+
+double Transaction::getCreditAmount()
+{
+    double total = 0;
+    for (Entry *entry : this->creditEntries)
+    {
+        total += (*entry).getAmount();
+    }
+    return total;
+}
+
+void Transaction::addEntry(Entry *entry)
+{
+    if (entry->isDebit())
+    {
+        this->debitEntries.push_back(entry);
+    }
+    else
+    {
+        this->creditEntries.push_back(entry);
+    }
+    entry->setTransactionDB(this->dbCode);
+    entry->setTransactionTitle(this->name);
+}
+
+
+
+bool Transaction::isBalanced()
+{
+    return this->getDebitAmount() == this->getCreditAmount();
+}
+

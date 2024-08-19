@@ -13,7 +13,7 @@ namespace accounting
     private:
         bool debit;
         double amount;
-        std::string description;
+        std::string transactionTitle;
         util::enums::TAccounts tAccount;
         util::enums::AccountTitles account;
         int dbCode;
@@ -21,13 +21,11 @@ namespace accounting
 
         void setDBCode(int dbCode);
 
-        void setTransactionDB(int transactionDB);
-
     protected:
         void setTable() override;
 
     public:
-        Entry(bool debit, double amount, std::string description, util::enums::AccountTitles account, util::enums::TAccounts tAccount);
+        Entry(bool debit, double amount, util::enums::AccountTitles account, util::enums::TAccounts tAccount);
 
         bool isDebit();
 
@@ -37,7 +35,7 @@ namespace accounting
 
         int getDBCode();
 
-        std::string getDescription();
+        std::string getTransactionTitle();
 
         util::enums::TAccounts getTAccount();
 
@@ -46,6 +44,10 @@ namespace accounting
         std::string getTAccountName();
 
         std::string getAccountTitleName();
+
+        void setTransactionDB(int transactionDB);
+
+        void setTransactionTitle(std::string title);
 
         std::string to_string();
     };
