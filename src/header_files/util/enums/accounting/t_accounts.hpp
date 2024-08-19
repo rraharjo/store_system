@@ -9,7 +9,7 @@ namespace util
 {
     namespace enums
     {
-        enum TAccounts
+        enum class TAccounts
         {
             //assets
             CASH = 0,
@@ -36,6 +36,8 @@ namespace util
         extern std::vector<TAccounts> liabilitiesTAccounts;
 
         extern std::vector<TAccounts> stockholdersTAccounts;
+
+        std::string getName(util::enums::TAccounts);
     };
 };
 

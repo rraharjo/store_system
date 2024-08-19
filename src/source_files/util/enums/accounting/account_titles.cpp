@@ -3,14 +3,16 @@
 using namespace util::enums;
 
 std::map<util::enums::AccountTitles, std::string> util::enums::accountTitlesMap = {
-    {ASSETS, "Assets"},
-    {LIABILITIES, "Liabilities"},
-    {STOCKHOLDERSEQUITY, "Stockholders Equity"}};
+    {util::enums::AccountTitles::ASSETS, "Assets"},
+    {util::enums::AccountTitles::LIABILITIES, "Liabilities"},
+    {util::enums::AccountTitles::STOCKHOLDERSEQUITY, "Stockholders Equity"}};
 
-AccountTitles util::enums::allAccountTitles[] = {ASSETS, LIABILITIES, STOCKHOLDERSEQUITY};
+AccountTitles util::enums::allAccountTitles[] = {
+    util::enums::AccountTitles::ASSETS,
+    util::enums::AccountTitles::LIABILITIES,
+    util::enums::AccountTitles::STOCKHOLDERSEQUITY};
 
-std::string util::enums::getName(int title)
+std::string util::enums::getName(util::enums::AccountTitles title)
 {
-    AccountTitles temp = static_cast<AccountTitles>(title);
-    return accountTitlesMap[temp];
+    return accountTitlesMap[title];
 }
