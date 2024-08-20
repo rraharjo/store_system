@@ -12,23 +12,49 @@ namespace accounting
     {
     private:
         bool debit;
-        std::string name;
+        util::enums::AccountTitles title;
 
     protected:
-        Account(bool debit, std::string name);
-        
-        std::vector<TAccount *> tAccounts;
+        Account(bool debit, util::enums::AccountTitles title);
 
-        void addTAccount(TAccount *tAccount);
+        std::map<util::enums::TAccounts, TAccount *> tAccounts;
+
+        void addTAccount(util::enums::TAccounts tAccount);
 
     public:
-        std::string getName();
+        util::enums::AccountTitles getTitle();
+
+        std::string getTitleName();
 
         void addEntry(Entry *entry);
 
         std::string to_string();
 
         virtual void initiateTAccount() = 0;
+    };
+
+    class Assets : public Account
+    {
+    public:
+        Assets();
+
+        void initiateTAccount() override;
+    };
+
+    class Liabilities : public Account
+    {
+    public:
+        Liabilities();
+
+        void initiateTAccount() override;
+    };
+
+    class StockholdersEquityAccount : public Account
+    {
+    public:
+        StockholdersEquityAccount();
+
+        void initiateTAccount() override;
     };
 };
 #endif

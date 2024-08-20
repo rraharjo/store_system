@@ -1,36 +1,79 @@
 #include "accounting/accounts/account.hpp"
 using namespace accounting;
 
-void Account::addTAccount(TAccount *tAccount)
+void Account::addTAccount(util::enums::TAccounts tAccount)
 {
-    this->tAccounts.push_back(tAccount);
+    this->tAccounts[tAccount] = new TAccount(util::enums::getName(tAccount));
 }
 
-Account::Account(bool debit, std::string name)
+Account::Account(bool debit, util::enums::AccountTitles title)
 {
     this->debit = debit;
+    this->title = title;
     this->tAccounts = {};
-    this->name = name;
 }
 
-std::string Account::getName()
+util::enums::AccountTitles Account::getTitle(){
+    return this->title;
+}
+
+std::string Account::getTitleName()
 {
-    return this->name;
+    return util::enums::getName(this->title);
 }
 
 void Account::addEntry(Entry *entry)
 {
-    (*this->tAccounts[(*entry).getTAccount()]).addEntry(entry);
+    this->tAccounts[entry->getTAccount()]->addEntry(entry);
 }
 
 std::string Account::to_string()
 {
-    std::string toRet = this->getName();
+    std::string toRet = this->getTitleName();
     toRet += "\n";
     int num = 1;
-    for (TAccount *tAccount : this->tAccounts)
+    for (auto it = this->tAccounts.begin() ; it != this->tAccounts.end() ; it++)
     {
-        toRet += std::to_string(num++) + ". " + (*tAccount).to_string();
+        toRet += std::to_string(num++) + ". " + it->second->to_string();
     }
     return toRet;
+}
+
+Assets::Assets() : Account(true, util::enums::AccountTitles::ASSETS)
+{
+    this->initiateTAccount();
+}
+
+void Assets::initiateTAccount()
+{
+    for (util::enums::TAccounts tAccount : util::enums::assetsTAccounts)
+    {
+        this->addTAccount(tAccount);
+    }
+}
+
+Liabilities::Liabilities() : Account(false, util::enums::AccountTitles::LIABILITIES)
+{
+    this->initiateTAccount();
+}
+
+void Liabilities::initiateTAccount()
+{
+    for (util::enums::TAccounts tAccount : util::enums::liabilitiesTAccounts)
+    {
+        this->addTAccount(tAccount);
+    }
+}
+
+StockholdersEquityAccount::StockholdersEquityAccount() : Account(false, util::enums::AccountTitles::STOCKHOLDERSEQUITY)
+{
+    this->initiateTAccount();
+}
+
+void StockholdersEquityAccount::initiateTAccount()
+{
+    for (util::enums::TAccounts tAccount : util::enums::assetsTAccounts)
+    {
+        this->addTAccount(tAccount);
+    }
 }
