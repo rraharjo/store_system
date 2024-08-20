@@ -10,21 +10,21 @@ AccountingSystem::AccountingSystem()
 
 void AccountingSystem::addEntry(Entry *entry)
 {
-    switch ((*entry).getAccountTitle())
+    switch (entry->getAccountTitle())
     {
     case util::enums::AccountTitles::ASSETS:
-        (*this->assets).addEntry(entry);
+        this->assets->addEntry(entry);
         break;
     case util::enums::AccountTitles::LIABILITIES:
-        (*this->liabilities).addEntry(entry);
+        this->liabilities->addEntry(entry);
         break;
     case util::enums::AccountTitles::STOCKHOLDERSEQUITY:
-        (*this->stockholdersEquity).addEntry(entry);
+        this->stockholdersEquity->addEntry(entry);
         break;
     }
 }
 
-AccountingSystem* AccountingSystem::getInstance()
+AccountingSystem *AccountingSystem::getInstance()
 {
     if (AccountingSystem::instance == NULL)
     {
@@ -35,11 +35,11 @@ AccountingSystem* AccountingSystem::getInstance()
 
 void AccountingSystem::addTransaction(Transaction *transaction)
 {
-    for (Entry *entry : (*transaction).getDebitEntries())
+    for (Entry *entry : transaction->getDebitEntries())
     {
         this->addEntry(entry);
     }
-    for (Entry *entry : (*transaction).getCreditEntries())
+    for (Entry *entry : transaction->getCreditEntries())
     {
         this->addEntry(entry);
     }

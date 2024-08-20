@@ -27,6 +27,8 @@ namespace accounting
     public:
         Transaction(std::string name, util::Date *transactionDate);
 
+        Transaction(std::string name);
+
         int getDBCode();
 
         std::vector<Entry *> &getDebitEntries();

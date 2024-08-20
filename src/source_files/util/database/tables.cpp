@@ -6,6 +6,8 @@ PurchaseTransactionTable *PurchaseTransactionTable::instance = NULL;
 PurchaseEntryTable *PurchaseEntryTable::instance = NULL;
 SellingEntryTable *SellingEntryTable::instance = NULL;
 SellingTransactionTable *SellingTransactionTable::instance = NULL;
+AccountingTransactionTable *AccountingTransactionTable::instance = NULL;
+AccountingEntryTable *AccountingEntryTable::instance = NULL;
 
 // parent class
 Table::Table(std::string tableName)

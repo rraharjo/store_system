@@ -39,6 +39,6 @@ std::vector<TAccounts> util::enums::stockholdersTAccounts = {
     util::enums::TAccounts::EXPENSE
 };
 
-std::string getName(util::enums::TAccounts tAccount){
+std::string util::enums::getName(util::enums::TAccounts tAccount){
     return tAccountsNameMap[tAccount];
 }

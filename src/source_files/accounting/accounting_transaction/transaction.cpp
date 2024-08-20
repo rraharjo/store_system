@@ -9,6 +9,13 @@ Transaction::Transaction(std::string name, util::Date* transactionDate)
     this->transactionDate = transactionDate;
 }
 
+Transaction::Transaction(std::string name){
+    this->name = name;
+    this->debitEntries = {};
+    this->creditEntries = {};
+    this->transactionDate = new util::Date();
+}
+
 void Transaction::setDBCode(int dbCode){
     this->dbCode = dbCode;
 }
