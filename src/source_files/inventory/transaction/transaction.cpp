@@ -28,7 +28,7 @@ PurchaseTransaction::PurchaseTransaction(std::string seller, util::Date *purchas
     this->setTable();
     this->seller = seller;
     std::vector<std::string> args;
-    args.push_back(this->getDate()->to_string());
+    args.push_back(this->getDate()->toDBFormat());
     args.push_back(this->seller);
     this->dbCode = this->insertToDB(args);
 }

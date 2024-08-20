@@ -18,6 +18,7 @@ namespace util
         Date(std::string dateString);
         Date(std::string dateString, std::string format);
         std::string to_string();
+        std::string toDBFormat();
         bool isLeapYear();
         int getYDay();
         int getMDay();

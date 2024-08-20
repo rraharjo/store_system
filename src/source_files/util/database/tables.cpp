@@ -169,7 +169,7 @@ SellingTransactionTable *SellingTransactionTable::getInstance()
 // accounting transaction table
 AccountingTransactionTable::AccountingTransactionTable(std::string tableName) : Table::Table(tableName)
 {
-    for (auto it = util::enums::accountingEntryTableColumns.begin(); it != util::enums::accountingEntryTableColumns.end(); it++)
+    for (auto it = util::enums::accountingTransactionTableColumns.begin(); it != util::enums::accountingTransactionTableColumns.end(); it++)
     {
         this->schema.push_back(it->second);
     }

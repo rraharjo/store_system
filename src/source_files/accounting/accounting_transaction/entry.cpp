@@ -9,8 +9,9 @@ void Entry::setTable(){
     this->table = util::AccountingEntryTable::getInstance();
 }
 
-Entry::Entry(bool debit, double amount, util::enums::AccountTitles account, util::enums::TAccounts tAccount)
+Entry::Entry(bool debit, double amount, util::enums::AccountTitles account, util::enums::TAccounts tAccount) : util::baseclass::HasTable()
 {
+    this->setTable();
     this->debit = debit;
     this->amount = amount;
     this->account = account;

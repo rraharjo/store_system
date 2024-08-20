@@ -1,19 +1,21 @@
 #include "accounting/accounting_transaction/transaction.hpp"
 using namespace accounting;
 
-Transaction::Transaction(std::string name, util::Date* transactionDate)
+Transaction::Transaction(std::string name, util::Date* transactionDate) : util::baseclass::HasTable()
 {
+    this->setTable();
     this->name = name;
     this->debitEntries = {};
     this->creditEntries = {};
     this->transactionDate = transactionDate;
+    std::vector<std::string> args;
+    args.push_back(this->name);
+    args.push_back(this->transactionDate->toDBFormat());
+    this->dbCode = this->insertToDB(args);
 }
 
-Transaction::Transaction(std::string name){
-    this->name = name;
-    this->debitEntries = {};
-    this->creditEntries = {};
-    this->transactionDate = new util::Date();
+Transaction::Transaction(std::string name) : Transaction::Transaction(name, new util::Date()){
+    
 }
 
 void Transaction::setDBCode(int dbCode){
