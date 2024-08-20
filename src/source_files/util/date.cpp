@@ -82,6 +82,17 @@ std::string Date::to_string()
     return toRet;
 }
 
+std::string Date::toDBFormat(){
+    std::string toRet = "";
+    int year = this->getYear();
+    int month = this->getMonth();
+    int monthDay = this->getMDay();
+    toRet += std::to_string(monthDay) + "-";
+    toRet += std::to_string(month) + "-";
+    toRet += std::to_string(year);
+    return toRet;
+}
+
 bool Date::isAfter(Date *other)
 {
     return this->diffDaysTo(other) < 0;

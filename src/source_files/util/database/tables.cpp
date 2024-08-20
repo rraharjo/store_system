@@ -6,6 +6,8 @@ PurchaseTransactionTable *PurchaseTransactionTable::instance = NULL;
 PurchaseEntryTable *PurchaseEntryTable::instance = NULL;
 SellingEntryTable *SellingEntryTable::instance = NULL;
 SellingTransactionTable *SellingTransactionTable::instance = NULL;
+AccountingTransactionTable *AccountingTransactionTable::instance = NULL;
+AccountingEntryTable *AccountingEntryTable::instance = NULL;
 
 // parent class
 Table::Table(std::string tableName)
@@ -167,7 +169,7 @@ SellingTransactionTable *SellingTransactionTable::getInstance()
 // accounting transaction table
 AccountingTransactionTable::AccountingTransactionTable(std::string tableName) : Table::Table(tableName)
 {
-    for (auto it = util::enums::accountingEntryTableColumns.begin(); it != util::enums::accountingEntryTableColumns.end(); it++)
+    for (auto it = util::enums::accountingTransactionTableColumns.begin(); it != util::enums::accountingTransactionTableColumns.end(); it++)
     {
         this->schema.push_back(it->second);
     }

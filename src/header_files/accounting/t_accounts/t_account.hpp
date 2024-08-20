@@ -1,6 +1,7 @@
 #include <iostream>
 #include <vector>
-#include "../accounting_transaction/transaction.hpp"
+#include "accounting/accounting_transaction/transaction.hpp"
+#include "util/enums/accounting/t_accounts.hpp"
 
 #ifndef TACCOUNT
 #define TACCOUNT
@@ -9,14 +10,16 @@ namespace accounting
     class TAccount
     {
     private:
-        std::string title;
+        util::enums::TAccounts title;
         std::vector<Entry *> debitEntries;
         std::vector<Entry *> creditEntries;
 
     public:
-        TAccount(std::string title);
+        TAccount(util::enums::TAccounts title);
+
+        util::enums::TAccounts getTitle();
         
-        std::string getTitle();
+        std::string getTitleName();
 
         void addEntry(Entry *entry);
 

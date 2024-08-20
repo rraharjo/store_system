@@ -8,7 +8,7 @@ namespace util
 {
     namespace enums
     {
-        enum AccountTitles
+        enum class AccountTitles
         {
             ASSETS = 0,
             LIABILITIES = 1,
@@ -19,7 +19,7 @@ namespace util
         
         extern AccountTitles allAccountTitles[3];
 
-        std::string getName(int title);
+        std::string getName(util::enums::AccountTitles);
     };
 };
 

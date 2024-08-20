@@ -4,37 +4,41 @@ using namespace util::enums;
 
 std::map<TAccounts, std::string> util::enums::tAccountsNameMap = {
     //assets
-    {CASH, "Cash"},
-    {EQUIPMENT, "Equipment"},
-    {ACCTRCV, "Account Receivable"},
-    {LAND, "Land"},
+    {util::enums::TAccounts::CASH, "Cash"},
+    {util::enums::TAccounts::EQUIPMENT, "Equipment"},
+    {util::enums::TAccounts::ACCTRCV, "Account Receivable"},
+    {util::enums::TAccounts::LAND, "Land"},
     //liabilities
-    {ACCPAYABLE, "Account Payable"},
-    {NOTEPAYABLE, "Notes Payable"},
-    {UNEARNEDREV, "Unearned Revenue"},
+    {util::enums::TAccounts::ACCPAYABLE, "Account Payable"},
+    {util::enums::TAccounts::NOTEPAYABLE, "Notes Payable"},
+    {util::enums::TAccounts::UNEARNEDREV, "Unearned Revenue"},
     //stockholders equity
-    {COMMONSTOCK, "Common Stock"},
-    {ADDTLCPT, "Additional Paid-in Capital"},
-    {REV, "Revenue"},
-    {EXPENSE, "Expense"}
+    {util::enums::TAccounts::COMMONSTOCK, "Common Stock"},
+    {util::enums::TAccounts::ADDTLCPT, "Additional Paid-in Capital"},
+    {util::enums::TAccounts::REV, "Revenue"},
+    {util::enums::TAccounts::EXPENSE, "Expense"}
 };
 
 std::vector<TAccounts> util::enums::assetsTAccounts = {
-    CASH,
-    EQUIPMENT,
-    ACCTRCV,
-    LAND
+    util::enums::TAccounts::CASH,
+    util::enums::TAccounts::EQUIPMENT,
+    util::enums::TAccounts::ACCTRCV,
+    util::enums::TAccounts::LAND
 };
 
 std::vector<TAccounts> util::enums::liabilitiesTAccounts = {
-    ACCPAYABLE,
-    NOTEPAYABLE,
-    UNEARNEDREV
+    util::enums::TAccounts::ACCPAYABLE,
+    util::enums::TAccounts::NOTEPAYABLE,
+    util::enums::TAccounts::UNEARNEDREV
 };
 
 std::vector<TAccounts> util::enums::stockholdersTAccounts = {
-    COMMONSTOCK,
-    ADDTLCPT,
-    REV,
-    EXPENSE
+    util::enums::TAccounts::COMMONSTOCK,
+    util::enums::TAccounts::ADDTLCPT,
+    util::enums::TAccounts::REV,
+    util::enums::TAccounts::EXPENSE
 };
+
+std::string util::enums::getName(util::enums::TAccounts tAccount){
+    return tAccountsNameMap[tAccount];
+}

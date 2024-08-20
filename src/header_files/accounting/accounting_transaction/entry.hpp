@@ -1,44 +1,53 @@
 #include <iostream>
 #include <string>
+#include "util/enums/accounting/t_accounts.hpp"
 #include "util/enums/accounting/account_titles.hpp"
-#include "util/enums/accounting/assets_t_accounts.hpp"
-#include "util/enums/accounting/liabilities_t_accounts.hpp"
-#include "util/enums/accounting/stockholders_t_accounts.hpp"
+#include "util/class/base_class.hpp"
 
 #ifndef ENTRY_HPP
 #define ENTRY_HPP
 namespace accounting
 {
-    class Entry
+    class Entry : public util::baseclass::HasTable
     {
     private:
         bool debit;
         double amount;
-        int tAccount;
-        long long transactionRef;
         std::string transactionTitle;
+        util::enums::TAccounts tAccount;
         util::enums::AccountTitles account;
+        int dbCode;
+        int transactionDB;
+
+        void setDBCode(int dbCode);
+
+    protected:
+        void setTable() override;
 
     public:
-        Entry(bool debit, double amount, util::enums::AccountTitles account, int tAccount);
+        Entry(bool debit, double amount, util::enums::AccountTitles account, util::enums::TAccounts tAccount);
 
         bool isDebit();
 
         double getAmount();
 
-        int getTAccount();
+        int getTransactionDB();
+
+        int getDBCode();
 
         std::string getTransactionTitle();
 
-        void setTransactionTitle(std::string title);
-
-        long long getTransactionRef();
-
-        void setTransactionRef(long long &reference);
+        util::enums::TAccounts getTAccount();
 
         util::enums::AccountTitles getAccountTitle();
 
         std::string getTAccountName();
+
+        std::string getAccountTitleName();
+
+        void setTransactionDB(int transactionDB);
+
+        void setTransactionTitle(std::string title);
 
         std::string to_string();
     };

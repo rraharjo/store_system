@@ -1,38 +1,47 @@
 #include <iostream>
 #include <algorithm>
 #include <vector>
-#include <chrono>
+#include "accounting/accounting_transaction/entry.hpp"
 #include "util/date.hpp"
-#include "./entry.hpp"
+#include "util/class/base_class.hpp"
+#include "util/database/tables.hpp"
 
 #ifndef TRANSACTION_HPP
 #define TRANSACTION_HPP
 namespace accounting
 {
-    class Transaction
+    class Transaction : public util::baseclass::HasTable
     {
     private:
         std::vector<Entry *> debitEntries;
         std::vector<Entry *> creditEntries;
         std::string name;
-        long long timeStamp;
+        util::Date *transactionDate;
+        int dbCode;
+
+        void setDBCode(int dbCode);
+
+    protected:
+        void setTable() override;
 
     public:
+        Transaction(std::string name, util::Date *transactionDate);
+
         Transaction(std::string name);
 
-        long long getTimestamp();
+        int getDBCode();
 
-        void addEntry(Entry *entry);
+        std::vector<Entry *> &getDebitEntries();
+
+        std::vector<Entry *> &getCreditEntries();
 
         double getDebitAmount();
 
         double getCreditAmount();
 
+        void addEntry(Entry *entry);
+
         bool isBalanced();
-
-        std::vector<Entry *> &getDebitEntries();
-
-        std::vector<Entry *> &getCreditEntries();
     };
 };
 #endif
