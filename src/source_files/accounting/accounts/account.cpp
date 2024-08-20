@@ -25,6 +25,7 @@ std::string Account::getTitleName()
 void Account::addEntry(Entry *entry)
 {
     this->tAccounts[entry->getTAccount()]->addEntry(entry);
+    entry->insertToDB();
 }
 
 std::string Account::to_string()

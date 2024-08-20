@@ -11,7 +11,6 @@ int main()
     transaction1->addEntry(entry1);
     transaction1->addEntry(entry2);
     aSystem->addTransaction(transaction1);
-    //std::cout << entry1->getTransactionTitle() << std::endl;
     std::cout << aSystem->to_string() << std::endl;
     return 0;
 }

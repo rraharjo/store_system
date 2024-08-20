@@ -1,4 +1,12 @@
-create database store_system;
+--create database store_system;
+
+delete from selling_entry;
+delete from purchase_entry;
+delete from selling_transaction;
+delete from purchase_transaction;
+delete from sellable;
+delete from accounting_transaction_entry;
+delete from accounting_transaction;
 
 drop table selling_entry;
 drop table purchase_entry;
@@ -70,7 +78,7 @@ create table accounting_transaction_entry(
     debit               boolean         not null,
     amount              numeric(12, 2)  not null,
     t_account_number    varchar(25),
-    account_title       varchar(10)
+    account_title       varchar(50)
 );
 
 alter table accounting_transaction_entry

@@ -4,7 +4,16 @@ baseclass::HasTable::HasTable(){
     //this->setTable();
 };
 
-int util::baseclass::HasTable::insertToDB(std::vector<std::string> &values){
-    //return the DBCode
-    return std::stoi(this->table->insertRow(values)[0]);
+void util::baseclass::HasTable::setDBCode(int dbCode){
+    this->dbCode = dbCode;
+}
+
+void util::baseclass::HasTable::insertToDB(){
+    //set the DBCode
+    std::vector<std::string> args = this->getInsertParameter();
+    this->setDBCode(std::stoi(this->table->insertRow(args)[0]));
+}
+
+int util::baseclass::HasTable::getDBCode(){
+    return this->dbCode;
 }

@@ -46,15 +46,17 @@ std::vector<std::string> Table::insertRow(std::vector<std::string> &values)
         case util::enums::ColumnTypes::SERIALCOL:
             break;
         case util::enums::ColumnTypes::TEXTCOL:
-            query += "'" + values[curValue++] + "', ";
+            query += "'" + values[curValue++] + "',";
             break;
         case util::enums::ColumnTypes::DATECOL:
-            query += "to_date('" + values[curValue++] + "', 'dd-MM-yyyy'), ";
+            query += "to_date('" + values[curValue++] + "', 'dd-MM-yyyy'),";
+            break;
+        case util::enums::ColumnTypes::BOOLCOL:
+            query += std::stoi(values[curValue++]) ? "true," : "false,"; 
             break;
         case util::enums::ColumnTypes::FLOATCOL:
         case util::enums::ColumnTypes::NUMBERCOL:
-        case util::enums::ColumnTypes::BOOLCOL:
-            query += values[curValue++] + ", ";
+            query += values[curValue++] + ",";
             break;
         }
     }
@@ -63,15 +65,17 @@ std::vector<std::string> Table::insertRow(std::vector<std::string> &values)
     case util::enums::ColumnTypes::SERIALCOL:
         break;
     case util::enums::ColumnTypes::TEXTCOL:
-        query += "'" + values[curValue++] + "') ";
+        query += "'" + values[curValue++] + "')";
         break;
     case util::enums::ColumnTypes::DATECOL:
-        query += "to_date('" + values[curValue++] + "', 'dd-MM-yyyy')) ";
+        query += "to_date('" + values[curValue++] + "', 'dd-MM-yyyy'))";
         break;
+    case util::enums::ColumnTypes::BOOLCOL:
+            query += std::stoi(values[curValue++]) ? "true)" : "false)"; 
+            break;
     case util::enums::ColumnTypes::FLOATCOL:
     case util::enums::ColumnTypes::NUMBERCOL:
-    case util::enums::ColumnTypes::BOOLCOL:
-        query += values[curValue++] + ") ";
+        query += values[curValue++] + ")";
         break;
     }
     query += "returning *";
