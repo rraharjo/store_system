@@ -18,7 +18,19 @@ namespace inventory
     protected:
         void setTable() override;
 
+        std::vector<std::string> getInsertParameter() override;
+
+    public:
+
         Depreciable(std::string name, std::string itemCode, double purchaseCost, double residualValue, int yearUsefulLife, util::Date *dateBought);
+
+        double getPurchaseCost();
+        
+        double getResidualValue();
+
+        int getYearUsefulLife();
+
+        util::Date* getDateBought();
 
         double getDepreciationExpenseAtYear(int year);
 

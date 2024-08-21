@@ -13,6 +13,7 @@ namespace util
             PURCHASETRANSACTION,
             SELLINGENTRY,
             SELLINGTRANSACTION,
+            DEPRECIABLE,
             ACCOUNTINGTRANSACTION,
             ACCOUNTINGENTRY
         };
@@ -67,6 +68,17 @@ namespace util
         };
 
         extern std::map<SellingTransactionTable, ColumnSchema> sellingTransactionTableColumns;
+
+        enum class DepreciableTable
+        {
+            DATABASECODE = 0,
+            PURCHASECOST,
+            RESIDUALVALUE,
+            YEARUSEFULLIFE,
+            DATEPURCHASED
+        };
+
+        extern std::map<DepreciableTable, ColumnSchema> depreciableTableColumns;
 
         enum class AccountingTransactionTable
         {

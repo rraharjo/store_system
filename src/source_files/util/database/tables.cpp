@@ -8,6 +8,7 @@ SellingEntryTable *SellingEntryTable::instance = NULL;
 SellingTransactionTable *SellingTransactionTable::instance = NULL;
 AccountingTransactionTable *AccountingTransactionTable::instance = NULL;
 AccountingEntryTable *AccountingEntryTable::instance = NULL;
+DepreciableTable *DepreciableTable::instance = NULL;
 
 // parent class
 Table::Table(std::string tableName)
@@ -168,6 +169,23 @@ SellingTransactionTable *SellingTransactionTable::getInstance()
         SellingTransactionTable::instance = new SellingTransactionTable(util::enums::tableNamesMap[util::enums::TableNames::SELLINGTRANSACTION]);
     }
     return SellingTransactionTable::instance;
+}
+
+// Depreciable Table
+DepreciableTable::DepreciableTable(std::string tableName) : Table::Table(tableName)
+{
+    for (auto it = util::enums::depreciableTableColumns.begin(); it != util::enums::depreciableTableColumns.end(); it++)
+    {
+        this->schema.push_back(it->second);
+    }
+}
+DepreciableTable *DepreciableTable::getInstance()
+{
+    if (DepreciableTable::instance == NULL)
+    {
+        DepreciableTable::instance = new DepreciableTable(util::enums::tableNamesMap[util::enums::TableNames::DEPRECIABLE]);
+    }
+    return DepreciableTable::instance;
 }
 
 // accounting transaction table

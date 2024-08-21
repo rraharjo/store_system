@@ -6,7 +6,7 @@
 #define DATABASETABLE_HPP
 namespace util
 {
-    //namespace database
+    // namespace database
     class Table
     {
     private:
@@ -82,6 +82,18 @@ namespace util
 
     public:
         static SellingTransactionTable *getInstance();
+    };
+
+    class DepreciableTable : public Table
+    {
+    private:
+        static DepreciableTable *instance;
+
+    protected:
+        DepreciableTable(std::string tableName);
+
+    public:
+        static DepreciableTable *getInstance();
     };
 
     class AccountingTransactionTable : public Table

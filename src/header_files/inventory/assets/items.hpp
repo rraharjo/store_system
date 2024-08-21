@@ -9,8 +9,11 @@ namespace inventory
         protected:
             std::string name;
             std::string itemCode;
-            int databaseCode;
             Item(std::string name, std::string itemCode);
+        
+        public:
+            std::string getName();
+            std::string getItemCode();
     };
 };
 

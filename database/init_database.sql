@@ -7,6 +7,7 @@ delete from purchase_transaction;
 delete from sellable;
 delete from accounting_transaction_entry;
 delete from accounting_transaction;
+delete from depreciable_table;
 
 drop table selling_entry;
 drop table purchase_entry;
@@ -15,6 +16,7 @@ drop table purchase_transaction;
 drop table sellable;
 drop table accounting_transaction_entry;
 drop table accounting_transaction;
+drop table depreciable_table;
 
 create table sellable(
     database_code    serial          primary key,
@@ -84,3 +86,11 @@ create table accounting_transaction_entry(
 alter table accounting_transaction_entry
 add constraint fk_accounting_transaction foreign key (at_db_code)
     references accounting_transaction (database_code);
+
+create table depreciable_table(
+    database_code       serial          primary key,
+    purchase_cost       numeric(12, 2)  not null,
+    residual_value      numeric(12, 2)  not null,
+    year_useful_life    int             not null,
+    date_purchased      date            not null
+);
