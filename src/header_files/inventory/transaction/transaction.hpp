@@ -32,6 +32,8 @@ namespace inventory
     protected:
         void setTable() override;
 
+        std::vector<std::string> getInsertParameter() override;
+
     public:
         PurchaseTransaction(std::string seller, util::Date *purchaseDate);
     };
@@ -44,6 +46,8 @@ namespace inventory
 
     protected:
         void setTable() override;
+
+        std::vector<std::string> getInsertParameter() override;
     };
 };
 #endif

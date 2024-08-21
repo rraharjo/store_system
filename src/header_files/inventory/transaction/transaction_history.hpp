@@ -1,7 +1,7 @@
 #include <chrono>
 #include <deque>
 #include <algorithm>
-#include "../constants/structs.hpp"
+#include "inventory/transaction/entry.hpp"
 #include "util/class/base_class.hpp"
 #include "util/database/tables.hpp"
 #ifndef INVENTORYPURCHASEHISTORY_HPP
@@ -10,15 +10,15 @@
 namespace inventory
 {
     /*************************************Transaction History (parent class)*************************************/
-    class TransactionHistory : public util::baseclass::HasTable
+    class TransactionHistory
     {
     protected:
-        std::deque<TransactionEntry *> transactionHistory;
+        std::deque<Entry *> entries;
 
         TransactionHistory();
 
     public:
-        void addEntry(TransactionEntry *entry);
+        void addEntry(Entry *entry);
     };
 
     /*************************************Purchase History*************************************/
@@ -26,9 +26,6 @@ namespace inventory
     {
     private:
         bool fifo;
-
-    protected:
-        void setTable() override;
 
     public:
         PurchaseHistory();
@@ -41,9 +38,6 @@ namespace inventory
     /*************************************Selling History*************************************/
     class SellingHistory : public TransactionHistory
     {
-    protected:
-        void setTable() override;
-
     public:
         SellingHistory();
     };
