@@ -13,9 +13,9 @@ namespace inventory{
 
             int itemExist(int itemCode);
 
-            double sellItem(TransactionEntry* newEntry);//return the COGS
+            double sellItem(Entry* newEntry);//return the COGS
 
-            void purchaseItem(TransactionEntry* newEntry);
+            void purchaseItem(Entry* newEntry);
             //void purchaseItem(int itemDBCode, int qty);
 
             void addNewItem(Sellable *newSellable);

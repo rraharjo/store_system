@@ -3,7 +3,7 @@
 #include "util/date.hpp"
 #include "util/database/tables.hpp"
 #include "util/class/base_class.hpp"
-#include "../constants/structs.hpp"
+#include "inventory/transaction/entry.hpp"
 #ifndef TRANSACTIONINVENTORY_HPP
 #define TRANSACTIONINVENTORY_HPP
 namespace inventory
@@ -12,7 +12,7 @@ namespace inventory
     {
     private:
         util::Date *transactionDate;
-        std::vector<TransactionEntry *> entries;
+        std::vector<Entry *> entries;
 
     protected:
         int dbCode;
@@ -21,7 +21,7 @@ namespace inventory
     public:
         util::Date *getDate();
 
-        void addEntry(int itemDBCode, int qty, double price);
+        void addEntry(Entry* entry);
     };
 
     class PurchaseTransaction : public Transaction
@@ -36,6 +36,8 @@ namespace inventory
 
     public:
         PurchaseTransaction(std::string seller, util::Date *purchaseDate);
+
+        std::string getSeller();
     };
 
     class SellingTransaction : public Transaction
