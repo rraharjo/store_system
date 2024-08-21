@@ -33,7 +33,7 @@ InventorySystem::InventorySystem()
 
 double InventorySystem::sellItem(Entry *newEntry)
 {
-    int index = this->itemExist(newEntry->getDBCode());
+    int index = this->itemExist(newEntry->getSellableDBCode());
     if (index == -1)
     {
         return -1;
@@ -49,7 +49,7 @@ int InventorySystem::itemExist(int dbCode)
 
 void InventorySystem::purchaseItem(Entry *newEntry)
 {
-    int index = this->itemExist(newEntry->getDBCode());
+    int index = this->itemExist(newEntry->getSellableDBCode());
     if (index == -1)
     {
         return;

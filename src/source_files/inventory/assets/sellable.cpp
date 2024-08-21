@@ -50,6 +50,7 @@ double Sellable::sellItems(int qty)
 void Sellable::addPurchase(PurchaseEntry *entry)
 {
     this->purchaseHistory->addEntry(entry);
+    this->qty += entry->getQty();
     entry->insertToDB();
 }
 
