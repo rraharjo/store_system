@@ -16,13 +16,12 @@ namespace accounting
         std::string transactionTitle;
         util::enums::TAccounts tAccount;
         util::enums::AccountTitles account;
-        int dbCode;
         int transactionDB;
-
-        void setDBCode(int dbCode);
 
     protected:
         void setTable() override;
+
+        std::vector<std::string> getInsertParameter() override;
 
     public:
         Entry(bool debit, double amount, util::enums::AccountTitles account, util::enums::TAccounts tAccount);
@@ -32,8 +31,6 @@ namespace accounting
         double getAmount();
 
         int getTransactionDB();
-
-        int getDBCode();
 
         std::string getTransactionTitle();
 

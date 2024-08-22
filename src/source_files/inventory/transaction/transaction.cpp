@@ -12,39 +12,49 @@ util::Date *Transaction::getDate()
     return this->transactionDate;
 }
 
-void Transaction::addEntry(int itemDBCode, int qty, double price)
+void Transaction::addEntry(Entry *entry)
 {
-    TransactionEntry *newEntry = new TransactionEntry();
-    newEntry->itemDBCode = itemDBCode;
-    newEntry->qty = qty;
-    newEntry->price;
-    newEntry->transactionDBCode = this->dbCode;
-    this->entries.push_back(newEntry);
-    // insert to database when added to sellable
+    this->entries.push_back(entry);
 }
 
 PurchaseTransaction::PurchaseTransaction(std::string seller, util::Date *purchaseDate) : Transaction::Transaction(purchaseDate)
 {
     this->setTable();
     this->seller = seller;
-    std::vector<std::string> args;
-    args.push_back(this->getDate()->toDBFormat());
-    args.push_back(this->seller);
-    this->dbCode = this->insertToDB(args);
+    this->insertToDB();
 }
 
-void PurchaseTransaction::setTable(){
+std::string PurchaseTransaction::getSeller(){
+    return this->seller;
+}
+
+void PurchaseTransaction::setTable()
+{
     this->table = util::PurchaseTransactionTable::getInstance();
+}
+
+std::vector<std::string> PurchaseTransaction::getInsertParameter()
+{
+    std::vector<std::string> args;
+    args.push_back(this->getDate()->toDBFormat());
+    args.push_back(this->getSeller());
+    return args;
 }
 
 SellingTransaction::SellingTransaction(util::Date *transactionDate) : Transaction::Transaction(transactionDate)
 {
     this->setTable();
-    std::vector<std::string> args;
-    args.push_back(this->getDate()->to_string());
-    this->dbCode = this->insertToDB(args);
+    insertToDB();
 }
 
-void SellingTransaction::setTable(){
+void SellingTransaction::setTable()
+{
     this->table = util::SellingTransactionTable::getInstance();
+}
+
+std::vector<std::string> SellingTransaction::getInsertParameter()
+{
+    std::vector<std::string> args;
+    args.push_back(this->getDate()->to_string());
+    return args;
 }

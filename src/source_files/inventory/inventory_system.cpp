@@ -31,14 +31,14 @@ InventorySystem::InventorySystem()
     this->sellables = {};
 }
 
-double InventorySystem::sellItem(TransactionEntry *newEntry)
+double InventorySystem::sellItem(Entry *newEntry)
 {
-    int index = this->itemExist(newEntry->itemDBCode);
+    int index = this->itemExist(newEntry->getSellableDBCode());
     if (index == -1)
     {
         return -1;
     }
-    return this->sellables[index]->sellItems(newEntry->qty);
+    return this->sellables[index]->sellItems(newEntry->getQty());
 }
 
 int InventorySystem::itemExist(int dbCode)
@@ -47,14 +47,14 @@ int InventorySystem::itemExist(int dbCode)
     return index;
 }
 
-void InventorySystem::purchaseItem(TransactionEntry *newEntry)
+void InventorySystem::purchaseItem(Entry *newEntry)
 {
-    int index = this->itemExist(newEntry->itemDBCode);
+    int index = this->itemExist(newEntry->getSellableDBCode());
     if (index == -1)
     {
         return;
     }
-    this->sellables[index]->addPurchase(newEntry);
+    this->sellables[index]->addPurchase((PurchaseEntry*) newEntry);
 }
 
 void InventorySystem::addNewItem(Sellable *newSellable)

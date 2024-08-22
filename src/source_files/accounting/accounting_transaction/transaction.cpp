@@ -1,33 +1,31 @@
 #include "accounting/accounting_transaction/transaction.hpp"
 using namespace accounting;
 
-Transaction::Transaction(std::string name, util::Date* transactionDate) : util::baseclass::HasTable()
+Transaction::Transaction(std::string name, util::Date *transactionDate) : util::baseclass::HasTable()
 {
     this->setTable();
     this->name = name;
     this->debitEntries = {};
     this->creditEntries = {};
     this->transactionDate = transactionDate;
-    std::vector<std::string> args;
-    args.push_back(this->name);
-    args.push_back(this->transactionDate->toDBFormat());
-    this->dbCode = this->insertToDB(args);
+    this->insertToDB();
 }
 
-Transaction::Transaction(std::string name) : Transaction::Transaction(name, new util::Date()){
-    
+Transaction::Transaction(std::string name) : Transaction::Transaction(name, new util::Date())
+{
 }
 
-void Transaction::setDBCode(int dbCode){
-    this->dbCode = dbCode;
-}
-
-void Transaction::setTable() {
+void Transaction::setTable()
+{
     this->table = util::AccountingTransactionTable::getInstance();
 }
 
-int Transaction::getDBCode(){
-    return this->dbCode;
+std::vector<std::string> Transaction::getInsertParameter()
+{
+    std::vector<std::string> args;
+    args.push_back(this->name);
+    args.push_back(this->transactionDate->toDBFormat());
+    return args;
 }
 
 std::vector<Entry *> &Transaction::getDebitEntries()
@@ -70,14 +68,11 @@ void Transaction::addEntry(Entry *entry)
     {
         this->creditEntries.push_back(entry);
     }
-    entry->setTransactionDB(this->dbCode);
+    entry->setTransactionDB(this->getDBCode());
     entry->setTransactionTitle(this->name);
 }
-
-
 
 bool Transaction::isBalanced()
 {
     return this->getDebitAmount() == this->getCreditAmount();
 }
-

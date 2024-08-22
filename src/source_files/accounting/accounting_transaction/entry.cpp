@@ -1,12 +1,18 @@
 #include "accounting/accounting_transaction/entry.hpp"
 using namespace accounting;
 
-void Entry::setDBCode(int dbCode){
-    this->dbCode = dbCode;
-}
-
 void Entry::setTable(){
     this->table = util::AccountingEntryTable::getInstance();
+}
+
+std::vector<std::string> Entry::getInsertParameter(){
+    std::vector<std::string> toRet;
+    toRet.push_back(std::to_string(this->transactionDB));
+    toRet.push_back(std::to_string(this->debit));
+    toRet.push_back(std::to_string(this->amount));
+    toRet.push_back(util::enums::tAccountsNameMap[this->tAccount]);
+    toRet.push_back(util::enums::accountTitlesMap[this->account]);
+    return toRet;
 }
 
 Entry::Entry(bool debit, double amount, util::enums::AccountTitles account, util::enums::TAccounts tAccount) : util::baseclass::HasTable()
@@ -31,10 +37,6 @@ double Entry::getAmount()
 
 int Entry::getTransactionDB(){
     return this->transactionDB;
-}
-
-int Entry::getDBCode(){
-    return this->dbCode;
 }
 
 std::string Entry::getTransactionTitle(){
@@ -72,11 +74,11 @@ std::string Entry::to_string()
     std::string toRet = "";
     if (this->isDebit())
     {
-        toRet += "\tD " + this->getTransactionTitle() + " " + std::to_string(this->amount);
+        toRet += "\tD \"" + this->getTransactionTitle() + "\" " + std::to_string(this->amount);
     }
     else
     {
-        toRet += "\tC " + this->getTransactionTitle() + " " + std::to_string(this->amount);
+        toRet += "\tC \"" + this->getTransactionTitle() + "\" " + std::to_string(this->amount);
     }
     toRet += "\n";
     return toRet;

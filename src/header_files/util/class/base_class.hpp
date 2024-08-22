@@ -9,14 +9,24 @@ namespace util
     {
         class HasTable
         {
+        private:
+            int dbCode;
+
         protected:
             util::Table *table;
 
             HasTable();
 
+            void setDBCode(int dbCode);
+
             virtual void setTable() = 0;
 
-            int insertToDB(std::vector<std::string> &values);
+            virtual std::vector<std::string> getInsertParameter() = 0;
+
+        public:
+            int getDBCode();
+
+            void insertToDB();
         };
     };
 };

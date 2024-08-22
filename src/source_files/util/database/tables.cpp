@@ -8,6 +8,7 @@ SellingEntryTable *SellingEntryTable::instance = NULL;
 SellingTransactionTable *SellingTransactionTable::instance = NULL;
 AccountingTransactionTable *AccountingTransactionTable::instance = NULL;
 AccountingEntryTable *AccountingEntryTable::instance = NULL;
+DepreciableTable *DepreciableTable::instance = NULL;
 
 // parent class
 Table::Table(std::string tableName)
@@ -46,15 +47,17 @@ std::vector<std::string> Table::insertRow(std::vector<std::string> &values)
         case util::enums::ColumnTypes::SERIALCOL:
             break;
         case util::enums::ColumnTypes::TEXTCOL:
-            query += "'" + values[curValue++] + "', ";
+            query += "'" + values[curValue++] + "',";
             break;
         case util::enums::ColumnTypes::DATECOL:
-            query += "to_date('" + values[curValue++] + "', 'dd-MM-yyyy'), ";
+            query += "to_date('" + values[curValue++] + "', 'dd-MM-yyyy'),";
+            break;
+        case util::enums::ColumnTypes::BOOLCOL:
+            query += std::stoi(values[curValue++]) ? "true," : "false,"; 
             break;
         case util::enums::ColumnTypes::FLOATCOL:
         case util::enums::ColumnTypes::NUMBERCOL:
-        case util::enums::ColumnTypes::BOOLCOL:
-            query += values[curValue++] + ", ";
+            query += values[curValue++] + ",";
             break;
         }
     }
@@ -63,15 +66,17 @@ std::vector<std::string> Table::insertRow(std::vector<std::string> &values)
     case util::enums::ColumnTypes::SERIALCOL:
         break;
     case util::enums::ColumnTypes::TEXTCOL:
-        query += "'" + values[curValue++] + "') ";
+        query += "'" + values[curValue++] + "')";
         break;
     case util::enums::ColumnTypes::DATECOL:
-        query += "to_date('" + values[curValue++] + "', 'dd-MM-yyyy')) ";
+        query += "to_date('" + values[curValue++] + "', 'dd-MM-yyyy'))";
         break;
+    case util::enums::ColumnTypes::BOOLCOL:
+            query += std::stoi(values[curValue++]) ? "true)" : "false)"; 
+            break;
     case util::enums::ColumnTypes::FLOATCOL:
     case util::enums::ColumnTypes::NUMBERCOL:
-    case util::enums::ColumnTypes::BOOLCOL:
-        query += values[curValue++] + ") ";
+        query += values[curValue++] + ")";
         break;
     }
     query += "returning *";
@@ -164,6 +169,23 @@ SellingTransactionTable *SellingTransactionTable::getInstance()
         SellingTransactionTable::instance = new SellingTransactionTable(util::enums::tableNamesMap[util::enums::TableNames::SELLINGTRANSACTION]);
     }
     return SellingTransactionTable::instance;
+}
+
+// Depreciable Table
+DepreciableTable::DepreciableTable(std::string tableName) : Table::Table(tableName)
+{
+    for (auto it = util::enums::depreciableTableColumns.begin(); it != util::enums::depreciableTableColumns.end(); it++)
+    {
+        this->schema.push_back(it->second);
+    }
+}
+DepreciableTable *DepreciableTable::getInstance()
+{
+    if (DepreciableTable::instance == NULL)
+    {
+        DepreciableTable::instance = new DepreciableTable(util::enums::tableNamesMap[util::enums::TableNames::DEPRECIABLE]);
+    }
+    return DepreciableTable::instance;
 }
 
 // accounting transaction table

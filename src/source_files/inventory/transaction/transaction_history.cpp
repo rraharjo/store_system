@@ -8,14 +8,14 @@ using namespace inventory;
 /*************************************Transaction History (parent class)*************************************/
 TransactionHistory::TransactionHistory()
 {
-    this->transactionHistory = {};
+    this->entries = {};
 }
 
-void TransactionHistory::addEntry(TransactionEntry *entry)
+void TransactionHistory::addEntry(Entry *entry)
 {
-    this->transactionHistory.push_back(entry);
-    auto end = this->transactionHistory.end() - 1;
-    while (end != this->transactionHistory.begin() && (*end)->purchaseDate < (*(end - 1))->purchaseDate)
+    this->entries.push_back(entry);
+    auto end = this->entries.end() - 1;
+    while (end != this->entries.begin() && (*end)->getTransactionDate() < (*(end - 1))->getTransactionDate())
     {
         std::iter_swap(end - 1, end);
         end -= 1;
@@ -25,12 +25,6 @@ void TransactionHistory::addEntry(TransactionEntry *entry)
 /*************************************Purchase History*************************************/
 PurchaseHistory::PurchaseHistory() : TransactionHistory()
 {
-    this->setTable();
-}
-
-void PurchaseHistory::setTable()
-{
-    this->table = util::PurchaseEntryTable::getInstance();
 }
 
 double PurchaseHistory::sellItemFirstIn(int qty)
@@ -38,14 +32,14 @@ double PurchaseHistory::sellItemFirstIn(int qty)
     double toRet = 0.0;
     while (qty > 0)
     {
-        TransactionEntry *earliest = this->transactionHistory.front();
-        int toSubtract = std::min(qty, earliest->qty);
+        PurchaseEntry *earliest = (PurchaseEntry*) this->entries.front();
+        int toSubtract = std::min(qty, earliest->getQty());
         qty -= toSubtract;
-        earliest->qty -= toSubtract;
-        toRet += toSubtract * (earliest->price);
-        if (!earliest->qty)
+        earliest->setAvailableQty(earliest->getQty() - toSubtract);
+        toRet += toSubtract * (earliest->getPrice());
+        if (!earliest->getAvailableQty())
         {
-            this->transactionHistory.pop_front();
+            this->entries.pop_front();
         }
     }
     return toRet;
@@ -56,14 +50,14 @@ double PurchaseHistory::sellItemLastIn(int qty)
     double toRet = 0.0;
     while (qty > 0)
     {
-        TransactionEntry *latest = this->transactionHistory.back();
-        int toSubtract = std::min(qty, latest->qty);
+        PurchaseEntry *earliest = (PurchaseEntry*) this->entries.back();
+        int toSubtract = std::min(qty, earliest->getQty());
         qty -= toSubtract;
-        latest->qty -= toSubtract;
-        toRet += toSubtract * (latest->price);
-        if (!latest->qty)
+        earliest->setAvailableQty(earliest->getQty() - toSubtract);
+        toRet += toSubtract * (earliest->getPrice());
+        if (!earliest->getAvailableQty())
         {
-            this->transactionHistory.pop_back();
+            this->entries.pop_back();
         }
     }
     return toRet;
@@ -71,10 +65,4 @@ double PurchaseHistory::sellItemLastIn(int qty)
 /*************************************Selling History*************************************/
 SellingHistory::SellingHistory() : TransactionHistory()
 {
-    this->setTable();
-}
-
-void SellingHistory::setTable()
-{
-    this->table = util::SellingEntryTable::getInstance();
 }

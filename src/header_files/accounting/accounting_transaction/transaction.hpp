@@ -19,17 +19,15 @@ namespace accounting
         util::Date *transactionDate;
         int dbCode;
 
-        void setDBCode(int dbCode);
-
     protected:
         void setTable() override;
+
+        std::vector<std::string> getInsertParameter() override;
 
     public:
         Transaction(std::string name, util::Date *transactionDate);
 
         Transaction(std::string name);
-
-        int getDBCode();
 
         std::vector<Entry *> &getDebitEntries();
 
