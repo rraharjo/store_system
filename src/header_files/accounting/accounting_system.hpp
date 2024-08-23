@@ -16,12 +16,12 @@ namespace accounting
 
         AccountingSystem();
 
-        ~AccountingSystem();
-
         void addEntry(Entry *entry);
 
     public:
         static AccountingSystem *getInstance();
+
+        ~AccountingSystem();
 
         void addTransaction(Transaction *transaction);
 

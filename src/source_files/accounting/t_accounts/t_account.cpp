@@ -8,6 +8,18 @@ TAccount::TAccount(util::enums::TAccounts title)
     this->creditEntries = {};
 }
 
+TAccount::~TAccount()
+{
+    for (Entry *e : this->debitEntries)
+    {
+        delete e;
+    }
+    for (Entry *e : this->creditEntries)
+    {
+        delete e;
+    }
+}
+
 util::enums::TAccounts TAccount::getTitle()
 {
     return this->title;

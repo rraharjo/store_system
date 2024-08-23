@@ -17,8 +17,6 @@ namespace util
 
             HasTable();
 
-            virtual ~HasTable();
-
             void setDBCode(int dbCode);
 
             virtual void setTable() = 0;
