@@ -34,6 +34,8 @@ namespace util
 
     public:
         static SellableTable *getInstance();
+
+        ~SellableTable();
     };
 
     class PurchaseTransactionTable : public Table
@@ -46,6 +48,8 @@ namespace util
 
     public:
         static PurchaseTransactionTable *getInstance();
+
+        ~PurchaseTransactionTable();
     };
 
     class PurchaseEntryTable : public Table
@@ -58,6 +62,8 @@ namespace util
 
     public:
         static PurchaseEntryTable *getInstance();
+
+        ~PurchaseEntryTable();
     };
 
     class SellingEntryTable : public Table
@@ -70,6 +76,8 @@ namespace util
 
     public:
         static SellingEntryTable *getInstance();
+
+        ~SellingEntryTable();
     };
 
     class SellingTransactionTable : public Table
@@ -82,6 +90,8 @@ namespace util
 
     public:
         static SellingTransactionTable *getInstance();
+
+        ~SellingTransactionTable();
     };
 
     class DepreciableTable : public Table
@@ -94,6 +104,8 @@ namespace util
 
     public:
         static DepreciableTable *getInstance();
+
+        ~DepreciableTable();
     };
 
     class AccountingTransactionTable : public Table
@@ -106,6 +118,8 @@ namespace util
 
     public:
         static AccountingTransactionTable *getInstance();
+
+        ~AccountingTransactionTable();
     };
 
     class AccountingEntryTable : public Table
@@ -118,6 +132,8 @@ namespace util
 
     public:
         static AccountingEntryTable *getInstance();
+
+        ~AccountingEntryTable();
     };
 };
 #endif

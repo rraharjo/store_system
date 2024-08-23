@@ -3,7 +3,7 @@
 #define DEPRECIATION_HPP
 namespace util
 {
-//namespace formula
+    // namespace formula
     class DepreciationMethod
     {
     protected:

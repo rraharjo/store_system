@@ -29,6 +29,8 @@ namespace accounting
 
         Transaction(std::string name);
 
+        ~Transaction();
+
         std::vector<Entry *> &getDebitEntries();
 
         std::vector<Entry *> &getCreditEntries();

@@ -16,6 +16,8 @@ namespace accounting
 
         AccountingSystem();
 
+        ~AccountingSystem();
+
         void addEntry(Entry *entry);
 
     public:
