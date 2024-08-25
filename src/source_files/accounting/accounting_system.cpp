@@ -8,6 +8,12 @@ AccountingSystem::AccountingSystem()
     this->stockholdersEquity = new StockholdersEquityAccount();
 }
 
+AccountingSystem::~AccountingSystem(){
+    delete this->assets;
+    delete this->liabilities;
+    delete this->stockholdersEquity;
+}
+
 void AccountingSystem::addEntry(Entry *entry)
 {
     switch (entry->getAccountTitle())

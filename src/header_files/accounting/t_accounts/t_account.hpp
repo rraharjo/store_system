@@ -17,6 +17,8 @@ namespace accounting
     public:
         TAccount(util::enums::TAccounts title);
 
+        ~TAccount();
+
         util::enums::TAccounts getTitle();
         
         std::string getTitleName();

@@ -17,6 +17,8 @@ namespace accounting
     protected:
         Account(bool debit, util::enums::AccountTitles title);
 
+        virtual ~Account();
+
         std::map<util::enums::TAccounts, TAccount *> tAccounts;
 
         void addTAccount(util::enums::TAccounts tAccount);

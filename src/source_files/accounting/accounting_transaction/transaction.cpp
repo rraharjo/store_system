@@ -15,6 +15,25 @@ Transaction::Transaction(std::string name) : Transaction::Transaction(name, new 
 {
 }
 
+Transaction::~Transaction()
+{
+    for (Entry *e : this->creditEntries)
+    {
+        if (!e->getDBCode())
+        {
+            delete e;
+        }
+    }
+
+    for (Entry *e : this->debitEntries)
+    {
+        if (!e->getDBCode())
+        {
+            delete e;
+        }
+    }
+}
+
 void Transaction::setTable()
 {
     this->table = util::AccountingTransactionTable::getInstance();

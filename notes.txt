@@ -14,3 +14,6 @@ delete * from purchase_entry ; delete * from sellable ;
 
 compile accounting_test:
 g++ ./src/accounting_test.cpp -I ./src/header_files ./src/source_files/accounting/*.cpp ./src/source_files/accounting/accounting_transaction/*.cpp ./src/source_files/accounting/accounts/*.cpp ./src/source_files/accounting/t_accounts/*.cpp ./src/source_files/util/class/*.cpp ./src/source_files/util/database/*.cpp ./src/source_files/util/enums/accounting/*.cpp ./src/source_files/util/enums/database/*.cpp ./src/source_files/util/enums/date/*.cpp ./src/source_files/util/*.cpp -I "C:/Program Files/PostgreSQL/16/include" "C:/Program Files/PostgreSQL/16/lib/libpq.lib" 
+
+compile database_test:
+g++ ./src/database_test.cpp -I ./src/header_files ./src/source_files/util/database/*.cpp ./src/source_files/util/*.cpp ./src/source_files/util/enums/database/*.cpp ./src/source_files/util/enums/date/*.cpp -I "C:/Program Files/PostgreSQL/16/include" "C:/Program Files/PostgreSQL/16/lib/libpq.lib"

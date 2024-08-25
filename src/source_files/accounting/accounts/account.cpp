@@ -13,7 +13,16 @@ Account::Account(bool debit, util::enums::AccountTitles title)
     this->tAccounts = {};
 }
 
-util::enums::AccountTitles Account::getTitle(){
+Account::~Account()
+{
+    for (auto it = this->tAccounts.begin(); it != this->tAccounts.end(); it++)
+    {
+        delete it->second;
+    }
+}
+
+util::enums::AccountTitles Account::getTitle()
+{
     return this->title;
 }
 
@@ -33,7 +42,7 @@ std::string Account::to_string()
     std::string toRet = this->getTitleName();
     toRet += "\n";
     int num = 1;
-    for (auto it = this->tAccounts.begin() ; it != this->tAccounts.end() ; it++)
+    for (auto it = this->tAccounts.begin(); it != this->tAccounts.end(); it++)
     {
         toRet += std::to_string(num++) + ". " + it->second->to_string();
     }

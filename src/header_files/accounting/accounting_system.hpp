@@ -21,6 +21,8 @@ namespace accounting
     public:
         static AccountingSystem *getInstance();
 
+        ~AccountingSystem();
+
         void addTransaction(Transaction *transaction);
 
         std::string to_string();

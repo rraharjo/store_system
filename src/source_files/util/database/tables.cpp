@@ -53,7 +53,7 @@ std::vector<std::string> Table::insertRow(std::vector<std::string> &values)
             query += "to_date('" + values[curValue++] + "', 'dd-MM-yyyy'),";
             break;
         case util::enums::ColumnTypes::BOOLCOL:
-            query += std::stoi(values[curValue++]) ? "true," : "false,"; 
+            query += std::stoi(values[curValue++]) ? "true," : "false,";
             break;
         case util::enums::ColumnTypes::FLOATCOL:
         case util::enums::ColumnTypes::NUMBERCOL:
@@ -72,8 +72,8 @@ std::vector<std::string> Table::insertRow(std::vector<std::string> &values)
         query += "to_date('" + values[curValue++] + "', 'dd-MM-yyyy'))";
         break;
     case util::enums::ColumnTypes::BOOLCOL:
-            query += std::stoi(values[curValue++]) ? "true)" : "false)"; 
-            break;
+        query += std::stoi(values[curValue++]) ? "true)" : "false)";
+        break;
     case util::enums::ColumnTypes::FLOATCOL:
     case util::enums::ColumnTypes::NUMBERCOL:
         query += values[curValue++] + ")";
@@ -92,6 +92,12 @@ SellableTable::SellableTable(std::string tableName) : Table::Table(tableName)
         this->schema.push_back(it->second);
     }
 }
+
+SellableTable::~SellableTable()
+{
+    SellableTable::instance = NULL;
+}
+
 SellableTable *SellableTable::getInstance()
 {
     if (SellableTable::instance == NULL)
@@ -108,6 +114,11 @@ PurchaseTransactionTable::PurchaseTransactionTable(std::string tableName) : Tabl
     {
         this->schema.push_back(it->second);
     }
+}
+
+PurchaseTransactionTable::~PurchaseTransactionTable()
+{
+    PurchaseTransactionTable::instance = NULL;
 }
 
 PurchaseTransactionTable *PurchaseTransactionTable::getInstance()
@@ -128,6 +139,11 @@ PurchaseEntryTable::PurchaseEntryTable(std::string tableName) : Table::Table(tab
     }
 }
 
+PurchaseEntryTable::~PurchaseEntryTable()
+{
+    PurchaseEntryTable::instance = NULL;
+}
+
 PurchaseEntryTable *PurchaseEntryTable::getInstance()
 {
     if (PurchaseEntryTable::instance == NULL)
@@ -145,6 +161,12 @@ SellingEntryTable::SellingEntryTable(std::string tableName) : Table::Table(table
         this->schema.push_back(it->second);
     }
 }
+
+SellingEntryTable::~SellingEntryTable()
+{
+    SellingEntryTable::instance = NULL;
+}
+
 SellingEntryTable *SellingEntryTable::getInstance()
 {
     if (SellingEntryTable::instance == NULL)
@@ -162,6 +184,12 @@ SellingTransactionTable::SellingTransactionTable(std::string tableName) : Table:
         this->schema.push_back(it->second);
     }
 }
+
+SellingTransactionTable::~SellingTransactionTable()
+{
+    SellingTransactionTable::instance = NULL;
+}
+
 SellingTransactionTable *SellingTransactionTable::getInstance()
 {
     if (SellingTransactionTable::instance == NULL)
@@ -179,6 +207,12 @@ DepreciableTable::DepreciableTable(std::string tableName) : Table::Table(tableNa
         this->schema.push_back(it->second);
     }
 }
+
+DepreciableTable::~DepreciableTable()
+{
+    DepreciableTable::instance = NULL;
+}
+
 DepreciableTable *DepreciableTable::getInstance()
 {
     if (DepreciableTable::instance == NULL)
@@ -196,6 +230,12 @@ AccountingTransactionTable::AccountingTransactionTable(std::string tableName) : 
         this->schema.push_back(it->second);
     }
 }
+
+AccountingTransactionTable::~AccountingTransactionTable()
+{
+    AccountingTransactionTable::instance = NULL;
+}
+
 AccountingTransactionTable *AccountingTransactionTable::getInstance()
 {
     if (AccountingTransactionTable::instance == NULL)
@@ -205,7 +245,7 @@ AccountingTransactionTable *AccountingTransactionTable::getInstance()
     return AccountingTransactionTable::instance;
 }
 
-//accounting entry table
+// accounting entry table
 AccountingEntryTable::AccountingEntryTable(std::string tableName) : Table::Table(tableName)
 {
     for (auto it = util::enums::accountingEntryTableColumns.begin(); it != util::enums::accountingEntryTableColumns.end(); it++)
@@ -213,6 +253,13 @@ AccountingEntryTable::AccountingEntryTable(std::string tableName) : Table::Table
         this->schema.push_back(it->second);
     }
 }
+
+AccountingEntryTable::~AccountingEntryTable()
+{
+    std::cout << "destructor called" << std::endl;
+    AccountingEntryTable::instance = NULL;
+}
+
 AccountingEntryTable *AccountingEntryTable::getInstance()
 {
     if (AccountingEntryTable::instance == NULL)

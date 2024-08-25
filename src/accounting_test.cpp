@@ -11,7 +11,9 @@ int main()
     transaction1->addEntry(entry1);
     transaction1->addEntry(entry2);
     aSystem->addTransaction(transaction1);
+    delete transaction1;
     std::cout << aSystem->to_string() << std::endl;
+    delete aSystem;
     return 0;
 }
 
