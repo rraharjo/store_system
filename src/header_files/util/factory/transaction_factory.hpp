@@ -27,9 +27,9 @@ namespace util
         public:
             accounting::Transaction *createTransaction() override;
 
-            GoodsPurchaseFactory(util::Date *, double, double, double, std::string);
+            GoodsPurchaseFactory(util::Date *, std::string, double purchaseAmount, double paidCash, double paidCredit);
 
-            GoodsPurchaseFactory(double, double, double, std::string);
+            GoodsPurchaseFactory(std::string, double purchaseAmount, double paidCash, double paidCredit);
         };
 
         class GoodsSellingFactory : AccountingTransactionFactory
@@ -42,12 +42,12 @@ namespace util
         public:
             accounting::Transaction *createTransaction() override;
 
-            GoodsSellingFactory(util::Date *, double, double, double, std::string);
+            GoodsSellingFactory(util::Date *, std::string, double sellAmount, double paidCash, double paidCredit);
 
-            GoodsSellingFactory(double, double, double, std::string);
+            GoodsSellingFactory(std::string, double sellAmount, double paidCash, double paidCredit);
         };
 
-        class GoodsSoldCOGS : AccountingTransactionFactory
+        class GoodsSoldCOGSFactory : AccountingTransactionFactory
         {
         private:
             double cogs;
@@ -55,9 +55,66 @@ namespace util
         public:
             accounting::Transaction *createTransaction() override;
 
-            GoodsSoldCOGS(util::Date *, double, std::string);
+            GoodsSoldCOGSFactory(util::Date *, std::string, double cogs);
 
-            GoodsSoldCOGS(double, std::string);
+            GoodsSoldCOGSFactory(std::string, double cogs);
+        };
+
+        class BuyEquipmentFactory : AccountingTransactionFactory
+        {
+        private:
+            double equipmentValue;
+            double paidCash;
+            double paidCredit;
+
+        public:
+            accounting::Transaction *createTransaction() override;
+
+            BuyEquipmentFactory(util::Date *, std::string, double equipmentValue, double paidCash, double paidCredit);
+
+            BuyEquipmentFactory(std::string, double equipmentValue, double paidCash, double paidCredit);
+        };
+
+        class SellEquipmentFactory : AccountingTransactionFactory
+        {
+        private:
+            double accumulatedDepreciation;
+            double initialValue;
+            double paidCash;
+            double paidCredit;
+
+        public:
+            accounting::Transaction *createTransaction() override;
+
+            SellEquipmentFactory(util::Date *, std::string, double accumulatedDepreciation, double initialValue, double paidCash, double paidCredit);
+
+            SellEquipmentFactory(std::string, double accumulatedDepreciation, double initialValue, double paidCash, double paidCredit);
+        };
+
+        class ApplyDepreciationFactory : AccountingTransactionFactory
+        {
+        private:
+            double depreciationAmount;
+
+        public:
+            accounting::Transaction *createTransaction() override;
+
+            ApplyDepreciationFactory(util::Date *, std::string, double depreciationAmount);
+
+            ApplyDepreciationFactory(std::string, double depreciationAmount);
+        };
+
+        class EmployeeWagesFactory : AccountingTransactionFactory
+        {
+        private:
+            double wagesAmount;
+
+        public:
+            accounting::Transaction *createTransaction() override;
+
+            EmployeeWagesFactory(util::Date *, std::string, double wagesAmount);
+
+            EmployeeWagesFactory(std::string, double wagesAmount);
         };
     }
 }

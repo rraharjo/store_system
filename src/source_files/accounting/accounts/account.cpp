@@ -82,7 +82,7 @@ StockholdersEquityAccount::StockholdersEquityAccount() : Account(false, util::en
 
 void StockholdersEquityAccount::initiateTAccount()
 {
-    for (util::enums::TAccounts tAccount : util::enums::assetsTAccounts)
+    for (util::enums::TAccounts tAccount : util::enums::stockholdersTAccounts)
     {
         this->addTAccount(tAccount);
     }

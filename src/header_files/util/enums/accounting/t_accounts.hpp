@@ -31,7 +31,8 @@ namespace util
             REV,
             EXPENSE,
             COGS,
-            DEPREXP
+            DEPREXP,
+            WAGEEXP
         };
 
         extern std::map<TAccounts, std::string> tAccountsNameMap;
