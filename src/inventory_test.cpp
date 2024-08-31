@@ -1,7 +1,7 @@
 #include "inventory/inventory_system.hpp"
 using namespace inventory;
 int main(){
-    inventory::InventorySystem *system = new inventory::InventorySystem();
+    inventory::InventorySystem *system = InventorySystem::getInstance();
     Sellable *sellable1 = new Sellable("Drill battery", "DB123", 100.00);
     Sellable *sellable2 = new Sellable("JackHammer", "JH123", 120.00);
     int dbCode1 = sellable1->getDBCode();

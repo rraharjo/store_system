@@ -25,6 +25,13 @@ int inventory::binSearch(std::vector<Sellable *> sellables, int dbCode)
     return -1;
 };
 
+InventorySystem* InventorySystem::getInstance(){
+    if (InventorySystem::instance == NULL){
+        InventorySystem::instance = new InventorySystem();
+    }
+    return InventorySystem::instance;
+}
+
 InventorySystem::InventorySystem()
 {
     this->sellables = {};

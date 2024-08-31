@@ -2,23 +2,29 @@
 #include "./assets/depreciable.hpp"
 #ifndef INVENTORYSYSTEM_HPP
 #define INVENTORYSYSTEM_HPP
-namespace inventory{
-    class InventorySystem{
-        private:
-            std::vector<Sellable*> sellables;
-        public:
-            InventorySystem();
+namespace inventory
+{
+    class InventorySystem
+    {
+    private:
+        static InventorySystem *instance;
+        std::vector<Sellable *> sellables;
+        InventorySystem();
 
-            int itemExist(int itemCode);
+    public:
+    
+        static InventorySystem *getInstance();
 
-            double sellItem(Entry* newEntry);//return the COGS
+        int itemExist(int itemCode);
 
-            void purchaseItem(Entry* newEntry);
-            //void purchaseItem(int itemDBCode, int qty);
+        double sellItem(Entry *newEntry); // return the COGS
 
-            void addNewItem(Sellable *newSellable);
+        void purchaseItem(Entry *newEntry);
+        // void purchaseItem(int itemDBCode, int qty);
 
-            std::string to_string();
+        void addNewItem(Sellable *newSellable);
+
+        std::string to_string();
     };
 
     int binSearch(std::vector<Sellable *> sellables, int dbCode);
