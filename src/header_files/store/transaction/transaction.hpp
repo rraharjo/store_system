@@ -4,15 +4,15 @@
 #include "util/database/tables.hpp"
 #include "util/class/base_class.hpp"
 #include "inventory/transaction/entry.hpp"
-#ifndef TRANSACTIONINVENTORY_HPP
-#define TRANSACTIONINVENTORY_HPP
-namespace inventory
+#ifndef STORETRANSACTION_HPP
+#define STORETRANSACTION_HPP
+namespace store
 {
     class Transaction : public util::baseclass::HasTable
     {
     private:
         util::Date *transactionDate;
-        std::vector<Entry *> entries;
+        std::vector<inventory::Entry *> entries;
 
     protected:
         int dbCode;
@@ -21,7 +21,9 @@ namespace inventory
     public:
         util::Date *getDate();
 
-        void addEntry(Entry* entry);
+        void addEntry(inventory::Entry* entry);
+
+        std::vector<inventory::Entry*> getAllEntries();
     };
 
     class PurchaseTransaction : public Transaction

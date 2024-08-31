@@ -1,12 +1,10 @@
 #include "./assets/sellable.hpp"
 #include "./assets/depreciable.hpp"
-#include "./transaction/transaction.hpp"
 #ifndef INVENTORYSYSTEM_HPP
 #define INVENTORYSYSTEM_HPP
 namespace inventory{
     class InventorySystem{
         private:
-            std::vector<PurchaseTransaction*> purchaseTransactions;
             std::vector<Sellable*> sellables;
         public:
             InventorySystem();
