@@ -27,7 +27,6 @@ int inventory::binSearch(std::vector<Sellable *> sellables, int dbCode)
 
 InventorySystem::InventorySystem()
 {
-    this->purchaseTransactions = {};
     this->sellables = {};
 }
 

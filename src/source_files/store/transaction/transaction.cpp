@@ -1,5 +1,5 @@
-#include "inventory/transaction/transaction.hpp"
-using namespace inventory;
+#include "store/transaction/transaction.hpp"
+using namespace store;
 
 Transaction::Transaction(util::Date *transactionDate)
 {
@@ -12,9 +12,13 @@ util::Date *Transaction::getDate()
     return this->transactionDate;
 }
 
-void Transaction::addEntry(Entry *entry)
+void Transaction::addEntry(inventory::Entry *entry)
 {
     this->entries.push_back(entry);
+}
+
+std::vector<inventory::Entry*> Transaction::getAllEntries(){
+    return this->entries;
 }
 
 PurchaseTransaction::PurchaseTransaction(std::string seller, util::Date *purchaseDate) : Transaction::Transaction(purchaseDate)
