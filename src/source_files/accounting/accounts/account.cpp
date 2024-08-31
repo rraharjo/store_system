@@ -31,6 +31,22 @@ std::string Account::getTitleName()
     return util::enums::getName(this->title);
 }
 
+double Account::getTotalCredit(){
+    double toRet = 0.0;
+    for (auto it = this->tAccounts.begin() ; it != this->tAccounts.end() ; it++){
+        toRet += it->second->getCreditAmount();
+    }
+    return toRet;
+}
+
+double Account::getTotalDebit(){
+    double toRet = 0.0;
+    for (auto it = this->tAccounts.begin() ; it != this->tAccounts.end() ; it++){
+        toRet += it->second->getDebitAmount();
+    }
+    return toRet;
+}
+
 void Account::addEntry(Entry *entry)
 {
     this->tAccounts[entry->getTAccount()]->addEntry(entry);

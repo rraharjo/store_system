@@ -31,6 +31,9 @@ int main()
     accounting::Transaction *sellingExcavator = util::factory::SellEquipmentFactory("Sell Excavator", depreciationAmount, excavatorPrice, excavatorSellingPriceCash, 0).createTransaction();
     aSystem->addTransaction(sellingExcavator);
     std::cout << aSystem->to_string() << std::endl;
+    std::cout << aSystem->assets->getTotalDebit() - aSystem->assets->getTotalCredit() << std::endl;
+    std::cout << aSystem->liabilities->getTotalCredit() - aSystem->liabilities->getTotalDebit() << std::endl;
+    std::cout << aSystem->stockholdersEquity->getTotalCredit() - aSystem->stockholdersEquity->getTotalDebit() << std::endl;
     delete aSystem; 
     delete buyItemTransaction;
     delete sellGoods;

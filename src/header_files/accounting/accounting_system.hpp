@@ -9,9 +9,6 @@ namespace accounting
     class AccountingSystem
     {
     private:
-        Assets *assets;
-        Liabilities *liabilities;
-        StockholdersEquityAccount *stockholdersEquity;
         static AccountingSystem *instance;
 
         AccountingSystem();
@@ -19,6 +16,9 @@ namespace accounting
         void addEntry(Entry *entry);
 
     public:
+        Assets *assets;
+        Liabilities *liabilities;
+        StockholdersEquityAccount *stockholdersEquity;
         static AccountingSystem *getInstance();
 
         ~AccountingSystem();

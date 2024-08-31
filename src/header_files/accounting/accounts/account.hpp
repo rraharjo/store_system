@@ -27,6 +27,10 @@ namespace accounting
         util::enums::AccountTitles getTitle();
 
         std::string getTitleName();
+        
+        double getTotalDebit();
+
+        double getTotalCredit();
 
         void addEntry(Entry *entry);
 
