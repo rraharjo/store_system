@@ -15,8 +15,10 @@ namespace util
             CASH = 0,
             EQUIPMENT,
             ACCTRCV,
+            NOTERCV,
             LAND,
             ACCUMDEPRECIATION,
+            INVENTORY,
             //liabilities
             ACCPAYABLE,
             NOTEPAYABLE,
@@ -24,9 +26,13 @@ namespace util
             //stockholders equity
             COMMONSTOCK,
             ADDTLCPT,
+            OWNEREQ,
+            DIVIDEND,
             REV,
             EXPENSE,
-            DEPRECIATIONEXPENSE
+            COGS,
+            DEPREXP,
+            WAGEEXP
         };
 
         extern std::map<TAccounts, std::string> tAccountsNameMap;

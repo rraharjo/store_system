@@ -1,7 +1,7 @@
 #include <iostream>
 #include <vector>
 #include <map>
-#include "../t_accounts/t_account.hpp"
+#include "accounting/accounts/t_account.hpp"
 
 #ifndef ACCOUNT_HPP
 #define ACCOUNT_HPP
@@ -27,6 +27,10 @@ namespace accounting
         util::enums::AccountTitles getTitle();
 
         std::string getTitleName();
+        
+        double getTotalDebit();
+
+        double getTotalCredit();
 
         void addEntry(Entry *entry);
 
