@@ -35,6 +35,7 @@ std::map<SellingEntryTable, ColumnSchema> util::enums::sellingEntryTableColumns 
     {SellingEntryTable::DATABASECODE, ColumnSchema{"database_code", ColumnTypes::SERIALCOL}},
     {SellingEntryTable::SELLABLECODE, ColumnSchema{"sellable_db_code", ColumnTypes::NUMBERCOL}},
     {SellingEntryTable::SELLINGTRANSACTIONCODE, ColumnSchema{"selling_transaction_db_code", ColumnTypes::NUMBERCOL}},
+    {SellingEntryTable::SELLINGPRICE, ColumnSchema{"selling_price", ColumnTypes::FLOATCOL}},
     {SellingEntryTable::QTY, ColumnSchema{"qty", ColumnTypes::NUMBERCOL}}};
 
 std::map<SellingTransactionTable, ColumnSchema> util::enums::sellingTransactionTableColumns = {

@@ -78,7 +78,7 @@ std::vector<std::string> SellingEntry::getInsertParameter()
     std::vector<std::string> args;
     args.push_back(std::to_string(this->getSellableDBCode()));
     args.push_back(std::to_string(this->getTransactionDBCode()));
-    // args.push_back(std::to_string(this->getPrice()));
+    args.push_back(std::to_string(this->getPrice()));
     args.push_back(std::to_string(this->getQty()));
     return args;
 }

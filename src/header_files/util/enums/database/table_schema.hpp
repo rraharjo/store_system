@@ -56,6 +56,7 @@ namespace util
             DATABASECODE = 0,
             SELLABLECODE,
             SELLINGTRANSACTIONCODE,
+            SELLINGPRICE,
             QTY
         };
 

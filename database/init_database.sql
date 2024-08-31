@@ -57,6 +57,7 @@ create table selling_entry(
     database_code       serial          primary key,
     sellable_db_code    int,
     selling_transaction_db_code int,
+    selling_price       numeric(12, 2),
     qty                 int
 );
 
