@@ -1,6 +1,8 @@
 #include "inventory/inventory_system.hpp"
 using namespace inventory;
 
+InventorySystem *InventorySystem::instance = NULL;
+
 int inventory::binSearch(std::vector<Sellable *> sellables, int dbCode)
 {
     int start = 0;

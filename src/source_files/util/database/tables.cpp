@@ -110,6 +110,7 @@ std::vector<std::string> Table::updateRow(int id, std::vector<std::string> &valu
             break;
         case util::enums::ColumnTypes::FLOATCOL:
         case util::enums::ColumnTypes::NUMBERCOL:
+            query += currentCol.columnName + " = ";
             query += values[curValue++] + ",";
             break;
         }
@@ -135,11 +136,9 @@ std::vector<std::string> Table::updateRow(int id, std::vector<std::string> &valu
         break;
     }
     query += "where " + this->getSchema()[0].columnName + " = " + std::to_string(id) + " returning *;";
-    std::cout << query << std::endl;
-    std::vector<std::string> fodder;
-    return fodder;
-    // DB *instance = DB::get_instance();
-    // return instance->execute_query(query)[0];
+    //std::cout << query << std::endl;
+    DB *instance = DB::get_instance();
+    return instance->execute_query(query)[0];
 }
 
 // Sellable Table

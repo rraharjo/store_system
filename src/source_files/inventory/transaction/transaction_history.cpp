@@ -37,6 +37,7 @@ double PurchaseHistory::sellItemFirstIn(int qty)
         qty -= toSubtract;
         earliest->setAvailableQty(earliest->getQty() - toSubtract);
         toRet += toSubtract * (earliest->getPrice());
+        earliest->updateToDB();
         if (!earliest->getAvailableQty())
         {
             this->entries.pop_front();
@@ -55,6 +56,7 @@ double PurchaseHistory::sellItemLastIn(int qty)
         qty -= toSubtract;
         earliest->setAvailableQty(earliest->getQty() - toSubtract);
         toRet += toSubtract * (earliest->getPrice());
+        earliest->updateToDB();
         if (!earliest->getAvailableQty())
         {
             this->entries.pop_back();
