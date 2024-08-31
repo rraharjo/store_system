@@ -27,6 +27,8 @@ namespace util
             int getDBCode();
 
             void insertToDB();
+
+            void updateToDB();
         };
     };
 };

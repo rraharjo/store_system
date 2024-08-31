@@ -84,6 +84,64 @@ std::vector<std::string> Table::insertRow(std::vector<std::string> &values)
     return instance->execute_query(query)[0];
 }
 
+std::vector<std::string> Table::updateRow(int id, std::vector<std::string> &values)
+{
+    int schemaSize = this->getSchema().size();
+    std::string query = "update " + this->tableName + " set ";
+    int curValue = 0;
+    for (int i = 0; i < schemaSize - 1; i++)
+    {
+        util::ColumnSchema currentCol = this->getSchema()[i];
+        switch (currentCol.type)
+        {
+        case util::enums::ColumnTypes::SERIALCOL:
+            break;
+        case util::enums::ColumnTypes::TEXTCOL:
+            query += currentCol.columnName + " = ";
+            query += "'" + values[curValue++] + "',";
+            break;
+        case util::enums::ColumnTypes::DATECOL:
+            query += currentCol.columnName + " = ";
+            query += "to_date('" + values[curValue++] + "', 'dd-MM-yyyy'),";
+            break;
+        case util::enums::ColumnTypes::BOOLCOL:
+            query += currentCol.columnName + " = ";
+            query += std::stoi(values[curValue++]) ? "true," : "false,";
+            break;
+        case util::enums::ColumnTypes::FLOATCOL:
+        case util::enums::ColumnTypes::NUMBERCOL:
+            query += values[curValue++] + ",";
+            break;
+        }
+    }
+    util::ColumnSchema currentCol = this->getSchema()[schemaSize - 1];
+    query += currentCol.columnName + " = ";
+    switch (currentCol.type)
+    {
+    case util::enums::ColumnTypes::SERIALCOL:
+        break;
+    case util::enums::ColumnTypes::TEXTCOL:
+        query += "'" + values[curValue++] + "' ";
+        break;
+    case util::enums::ColumnTypes::DATECOL:
+        query += "to_date('" + values[curValue++] + "', 'dd-MM-yyyy') ";
+        break;
+    case util::enums::ColumnTypes::BOOLCOL:
+        query += std::stoi(values[curValue++]) ? "true " : "false ";
+        break;
+    case util::enums::ColumnTypes::FLOATCOL:
+    case util::enums::ColumnTypes::NUMBERCOL:
+        query += values[curValue++] + " ";
+        break;
+    }
+    query += "where " + this->getSchema()[0].columnName + " = " + std::to_string(id) + " returning *;";
+    std::cout << query << std::endl;
+    std::vector<std::string> fodder;
+    return fodder;
+    // DB *instance = DB::get_instance();
+    // return instance->execute_query(query)[0];
+}
+
 // Sellable Table
 SellableTable::SellableTable(std::string tableName) : Table::Table(tableName)
 {

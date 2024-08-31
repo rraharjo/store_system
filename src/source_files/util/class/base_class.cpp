@@ -14,6 +14,11 @@ void util::baseclass::HasTable::insertToDB(){
     this->setDBCode(std::stoi(this->table->insertRow(args)[0]));
 }
 
+void util::baseclass::HasTable::updateToDB(){
+    std::vector<std::string> args = this->getInsertParameter();
+    this->table->updateRow(this->dbCode, args);
+}
+
 int util::baseclass::HasTable::getDBCode(){
     return this->dbCode;
 }
