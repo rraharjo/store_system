@@ -36,15 +36,17 @@ void Sellable::setSellingPrice(double newPrice)
     this->sellingPrice = newPrice;
 }
 
-double Sellable::sellItems(int qty)
+double Sellable::sellItems(SellingEntry *entry)
 {
-    if (this->qty < qty)
+    if (this->qty < entry->getQty())
     {
         throw std::invalid_argument("Purchasing quantity exceeds available quantity");
         return -1;
     }
-    this->qty -= qty;
-    return this->purchaseHistory->sellItemFirstIn(qty);
+    this->sellingHistory->addEntry(entry);
+    this->qty -= entry->getQty();
+    entry->insertToDB();
+    return this->purchaseHistory->sellItemFirstIn(entry->getQty());
 }
 
 void Sellable::addPurchase(PurchaseEntry *entry)

@@ -46,7 +46,7 @@ double InventorySystem::sellItem(Entry *newEntry)
     {
         return -1;
     }
-    return this->sellables[index]->sellItems(newEntry->getQty());
+    return this->sellables[index]->sellItems((SellingEntry*) newEntry);
 }
 
 int InventorySystem::itemExist(int dbCode)
