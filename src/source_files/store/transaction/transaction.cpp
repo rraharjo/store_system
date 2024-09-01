@@ -48,7 +48,7 @@ std::vector<std::string> PurchaseTransaction::getInsertParameter()
 SellingTransaction::SellingTransaction(util::Date *transactionDate) : Transaction::Transaction(transactionDate)
 {
     this->setTable();
-    insertToDB();
+    this->insertToDB();
 }
 
 void SellingTransaction::setTable()
@@ -59,6 +59,6 @@ void SellingTransaction::setTable()
 std::vector<std::string> SellingTransaction::getInsertParameter()
 {
     std::vector<std::string> args;
-    args.push_back(this->getDate()->to_string());
+    args.push_back(this->getDate()->toDBFormat());
     return args;
 }

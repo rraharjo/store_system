@@ -19,7 +19,7 @@ void StoreSystem::sellItem(SellingTransaction *sellingTransaction)
         cogs += this->iSystem->sellItem(entry);
     }
     std::string description = "Selling for transaction code: " + std::to_string(sellingTransaction->getDBCode());
-    accounting::Transaction *accountingTransaction = util::factory::GoodsSellingFactory(description, sellAmount, 0, 0).createTransaction();
+    accounting::Transaction *accountingTransaction = util::factory::GoodsSellingFactory(description, sellAmount, sellAmount, 0).createTransaction();
     this->aSystem->addTransaction(accountingTransaction);
 }
 
@@ -32,5 +32,18 @@ void StoreSystem::buyItem(PurchaseTransaction *purchaseTransaction)
         this->iSystem->purchaseItem(entry);
     }
     std::string description = "Purchase for transaction code: " + std::to_string(purchaseTransaction->getDBCode());
-    accounting::Transaction *accountingTransaction = util::factory::GoodsPurchaseFactory(description, purchaseAmount, 0, 0).createTransaction();
+    accounting::Transaction *accountingTransaction = util::factory::GoodsPurchaseFactory(description, purchaseAmount, purchaseAmount, 0).createTransaction();
+    this->aSystem->addTransaction(accountingTransaction);
+}
+
+
+void StoreSystem::addItem(inventory::Sellable *newSellable){
+    this->iSystem->addNewItem(newSellable);
+}
+
+std::string StoreSystem::toString(){
+    std::string toRet = "";
+    toRet += this->iSystem->to_string();
+    toRet += this->aSystem->to_string();
+    return toRet;
 }

@@ -19,6 +19,10 @@ namespace store {
             void sellItem(SellingTransaction* sellTransaction);
 
             void buyItem(PurchaseTransaction* purchaseTransaction);
+
+            void addItem(inventory::Sellable *newSellable);
+
+            std::string toString();
     };
 }
 #endif
