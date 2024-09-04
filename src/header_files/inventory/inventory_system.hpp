@@ -8,14 +8,12 @@ namespace inventory
     {
     private:
         static InventorySystem *instance;
-        std::vector<Sellable *> sellables;
+        std::map<int, Sellable *> sellables;
         InventorySystem();
 
     public:
     
         static InventorySystem *getInstance();
-
-        int itemExist(int itemCode);
 
         double sellItem(Entry *newEntry); // return the COGS
 
@@ -26,7 +24,5 @@ namespace inventory
 
         std::string to_string();
     };
-
-    int binSearch(std::vector<Sellable *> sellables, int dbCode);
 };
 #endif

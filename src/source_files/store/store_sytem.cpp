@@ -36,7 +36,6 @@ void StoreSystem::buyItem(PurchaseTransaction *purchaseTransaction)
     this->aSystem->addTransaction(accountingTransaction);
 }
 
-
 void StoreSystem::addItem(inventory::Sellable *newSellable){
     this->iSystem->addNewItem(newSellable);
 }
