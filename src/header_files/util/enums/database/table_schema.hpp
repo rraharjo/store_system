@@ -73,6 +73,7 @@ namespace util
         enum class DepreciableTable
         {
             DATABASECODE = 0,
+            ITEMNAME,
             PURCHASECOST,
             RESIDUALVALUE,
             YEARUSEFULLIFE,

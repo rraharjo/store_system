@@ -90,6 +90,7 @@ add constraint fk_accounting_transaction foreign key (at_db_code)
 
 create table depreciable_table(
     database_code       serial          primary key,
+    item_name           text,
     purchase_cost       numeric(12, 2)  not null,
     residual_value      numeric(12, 2)  not null,
     year_useful_life    int             not null,

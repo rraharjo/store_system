@@ -6,6 +6,7 @@ using namespace inventory;
 Depreciable::Depreciable(std::string name, std::string itemCode, double purchaseCost, double residualValue, int yearUsefulLife, util::Date *dateBought) : Item::Item(name, itemCode)
 {
     this->setTable();
+    this->name = name;
     this->purchaseCost = purchaseCost;
     this->residualValue = residualValue;
     this->yearUsefulLife = yearUsefulLife;
@@ -23,6 +24,7 @@ void Depreciable::setTable()
 std::vector<std::string> Depreciable::getInsertParameter()
 {
     std::vector<std::string> args;
+    args.push_back(this->name);
     args.push_back(std::to_string(this->getPurchaseCost()));
     args.push_back(std::to_string(this->getResidualValue()));
     args.push_back(std::to_string(this->getYearUsefulLife()));
