@@ -42,6 +42,12 @@ std::vector<std::string> Table::insertRow(std::vector<std::string> &values)
     int curValue = 0;
     for (int i = 0; i < schemaSize - 1; i++)
     {
+        if (values[curValue] == "NULL")
+        {
+            query += "NULL,";
+            curValue++;
+            continue;
+        }
         switch (this->getSchema()[i].type)
         {
         case util::enums::ColumnTypes::SERIALCOL:
@@ -61,24 +67,32 @@ std::vector<std::string> Table::insertRow(std::vector<std::string> &values)
             break;
         }
     }
-    switch (this->getSchema()[schemaSize - 1].type)
+    if (values[curValue] == "NULL")
     {
-    case util::enums::ColumnTypes::SERIALCOL:
-        break;
-    case util::enums::ColumnTypes::TEXTCOL:
-        query += "'" + values[curValue++] + "')";
-        break;
-    case util::enums::ColumnTypes::DATECOL:
-        query += "to_date('" + values[curValue++] + "', 'dd-MM-yyyy'))";
-        break;
-    case util::enums::ColumnTypes::BOOLCOL:
-        query += std::stoi(values[curValue++]) ? "true)" : "false)";
-        break;
-    case util::enums::ColumnTypes::FLOATCOL:
-    case util::enums::ColumnTypes::NUMBERCOL:
-        query += values[curValue++] + ")";
-        break;
+        query += "NULL)";
     }
+    else
+    {
+        switch (this->getSchema()[schemaSize - 1].type)
+        {
+        case util::enums::ColumnTypes::SERIALCOL:
+            break;
+        case util::enums::ColumnTypes::TEXTCOL:
+            query += "'" + values[curValue++] + "')";
+            break;
+        case util::enums::ColumnTypes::DATECOL:
+            query += "to_date('" + values[curValue++] + "', 'dd-MM-yyyy'))";
+            break;
+        case util::enums::ColumnTypes::BOOLCOL:
+            query += std::stoi(values[curValue++]) ? "true)" : "false)";
+            break;
+        case util::enums::ColumnTypes::FLOATCOL:
+        case util::enums::ColumnTypes::NUMBERCOL:
+            query += values[curValue++] + ")";
+            break;
+        }
+    }
+
     query += "returning *";
     DB *instance = DB::get_instance();
     return instance->execute_query(query)[0];
@@ -136,7 +150,7 @@ std::vector<std::string> Table::updateRow(int id, std::vector<std::string> &valu
         break;
     }
     query += "where " + this->getSchema()[0].columnName + " = " + std::to_string(id) + " returning *;";
-    //std::cout << query << std::endl;
+    // std::cout << query << std::endl;
     DB *instance = DB::get_instance();
     return instance->execute_query(query)[0];
 }

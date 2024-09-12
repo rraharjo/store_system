@@ -47,7 +47,8 @@ std::map<DepreciableTable, ColumnSchema> util::enums::depreciableTableColumns = 
     {DepreciableTable::PURCHASECOST, ColumnSchema{"purchase_cost", ColumnTypes::FLOATCOL}},
     {DepreciableTable::RESIDUALVALUE, ColumnSchema{"residual_value", ColumnTypes::FLOATCOL}},
     {DepreciableTable::YEARUSEFULLIFE, ColumnSchema{"year_useful_life", ColumnTypes::NUMBERCOL}},
-    {DepreciableTable::DATEPURCHASED, ColumnSchema{"date_purchased", ColumnTypes::DATECOL}}};
+    {DepreciableTable::DATEPURCHASED, ColumnSchema{"date_purchased", ColumnTypes::DATECOL}},
+    {DepreciableTable::DATESOLD, ColumnSchema{"date_sold", ColumnTypes::DATECOL}}};
 
 std::map<AccountingTransactionTable, ColumnSchema> util::enums::accountingTransactionTableColumns = {
     {AccountingTransactionTable::DATABASECODE, ColumnSchema{"database_code", ColumnTypes::SERIALCOL}},

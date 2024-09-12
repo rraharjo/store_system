@@ -93,5 +93,6 @@ create table depreciable_table(
     purchase_cost       numeric(12, 2)  not null,
     residual_value      numeric(12, 2)  not null,
     year_useful_life    int             not null,
-    date_purchased      date            not null
+    date_purchased      date            not null,
+    date_sold           date
 );

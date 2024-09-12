@@ -13,6 +13,7 @@ namespace inventory
         double residualValue;
         int yearUsefulLife;
         util::Date *dateBought;
+        util::Date *dateSold;
         util::DepreciationMethod *depreciationMethod;
 
     protected:
@@ -31,6 +32,8 @@ namespace inventory
         int getYearUsefulLife();
 
         util::Date* getDateBought();
+
+        util::Date* getDateSold();
 
         double getDepreciationExpenseAtYear(int year);
 

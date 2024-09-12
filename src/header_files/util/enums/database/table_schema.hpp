@@ -76,7 +76,8 @@ namespace util
             PURCHASECOST,
             RESIDUALVALUE,
             YEARUSEFULLIFE,
-            DATEPURCHASED
+            DATEPURCHASED,
+            DATESOLD
         };
 
         extern std::map<DepreciableTable, ColumnSchema> depreciableTableColumns;

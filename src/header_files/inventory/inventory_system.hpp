@@ -9,6 +9,7 @@ namespace inventory
     private:
         static InventorySystem *instance;
         std::map<int, Sellable *> sellables;
+        std::map<int, Depreciable *> properties; 
         InventorySystem();
 
     public:

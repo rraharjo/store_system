@@ -10,6 +10,7 @@ Depreciable::Depreciable(std::string name, std::string itemCode, double purchase
     this->yearUsefulLife = yearUsefulLife;
     this->dateBought = dateBought;
     this->depreciationMethod = new util::DoubleDecliningDepreciation(this->purchaseCost, this->yearUsefulLife);
+    this->dateSold = NULL;
     this->insertToDB();
 }
 
@@ -25,6 +26,7 @@ std::vector<std::string> Depreciable::getInsertParameter()
     args.push_back(std::to_string(this->getResidualValue()));
     args.push_back(std::to_string(this->getYearUsefulLife()));
     args.push_back(this->getDateBought()->toDBFormat());
+    args.push_back(this->getDateSold() ? this->getDateSold()->toDBFormat() : "NULL");
     return args;
 };
 
@@ -43,6 +45,11 @@ int Depreciable::getYearUsefulLife(){
 util::Date *Depreciable::getDateBought(){
     return this->dateBought;
 }
+
+util::Date *Depreciable::getDateSold(){
+    return this->dateSold;
+}
+
 
 double Depreciable::getDepreciationExpenseAtYear(int year)
 {
