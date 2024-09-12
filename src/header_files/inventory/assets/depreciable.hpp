@@ -9,6 +9,7 @@ namespace inventory
     class Depreciable: public Item
     {
     private:
+        std::string name;
         double purchaseCost;
         double residualValue;
         int yearUsefulLife;
@@ -24,6 +25,10 @@ namespace inventory
     public:
 
         Depreciable(std::string name, std::string itemCode, double purchaseCost, double residualValue, int yearUsefulLife, util::Date *dateBought);
+
+        void dispose(util::Date *disposeDate);
+
+        void dispose();
 
         double getPurchaseCost();
         
@@ -46,6 +51,8 @@ namespace inventory
         double getCurrentAccumulatedDepreciation();
 
         double getCurrentValue();
+
+        std::string toString();
     };
 }
 

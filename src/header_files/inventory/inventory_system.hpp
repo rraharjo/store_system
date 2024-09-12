@@ -23,6 +23,10 @@ namespace inventory
 
         void addNewItem(Sellable *newSellable);
 
+        void addNewProperty(Depreciable *newProperty);
+
+        Depreciable *disposeProperty(int dbCode);
+
         std::string to_string();
     };
 };

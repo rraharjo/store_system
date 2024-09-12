@@ -13,6 +13,7 @@ InventorySystem* InventorySystem::getInstance(){
 InventorySystem::InventorySystem()
 {
     this->sellables = {};
+    this->properties = {};
 }
 
 double InventorySystem::sellItem(Entry *newEntry)
@@ -38,12 +39,25 @@ void InventorySystem::addNewItem(Sellable *newSellable)
     this->sellables[newSellable->getDBCode()] = newSellable;
 }
 
+void InventorySystem::addNewProperty(Depreciable *newDepreciable){
+    this->properties[newDepreciable->getDBCode()] = newDepreciable;
+}
+
+Depreciable *InventorySystem::disposeProperty(int dbCode){
+    Depreciable *toDispose = this->properties[dbCode];
+    toDispose->dispose();
+    return toDispose;
+}
+
 std::string InventorySystem::to_string()
 {
     std::string toRet = "";
     for (auto it = this->sellables.begin() ; it != this->sellables.end() ; it++)
     {
         toRet += it->second->to_string();
+    }
+    for (auto it = this->properties.begin() ; it != this->properties.end() ; it++){
+        toRet += it->second->toString();
     }
     return toRet;
 }
