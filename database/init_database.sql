@@ -19,7 +19,7 @@ drop table accounting_transaction;
 drop table depreciable_table;
 
 create table sellable(
-    database_code    serial          primary key,
+    database_code    text          primary key,
     item_code        varchar(255),
     item_name        varchar(255),
     selling_price    numeric(12, 2)    not null
@@ -89,7 +89,7 @@ add constraint fk_accounting_transaction foreign key (at_db_code)
     references accounting_transaction (database_code);
 
 create table depreciable_table(
-    database_code       serial          primary key,
+    database_code       text          primary key,
     item_name           text,
     purchase_cost       numeric(12, 2)  not null,
     residual_value      numeric(12, 2)  not null,
@@ -97,3 +97,11 @@ create table depreciable_table(
     date_purchased      date            not null,
     date_sold           date
 );
+
+alter table purchase_entry
+add constraint fk_properties foreign key (sellable_db_code)
+    references depreciable_table (database_code);
+
+alter table selling_entry
+add constraint fk_properties_selling_entry foreign key (sellable_db_code)
+    references depreciable_table (database_code);

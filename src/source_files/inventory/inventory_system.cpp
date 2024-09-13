@@ -45,6 +45,9 @@ void InventorySystem::addNewProperty(Depreciable *newDepreciable){
 
 Depreciable *InventorySystem::disposeProperty(int dbCode){
     Depreciable *toDispose = this->properties[dbCode];
+    if (!toDispose){
+        return NULL;
+    }
     toDispose->dispose();
     return toDispose;
 }

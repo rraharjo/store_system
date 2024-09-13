@@ -13,7 +13,7 @@ std::map<TableNames, std::string> util::enums::tableNamesMap = {
     {TableNames::ACCOUNTINGENTRY, "accounting_transaction_entry"}};
 /**************************************************************************************************************************/
 std::map<SellableTable, ColumnSchema> util::enums::sellableTableColumns = {
-    {SellableTable::DATABASECODE, ColumnSchema{"database_code", ColumnTypes::SERIALCOL}},
+    {SellableTable::DATABASECODE, ColumnSchema{"database_code", ColumnTypes::TEXTCOL}},
     {SellableTable::ITEMCODE, ColumnSchema{"item_code", ColumnTypes::TEXTCOL}},
     {SellableTable::ITEMNAME, ColumnSchema{"item_name", ColumnTypes::TEXTCOL}},
     {SellableTable::SELLINGPRICE, ColumnSchema{"selling_price", ColumnTypes::FLOATCOL}}};
@@ -43,7 +43,7 @@ std::map<SellingTransactionTable, ColumnSchema> util::enums::sellingTransactionT
     {SellingTransactionTable::TRANSACTIONDATE, ColumnSchema{"transaction_date", ColumnTypes::DATECOL}}};
 
 std::map<DepreciableTable, ColumnSchema> util::enums::depreciableTableColumns = {
-    {DepreciableTable::DATABASECODE, ColumnSchema{"database_code", ColumnTypes::SERIALCOL}},
+    {DepreciableTable::DATABASECODE, ColumnSchema{"database_code", ColumnTypes::TEXTCOL}},
     {DepreciableTable::ITEMNAME, ColumnSchema{"item_name", ColumnTypes::TEXTCOL}},
     {DepreciableTable::PURCHASECOST, ColumnSchema{"purchase_cost", ColumnTypes::FLOATCOL}},
     {DepreciableTable::RESIDUALVALUE, ColumnSchema{"residual_value", ColumnTypes::FLOATCOL}},

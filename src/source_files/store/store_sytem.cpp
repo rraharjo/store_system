@@ -36,6 +36,23 @@ void StoreSystem::buyItem(PurchaseTransaction *purchaseTransaction)
     this->aSystem->addTransaction(accountingTransaction);
 }
 
+/*void StoreSystem::buyProperty(inventory::Depreciable *newProperty){
+    this->iSystem->addNewProperty(newProperty);
+    std::string description = "Purchase of property of code : " + std::to_string(newProperty->getDBCode());
+    accounting::Transaction *accountingTransaction = util::factory::BuyEquipmentFactory(description, newProperty->getPurchaseCost(), newProperty->getPurchaseCost(), 0).createTransaction();
+    this->aSystem->addTransaction(accountingTransaction);
+}
+
+void StoreSystem::disposeProperty(int dbCode){
+    inventory::Depreciable *disposed = this->iSystem->disposeProperty(dbCode);
+    if (!disposed){
+        return;
+    }
+    std::string description = "Purchase of property of code : " + std::to_string(disposed->getDBCode());
+    accounting::Transaction *accountingTransaction = util::factory::SellEquipmentFactory(description, )//how to know the price?
+    this->aSystem->addTransaction(accountingTransaction);
+}*/
+
 void StoreSystem::addItem(inventory::Sellable *newSellable){
     this->iSystem->addNewItem(newSellable);
 }
