@@ -10,8 +10,6 @@ Sellable::Sellable(std::string name, std::string itemCode, double sellingPrice) 
     this->setTable();
     this->sellingPrice = sellingPrice;
     this->qty = 0;
-    this->purchaseHistory = new PurchaseHistory();
-    this->sellingHistory = new SellingHistory();
     this->setDBCode(this->createDBCode());
     this->insertToDB();
 }
@@ -27,6 +25,26 @@ std::string Sellable::createDBCode(){
 void Sellable::setTable()
 {
     this->table = util::SellableTable::getInstance();
+}
+
+double Sellable::sellItems(SellingEntry *entry)
+{
+    if (this->qty < entry->getQty())
+    {
+        throw std::invalid_argument("Purchasing quantity exceeds available quantity");
+        return -1;
+    }
+    this->sellingHistory->addEntry(entry);
+    this->qty -= entry->getQty();
+    entry->insertToDB();
+    return this->purchaseHistory->sellItemFirstIn(entry->getQty());
+}
+
+void Sellable::addPurchase(PurchaseEntry *entry)
+{
+    this->purchaseHistory->addEntry(entry);
+    this->qty += entry->getQty();
+    entry->insertToDB();
 }
 
 std::vector<std::string> Sellable::getInsertParameter(){

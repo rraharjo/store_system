@@ -2,11 +2,13 @@
 using namespace inventory;
 Entry::Entry(std::string itemDBCode, std::string transactionCode, double price, int qty)
 {
-    if (itemDBCode.compare(0, 3, "SEL")){
+    if (!itemDBCode.compare(0, 3, "SEL")){
         this->sellableDBCode = itemDBCode;
+        this->propertiesDBCode = "";
     }
     else{
         this->propertiesDBCode = itemDBCode;
+        this->sellableDBCode = "";
     }
     this->transactionDBCode = transactionCode;
     this->price = price;
@@ -65,8 +67,8 @@ std::vector<std::string> PurchaseEntry::getInsertParameter()
     else{
         args.push_back(this->getDBCode());
     }
-    args.push_back(this->getSellableDBCode());
-    args.push_back(this->getPropertiesDBCode());
+    args.push_back(this->getSellableDBCode() == "" ? "NULL" : this->getSellableDBCode());
+    args.push_back(this->getPropertiesDBCode() == "" ? "NULL" : this->getPropertiesDBCode());
     args.push_back(this->getTransactionDBCode());
     args.push_back(std::to_string(this->getPrice()));
     args.push_back(std::to_string(this->getQty()));
@@ -113,8 +115,8 @@ std::vector<std::string> SellingEntry::getInsertParameter()
     else{
         args.push_back(this->getDBCode());
     }
-    args.push_back(this->getSellableDBCode());
-    args.push_back(this->getPropertiesDBCode());
+    args.push_back(this->getSellableDBCode() == "" ? "NULL" : this->getSellableDBCode());
+    args.push_back(this->getPropertiesDBCode() == "" ? "NULL" : this->getPropertiesDBCode());
     args.push_back(this->getTransactionDBCode());
     args.push_back(std::to_string(this->getPrice()));
     args.push_back(std::to_string(this->getQty()));

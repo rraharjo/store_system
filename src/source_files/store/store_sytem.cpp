@@ -16,7 +16,7 @@ void StoreSystem::sellItem(SellingTransaction *sellingTransaction)
     for (inventory::Entry *entry : sellingTransaction->getAllEntries())
     {
         sellAmount += entry->getPrice() * entry->getQty();
-        cogs += this->iSystem->sellItem(entry);
+        cogs += this->iSystem->sellSellables(entry);
     }
     std::string description = "Selling for transaction code: " + sellingTransaction->getDBCode();
     accounting::Transaction *accountingTransaction = util::factory::GoodsSellingFactory(description, sellAmount, sellAmount, 0).createTransaction();
@@ -29,7 +29,7 @@ void StoreSystem::buyItem(PurchaseTransaction *purchaseTransaction)
     for (inventory::Entry *entry : purchaseTransaction->getAllEntries())
     {
         purchaseAmount += entry->getPrice() * entry->getQty();
-        this->iSystem->purchaseItem(entry);
+        this->iSystem->purchaseSellables(entry);
     }
     std::string description = "Purchase for transaction code: " + purchaseTransaction->getDBCode();
     accounting::Transaction *accountingTransaction = util::factory::GoodsPurchaseFactory(description, purchaseAmount, purchaseAmount, 0).createTransaction();

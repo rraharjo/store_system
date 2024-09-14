@@ -19,9 +19,9 @@ namespace inventory
         std::string getName();
         std::string getItemCode();
         int getQty();
-        double sellItems(SellingEntry *entry);
-        void addPurchase(PurchaseEntry *entry);
+        virtual double sellItems(SellingEntry *entry) = 0;
+        virtual void addPurchase(PurchaseEntry *entry) = 0;
     };
-};
+ };
 
 #endif

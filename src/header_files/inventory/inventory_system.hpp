@@ -16,16 +16,18 @@ namespace inventory
     
         static InventorySystem *getInstance();
 
-        double sellItem(Entry *newEntry); // return the COGS
+        double sellSellables(Entry *newEntry); // return the COGS
 
-        void purchaseItem(Entry *newEntry);
+        void purchaseSellables(Entry *newEntry);
         // void purchaseItem(int itemDBCode, int qty);
+
+        double sellProperties(Entry *newEntry);
+
+        void purchaseProperties(Entry *newEntry);
 
         void addNewItem(Sellable *newSellable);
 
         void addNewProperty(Depreciable *newProperty);
-
-        Depreciable *disposeProperty(std::string dbCode);
 
         std::string to_string();
     };

@@ -11,7 +11,7 @@ namespace inventory
     private:
         static int nextItemCode;
         std::string name;
-        double purchaseCost;
+        double purchaseCost = 0;
         double residualValue;
         int yearUsefulLife;
         util::Date *dateBought;
@@ -27,11 +27,11 @@ namespace inventory
 
     public:
 
-        Depreciable(std::string name, std::string itemCode, double purchaseCost, double residualValue, int yearUsefulLife, util::Date *dateBought);
+        Depreciable(std::string name, std::string itemCode, double residualValue, int yearUsefulLife, util::Date *dateBought);
 
-        void dispose(util::Date *disposeDate);
+        double sellItems(SellingEntry *entry) override;
 
-        void dispose();
+        void addPurchase(PurchaseEntry *entry) override;
 
         double getPurchaseCost();
         

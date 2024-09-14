@@ -9,8 +9,8 @@ namespace inventory
     {
     private:
         util::Date *transactionDate;
-        std::string sellableDBCode = "";
-        std::string propertiesDBCode = "";
+        std::string sellableDBCode;
+        std::string propertiesDBCode;
         std::string transactionDBCode;
         double price;
         int qty;

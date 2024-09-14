@@ -2,11 +2,10 @@
 using namespace inventory;
 int Depreciable::nextItemCode = 0;//TO DO: change it to count(*)
 
-Depreciable::Depreciable(std::string name, std::string itemCode, double purchaseCost, double residualValue, int yearUsefulLife, util::Date *dateBought) : Item::Item(name, itemCode)
+Depreciable::Depreciable(std::string name, std::string itemCode, double residualValue, int yearUsefulLife, util::Date *dateBought) : Item::Item(name, itemCode)
 {
     this->setTable();
     this->name = name;
-    this->purchaseCost = purchaseCost;
     this->residualValue = residualValue;
     this->yearUsefulLife = yearUsefulLife;
     this->dateBought = dateBought;
@@ -42,14 +41,17 @@ std::vector<std::string> Depreciable::getInsertParameter()
     return args;
 };
 
-void Depreciable::dispose(util::Date *disposeDate){
-    this->dateSold = disposeDate;
-    this->updateToDB();
+double Depreciable::sellItems(SellingEntry *entry){
+    this->sellingHistory->addEntry(entry);
+    entry->insertToDB();
+    return this->purchaseCost;
 }
 
-void Depreciable::dispose(){
-    util::Date *now = new util::Date();
-    this->dispose(now);
+void Depreciable::addPurchase(PurchaseEntry *entry){
+    this->purchaseCost += entry->getPrice();
+    this->purchaseHistory->addEntry(entry);
+    this->updateToDB();
+    entry->insertToDB();//TO DO: insert to DB should happen inside purchasehistory
 }
 
 double Depreciable::getPurchaseCost(){
@@ -71,7 +73,6 @@ util::Date *Depreciable::getDateBought(){
 util::Date *Depreciable::getDateSold(){
     return this->dateSold;
 }
-
 
 double Depreciable::getDepreciationExpenseAtYear(int year)
 {
@@ -104,7 +105,7 @@ double Depreciable::getValueAtYear(int year)
 double Depreciable::getCurrentDepreciationExpense()
 {
     util::Date *now = new util::Date();
-    int age = this->dateBought->diffDaysTo(now);
+    int age = this->dateBought->diffDaysTo(now);//TO DO: change to year
     return this->getDepreciationExpenseAtYear(age);
 }
 

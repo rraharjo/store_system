@@ -16,7 +16,7 @@ InventorySystem::InventorySystem()
     this->properties = {};
 }
 
-double InventorySystem::sellItem(Entry *newEntry)
+double InventorySystem::sellSellables(Entry *newEntry)
 {
     if (!this->sellables[newEntry->getSellableDBCode()])
     {
@@ -25,13 +25,31 @@ double InventorySystem::sellItem(Entry *newEntry)
     return this->sellables[newEntry->getSellableDBCode()]->sellItems((SellingEntry*) newEntry);
 }
 
-void InventorySystem::purchaseItem(Entry *newEntry)
+void InventorySystem::purchaseSellables(Entry *newEntry)
 {
     if (!this->sellables[newEntry->getSellableDBCode()])
     {
         return;
     }
     this->sellables[newEntry->getSellableDBCode()]->addPurchase((PurchaseEntry*) newEntry);
+}
+
+double InventorySystem::sellProperties(Entry *newEntry)
+{
+    if (!this->properties[newEntry->getPropertiesDBCode()])
+    {
+        return -1;
+    }
+    return this->properties[newEntry->getPropertiesDBCode()]->sellItems((SellingEntry*) newEntry);
+}
+
+void InventorySystem::purchaseProperties(Entry *newEntry)
+{
+    if (!this->properties[newEntry->getPropertiesDBCode()])
+    {
+        return;
+    }
+    this->properties[newEntry->getPropertiesDBCode()]->addPurchase((PurchaseEntry*) newEntry);
 }
 
 void InventorySystem::addNewItem(Sellable *newSellable)
@@ -41,15 +59,6 @@ void InventorySystem::addNewItem(Sellable *newSellable)
 
 void InventorySystem::addNewProperty(Depreciable *newDepreciable){
     this->properties[newDepreciable->getDBCode()] = newDepreciable;
-}
-
-Depreciable *InventorySystem::disposeProperty(std::string dbCode){
-    Depreciable *toDispose = this->properties[dbCode];
-    if (!toDispose){
-        return NULL;
-    }
-    toDispose->dispose();
-    return toDispose;
 }
 
 std::string InventorySystem::to_string()

@@ -26,6 +26,10 @@ namespace inventory
     public:
         Sellable(std::string name, std::string itemCode, double sellingPrice);
 
+        double sellItems(SellingEntry *entry) override;
+
+        void addPurchase(PurchaseEntry *entry) override;
+
         double getSellingPrice();
 
         void setSellingPrice(double newPrice);
