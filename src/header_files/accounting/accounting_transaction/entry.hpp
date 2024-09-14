@@ -10,18 +10,22 @@ namespace accounting
 {
     class Entry : public util::baseclass::HasTable
     {
+
     private:
+        static int nextItemCode;
         bool debit;
         double amount;
         std::string transactionTitle;
         util::enums::TAccounts tAccount;
         util::enums::AccountTitles account;
-        int transactionDB;
+        std::string transactionDB;
 
     protected:
         void setTable() override;
 
         std::vector<std::string> getInsertParameter() override;
+
+        std::string createDBCode() override;
 
     public:
         Entry(bool debit, double amount, util::enums::AccountTitles account, util::enums::TAccounts tAccount);
@@ -30,7 +34,7 @@ namespace accounting
 
         double getAmount();
 
-        int getTransactionDB();
+        std::string getTransactionDB();
 
         std::string getTransactionTitle();
 
@@ -42,7 +46,7 @@ namespace accounting
 
         std::string getAccountTitleName();
 
-        void setTransactionDB(int transactionDB);
+        void setTransactionDB(std::string transactionDB);
 
         void setTransactionTitle(std::string title);
 

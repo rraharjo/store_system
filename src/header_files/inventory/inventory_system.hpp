@@ -8,8 +8,8 @@ namespace inventory
     {
     private:
         static InventorySystem *instance;
-        std::map<int, Sellable *> sellables;
-        std::map<int, Depreciable *> properties; 
+        std::map<std::string, Sellable *> sellables;
+        std::map<std::string, Depreciable *> properties; 
         InventorySystem();
 
     public:
@@ -25,7 +25,7 @@ namespace inventory
 
         void addNewProperty(Depreciable *newProperty);
 
-        Depreciable *disposeProperty(int dbCode);
+        Depreciable *disposeProperty(std::string dbCode);
 
         std::string to_string();
     };

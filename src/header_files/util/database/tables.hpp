@@ -19,7 +19,7 @@ namespace util
     public:
         std::vector<std::string> insertRow(std::vector<std::string> &values);
 
-        std::vector<std::string> updateRow(int id, std::vector<std::string> &values);
+        std::vector<std::string> updateRow(std::string id, std::vector<std::string> &values);
 
         std::vector<ColumnSchema> getSchema();
 

@@ -1,6 +1,8 @@
 #include "accounting/accounting_transaction/transaction.hpp"
 using namespace accounting;
 
+int Transaction::nextItemCode = 0; // TO DO:
+
 Transaction::Transaction(std::string name, util::Date *transactionDate) : util::baseclass::HasTable()
 {
     this->setTable();
@@ -8,6 +10,7 @@ Transaction::Transaction(std::string name, util::Date *transactionDate) : util::
     this->debitEntries = {};
     this->creditEntries = {};
     this->transactionDate = transactionDate;
+    this->setDBCode(this->createDBCode());
     this->insertToDB();
 }
 
@@ -19,7 +22,7 @@ Transaction::~Transaction()
 {
     for (Entry *e : this->creditEntries)
     {
-        if (!e->getDBCode())
+        if (e->getDBCode() != "")
         {
             delete e;
         }
@@ -27,7 +30,7 @@ Transaction::~Transaction()
 
     for (Entry *e : this->debitEntries)
     {
-        if (!e->getDBCode())
+        if (e->getDBCode() != "")
         {
             delete e;
         }
@@ -42,9 +45,19 @@ void Transaction::setTable()
 std::vector<std::string> Transaction::getInsertParameter()
 {
     std::vector<std::string> args;
+    args.push_back(this->getDBCode());
     args.push_back(this->name);
     args.push_back(this->transactionDate->toDBFormat());
     return args;
+}
+
+std::string Transaction::createDBCode()
+{
+    char numAsString[6];
+    sprintf(numAsString, "%05d", Transaction::nextItemCode++);
+    std::string countAsString = numAsString;
+    std::string dbCode = "ATR" + countAsString;
+    return dbCode;
 }
 
 std::vector<Entry *> &Transaction::getDebitEntries()

@@ -43,7 +43,7 @@ void InventorySystem::addNewProperty(Depreciable *newDepreciable){
     this->properties[newDepreciable->getDBCode()] = newDepreciable;
 }
 
-Depreciable *InventorySystem::disposeProperty(int dbCode){
+Depreciable *InventorySystem::disposeProperty(std::string dbCode){
     Depreciable *toDispose = this->properties[dbCode];
     if (!toDispose){
         return NULL;

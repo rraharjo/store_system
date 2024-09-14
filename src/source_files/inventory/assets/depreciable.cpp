@@ -1,8 +1,7 @@
-#include <chrono>
 #include "inventory/assets/depreciable.hpp"
-#include "util/depreciation.hpp"
-#include "util/date.hpp"
 using namespace inventory;
+int Depreciable::nextItemCode = 0;//TO DO: change it to count(*)
+
 Depreciable::Depreciable(std::string name, std::string itemCode, double purchaseCost, double residualValue, int yearUsefulLife, util::Date *dateBought) : Item::Item(name, itemCode)
 {
     this->setTable();
@@ -13,7 +12,16 @@ Depreciable::Depreciable(std::string name, std::string itemCode, double purchase
     this->dateBought = dateBought;
     this->dateSold = NULL;
     this->depreciationMethod = new util::DoubleDecliningDepreciation(this->purchaseCost, this->yearUsefulLife);
+    this->setDBCode(this->createDBCode());
     this->insertToDB();
+} 
+
+std::string Depreciable::createDBCode(){
+    char numAsString[6];
+    sprintf(numAsString, "%05d", Depreciable::nextItemCode++);
+    std::string countAsString = numAsString;
+    std::string dbCode = "PRP" + countAsString;
+    return dbCode;
 }
 
 void Depreciable::setTable()
@@ -24,6 +32,7 @@ void Depreciable::setTable()
 std::vector<std::string> Depreciable::getInsertParameter()
 {
     std::vector<std::string> args;
+    args.push_back(this->getDBCode());
     args.push_back(this->name);
     args.push_back(std::to_string(this->getPurchaseCost()));
     args.push_back(std::to_string(this->getResidualValue()));

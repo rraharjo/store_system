@@ -1,7 +1,6 @@
-#include <deque>
 #include <string>
+#include <sstream>
 #include "inventory/assets/items.hpp"
-#include "inventory/transaction/transaction_history.hpp"
 #include "util/database/tables.hpp"
 #include "util/database/db.hpp"
 
@@ -13,10 +12,8 @@ namespace inventory
     class Sellable : public Item
     {
     private:
+        static int nextItemCode;
         double sellingPrice;
-        int qty;
-        PurchaseHistory *purchaseHistory;
-        SellingHistory *sellingHistory;
         // tax
 
     protected:
@@ -24,16 +21,14 @@ namespace inventory
 
         std::vector<std::string> getInsertParameter() override;
 
+        std::string createDBCode() override;
+
     public:
         Sellable(std::string name, std::string itemCode, double sellingPrice);
 
         double getSellingPrice();
 
         void setSellingPrice(double newPrice);
-
-        double sellItems(SellingEntry *entry);
-
-        void addPurchase(PurchaseEntry *entry);
 
         std::string to_string();
     };

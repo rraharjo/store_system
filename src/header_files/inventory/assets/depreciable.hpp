@@ -9,6 +9,7 @@ namespace inventory
     class Depreciable: public Item
     {
     private:
+        static int nextItemCode;
         std::string name;
         double purchaseCost;
         double residualValue;
@@ -21,6 +22,8 @@ namespace inventory
         void setTable() override;
 
         std::vector<std::string> getInsertParameter() override;
+
+        std::string createDBCode() override;
 
     public:
 

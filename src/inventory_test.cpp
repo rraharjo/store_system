@@ -19,8 +19,11 @@ int main(){
     std::cout << "COGS: " << cost << std::endl;
     std::cout << system->to_string() << std::endl;*/
     util::Date *buyCar = new util::Date();
+    util::Date *buyBuilding = new util::Date();
     Depreciable *car = new Depreciable("Car", "", 1000, 200, 5, buyCar);
+    Depreciable *shop = new Depreciable("Shop", "", 500000, 200, 10, buyBuilding);
     system->addNewProperty(car);
+    system->addNewProperty(shop);
     std::cout << system->to_string() << std::endl;
     system->disposeProperty(car->getDBCode());
     std::cout << system->to_string() << std::endl;

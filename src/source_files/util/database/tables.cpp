@@ -98,7 +98,7 @@ std::vector<std::string> Table::insertRow(std::vector<std::string> &values)
     return instance->execute_query(query)[0];
 }
 
-std::vector<std::string> Table::updateRow(int id, std::vector<std::string> &values)
+std::vector<std::string> Table::updateRow(std::string id, std::vector<std::string> &values)
 {
     int schemaSize = this->getSchema().size();
     std::string query = "update " + this->tableName + " set ";
@@ -149,7 +149,7 @@ std::vector<std::string> Table::updateRow(int id, std::vector<std::string> &valu
         query += values[curValue++] + " ";
         break;
     }
-    query += "where " + this->getSchema()[0].columnName + " = " + std::to_string(id) + " returning *;";
+    query += "where " + this->getSchema()[0].columnName + " = '" + id + "' returning *;";
     // std::cout << query << std::endl;
     DB *instance = DB::get_instance();
     return instance->execute_query(query)[0];

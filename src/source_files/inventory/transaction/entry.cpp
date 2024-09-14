@@ -1,6 +1,6 @@
 #include "inventory/transaction/entry.hpp"
 using namespace inventory;
-Entry::Entry(int sellableDBCode, int transactionCode, double price, int qty)
+Entry::Entry(std::string sellableDBCode, std::string transactionCode, double price, int qty)
 {
     this->sellableDBCode = sellableDBCode;
     this->transactionDBCode = transactionCode;
@@ -8,12 +8,12 @@ Entry::Entry(int sellableDBCode, int transactionCode, double price, int qty)
     this->qty = qty;
 }
 
-int Entry::getSellableDBCode()
+std::string Entry::getSellableDBCode()
 {
     return this->sellableDBCode;
 }
 
-int Entry::getTransactionDBCode()
+std::string Entry::getTransactionDBCode()
 {
     return this->transactionDBCode;
 }
@@ -38,6 +38,10 @@ void Entry::setTransactionDate(util::Date *transactionDate)
     this->transactionDate = transactionDate;
 }
 
+/******************************************************************************/
+
+
+int PurchaseEntry::nextItemCode = 0; //TO DO: change to count(*)
 void PurchaseEntry::setTable()
 {
     this->table = util::PurchaseEntryTable::getInstance();
@@ -46,15 +50,29 @@ void PurchaseEntry::setTable()
 std::vector<std::string> PurchaseEntry::getInsertParameter()
 {
     std::vector<std::string> args;
-    args.push_back(std::to_string(this->getSellableDBCode()));
-    args.push_back(std::to_string(this->getTransactionDBCode()));
+    if (this->getDBCode() == ""){
+        args.push_back(this->createDBCode());
+    }
+    else{
+        args.push_back(this->getDBCode());
+    }
+    args.push_back(this->getSellableDBCode());
+    args.push_back(this->getTransactionDBCode());
     args.push_back(std::to_string(this->getPrice()));
     args.push_back(std::to_string(this->getQty()));
     args.push_back(std::to_string(this->getAvailableQty()));
     return args;
 }
 
-PurchaseEntry::PurchaseEntry(int sellableDBCode, int transactionCode, double price, int qty) : Entry(sellableDBCode, transactionCode, price, qty)
+std::string PurchaseEntry::createDBCode(){
+    char numAsString[6];
+    sprintf(numAsString, "%05d", PurchaseEntry::nextItemCode++);
+    std::string countAsString = numAsString;
+    std::string dbCode = "PNT" + countAsString;
+    return dbCode;
+}
+
+PurchaseEntry::PurchaseEntry(std::string sellableDBCode, std::string transactionCode, double price, int qty) : Entry(sellableDBCode, transactionCode, price, qty)
 {
     this->setTable();
     this->availableQty = qty;
@@ -68,6 +86,9 @@ void PurchaseEntry::setAvailableQty(int qty)
     this->availableQty = qty;
 }
 
+/************************************************************************/
+int SellingEntry::nextItemCode = 0;//TO DO: change to count(*)
+
 void SellingEntry::setTable()
 {
     this->table = util::SellingEntryTable::getInstance();
@@ -76,14 +97,28 @@ void SellingEntry::setTable()
 std::vector<std::string> SellingEntry::getInsertParameter()
 {
     std::vector<std::string> args;
-    args.push_back(std::to_string(this->getSellableDBCode()));
-    args.push_back(std::to_string(this->getTransactionDBCode()));
+    if (this->getDBCode() == ""){
+        args.push_back(this->createDBCode());
+    }
+    else{
+        args.push_back(this->getDBCode());
+    }
+    args.push_back(this->getSellableDBCode());
+    args.push_back(this->getTransactionDBCode());
     args.push_back(std::to_string(this->getPrice()));
     args.push_back(std::to_string(this->getQty()));
     return args;
 }
 
-SellingEntry::SellingEntry(int sellableDBCode, int transactionCode, double price, int qty) : Entry(sellableDBCode, transactionCode, price, qty)
+std::string SellingEntry::createDBCode(){
+    char numAsString[6];
+    sprintf(numAsString, "%05d", SellingEntry::nextItemCode++);
+    std::string countAsString = numAsString;
+    std::string dbCode = "SNT" + countAsString;
+    return dbCode;
+}
+
+SellingEntry::SellingEntry(std::string sellableDBCode, std::string transactionCode, double price, int qty) : Entry(sellableDBCode, transactionCode, price, qty)
 {
     this->setTable();
 }

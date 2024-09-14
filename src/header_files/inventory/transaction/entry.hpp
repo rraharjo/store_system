@@ -8,27 +8,28 @@ namespace inventory
     class Entry : public util::baseclass::HasTable
     {
     private:
-        util::Date* transactionDate;
-        int sellableDBCode;
-        int transactionDBCode;
+        util::Date *transactionDate;
+        std::string sellableDBCode;
+        std::string transactionDBCode;
         double price;
         int qty;
 
     protected:
-        Entry(int sellableDBCode, int transactionCode, double price, int qty);
+        Entry(std::string sellableDBCode, std::string transactionCode, double price, int qty);
 
     public:
-        int getSellableDBCode();
-        int getTransactionDBCode();
+        std::string getSellableDBCode();
+        std::string getTransactionDBCode();
         double getPrice();
         int getQty();
-        util::Date* getTransactionDate();
-        void setTransactionDate(util::Date* transactionDate);
+        util::Date *getTransactionDate();
+        void setTransactionDate(util::Date *transactionDate);
     };
 
     class PurchaseEntry : public Entry
     {
     private:
+        static int nextItemCode;
         int availableQty;
 
     protected:
@@ -36,21 +37,28 @@ namespace inventory
 
         std::vector<std::string> getInsertParameter() override;
 
+        std::string createDBCode() override;
+
     public:
-        PurchaseEntry(int sellableDBCode, int transactionCode, double price, int qty);
+        PurchaseEntry(std::string sellableDBCode, std::string transactionCode, double price, int qty);
         int getAvailableQty();
         void setAvailableQty(int qty);
     };
 
     class SellingEntry : public Entry
     {
+    private:
+        static int nextItemCode;
+
     protected:
         void setTable() override;
 
         std::vector<std::string> getInsertParameter() override;
 
+        std::string createDBCode() override;
+
     public:
-        SellingEntry(int sellableDBCode, int transactionCode, double price, int qty);
+        SellingEntry(std::string sellableDBCode, std::string transactionCode, double price, int qty);
     };
 }
 #endif

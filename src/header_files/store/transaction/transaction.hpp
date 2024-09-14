@@ -15,26 +15,28 @@ namespace store
         std::vector<inventory::Entry *> entries;
 
     protected:
-        int dbCode;
         Transaction(util::Date *transaction_date);
 
     public:
         util::Date *getDate();
 
-        void addEntry(inventory::Entry* entry);
+        void addEntry(inventory::Entry *entry);
 
-        std::vector<inventory::Entry*> getAllEntries();
+        std::vector<inventory::Entry *> getAllEntries();
     };
 
     class PurchaseTransaction : public Transaction
     {
     private:
+        static int nextItemCode;
         std::string seller;
 
     protected:
         void setTable() override;
 
         std::vector<std::string> getInsertParameter() override;
+
+        std::string createDBCode() override;
 
     public:
         PurchaseTransaction(std::string seller, util::Date *purchaseDate);
@@ -45,6 +47,9 @@ namespace store
     class SellingTransaction : public Transaction
     {
 
+    private:
+        static int nextItemCode;
+
     public:
         SellingTransaction(util::Date *transactionDate);
 
@@ -52,6 +57,8 @@ namespace store
         void setTable() override;
 
         std::vector<std::string> getInsertParameter() override;
+
+        std::string createDBCode() override;
     };
 };
 #endif
