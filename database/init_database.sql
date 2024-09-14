@@ -25,6 +25,16 @@ create table sellable(
     selling_price    numeric(12, 2)    not null
 );
 
+create table depreciable_table(
+    database_code       text          primary key,
+    item_name           text,
+    purchase_cost       numeric(12, 2)  not null,
+    residual_value      numeric(12, 2)  not null,
+    year_useful_life    int             not null,
+    date_purchased      date            not null,
+    date_sold           date
+);
+
 create table purchase_transaction(
     database_code    text      primary key,
     date_purchased   date        not null,
@@ -32,12 +42,13 @@ create table purchase_transaction(
 );
 
 create table purchase_entry(
-    database_code    text           primary key,
-    sellable_db_code  text             not null,
-    purchase_db_Code  text             not null,
-    purchase_price   numeric(12, 2)    not null,
-    qty             numeric(7)       not null,
-    available_qty    numeric(7)       not null
+    database_code       text           primary key,
+    sellable_db_code    text,
+    properties_db_code  text,
+    purchase_db_Code    text             not null,
+    purchase_price      numeric(12, 2)   not null,
+    qty                 numeric(7)       not null,
+    available_qty       numeric(7)       not null
 );
 
 alter table purchase_entry
@@ -48,6 +59,15 @@ alter table purchase_entry
 add constraint fk_sellable foreign key (sellable_db_code)
     references sellable (database_code);
 
+alter table purchase_entry
+add constraint fk_properties foreign key (properties_db_code)
+    references depreciable_table (database_code);
+
+alter table purchase_entry
+add constraint sellable_properties_or_not_null check 
+    (sellable_db_code is null and properties_db_code is not null or 
+        sellable_db_code is not null and properties_db_code is null);
+
 create table selling_transaction(
     database_code       text            primary key,
     transaction_date    date            not null      
@@ -56,14 +76,24 @@ create table selling_transaction(
 create table selling_entry(
     database_code       text            primary key,
     sellable_db_code    text,
+    properties_db_code  text,
     selling_transaction_db_code text,
     selling_price       numeric(12, 2),
     qty                 int
 );
 
 alter table selling_entry
+add constraint fk_properties_selling_entry foreign key (properties_db_code)
+    references depreciable_table (database_code);
+
+alter table selling_entry
 add constraint fk_sellable_selling_entry foreign key (sellable_db_code)
     references sellable (database_code);
+
+alter table selling_entry
+add constraint sellable_properties_or_not_null check 
+    (sellable_db_code is null and properties_db_code is not null or 
+        sellable_db_code is not null and properties_db_code is null);
 
 alter table selling_entry
 add constraint fk_selling_transaction foreign key (selling_transaction_db_code)
@@ -87,21 +117,3 @@ create table accounting_transaction_entry(
 alter table accounting_transaction_entry
 add constraint fk_accounting_transaction foreign key (at_db_code)
     references accounting_transaction (database_code);
-
-create table depreciable_table(
-    database_code       text          primary key,
-    item_name           text,
-    purchase_cost       numeric(12, 2)  not null,
-    residual_value      numeric(12, 2)  not null,
-    year_useful_life    int             not null,
-    date_purchased      date            not null,
-    date_sold           date
-);
-
-alter table purchase_entry
-add constraint fk_properties foreign key (sellable_db_code)
-    references depreciable_table (database_code);
-
-alter table selling_entry
-add constraint fk_properties_selling_entry foreign key (sellable_db_code)
-    references depreciable_table (database_code);

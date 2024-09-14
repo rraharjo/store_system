@@ -34,6 +34,7 @@ namespace util
         {
             DATABASECODE = 0,
             SELLABLECODE,
+            PROPERTIESCODE,
             PURCHASETRANSACTIONCODE,
             PURCHASEPRICE,
             BOUGHTQTY,
@@ -55,6 +56,7 @@ namespace util
         {
             DATABASECODE = 0,
             SELLABLECODE,
+            PROPERTIESCODE,
             SELLINGTRANSACTIONCODE,
             SELLINGPRICE,
             QTY

@@ -9,16 +9,18 @@ namespace inventory
     {
     private:
         util::Date *transactionDate;
-        std::string sellableDBCode;
+        std::string sellableDBCode = "";
+        std::string propertiesDBCode = "";
         std::string transactionDBCode;
         double price;
         int qty;
 
     protected:
-        Entry(std::string sellableDBCode, std::string transactionCode, double price, int qty);
+        Entry(std::string itemDBCode, std::string transactionCode, double price, int qty);
 
     public:
         std::string getSellableDBCode();
+        std::string getPropertiesDBCode();
         std::string getTransactionDBCode();
         double getPrice();
         int getQty();
@@ -40,7 +42,7 @@ namespace inventory
         std::string createDBCode() override;
 
     public:
-        PurchaseEntry(std::string sellableDBCode, std::string transactionCode, double price, int qty);
+        PurchaseEntry(std::string itemDBCode, std::string transactionCode, double price, int qty);
         int getAvailableQty();
         void setAvailableQty(int qty);
     };
@@ -58,7 +60,7 @@ namespace inventory
         std::string createDBCode() override;
 
     public:
-        SellingEntry(std::string sellableDBCode, std::string transactionCode, double price, int qty);
+        SellingEntry(std::string itemDBCode, std::string transactionCode, double price, int qty);
     };
 }
 #endif

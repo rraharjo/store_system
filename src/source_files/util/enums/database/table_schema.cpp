@@ -21,6 +21,7 @@ std::map<SellableTable, ColumnSchema> util::enums::sellableTableColumns = {
 std::map<PurchaseEntryTable, ColumnSchema> util::enums::purchaseEntryTableColumns = {
     {PurchaseEntryTable::DATABASECODE, ColumnSchema{"database_code", ColumnTypes::TEXTCOL}},
     {PurchaseEntryTable::SELLABLECODE, ColumnSchema{"sellable_db_code", ColumnTypes::TEXTCOL}},
+    {PurchaseEntryTable::PROPERTIESCODE, ColumnSchema{"properties_db_code", ColumnTypes::TEXTCOL}},
     {PurchaseEntryTable::PURCHASETRANSACTIONCODE, ColumnSchema{"purchase_db_code", ColumnTypes::TEXTCOL}},
     {PurchaseEntryTable::PURCHASEPRICE, ColumnSchema{"purchase_price", ColumnTypes::FLOATCOL}},
     {PurchaseEntryTable::BOUGHTQTY, ColumnSchema{"qty", ColumnTypes::NUMBERCOL}},
@@ -34,6 +35,7 @@ std::map<PurchaseTransactionTable, ColumnSchema> util::enums::purchaseTransactio
 std::map<SellingEntryTable, ColumnSchema> util::enums::sellingEntryTableColumns = {
     {SellingEntryTable::DATABASECODE, ColumnSchema{"database_code", ColumnTypes::TEXTCOL}},
     {SellingEntryTable::SELLABLECODE, ColumnSchema{"sellable_db_code", ColumnTypes::TEXTCOL}},
+    {SellingEntryTable::PROPERTIESCODE, ColumnSchema{"properties_db_code", ColumnTypes::TEXTCOL}},
     {SellingEntryTable::SELLINGTRANSACTIONCODE, ColumnSchema{"selling_transaction_db_code", ColumnTypes::TEXTCOL}},
     {SellingEntryTable::SELLINGPRICE, ColumnSchema{"selling_price", ColumnTypes::FLOATCOL}},
     {SellingEntryTable::QTY, ColumnSchema{"qty", ColumnTypes::NUMBERCOL}}};

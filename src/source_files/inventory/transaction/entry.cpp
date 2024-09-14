@@ -1,8 +1,13 @@
 #include "inventory/transaction/entry.hpp"
 using namespace inventory;
-Entry::Entry(std::string sellableDBCode, std::string transactionCode, double price, int qty)
+Entry::Entry(std::string itemDBCode, std::string transactionCode, double price, int qty)
 {
-    this->sellableDBCode = sellableDBCode;
+    if (itemDBCode.compare(0, 3, "SEL")){
+        this->sellableDBCode = itemDBCode;
+    }
+    else{
+        this->propertiesDBCode = itemDBCode;
+    }
     this->transactionDBCode = transactionCode;
     this->price = price;
     this->qty = qty;
@@ -11,6 +16,10 @@ Entry::Entry(std::string sellableDBCode, std::string transactionCode, double pri
 std::string Entry::getSellableDBCode()
 {
     return this->sellableDBCode;
+}
+
+std::string Entry::getPropertiesDBCode(){
+    return this->propertiesDBCode;
 }
 
 std::string Entry::getTransactionDBCode()
@@ -57,6 +66,7 @@ std::vector<std::string> PurchaseEntry::getInsertParameter()
         args.push_back(this->getDBCode());
     }
     args.push_back(this->getSellableDBCode());
+    args.push_back(this->getPropertiesDBCode());
     args.push_back(this->getTransactionDBCode());
     args.push_back(std::to_string(this->getPrice()));
     args.push_back(std::to_string(this->getQty()));
@@ -104,6 +114,7 @@ std::vector<std::string> SellingEntry::getInsertParameter()
         args.push_back(this->getDBCode());
     }
     args.push_back(this->getSellableDBCode());
+    args.push_back(this->getPropertiesDBCode());
     args.push_back(this->getTransactionDBCode());
     args.push_back(std::to_string(this->getPrice()));
     args.push_back(std::to_string(this->getQty()));
