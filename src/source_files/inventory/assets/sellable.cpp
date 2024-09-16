@@ -36,7 +36,6 @@ double Sellable::sellItems(SellingEntry *entry)
     }
     this->sellingHistory->addEntry(entry);
     this->qty -= entry->getQty();
-    entry->insertToDB();
     return this->purchaseHistory->sellItemFirstIn(entry->getQty());
 }
 
@@ -44,7 +43,6 @@ void Sellable::addPurchase(PurchaseEntry *entry)
 {
     this->purchaseHistory->addEntry(entry);
     this->qty += entry->getQty();
-    entry->insertToDB();
 }
 
 std::vector<std::string> Sellable::getInsertParameter(){

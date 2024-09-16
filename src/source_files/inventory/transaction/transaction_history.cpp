@@ -14,12 +14,13 @@ TransactionHistory::TransactionHistory()
 void TransactionHistory::addEntry(Entry *entry)
 {
     this->entries.push_back(entry);
-    auto end = this->entries.end() - 1;
+    entry->insertToDB();
+    /*auto end = this->entries.end() - 1;
     while (end != this->entries.begin() && (*end)->getTransactionDate() < (*(end - 1))->getTransactionDate())
     {
         std::iter_swap(end - 1, end);
         end -= 1;
-    }
+    }*/
 }
 
 /*************************************Purchase History*************************************/

@@ -43,7 +43,6 @@ std::vector<std::string> Depreciable::getInsertParameter()
 
 double Depreciable::sellItems(SellingEntry *entry){
     this->sellingHistory->addEntry(entry);
-    entry->insertToDB();
     return this->purchaseCost;
 }
 
@@ -51,7 +50,6 @@ void Depreciable::addPurchase(PurchaseEntry *entry){
     this->purchaseCost += entry->getPrice();
     this->purchaseHistory->addEntry(entry);
     this->updateToDB();
-    entry->insertToDB();//TO DO: insert to DB should happen inside purchasehistory
 }
 
 double Depreciable::getPurchaseCost(){
