@@ -16,6 +16,8 @@ namespace inventory
     
         static InventorySystem *getInstance();
 
+        Depreciable *getProperty(std::string dbCode);
+
         double sellSellables(Entry *newEntry); // return the COGS
 
         void purchaseSellables(Entry *newEntry);

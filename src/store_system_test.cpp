@@ -20,5 +20,26 @@ int main(int argc, char** argv){
     trans2->addEntry(entry22);
     sSystem->sellItem(trans2);
     std::cout << sSystem->toString() << std::endl;
+    util::Date *buyCar = new util::Date();
+    util::Date *buyBuilding = new util::Date();
+    inventory::Depreciable *car = new inventory::Depreciable("car", "", 100, 10, buyCar);
+    inventory::Depreciable *building = new inventory::Depreciable("Building", "", 1000, 30, buyBuilding);
+    sSystem->addProperty(car);
+    sSystem->addProperty(building);
+    store::PurchaseTransaction *purchaseCar = new store::PurchaseTransaction("", buyCar);
+    inventory::PurchaseEntry *purchaseCarEntry = new inventory::PurchaseEntry(car->getDBCode(), purchaseCar->getDBCode(), 2500, 1);
+    purchaseCar->addEntry(purchaseCarEntry);
+    store::PurchaseTransaction *purchaseBuilding = new store::PurchaseTransaction("", buyBuilding);
+    inventory::PurchaseEntry *purchaseBuildingEntry = new inventory::PurchaseEntry(building->getDBCode(), purchaseBuilding->getDBCode(), 500000, 1);
+    purchaseBuilding->addEntry(purchaseBuildingEntry);
+    sSystem->buyProperty(purchaseCar);
+    sSystem->buyProperty(purchaseBuilding);
+    std::cout << sSystem->toString() << '\n';
+    util::Date *sellCarDate = new util::Date();
+    store::SellingTransaction *sellCar = new store::SellingTransaction(sellCarDate);
+    inventory::SellingEntry *sellCarEntry = new inventory::SellingEntry(car->getDBCode(), sellCar->getDBCode(), 2600, 1);
+    sellCar->addEntry(sellCarEntry);
+    sSystem->disposeProperty(sellCar);
+    std::cout << sSystem->toString() << '\n';
     return 0;
 }

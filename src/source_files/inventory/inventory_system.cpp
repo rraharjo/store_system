@@ -16,6 +16,10 @@ InventorySystem::InventorySystem()
     this->properties = {};
 }
 
+Depreciable *InventorySystem::getProperty(std::string dbCode){
+    return this->properties[dbCode];
+}
+
 double InventorySystem::sellSellables(Entry *newEntry)
 {
     if (!this->sellables[newEntry->getSellableDBCode()])

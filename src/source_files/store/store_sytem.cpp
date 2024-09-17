@@ -18,9 +18,12 @@ void StoreSystem::sellItem(SellingTransaction *sellingTransaction)
         sellAmount += entry->getPrice() * entry->getQty();
         cogs += this->iSystem->sellSellables(entry);
     }
-    std::string description = "Selling for transaction code: " + sellingTransaction->getDBCode();
-    accounting::Transaction *accountingTransaction = util::factory::GoodsSellingFactory(description, sellAmount, sellAmount, 0).createTransaction();
+    std::string incRevDesc = "Selling for transaction code: " + sellingTransaction->getDBCode();
+    std::string incCOGSDesc = "Increase COGS for transaction Code: " + sellingTransaction->getDBCode();
+    accounting::Transaction *accountingTransaction = util::factory::GoodsSellingFactory(incRevDesc, sellAmount, sellAmount, 0).createTransaction();
+    accounting::Transaction *accountingTransaction2 = util::factory::GoodsSoldCOGSFactory(incCOGSDesc, cogs).createTransaction();
     this->aSystem->addTransaction(accountingTransaction);
+    this->aSystem->addTransaction(accountingTransaction2);
 }
 
 void StoreSystem::buyItem(PurchaseTransaction *purchaseTransaction)
@@ -36,25 +39,37 @@ void StoreSystem::buyItem(PurchaseTransaction *purchaseTransaction)
     this->aSystem->addTransaction(accountingTransaction);
 }
 
-/*void StoreSystem::buyProperty(inventory::Depreciable *newProperty){
-    this->iSystem->addNewProperty(newProperty);
-    std::string description = "Purchase of property of code : " + std::to_string(newProperty->getDBCode());
-    accounting::Transaction *accountingTransaction = util::factory::BuyEquipmentFactory(description, newProperty->getPurchaseCost(), newProperty->getPurchaseCost(), 0).createTransaction();
+void StoreSystem::buyProperty(PurchaseTransaction *purchaseTransaction){
+    double amount = 0.0;
+    for (inventory::Entry *entry : purchaseTransaction->getAllEntries()){
+        this->iSystem->purchaseProperties(entry);
+        amount += entry->getPrice();
+    }
+    std::string description = "Purchase for transaction code: " + purchaseTransaction->getDBCode();
+    accounting::Transaction *accountingTransaction = util::factory::BuyEquipmentFactory(description, amount, amount, 0).createTransaction();
     this->aSystem->addTransaction(accountingTransaction);
 }
 
-void StoreSystem::disposeProperty(int dbCode){
-    inventory::Depreciable *disposed = this->iSystem->disposeProperty(dbCode);
-    if (!disposed){
-        return;
+void StoreSystem::disposeProperty(SellingTransaction *sellingTransaction){//one transaction one property
+    inventory::Depreciable *toDispose = NULL;
+    double sellAmount = 0.0;
+    double propertyValuation = 0.0;
+    for (inventory::Entry *entry : sellingTransaction->getAllEntries()){
+        sellAmount += entry->getPrice();
+        propertyValuation += this->iSystem->sellProperties(entry);
+        toDispose = this->iSystem->getProperty(entry->getPropertiesDBCode());
     }
-    std::string description = "Purchase of property of code : " + std::to_string(disposed->getDBCode());
-    accounting::Transaction *accountingTransaction = util::factory::SellEquipmentFactory(description, )//how to know the price?
+    std::string description = "Selling for transaction code : " + sellingTransaction->getDBCode();
+    accounting::Transaction *accountingTransaction = util::factory::SellEquipmentFactory(description, toDispose->getCurrentAccumulatedDepreciation(), propertyValuation, sellAmount, 0).createTransaction();
     this->aSystem->addTransaction(accountingTransaction);
-}*/
+}
 
 void StoreSystem::addItem(inventory::Sellable *newSellable){
     this->iSystem->addNewItem(newSellable);
+}
+
+void StoreSystem::addProperty(inventory::Depreciable *newProperty){
+    this->iSystem->addNewProperty(newProperty);
 }
 
 std::string StoreSystem::toString(){

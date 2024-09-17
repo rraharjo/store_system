@@ -20,11 +20,13 @@ namespace store {
 
             void buyItem(PurchaseTransaction* purchaseTransaction);
 
-            /*void buyProperty(inventory::Depreciable *newProperties);
+            void buyProperty(PurchaseTransaction* purchaseTransaction);
             
-            void disposeProperty(int dbCode);*/
+            void disposeProperty(SellingTransaction* sellTransaction);
 
             void addItem(inventory::Sellable *newSellable);
+
+            void addProperty(inventory::Depreciable *newProperty);
 
             std::string toString();
     };
