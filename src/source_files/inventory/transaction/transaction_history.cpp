@@ -14,12 +14,13 @@ TransactionHistory::TransactionHistory()
 void TransactionHistory::addEntry(Entry *entry)
 {
     this->entries.push_back(entry);
-    auto end = this->entries.end() - 1;
+    entry->insertToDB();
+    /*auto end = this->entries.end() - 1;
     while (end != this->entries.begin() && (*end)->getTransactionDate() < (*(end - 1))->getTransactionDate())
     {
         std::iter_swap(end - 1, end);
         end -= 1;
-    }
+    }*/
 }
 
 /*************************************Purchase History*************************************/
@@ -37,6 +38,7 @@ double PurchaseHistory::sellItemFirstIn(int qty)
         qty -= toSubtract;
         earliest->setAvailableQty(earliest->getQty() - toSubtract);
         toRet += toSubtract * (earliest->getPrice());
+        earliest->updateToDB();
         if (!earliest->getAvailableQty())
         {
             this->entries.pop_front();
@@ -55,6 +57,7 @@ double PurchaseHistory::sellItemLastIn(int qty)
         qty -= toSubtract;
         earliest->setAvailableQty(earliest->getQty() - toSubtract);
         toRet += toSubtract * (earliest->getPrice());
+        earliest->updateToDB();
         if (!earliest->getAvailableQty())
         {
             this->entries.pop_back();

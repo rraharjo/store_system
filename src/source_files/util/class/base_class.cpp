@@ -4,16 +4,21 @@ baseclass::HasTable::HasTable(){
     //this->setTable();
 };
 
-void util::baseclass::HasTable::setDBCode(int dbCode){
+void util::baseclass::HasTable::setDBCode(std::string dbCode){
     this->dbCode = dbCode;
 }
 
 void util::baseclass::HasTable::insertToDB(){
     //set the DBCode
     std::vector<std::string> args = this->getInsertParameter();
-    this->setDBCode(std::stoi(this->table->insertRow(args)[0]));
+    this->setDBCode(this->table->insertRow(args)[0]);
 }
 
-int util::baseclass::HasTable::getDBCode(){
+void util::baseclass::HasTable::updateToDB(){
+    std::vector<std::string> args = this->getInsertParameter();
+    this->table->updateRow(this->dbCode, args);
+}
+
+std::string util::baseclass::HasTable::getDBCode(){
     return this->dbCode;
 }

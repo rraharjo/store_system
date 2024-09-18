@@ -9,10 +9,13 @@ namespace inventory
     class Depreciable: public Item
     {
     private:
-        double purchaseCost;
+        static int nextItemCode;
+        std::string name;
+        double purchaseCost = 0;
         double residualValue;
         int yearUsefulLife;
         util::Date *dateBought;
+        util::Date *dateSold;
         util::DepreciationMethod *depreciationMethod;
 
     protected:
@@ -20,9 +23,15 @@ namespace inventory
 
         std::vector<std::string> getInsertParameter() override;
 
+        std::string createDBCode() override;
+
     public:
 
-        Depreciable(std::string name, std::string itemCode, double purchaseCost, double residualValue, int yearUsefulLife, util::Date *dateBought);
+        Depreciable(std::string name, std::string itemCode, double residualValue, int yearUsefulLife, util::Date *dateBought);
+
+        double sellItems(SellingEntry *entry) override;
+
+        void addPurchase(PurchaseEntry *entry) override;
 
         double getPurchaseCost();
         
@@ -31,6 +40,8 @@ namespace inventory
         int getYearUsefulLife();
 
         util::Date* getDateBought();
+
+        util::Date* getDateSold();
 
         double getDepreciationExpenseAtYear(int year);
 
@@ -43,6 +54,8 @@ namespace inventory
         double getCurrentAccumulatedDepreciation();
 
         double getCurrentValue();
+
+        std::string toString();
     };
 }
 

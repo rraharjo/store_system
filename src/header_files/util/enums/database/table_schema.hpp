@@ -34,6 +34,7 @@ namespace util
         {
             DATABASECODE = 0,
             SELLABLECODE,
+            PROPERTIESCODE,
             PURCHASETRANSACTIONCODE,
             PURCHASEPRICE,
             BOUGHTQTY,
@@ -55,7 +56,9 @@ namespace util
         {
             DATABASECODE = 0,
             SELLABLECODE,
+            PROPERTIESCODE,
             SELLINGTRANSACTIONCODE,
+            SELLINGPRICE,
             QTY
         };
 
@@ -72,10 +75,12 @@ namespace util
         enum class DepreciableTable
         {
             DATABASECODE = 0,
+            ITEMNAME,
             PURCHASECOST,
             RESIDUALVALUE,
             YEARUSEFULLIFE,
-            DATEPURCHASED
+            DATEPURCHASED,
+            DATESOLD
         };
 
         extern std::map<DepreciableTable, ColumnSchema> depreciableTableColumns;

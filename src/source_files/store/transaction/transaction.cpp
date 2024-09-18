@@ -17,18 +17,24 @@ void Transaction::addEntry(inventory::Entry *entry)
     this->entries.push_back(entry);
 }
 
-std::vector<inventory::Entry*> Transaction::getAllEntries(){
+std::vector<inventory::Entry *> Transaction::getAllEntries()
+{
     return this->entries;
 }
+
+/****************************************************/
+int PurchaseTransaction::nextItemCode = 0;
 
 PurchaseTransaction::PurchaseTransaction(std::string seller, util::Date *purchaseDate) : Transaction::Transaction(purchaseDate)
 {
     this->setTable();
     this->seller = seller;
+    this->setDBCode(this->createDBCode());
     this->insertToDB();
 }
 
-std::string PurchaseTransaction::getSeller(){
+std::string PurchaseTransaction::getSeller()
+{
     return this->seller;
 }
 
@@ -40,15 +46,38 @@ void PurchaseTransaction::setTable()
 std::vector<std::string> PurchaseTransaction::getInsertParameter()
 {
     std::vector<std::string> args;
+    args.push_back(this->getDBCode());
     args.push_back(this->getDate()->toDBFormat());
     args.push_back(this->getSeller());
     return args;
 }
 
+std::string PurchaseTransaction::createDBCode()
+{
+    char numAsString[6];
+    sprintf(numAsString, "%05d", PurchaseTransaction::nextItemCode++);
+    std::string countAsString = numAsString;
+    std::string dbCode = "PTR" + countAsString;
+    return dbCode;
+}
+
+/********************************************/
+int SellingTransaction::nextItemCode = 0;
+
+std::string SellingTransaction::createDBCode()
+{
+    char numAsString[6];
+    sprintf(numAsString, "%05d", SellingTransaction::nextItemCode++);
+    std::string countAsString = numAsString;
+    std::string dbCode = "STR" + countAsString;
+    return dbCode;
+}
+
 SellingTransaction::SellingTransaction(util::Date *transactionDate) : Transaction::Transaction(transactionDate)
 {
     this->setTable();
-    insertToDB();
+    this->setDBCode(this->createDBCode());
+    this->insertToDB();
 }
 
 void SellingTransaction::setTable()
@@ -59,6 +88,7 @@ void SellingTransaction::setTable()
 std::vector<std::string> SellingTransaction::getInsertParameter()
 {
     std::vector<std::string> args;
-    args.push_back(this->getDate()->to_string());
+    args.push_back(this->getDBCode());
+    args.push_back(this->getDate()->toDBFormat());
     return args;
 }

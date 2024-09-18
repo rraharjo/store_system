@@ -42,6 +42,12 @@ std::vector<std::string> Table::insertRow(std::vector<std::string> &values)
     int curValue = 0;
     for (int i = 0; i < schemaSize - 1; i++)
     {
+        if (values[curValue] == "NULL")
+        {
+            query += "NULL,";
+            curValue++;
+            continue;
+        }
         switch (this->getSchema()[i].type)
         {
         case util::enums::ColumnTypes::SERIALCOL:
@@ -61,25 +67,109 @@ std::vector<std::string> Table::insertRow(std::vector<std::string> &values)
             break;
         }
     }
-    switch (this->getSchema()[schemaSize - 1].type)
+    if (values[curValue] == "NULL")
     {
-    case util::enums::ColumnTypes::SERIALCOL:
-        break;
-    case util::enums::ColumnTypes::TEXTCOL:
-        query += "'" + values[curValue++] + "')";
-        break;
-    case util::enums::ColumnTypes::DATECOL:
-        query += "to_date('" + values[curValue++] + "', 'dd-MM-yyyy'))";
-        break;
-    case util::enums::ColumnTypes::BOOLCOL:
-        query += std::stoi(values[curValue++]) ? "true)" : "false)";
-        break;
-    case util::enums::ColumnTypes::FLOATCOL:
-    case util::enums::ColumnTypes::NUMBERCOL:
-        query += values[curValue++] + ")";
-        break;
+        query += "NULL)";
     }
+    else
+    {
+        switch (this->getSchema()[schemaSize - 1].type)
+        {
+        case util::enums::ColumnTypes::SERIALCOL:
+            break;
+        case util::enums::ColumnTypes::TEXTCOL:
+            query += "'" + values[curValue++] + "')";
+            break;
+        case util::enums::ColumnTypes::DATECOL:
+            query += "to_date('" + values[curValue++] + "', 'dd-MM-yyyy'))";
+            break;
+        case util::enums::ColumnTypes::BOOLCOL:
+            query += std::stoi(values[curValue++]) ? "true)" : "false)";
+            break;
+        case util::enums::ColumnTypes::FLOATCOL:
+        case util::enums::ColumnTypes::NUMBERCOL:
+            query += values[curValue++] + ")";
+            break;
+        }
+    }
+
     query += "returning *";
+    DB *instance = DB::get_instance();
+    return instance->execute_query(query)[0];
+}
+
+std::vector<std::string> Table::updateRow(std::string id, std::vector<std::string> &values)
+{
+    int schemaSize = this->getSchema().size();
+    std::string query = "update " + this->tableName + " set ";
+    int curValue = 0;
+    for (int i = 0; i < schemaSize - 1; i++)
+    {
+        util::ColumnSchema currentCol = this->getSchema()[i];
+        if (values[curValue] == "NULL")
+        {
+            query += currentCol.columnName + " = NULL,";
+            curValue++;
+            continue;
+        }
+
+        switch (currentCol.type)
+        {
+        case util::enums::ColumnTypes::SERIALCOL:
+            break;
+        case util::enums::ColumnTypes::TEXTCOL:
+            query += currentCol.columnName + " = ";
+            query += "'" + values[curValue++] + "',";
+            break;
+        case util::enums::ColumnTypes::DATECOL:
+            query += currentCol.columnName + " = ";
+            query += "to_date('" + values[curValue++] + "', 'dd-MM-yyyy'),";
+            break;
+        case util::enums::ColumnTypes::BOOLCOL:
+            query += currentCol.columnName + " = ";
+            query += std::stoi(values[curValue++]) ? "true," : "false,";
+            break;
+        case util::enums::ColumnTypes::FLOATCOL:
+        case util::enums::ColumnTypes::NUMBERCOL:
+            query += currentCol.columnName + " = ";
+            query += values[curValue++] + ",";
+            break;
+        }
+    }
+    util::ColumnSchema currentCol = this->getSchema()[schemaSize - 1];
+    if (values[curValue] == "NULL")
+    {
+        query += currentCol.columnName + " = NULL ";
+        curValue++;
+    }
+    else
+    {
+        switch (currentCol.type)
+        {
+        case util::enums::ColumnTypes::SERIALCOL:
+            query[query.length() - 1] = ' ';
+            break;
+        case util::enums::ColumnTypes::TEXTCOL:
+            query += currentCol.columnName + " = ";
+            query += "'" + values[curValue++] + "' ";
+            break;
+        case util::enums::ColumnTypes::DATECOL:
+            query += currentCol.columnName + " = ";
+            query += "to_date('" + values[curValue++] + "', 'dd-MM-yyyy') ";
+            break;
+        case util::enums::ColumnTypes::BOOLCOL:
+            query += currentCol.columnName + " = ";
+            query += std::stoi(values[curValue++]) ? "true " : "false ";
+            break;
+        case util::enums::ColumnTypes::FLOATCOL:
+        case util::enums::ColumnTypes::NUMBERCOL:
+            query += currentCol.columnName + " = ";
+            query += values[curValue++] + " ";
+            break;
+        }
+    }
+    query += "where " + this->getSchema()[0].columnName + " = '" + id + "' returning *;";
+    // std::cout << query << std::endl;
     DB *instance = DB::get_instance();
     return instance->execute_query(query)[0];
 }

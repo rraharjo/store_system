@@ -1,72 +1,79 @@
 #include "inventory/inventory_system.hpp"
 using namespace inventory;
 
-int inventory::binSearch(std::vector<Sellable *> sellables, int dbCode)
-{
-    int start = 0;
-    int end = sellables.size() - 1;
-    int mid;
-    while (start <= end)
-    {
-        mid = (start + end) / 2;
-        if (sellables[mid]->getDBCode() < dbCode)
-        {
-            start = mid + 1;
-        }
-        else if (sellables[mid]->getDBCode() > dbCode)
-        {
-            end = mid - 1;
-        }
-        else
-        {
-            return mid;
-        }
+InventorySystem *InventorySystem::instance = NULL;
+
+InventorySystem* InventorySystem::getInstance(){
+    if (InventorySystem::instance == NULL){
+        InventorySystem::instance = new InventorySystem();
     }
-    return -1;
-};
+    return InventorySystem::instance;
+}
 
 InventorySystem::InventorySystem()
 {
     this->sellables = {};
+    this->properties = {};
 }
 
-double InventorySystem::sellItem(Entry *newEntry)
+Depreciable *InventorySystem::getProperty(std::string dbCode){
+    return this->properties[dbCode];
+}
+
+double InventorySystem::sellSellables(Entry *newEntry)
 {
-    int index = this->itemExist(newEntry->getSellableDBCode());
-    if (index == -1)
+    if (!this->sellables[newEntry->getSellableDBCode()])
     {
         return -1;
     }
-    return this->sellables[index]->sellItems(newEntry->getQty());
+    return this->sellables[newEntry->getSellableDBCode()]->sellItems((SellingEntry*) newEntry);
 }
 
-int InventorySystem::itemExist(int dbCode)
+void InventorySystem::purchaseSellables(Entry *newEntry)
 {
-    int index = inventory::binSearch(this->sellables, dbCode);
-    return index;
-}
-
-void InventorySystem::purchaseItem(Entry *newEntry)
-{
-    int index = this->itemExist(newEntry->getSellableDBCode());
-    if (index == -1)
+    if (!this->sellables[newEntry->getSellableDBCode()])
     {
         return;
     }
-    this->sellables[index]->addPurchase((PurchaseEntry*) newEntry);
+    this->sellables[newEntry->getSellableDBCode()]->addPurchase((PurchaseEntry*) newEntry);
+}
+
+double InventorySystem::sellProperties(Entry *newEntry)
+{
+    if (!this->properties[newEntry->getPropertiesDBCode()])
+    {
+        return -1;
+    }
+    return this->properties[newEntry->getPropertiesDBCode()]->sellItems((SellingEntry*) newEntry);
+}
+
+void InventorySystem::purchaseProperties(Entry *newEntry)
+{
+    if (!this->properties[newEntry->getPropertiesDBCode()])
+    {
+        return;
+    }
+    this->properties[newEntry->getPropertiesDBCode()]->addPurchase((PurchaseEntry*) newEntry);
 }
 
 void InventorySystem::addNewItem(Sellable *newSellable)
 {
-    this->sellables.push_back(newSellable);
+    this->sellables[newSellable->getDBCode()] = newSellable;
+}
+
+void InventorySystem::addNewProperty(Depreciable *newDepreciable){
+    this->properties[newDepreciable->getDBCode()] = newDepreciable;
 }
 
 std::string InventorySystem::to_string()
 {
     std::string toRet = "";
-    for (Sellable *sellable : this->sellables)
+    for (auto it = this->sellables.begin() ; it != this->sellables.end() ; it++)
     {
-        toRet += sellable->to_string();
+        toRet += it->second->to_string();
+    }
+    for (auto it = this->properties.begin() ; it != this->properties.end() ; it++){
+        toRet += it->second->toString();
     }
     return toRet;
 }

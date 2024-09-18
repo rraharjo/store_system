@@ -20,3 +20,6 @@ g++ ./src/accounting_factory_test.cpp -I ./src/header_files ./src/source_files/a
 
 compile database_test:
 g++ ./src/database_test.cpp -I ./src/header_files ./src/source_files/util/database/*.cpp ./src/source_files/util/*.cpp ./src/source_files/util/enums/database/*.cpp ./src/source_files/util/enums/date/*.cpp -I "C:/Program Files/PostgreSQL/16/include" "C:/Program Files/PostgreSQL/16/lib/libpq.lib"
+
+compile store_system:
+g++ store_system_test.cpp -I ./header_files ./source_files/accounting/accounting_transaction/*.cpp ./source_files/accounting/accounts/*.cpp ./source_files/accounting/*.cpp ./source_files/inventory/assets/*.cpp ./source_files/inventory/transaction/*.cpp ./source_files/inventory/*.cpp ./source_files/store/transaction/*.cpp ./source_files/store/*.cpp ./source_files/util/*.cpp ./source_files/util/class/*.cpp ./source_files/util/database/*.cpp ./source_files/util/enums/accounting/*.cpp ./source_files/util/enums/database/*.cpp ./source_files/util/enums/date/*.cpp ./source_files/util/factory/*.cpp -I "C:/Program Files/PostgreSQL/16/include" "C:/Program Files/PostgreSQL/16/lib/libpq.lib"
