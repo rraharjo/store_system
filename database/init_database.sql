@@ -38,7 +38,8 @@ create table depreciable_table(
 create table purchase_transaction(
     database_code    text      primary key,
     date_purchased   date        not null,
-    seller           varchar(100)
+    seller           varchar(100),
+    is_finished      boolean    not null
 );
 
 create table purchase_entry(
@@ -70,7 +71,8 @@ add constraint sellable_properties_or_not_null check
 
 create table selling_transaction(
     database_code       text            primary key,
-    transaction_date    date            not null      
+    transaction_date    date            not null,
+    is_finished         boolean         not null      
 );
 
 create table selling_entry(
@@ -102,8 +104,18 @@ add constraint fk_selling_transaction foreign key (selling_transaction_db_code)
 create table accounting_transaction(
     database_code       text          primary key,
     transaction_name    varchar(50),
-    transaction_date    date
+    transaction_date    date,
+    purchase_transaction_id text,
+    sell_transaction_id text
 );
+
+alter table accounting_transaction
+add constraint fk_at_purchase_transaction foreign key (purchase_transaction_id)
+    references purchase_transaction (database_code);
+
+alter table accounting_transaction
+add constraint fk_at_selling_transaction foreign key (sell_transaction_id)
+    references selling_transaction (database_code);
 
 create table accounting_transaction_entry(
     database_code       text            primary key,

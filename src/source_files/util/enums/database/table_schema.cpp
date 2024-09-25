@@ -30,7 +30,8 @@ std::map<PurchaseEntryTable, ColumnSchema> util::enums::purchaseEntryTableColumn
 std::map<PurchaseTransactionTable, ColumnSchema> util::enums::purchaseTransactionTableColumns = {
     {PurchaseTransactionTable::DATABASECODE, ColumnSchema{"database_code", ColumnTypes::TEXTCOL}},
     {PurchaseTransactionTable::DATEPURCHASED, ColumnSchema{"date_purchased", ColumnTypes::DATECOL}},
-    {PurchaseTransactionTable::SELLER, ColumnSchema{"seller", ColumnTypes::TEXTCOL}}};
+    {PurchaseTransactionTable::SELLER, ColumnSchema{"seller", ColumnTypes::TEXTCOL}},
+    {PurchaseTransactionTable::ISFINISHED, ColumnSchema{"is_finished", ColumnTypes::BOOLCOL}}};
 
 std::map<SellingEntryTable, ColumnSchema> util::enums::sellingEntryTableColumns = {
     {SellingEntryTable::DATABASECODE, ColumnSchema{"database_code", ColumnTypes::TEXTCOL}},
@@ -42,7 +43,8 @@ std::map<SellingEntryTable, ColumnSchema> util::enums::sellingEntryTableColumns 
 
 std::map<SellingTransactionTable, ColumnSchema> util::enums::sellingTransactionTableColumns = {
     {SellingTransactionTable::DATABASECODE, ColumnSchema{"database_code", ColumnTypes::TEXTCOL}},
-    {SellingTransactionTable::TRANSACTIONDATE, ColumnSchema{"transaction_date", ColumnTypes::DATECOL}}};
+    {SellingTransactionTable::TRANSACTIONDATE, ColumnSchema{"transaction_date", ColumnTypes::DATECOL}},
+    {SellingTransactionTable::ISFINISHED, ColumnSchema{"is_finished", ColumnTypes::BOOLCOL}}};
 
 std::map<DepreciableTable, ColumnSchema> util::enums::depreciableTableColumns = {
     {DepreciableTable::DATABASECODE, ColumnSchema{"database_code", ColumnTypes::TEXTCOL}},
@@ -56,7 +58,9 @@ std::map<DepreciableTable, ColumnSchema> util::enums::depreciableTableColumns = 
 std::map<AccountingTransactionTable, ColumnSchema> util::enums::accountingTransactionTableColumns = {
     {AccountingTransactionTable::DATABASECODE, ColumnSchema{"database_code", ColumnTypes::TEXTCOL}},
     {AccountingTransactionTable::TRANSACTIONNAME, ColumnSchema{"transaction_name", ColumnTypes::TEXTCOL}},
-    {AccountingTransactionTable::TRANSACTIONDATE, ColumnSchema{"transaction_date", ColumnTypes::DATECOL}}};
+    {AccountingTransactionTable::TRANSACTIONDATE, ColumnSchema{"transaction_date", ColumnTypes::DATECOL}},
+    {AccountingTransactionTable::PURCHASETID, ColumnSchema{"purchase_transaction_id", ColumnTypes::TEXTCOL}},
+    {AccountingTransactionTable::SELLTID, ColumnSchema{"sell_transaction_id", ColumnTypes::TEXTCOL}}};
 
 std::map<AccountingEntryTable, ColumnSchema> util::enums::accountingEntryTableColumns = {
     {AccountingEntryTable::DATABASECODE, ColumnSchema{"database_code", ColumnTypes::TEXTCOL}},

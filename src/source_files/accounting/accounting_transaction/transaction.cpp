@@ -10,11 +10,38 @@ Transaction::Transaction(std::string name, util::Date *transactionDate) : util::
     this->debitEntries = {};
     this->creditEntries = {};
     this->transactionDate = transactionDate;
+    this->sellTID = "";
+    this->purchaseTID = "";
     this->setDBCode(this->createDBCode());
     this->insertToDB();
 }
 
 Transaction::Transaction(std::string name) : Transaction::Transaction(name, new util::Date())
+{
+}
+
+Transaction::Transaction(std::string name, util::Date *transactionDate, std::string tid) : util::baseclass::HasTable()
+{
+    this->setTable();
+    this->name = name;
+    this->debitEntries = {};
+    this->creditEntries = {};
+    this->transactionDate = transactionDate;
+    if (tid.compare(0, 3, "PTR") == 0)
+    {
+        this->purchaseTID = tid;
+        this->sellTID = "";
+    }
+    else
+    {
+        this->sellTID = tid;
+        this->purchaseTID = "";
+    }
+    this->setDBCode(this->createDBCode());
+    this->insertToDB();
+}
+
+Transaction::Transaction(std::string name, std::string tid) : Transaction::Transaction(name, new util::Date(), tid)
 {
 }
 
@@ -48,6 +75,8 @@ std::vector<std::string> Transaction::getInsertParameter()
     args.push_back(this->getDBCode());
     args.push_back(this->name);
     args.push_back(this->transactionDate->toDBFormat());
+    args.push_back(this->purchaseTID);
+    args.push_back(this->sellTID);
     return args;
 }
 

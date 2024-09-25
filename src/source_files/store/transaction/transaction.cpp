@@ -49,6 +49,7 @@ std::vector<std::string> PurchaseTransaction::getInsertParameter()
     args.push_back(this->getDBCode());
     args.push_back(this->getDate()->toDBFormat());
     args.push_back(this->getSeller());
+    args.push_back(this->isFinished ? "true" : "false");
     return args;
 }
 
@@ -90,5 +91,6 @@ std::vector<std::string> SellingTransaction::getInsertParameter()
     std::vector<std::string> args;
     args.push_back(this->getDBCode());
     args.push_back(this->getDate()->toDBFormat());
+    args.push_back(this->isFinished ? "true" : "false");
     return args;
 }

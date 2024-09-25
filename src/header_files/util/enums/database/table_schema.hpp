@@ -47,7 +47,8 @@ namespace util
         {
             DATABASECODE = 0,
             DATEPURCHASED,
-            SELLER
+            SELLER,
+            ISFINISHED
         };
 
         extern std::map<PurchaseTransactionTable, ColumnSchema> purchaseTransactionTableColumns;
@@ -67,7 +68,8 @@ namespace util
         enum class SellingTransactionTable
         {
             DATABASECODE = 0,
-            TRANSACTIONDATE
+            TRANSACTIONDATE,
+            ISFINISHED
         };
 
         extern std::map<SellingTransactionTable, ColumnSchema> sellingTransactionTableColumns;
@@ -89,7 +91,9 @@ namespace util
         {
             DATABASECODE = 0,
             TRANSACTIONNAME,
-            TRANSACTIONDATE
+            TRANSACTIONDATE,
+            PURCHASETID,
+            SELLTID
         };
 
         extern std::map<AccountingTransactionTable, ColumnSchema> accountingTransactionTableColumns;

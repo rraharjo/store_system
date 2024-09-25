@@ -16,6 +16,7 @@ namespace store
 
     protected:
         Transaction(util::Date *transaction_date);
+        bool isFinished;
 
     public:
         util::Date *getDate();
