@@ -18,8 +18,8 @@ namespace accounting
         std::vector<Entry *> creditEntries;
         std::string name;
         util::Date *transactionDate;
-        std::string purchaseTID;
-        std::string sellTID;
+        std::string inventoryID;
+        std::string equipmentID;
         int dbCode;
 
     protected:

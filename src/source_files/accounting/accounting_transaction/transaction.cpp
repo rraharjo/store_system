@@ -10,8 +10,8 @@ Transaction::Transaction(std::string name, util::Date *transactionDate) : util::
     this->debitEntries = {};
     this->creditEntries = {};
     this->transactionDate = transactionDate;
-    this->sellTID = "";
-    this->purchaseTID = "";
+    this->inventoryID = "";
+    this->equipmentID = "";
     this->setDBCode(this->createDBCode());
     this->insertToDB();
 }
@@ -20,28 +20,28 @@ Transaction::Transaction(std::string name) : Transaction::Transaction(name, new 
 {
 }
 
-Transaction::Transaction(std::string name, util::Date *transactionDate, std::string tid) : util::baseclass::HasTable()
+Transaction::Transaction(std::string name, util::Date *transactionDate, std::string pid) : util::baseclass::HasTable()
 {
     this->setTable();
     this->name = name;
     this->debitEntries = {};
     this->creditEntries = {};
     this->transactionDate = transactionDate;
-    if (tid.compare(0, 3, "PTR") == 0)
+    if (pid.compare(0, 3, "INV") == 0)
     {
-        this->purchaseTID = tid;
-        this->sellTID = "";
+        this->inventoryID = pid;
+        this->equipmentID = "";
     }
     else
     {
-        this->sellTID = tid;
-        this->purchaseTID = "";
+        this->equipmentID = pid;
+        this->inventoryID = "";
     }
     this->setDBCode(this->createDBCode());
     this->insertToDB();
 }
 
-Transaction::Transaction(std::string name, std::string tid) : Transaction::Transaction(name, new util::Date(), tid)
+Transaction::Transaction(std::string name, std::string pid) : Transaction::Transaction(name, new util::Date(), pid)
 {
 }
 
@@ -75,8 +75,8 @@ std::vector<std::string> Transaction::getInsertParameter()
     args.push_back(this->getDBCode());
     args.push_back(this->name);
     args.push_back(this->transactionDate->toDBFormat());
-    args.push_back(this->purchaseTID);
-    args.push_back(this->sellTID);
+    args.push_back(this->inventoryID);
+    args.push_back(this->equipmentID);
     return args;
 }
 

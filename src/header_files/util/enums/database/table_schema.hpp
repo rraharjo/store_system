@@ -92,8 +92,8 @@ namespace util
             DATABASECODE = 0,
             TRANSACTIONNAME,
             TRANSACTIONDATE,
-            PURCHASETID,
-            SELLTID
+            INVENTORYID,
+            PROPERTIESID
         };
 
         extern std::map<AccountingTransactionTable, ColumnSchema> accountingTransactionTableColumns;

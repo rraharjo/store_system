@@ -59,8 +59,8 @@ std::map<AccountingTransactionTable, ColumnSchema> util::enums::accountingTransa
     {AccountingTransactionTable::DATABASECODE, ColumnSchema{"database_code", ColumnTypes::TEXTCOL}},
     {AccountingTransactionTable::TRANSACTIONNAME, ColumnSchema{"transaction_name", ColumnTypes::TEXTCOL}},
     {AccountingTransactionTable::TRANSACTIONDATE, ColumnSchema{"transaction_date", ColumnTypes::DATECOL}},
-    {AccountingTransactionTable::PURCHASETID, ColumnSchema{"purchase_transaction_id", ColumnTypes::TEXTCOL}},
-    {AccountingTransactionTable::SELLTID, ColumnSchema{"sell_transaction_id", ColumnTypes::TEXTCOL}}};
+    {AccountingTransactionTable::INVENTORYID, ColumnSchema{"inventory_id", ColumnTypes::TEXTCOL}},
+    {AccountingTransactionTable::PROPERTIESID, ColumnSchema{"equipment_id", ColumnTypes::TEXTCOL}}};
 
 std::map<AccountingEntryTable, ColumnSchema> util::enums::accountingEntryTableColumns = {
     {AccountingEntryTable::DATABASECODE, ColumnSchema{"database_code", ColumnTypes::TEXTCOL}},

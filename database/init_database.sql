@@ -105,17 +105,17 @@ create table accounting_transaction(
     database_code       text          primary key,
     transaction_name    varchar(50),
     transaction_date    date,
-    purchase_transaction_id text,
-    sell_transaction_id text
+    inventory_id text,
+    equipment_id text
 );
 
 alter table accounting_transaction
-add constraint fk_at_purchase_transaction foreign key (purchase_transaction_id)
-    references purchase_transaction (database_code);
+add constraint fk_at_purchase_transaction foreign key (equipment_id)
+    references depreciable_table (database_code);
 
 alter table accounting_transaction
-add constraint fk_at_selling_transaction foreign key (sell_transaction_id)
-    references selling_transaction (database_code);
+add constraint fk_at_selling_transaction foreign key (inventory_id)
+    references sellable (database_code);
 
 create table accounting_transaction_entry(
     database_code       text            primary key,
