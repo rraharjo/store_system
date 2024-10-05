@@ -51,12 +51,8 @@ void Entry::setTransactionDate(util::Date *transactionDate)
 
 /******************************************************************************/
 
-
+util::Table *PurchaseEntry::classTable = util::PurchaseEntryTable::getInstance();
 int PurchaseEntry::nextItemCode = 0; //TO DO: change to count(*)
-void PurchaseEntry::setTable()
-{
-    this->table = util::PurchaseEntryTable::getInstance();
-}
 
 std::vector<std::string> PurchaseEntry::getInsertParameter()
 {
@@ -76,6 +72,14 @@ std::vector<std::string> PurchaseEntry::getInsertParameter()
     return args;
 }
 
+void PurchaseEntry::insertToDB(){
+    this->insertToDBWithTable(PurchaseEntry::classTable);
+}
+
+void PurchaseEntry::updateToDB(){
+    this->updateToDBWithTable(PurchaseEntry::classTable);
+}
+
 std::string PurchaseEntry::createDBCode(){
     char numAsString[6];
     sprintf(numAsString, "%05d", PurchaseEntry::nextItemCode++);
@@ -86,9 +90,9 @@ std::string PurchaseEntry::createDBCode(){
 
 PurchaseEntry::PurchaseEntry(std::string sellableDBCode, std::string transactionCode, double price, int qty) : Entry(sellableDBCode, transactionCode, price, qty)
 {
-    this->setTable();
     this->availableQty = qty;
 }
+
 int PurchaseEntry::getAvailableQty()
 {
     return this->availableQty;
@@ -99,12 +103,8 @@ void PurchaseEntry::setAvailableQty(int qty)
 }
 
 /************************************************************************/
+util::Table *SellingEntry::classTable = util::SellingEntryTable::getInstance();
 int SellingEntry::nextItemCode = 0;//TO DO: change to count(*)
-
-void SellingEntry::setTable()
-{
-    this->table = util::SellingEntryTable::getInstance();
-}
 
 std::vector<std::string> SellingEntry::getInsertParameter()
 {
@@ -123,6 +123,14 @@ std::vector<std::string> SellingEntry::getInsertParameter()
     return args;
 }
 
+void SellingEntry::insertToDB(){
+    this->insertToDBWithTable(SellingEntry::classTable);
+}
+
+void SellingEntry::updateToDB(){
+    this->updateToDBWithTable(SellingEntry::classTable);
+}
+
 std::string SellingEntry::createDBCode(){
     char numAsString[6];
     sprintf(numAsString, "%05d", SellingEntry::nextItemCode++);
@@ -133,5 +141,4 @@ std::string SellingEntry::createDBCode(){
 
 SellingEntry::SellingEntry(std::string sellableDBCode, std::string transactionCode, double price, int qty) : Entry(sellableDBCode, transactionCode, price, qty)
 {
-    this->setTable();
 }

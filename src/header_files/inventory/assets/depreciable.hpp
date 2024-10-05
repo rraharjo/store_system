@@ -5,7 +5,7 @@
 #define DEPRECIABLEINVENTORY_HPP
 namespace inventory
 {
-    class Depreciable: public Asset
+    class Depreciable : public Asset
     {
     private:
         static int nextItemCode;

@@ -13,24 +13,25 @@ namespace util
             std::string dbCode;
 
         protected:
-            util::Table *table;
 
             HasTable();
 
             void setDBCode(std::string dbCode);
 
-            virtual void setTable() = 0;
-
             virtual std::vector<std::string> getInsertParameter() = 0;
 
             virtual std::string createDBCode() = 0;
 
+            void insertToDBWithTable(util::Table *table);
+
+            void updateToDBWithTable(util::Table *table);
+
         public:
             std::string getDBCode();
 
-            void insertToDB();
+            virtual void insertToDB() = 0;
 
-            void updateToDB();
+            virtual void updateToDB() = 0;
         };
     };
 };

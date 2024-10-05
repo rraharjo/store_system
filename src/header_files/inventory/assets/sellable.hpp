@@ -12,18 +12,20 @@ namespace inventory
     class Sellable : public Item
     {
     private:
+        static util::Table *classTable;
         static int nextItemCode;
         double sellingPrice;
         // tax
 
     protected:
-        void setTable() override;
-
         std::vector<std::string> getInsertParameter() override;
 
         std::string createDBCode() override;
 
     public:
+        void insertToDB() override;
+
+        void updateToDB() override;
         Sellable(std::string name, std::string itemCode, double sellingPrice);
 
         double sellItems(SellingEntry *entry) override;

@@ -14,15 +14,18 @@ namespace inventory
         util::Date *expiryDate;
 
     protected:
-        int yearUsefulLife;
-        util::Date *dateBought;
-        void setTable() override;
+        static util::Table *classTable;
 
         std::vector<std::string> getInsertParameter() override;
-
+        int yearUsefulLife;
+        util::Date *dateBought;
         Asset(std::string name, std::string itemCode, double residualValue, int yearUsefulLife, util::Date *dateBought);
 
     public:
+        void insertToDB() override;
+
+        void updateToDB() override;
+
         void addPurchase(PurchaseEntry *entry) override;
 
         double sellItems(SellingEntry *entry) override;

@@ -13,6 +13,7 @@ namespace accounting
     class Transaction : public util::baseclass::HasTable
     {
     private:
+        static util::Table *classTable;
         static int nextItemCode;
         std::vector<Entry *> debitEntries;
         std::vector<Entry *> creditEntries;
@@ -23,13 +24,15 @@ namespace accounting
         int dbCode;
 
     protected:
-        void setTable() override;
-
         std::vector<std::string> getInsertParameter() override;
 
         std::string createDBCode() override;
 
     public:
+        void insertToDB() override;
+
+        void updateToDB() override;
+        
         Transaction(std::string name, util::Date *transactionDate);
 
         Transaction(std::string name);

@@ -94,8 +94,8 @@ std::vector<std::string> Table::insertRow(std::vector<std::string> &values)
     }
 
     query += "returning *";
-    DB *instance = DB::get_instance();
-    return instance->execute_query(query)[0];
+    DB *instance = DB::getInstance();
+    return instance->executeQuery(query)[0];
 }
 
 std::vector<std::string> Table::updateRow(std::string id, std::vector<std::string> &values)
@@ -170,8 +170,8 @@ std::vector<std::string> Table::updateRow(std::string id, std::vector<std::strin
     }
     query += "where " + this->getSchema()[0].columnName + " = '" + id + "' returning *;";
     // std::cout << query << std::endl;
-    DB *instance = DB::get_instance();
-    return instance->execute_query(query)[0];
+    DB *instance = DB::getInstance();
+    return instance->executeQuery(query)[0];
 }
 
 // Sellable Table

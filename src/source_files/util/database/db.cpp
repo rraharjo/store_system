@@ -17,14 +17,14 @@ DB::DB(){
     }
 }
 
-DB* DB::get_instance(){
+DB* DB::getInstance(){
     if (DB::instance == NULL){
         DB::instance = new DB();
     }
     return DB::instance;
 }
 
-std::vector<std::vector<std::string>> DB::execute_query(std::string query){
+std::vector<std::vector<std::string>> DB::executeQuery(std::string query){
     PGresult* res = PQexec(this->connection, query.c_str());
     std::vector<std::vector<std::string>> toRet;
     if (PQresultStatus(res) != PGRES_TUPLES_OK){

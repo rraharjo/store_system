@@ -1,11 +1,20 @@
 #include "accounting/accounting_transaction/transaction.hpp"
 using namespace accounting;
 
+util::Table *Transaction::classTable = util::AccountingTransactionTable::getInstance();
+
 int Transaction::nextItemCode = 0; // TO DO:
+
+void Transaction::insertToDB(){
+    this->insertToDBWithTable(Transaction::classTable);
+};
+
+void Transaction::updateToDB(){
+    this->updateToDBWithTable(Transaction::classTable);
+};
 
 Transaction::Transaction(std::string name, util::Date *transactionDate) : util::baseclass::HasTable()
 {
-    this->setTable();
     this->name = name;
     this->debitEntries = {};
     this->creditEntries = {};
@@ -22,7 +31,6 @@ Transaction::Transaction(std::string name) : Transaction::Transaction(name, new 
 
 Transaction::Transaction(std::string name, util::Date *transactionDate, std::string pid) : util::baseclass::HasTable()
 {
-    this->setTable();
     this->name = name;
     this->debitEntries = {};
     this->creditEntries = {};
@@ -62,11 +70,6 @@ Transaction::~Transaction()
             delete e;
         }
     }
-}
-
-void Transaction::setTable()
-{
-    this->table = util::AccountingTransactionTable::getInstance();
 }
 
 std::vector<std::string> Transaction::getInsertParameter()

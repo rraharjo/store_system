@@ -2,11 +2,19 @@
 
 using namespace inventory;
 
+util::Table *Sellable::classTable = util::SellableTable::getInstance();
 int Sellable::nextItemCode = 0; //TO DO: change to count(*)
+
+void Sellable::insertToDB() {
+    this->insertToDBWithTable(Sellable::classTable);
+};
+
+void Sellable::updateToDB() {
+    this->updateToDBWithTable(Sellable::classTable);
+};
 
 Sellable::Sellable(std::string name, std::string itemCode, double sellingPrice) : Item::Item(name, itemCode)
 {
-    this->setTable();
     this->sellingPrice = sellingPrice;
     this->qty = 0;
     this->setDBCode(this->createDBCode());
@@ -19,11 +27,6 @@ std::string Sellable::createDBCode(){
     std::string countAsString = numAsString;
     std::string dbCode = "SEL" + countAsString;
     return dbCode;
-}
-
-void Sellable::setTable()
-{
-    this->table = util::SellableTable::getInstance();
 }
 
 double Sellable::sellItems(SellingEntry *entry)

@@ -39,7 +39,7 @@ int main(int argc, char** argv){
     store::SellingTransaction *sellCar = new store::SellingTransaction(sellCarDate);
     inventory::SellingEntry *sellCarEntry = new inventory::SellingEntry(car->getDBCode(), sellCar->getDBCode(), 2600, 1);
     sellCar->addEntry(sellCarEntry);
-    sSystem->disposeProperty(sellCar);//sig segv
+    sSystem->disposeProperty(sellCar);
     std::cout << sSystem->toString() << '\n';
     std::cout << "process completed" << '\n';
     return 0;

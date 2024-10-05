@@ -22,12 +22,22 @@ std::vector<inventory::Entry *> Transaction::getAllEntries()
     return this->entries;
 }
 
-/****************************************************/
+/************************PURCHASETRANSACTION****************************/
+util::Table *PurchaseTransaction::classTable = util::PurchaseTransactionTable::getInstance();
 int PurchaseTransaction::nextItemCode = 0;
+
+void PurchaseTransaction::insertToDB()
+{
+    this->insertToDBWithTable(PurchaseTransaction::classTable);
+};
+
+void PurchaseTransaction::updateToDB()
+{
+    this->updateToDBWithTable(PurchaseTransaction::classTable);
+};
 
 PurchaseTransaction::PurchaseTransaction(std::string seller, util::Date *purchaseDate) : Transaction::Transaction(purchaseDate)
 {
-    this->setTable();
     this->seller = seller;
     this->setDBCode(this->createDBCode());
     this->insertToDB();
@@ -36,11 +46,6 @@ PurchaseTransaction::PurchaseTransaction(std::string seller, util::Date *purchas
 std::string PurchaseTransaction::getSeller()
 {
     return this->seller;
-}
-
-void PurchaseTransaction::setTable()
-{
-    this->table = util::PurchaseTransactionTable::getInstance();
 }
 
 std::vector<std::string> PurchaseTransaction::getInsertParameter()
@@ -62,8 +67,20 @@ std::string PurchaseTransaction::createDBCode()
     return dbCode;
 }
 
-/********************************************/
+/*********************SELLINGTRANSACTION***********************/
+
+util::Table *SellingTransaction::classTable = util::SellingTransactionTable::getInstance();
 int SellingTransaction::nextItemCode = 0;
+
+void SellingTransaction::insertToDB()
+{
+    this->insertToDBWithTable(SellingTransaction::classTable);
+};
+
+void SellingTransaction::updateToDB()
+{
+    this->updateToDBWithTable(SellingTransaction::classTable);
+};
 
 std::string SellingTransaction::createDBCode()
 {
@@ -76,14 +93,8 @@ std::string SellingTransaction::createDBCode()
 
 SellingTransaction::SellingTransaction(util::Date *transactionDate) : Transaction::Transaction(transactionDate)
 {
-    this->setTable();
     this->setDBCode(this->createDBCode());
     this->insertToDB();
-}
-
-void SellingTransaction::setTable()
-{
-    this->table = util::SellingTransactionTable::getInstance();
 }
 
 std::vector<std::string> SellingTransaction::getInsertParameter()

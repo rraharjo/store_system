@@ -8,15 +8,15 @@ void util::baseclass::HasTable::setDBCode(std::string dbCode){
     this->dbCode = dbCode;
 }
 
-void util::baseclass::HasTable::insertToDB(){
+void util::baseclass::HasTable::insertToDBWithTable(util::Table *table){
     //set the DBCode
     std::vector<std::string> args = this->getInsertParameter();
-    this->setDBCode(this->table->insertRow(args)[0]);
+    this->setDBCode(table->insertRow(args)[0]);
 }
 
-void util::baseclass::HasTable::updateToDB(){
+void util::baseclass::HasTable::updateToDBWithTable(util::Table *table){
     std::vector<std::string> args = this->getInsertParameter();
-    this->table->updateRow(this->dbCode, args);
+    table->updateRow(this->dbCode, args);
 }
 
 std::string util::baseclass::HasTable::getDBCode(){

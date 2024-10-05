@@ -1,6 +1,18 @@
 #include "accounting/accounting_transaction/entry.hpp"
 using namespace accounting;
+
+util::Table *Entry::classTable = util::AccountingEntryTable::getInstance();
+
 int Entry::nextItemCode = 0; // TO DO: change to count(*)
+
+void Entry::insertToDB(){
+    this->insertToDBWithTable(Entry::classTable);
+};
+
+void Entry::updateToDB(){
+    this->updateToDBWithTable(Entry::classTable);
+};
+
 std::string Entry::createDBCode()
 {
     char numAsString[6];
@@ -8,11 +20,6 @@ std::string Entry::createDBCode()
     std::string countAsString = numAsString;
     std::string dbCode = "ANT" + countAsString;
     return dbCode;
-}
-
-void Entry::setTable()
-{
-    this->table = util::AccountingEntryTable::getInstance();
 }
 
 std::vector<std::string> Entry::getInsertParameter()
@@ -36,7 +43,6 @@ std::vector<std::string> Entry::getInsertParameter()
 
 Entry::Entry(bool debit, double amount, util::enums::AccountTitles account, util::enums::TAccounts tAccount) : util::baseclass::HasTable()
 {
-    this->setTable();
     this->debit = debit;
     this->amount = amount;
     this->account = account;

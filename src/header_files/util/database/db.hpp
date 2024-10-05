@@ -17,8 +17,8 @@ namespace util
         DB();
 
     public:
-        static DB *get_instance();
-        std::vector<std::vector<std::string>> execute_query(std::string query);
+        static DB *getInstance();
+        std::vector<std::vector<std::string>> executeQuery(std::string query);
     };
 };
 #endif

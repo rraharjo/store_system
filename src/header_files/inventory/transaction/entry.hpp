@@ -28,38 +28,48 @@ namespace inventory
         void setTransactionDate(util::Date *transactionDate);
     };
 
+    /**********************************PURCHASEENTRY*********************************/
     class PurchaseEntry : public Entry
     {
     private:
+        static util::Table *classTable;
         static int nextItemCode;
         int availableQty;
 
     protected:
-        void setTable() override;
-
         std::vector<std::string> getInsertParameter() override;
 
         std::string createDBCode() override;
 
     public:
+        void insertToDB() override;
+
+        void updateToDB() override;
+
         PurchaseEntry(std::string itemDBCode, std::string transactionCode, double price, int qty);
+
         int getAvailableQty();
+
         void setAvailableQty(int qty);
     };
 
+    /**********************************SELLINGENTRY*********************************/
     class SellingEntry : public Entry
     {
     private:
+        static util::Table *classTable;
         static int nextItemCode;
 
     protected:
-        void setTable() override;
-
         std::vector<std::string> getInsertParameter() override;
 
         std::string createDBCode() override;
 
     public:
+        void insertToDB() override;
+
+        void updateToDB() override;
+
         SellingEntry(std::string itemDBCode, std::string transactionCode, double price, int qty);
     };
 }

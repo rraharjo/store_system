@@ -1,20 +1,24 @@
 #include "inventory/assets/asset.hpp"
 using namespace inventory;
 
+util::Table *Asset::classTable = util::DepreciableTable::getInstance();
+
+void Asset::insertToDB(){
+    this->insertToDBWithTable(Asset::classTable);
+};
+
+void Asset::updateToDB(){
+    this->updateToDBWithTable(Asset::classTable);
+};
+
 Asset::Asset(std::string name, std::string itemCode, double residualValue, int yearUsefulLife, util::Date *dateBought) : Item::Item(name, itemCode)
 {
-    this->setTable();
     this->name = name;
     this->residualValue = residualValue;
     this->yearUsefulLife = yearUsefulLife;
     this->dateBought = dateBought;
     this->expiryDate = NULL;
 } 
-
-void Asset::setTable()
-{
-    this->table = util::DepreciableTable::getInstance();
-}
 
 std::vector<std::string> Asset::getInsertParameter()
 {

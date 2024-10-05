@@ -12,7 +12,9 @@ namespace accounting
     {
 
     private:
+        static util::Table *classTable;
         static int nextItemCode;
+        
         bool debit;
         double amount;
         std::string transactionTitle;
@@ -21,13 +23,15 @@ namespace accounting
         std::string transactionDB;
 
     protected:
-        void setTable() override;
-
         std::vector<std::string> getInsertParameter() override;
 
         std::string createDBCode() override;
 
     public:
+        void insertToDB() override;
+
+        void updateToDB() override;
+        
         Entry(bool debit, double amount, util::enums::AccountTitles account, util::enums::TAccounts tAccount);
 
         bool isDebit();

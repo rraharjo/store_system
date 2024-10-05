@@ -26,37 +26,46 @@ namespace store
         std::vector<inventory::Entry *> getAllEntries();
     };
 
+    /*****************************************PURCHASETRANSACTION*****************************************/
+
     class PurchaseTransaction : public Transaction
     {
     private:
+        static util::Table *classTable;
         static int nextItemCode;
         std::string seller;
 
     protected:
-        void setTable() override;
-
         std::vector<std::string> getInsertParameter() override;
 
         std::string createDBCode() override;
 
     public:
+        void insertToDB() override;
+
+        void updateToDB() override;
         PurchaseTransaction(std::string seller, util::Date *purchaseDate);
 
         std::string getSeller();
     };
 
+    /*****************************************SELLINGTRANSACTION*****************************************/
+
     class SellingTransaction : public Transaction
     {
 
     private:
+        static util::Table *classTable;
         static int nextItemCode;
 
     public:
+        void insertToDB() override;
+
+        void updateToDB() override;
+        
         SellingTransaction(util::Date *transactionDate);
 
     protected:
-        void setTable() override;
-
         std::vector<std::string> getInsertParameter() override;
 
         std::string createDBCode() override;
