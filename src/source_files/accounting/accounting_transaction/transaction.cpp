@@ -75,8 +75,8 @@ std::vector<std::string> Transaction::getInsertParameter()
     args.push_back(this->getDBCode());
     args.push_back(this->name);
     args.push_back(this->transactionDate->toDBFormat());
-    args.push_back(this->inventoryID);
-    args.push_back(this->equipmentID);
+    args.push_back(this->inventoryID == "" ? "NULL" : this->inventoryID);
+    args.push_back(this->equipmentID == "" ? "NULL" : this->equipmentID);
     return args;
 }
 

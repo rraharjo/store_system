@@ -13,11 +13,11 @@ InventorySystem* InventorySystem::getInstance(){
 InventorySystem::InventorySystem()
 {
     this->sellables = {};
-    this->properties = {};
+    this->assets = {};
 }
 
-Depreciable *InventorySystem::getProperty(std::string dbCode){
-    return this->properties[dbCode];
+Asset *InventorySystem::getProperty(std::string dbCode){
+    return this->assets[dbCode];
 }
 
 double InventorySystem::sellSellables(Entry *newEntry)
@@ -40,20 +40,20 @@ void InventorySystem::purchaseSellables(Entry *newEntry)
 
 double InventorySystem::sellProperties(Entry *newEntry)
 {
-    if (!this->properties[newEntry->getPropertiesDBCode()])
+    if (!this->assets[newEntry->getPropertiesDBCode()])
     {
         return -1;
     }
-    return this->properties[newEntry->getPropertiesDBCode()]->sellItems((SellingEntry*) newEntry);
+    return this->assets[newEntry->getPropertiesDBCode()]->sellItems((SellingEntry*) newEntry);
 }
 
 void InventorySystem::purchaseProperties(Entry *newEntry)
 {
-    if (!this->properties[newEntry->getPropertiesDBCode()])
+    if (!this->assets[newEntry->getPropertiesDBCode()])
     {
         return;
     }
-    this->properties[newEntry->getPropertiesDBCode()]->addPurchase((PurchaseEntry*) newEntry);
+    this->assets[newEntry->getPropertiesDBCode()]->addPurchase((PurchaseEntry*) newEntry);
 }
 
 void InventorySystem::addNewItem(Sellable *newSellable)
@@ -61,8 +61,8 @@ void InventorySystem::addNewItem(Sellable *newSellable)
     this->sellables[newSellable->getDBCode()] = newSellable;
 }
 
-void InventorySystem::addNewProperty(Depreciable *newDepreciable){
-    this->properties[newDepreciable->getDBCode()] = newDepreciable;
+void InventorySystem::addNewProperty(Asset *newDepreciable){
+    this->assets[newDepreciable->getDBCode()] = newDepreciable;
 }
 
 std::string InventorySystem::to_string()
@@ -72,7 +72,7 @@ std::string InventorySystem::to_string()
     {
         toRet += it->second->to_string();
     }
-    for (auto it = this->properties.begin() ; it != this->properties.end() ; it++){
+    for (auto it = this->assets.begin() ; it != this->assets.end() ; it++){
         toRet += it->second->toString();
     }
     return toRet;

@@ -9,14 +9,14 @@ namespace inventory
     private:
         static InventorySystem *instance;
         std::map<std::string, Sellable *> sellables;
-        std::map<std::string, Depreciable *> properties; 
+        std::map<std::string, Asset *> assets; 
         InventorySystem();
 
     public:
     
         static InventorySystem *getInstance();
 
-        Depreciable *getProperty(std::string dbCode);
+        Asset *getProperty(std::string dbCode);
 
         double sellSellables(Entry *newEntry); // return the COGS
 
@@ -29,7 +29,7 @@ namespace inventory
 
         void addNewItem(Sellable *newSellable);
 
-        void addNewProperty(Depreciable *newProperty);
+        void addNewProperty(Asset *newProperty);
 
         std::string to_string();
     };

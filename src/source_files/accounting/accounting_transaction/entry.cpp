@@ -27,7 +27,7 @@ std::vector<std::string> Entry::getInsertParameter()
         toRet.push_back(this->getDBCode());
     }
     toRet.push_back(this->transactionDB);
-    toRet.push_back(std::to_string(this->debit));
+    toRet.push_back(this->debit ? "true" : "false");
     toRet.push_back(std::to_string(this->amount));
     toRet.push_back(util::enums::tAccountsNameMap[this->tAccount]);
     toRet.push_back(util::enums::accountTitlesMap[this->account]);

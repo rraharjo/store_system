@@ -26,7 +26,7 @@ void StoreSystem::sellItem(SellingTransaction *sellingTransaction)
     this->aSystem->addTransaction(accountingTransaction2);
 }
 
-void StoreSystem::buyItem(PurchaseTransaction *purchaseTransaction)
+void StoreSystem::buyItem(PurchaseTransaction *purchaseTransaction)//break here
 {   
     double purchaseAmount = 0;
     for (inventory::Entry *entry : purchaseTransaction->getAllEntries())
@@ -57,7 +57,7 @@ void StoreSystem::disposeProperty(SellingTransaction *sellingTransaction){//one 
     for (inventory::Entry *entry : sellingTransaction->getAllEntries()){
         sellAmount += entry->getPrice();
         propertyValuation += this->iSystem->sellProperties(entry);
-        toDispose = this->iSystem->getProperty(entry->getPropertiesDBCode());
+        toDispose = (inventory::Depreciable*) this->iSystem->getProperty(entry->getPropertiesDBCode());//TO DO: verify the casting process
     }
     std::string description = "Selling for transaction code : " + sellingTransaction->getDBCode();
     accounting::Transaction *accountingTransaction = util::factory::SellEquipmentFactory(description, toDispose->getCurrentAccumulatedDepreciation(), propertyValuation, sellAmount, 0).createTransaction();

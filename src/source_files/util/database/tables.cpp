@@ -59,7 +59,7 @@ std::vector<std::string> Table::insertRow(std::vector<std::string> &values)
             query += "to_date('" + values[curValue++] + "', 'dd-MM-yyyy'),";
             break;
         case util::enums::ColumnTypes::BOOLCOL:
-            query += std::stoi(values[curValue++]) ? "true," : "false,";
+            query += values[curValue++] + ",";
             break;
         case util::enums::ColumnTypes::FLOATCOL:
         case util::enums::ColumnTypes::NUMBERCOL:
@@ -84,7 +84,7 @@ std::vector<std::string> Table::insertRow(std::vector<std::string> &values)
             query += "to_date('" + values[curValue++] + "', 'dd-MM-yyyy'))";
             break;
         case util::enums::ColumnTypes::BOOLCOL:
-            query += std::stoi(values[curValue++]) ? "true)" : "false)";
+            query += values[curValue++] + ")";//Error
             break;
         case util::enums::ColumnTypes::FLOATCOL:
         case util::enums::ColumnTypes::NUMBERCOL:

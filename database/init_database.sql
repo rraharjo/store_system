@@ -117,6 +117,11 @@ alter table accounting_transaction
 add constraint fk_at_selling_transaction foreign key (inventory_id)
     references sellable (database_code);
 
+--alter table accounting_transaction
+--add constraint inventory_id_or_equipment_id_not_null check
+--    (equipment_id is null and inventory_id is not null or
+--        equipment_id is not null and inventory_id is null);
+
 create table accounting_transaction_entry(
     database_code       text            primary key,
     at_db_code          text            not null,

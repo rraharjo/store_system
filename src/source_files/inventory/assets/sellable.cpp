@@ -1,4 +1,3 @@
-#include <deque>
 #include "inventory/assets/sellable.hpp"
 
 using namespace inventory;
