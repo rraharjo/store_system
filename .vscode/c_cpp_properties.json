@@ -4,7 +4,7 @@
             "name": "Win32",
             "includePath": [
                 "C:/Program Files/PostgreSQL/16/include",
-                "${workspaceFolder}/src/.env",
+                "${workspaceFolder}/src/.env/header_files",
                 "${workspaceFolder}/src/header_files"
             ],
             "defines": [
