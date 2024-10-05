@@ -2,7 +2,8 @@
 
 using namespace util;
 
-const std::string connectionInfo = "dbname=store_system user=postgres password=Sek@rsuli32! port=5432";
+const std::string connectionInfo = "dbname=store_system user=postgres password=" + privateInfo::postgres + " port=5432";
+
 
 DB* DB::instance = NULL;
 

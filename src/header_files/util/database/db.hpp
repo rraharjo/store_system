@@ -2,6 +2,7 @@
 #include <vector>
 #include <iostream>
 #include "libpq-fe.h"
+#include "private.hpp"
 
 #ifndef DBCONNECTION_HPP
 #define DBCONNECTION_HPP
