@@ -19,8 +19,7 @@ namespace accounting
         std::vector<Entry *> creditEntries;
         std::string name;
         util::Date *transactionDate;
-        std::string inventoryID;
-        std::string equipmentID;
+        std::string entityID;
         int dbCode;
 
     protected:
@@ -37,9 +36,9 @@ namespace accounting
 
         Transaction(std::string name);
 
-        Transaction(std::string name, util::Date *transactionDate, std::string tid);
+        Transaction(std::string name, util::Date *transactionDate, std::string pid);
 
-        Transaction(std::string name, std::string tid);
+        Transaction(std::string name, std::string pid);
 
         ~Transaction();
 

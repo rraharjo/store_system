@@ -56,7 +56,7 @@ void InventorySystem::purchaseProperties(Entry *newEntry)
     this->assets[newEntry->getPropertiesDBCode()]->addPurchase((PurchaseEntry*) newEntry);
 }
 
-void InventorySystem::addNewItem(Sellable *newSellable)
+void InventorySystem::addNewItem(Inventory *newSellable)
 {
     this->sellables[newSellable->getDBCode()] = newSellable;
 }

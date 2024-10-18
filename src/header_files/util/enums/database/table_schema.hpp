@@ -8,19 +8,19 @@ namespace util
     {
         enum class TableNames
         {
-            SELLABLE = 0,
+            INVENTORY = 0,
             PURCHASEENTRY,
             PURCHASETRANSACTION,
             SELLINGENTRY,
             SELLINGTRANSACTION,
-            DEPRECIABLE,
+            ASSETS,
             ACCOUNTINGTRANSACTION,
             ACCOUNTINGENTRY
         };
 
         extern std::map<TableNames, std::string> tableNamesMap;
 
-        enum class SellableTable
+        enum class InventoryTable
         {
             DATABASECODE = 0,
             ITEMCODE,
@@ -28,13 +28,13 @@ namespace util
             SELLINGPRICE
         };
 
-        extern std::map<SellableTable, ColumnSchema> sellableTableColumns;
+        extern std::map<InventoryTable, ColumnSchema> inventoryTableColumns;
 
         enum class PurchaseEntryTable
         {
             DATABASECODE = 0,
-            SELLABLECODE,
-            PROPERTIESCODE,
+            INVENTORYDBCODE,
+            ASSETSCODE,
             PURCHASETRANSACTIONCODE,
             PURCHASEPRICE,
             BOUGHTQTY,
@@ -56,8 +56,8 @@ namespace util
         enum class SellingEntryTable
         {
             DATABASECODE = 0,
-            SELLABLECODE,
-            PROPERTIESCODE,
+            INVENTORYDBCODE,
+            ASSETSCODE,
             SELLINGTRANSACTIONCODE,
             SELLINGPRICE,
             QTY
@@ -74,7 +74,7 @@ namespace util
 
         extern std::map<SellingTransactionTable, ColumnSchema> sellingTransactionTableColumns;
 
-        enum class DepreciableTable
+        enum class AssetsTable
         {
             DATABASECODE = 0,
             ITEMNAME,
@@ -85,15 +85,14 @@ namespace util
             DATESOLD
         };
 
-        extern std::map<DepreciableTable, ColumnSchema> depreciableTableColumns;
+        extern std::map<AssetsTable, ColumnSchema> assetsTableColumns;
 
         enum class AccountingTransactionTable
         {
             DATABASECODE = 0,
             TRANSACTIONNAME,
             TRANSACTIONDATE,
-            INVENTORYID,
-            PROPERTIESID
+            ENTITYID
         };
 
         extern std::map<AccountingTransactionTable, ColumnSchema> accountingTransactionTableColumns;

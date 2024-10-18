@@ -3,25 +3,25 @@ using namespace util::enums;
 using namespace util;
 
 std::map<TableNames, std::string> util::enums::tableNamesMap = {
-    {TableNames::SELLABLE, "sellable"},
+    {TableNames::INVENTORY, "inventory"},
     {TableNames::PURCHASEENTRY, "purchase_entry"},
     {TableNames::PURCHASETRANSACTION, "purchase_transaction"},
     {TableNames::SELLINGENTRY, "selling_entry"},
     {TableNames::SELLINGTRANSACTION, "selling_transaction"},
-    {TableNames::DEPRECIABLE, "depreciable_table"},
+    {TableNames::ASSETS, "assets"},
     {TableNames::ACCOUNTINGTRANSACTION, "accounting_transaction"},
     {TableNames::ACCOUNTINGENTRY, "accounting_transaction_entry"}};
 /**************************************************************************************************************************/
-std::map<SellableTable, ColumnSchema> util::enums::sellableTableColumns = {
-    {SellableTable::DATABASECODE, ColumnSchema{"database_code", ColumnTypes::TEXTCOL}},
-    {SellableTable::ITEMCODE, ColumnSchema{"item_code", ColumnTypes::TEXTCOL}},
-    {SellableTable::ITEMNAME, ColumnSchema{"item_name", ColumnTypes::TEXTCOL}},
-    {SellableTable::SELLINGPRICE, ColumnSchema{"selling_price", ColumnTypes::FLOATCOL}}};
+std::map<InventoryTable, ColumnSchema> util::enums::inventoryTableColumns = {
+    {InventoryTable::DATABASECODE, ColumnSchema{"database_code", ColumnTypes::TEXTCOL}},
+    {InventoryTable::ITEMCODE, ColumnSchema{"item_code", ColumnTypes::TEXTCOL}},
+    {InventoryTable::ITEMNAME, ColumnSchema{"item_name", ColumnTypes::TEXTCOL}},
+    {InventoryTable::SELLINGPRICE, ColumnSchema{"selling_price", ColumnTypes::FLOATCOL}}};
 
 std::map<PurchaseEntryTable, ColumnSchema> util::enums::purchaseEntryTableColumns = {
     {PurchaseEntryTable::DATABASECODE, ColumnSchema{"database_code", ColumnTypes::TEXTCOL}},
-    {PurchaseEntryTable::SELLABLECODE, ColumnSchema{"sellable_db_code", ColumnTypes::TEXTCOL}},
-    {PurchaseEntryTable::PROPERTIESCODE, ColumnSchema{"properties_db_code", ColumnTypes::TEXTCOL}},
+    {PurchaseEntryTable::INVENTORYDBCODE, ColumnSchema{"inventory_db_code", ColumnTypes::TEXTCOL}},
+    {PurchaseEntryTable::ASSETSCODE, ColumnSchema{"assets_db_code", ColumnTypes::TEXTCOL}},
     {PurchaseEntryTable::PURCHASETRANSACTIONCODE, ColumnSchema{"purchase_db_code", ColumnTypes::TEXTCOL}},
     {PurchaseEntryTable::PURCHASEPRICE, ColumnSchema{"purchase_price", ColumnTypes::FLOATCOL}},
     {PurchaseEntryTable::BOUGHTQTY, ColumnSchema{"qty", ColumnTypes::NUMBERCOL}},
@@ -35,8 +35,8 @@ std::map<PurchaseTransactionTable, ColumnSchema> util::enums::purchaseTransactio
 
 std::map<SellingEntryTable, ColumnSchema> util::enums::sellingEntryTableColumns = {
     {SellingEntryTable::DATABASECODE, ColumnSchema{"database_code", ColumnTypes::TEXTCOL}},
-    {SellingEntryTable::SELLABLECODE, ColumnSchema{"sellable_db_code", ColumnTypes::TEXTCOL}},
-    {SellingEntryTable::PROPERTIESCODE, ColumnSchema{"properties_db_code", ColumnTypes::TEXTCOL}},
+    {SellingEntryTable::INVENTORYDBCODE, ColumnSchema{"inventory_db_code", ColumnTypes::TEXTCOL}},
+    {SellingEntryTable::ASSETSCODE, ColumnSchema{"assets_db_code", ColumnTypes::TEXTCOL}},
     {SellingEntryTable::SELLINGTRANSACTIONCODE, ColumnSchema{"selling_transaction_db_code", ColumnTypes::TEXTCOL}},
     {SellingEntryTable::SELLINGPRICE, ColumnSchema{"selling_price", ColumnTypes::FLOATCOL}},
     {SellingEntryTable::QTY, ColumnSchema{"qty", ColumnTypes::NUMBERCOL}}};
@@ -46,21 +46,20 @@ std::map<SellingTransactionTable, ColumnSchema> util::enums::sellingTransactionT
     {SellingTransactionTable::TRANSACTIONDATE, ColumnSchema{"transaction_date", ColumnTypes::DATECOL}},
     {SellingTransactionTable::ISFINISHED, ColumnSchema{"is_finished", ColumnTypes::BOOLCOL}}};
 
-std::map<DepreciableTable, ColumnSchema> util::enums::depreciableTableColumns = {
-    {DepreciableTable::DATABASECODE, ColumnSchema{"database_code", ColumnTypes::TEXTCOL}},
-    {DepreciableTable::ITEMNAME, ColumnSchema{"item_name", ColumnTypes::TEXTCOL}},
-    {DepreciableTable::PURCHASECOST, ColumnSchema{"purchase_cost", ColumnTypes::FLOATCOL}},
-    {DepreciableTable::RESIDUALVALUE, ColumnSchema{"residual_value", ColumnTypes::FLOATCOL}},
-    {DepreciableTable::YEARUSEFULLIFE, ColumnSchema{"year_useful_life", ColumnTypes::NUMBERCOL}},
-    {DepreciableTable::DATEPURCHASED, ColumnSchema{"date_purchased", ColumnTypes::DATECOL}},
-    {DepreciableTable::DATESOLD, ColumnSchema{"date_sold", ColumnTypes::DATECOL}}};
+std::map<AssetsTable, ColumnSchema> util::enums::assetsTableColumns = {
+    {AssetsTable::DATABASECODE, ColumnSchema{"database_code", ColumnTypes::TEXTCOL}},
+    {AssetsTable::ITEMNAME, ColumnSchema{"item_name", ColumnTypes::TEXTCOL}},
+    {AssetsTable::PURCHASECOST, ColumnSchema{"purchase_cost", ColumnTypes::FLOATCOL}},
+    {AssetsTable::RESIDUALVALUE, ColumnSchema{"residual_value", ColumnTypes::FLOATCOL}},
+    {AssetsTable::YEARUSEFULLIFE, ColumnSchema{"year_useful_life", ColumnTypes::NUMBERCOL}},
+    {AssetsTable::DATEPURCHASED, ColumnSchema{"date_purchased", ColumnTypes::DATECOL}},
+    {AssetsTable::DATESOLD, ColumnSchema{"date_sold", ColumnTypes::DATECOL}}};
 
 std::map<AccountingTransactionTable, ColumnSchema> util::enums::accountingTransactionTableColumns = {
     {AccountingTransactionTable::DATABASECODE, ColumnSchema{"database_code", ColumnTypes::TEXTCOL}},
     {AccountingTransactionTable::TRANSACTIONNAME, ColumnSchema{"transaction_name", ColumnTypes::TEXTCOL}},
     {AccountingTransactionTable::TRANSACTIONDATE, ColumnSchema{"transaction_date", ColumnTypes::DATECOL}},
-    {AccountingTransactionTable::INVENTORYID, ColumnSchema{"inventory_id", ColumnTypes::TEXTCOL}},
-    {AccountingTransactionTable::PROPERTIESID, ColumnSchema{"equipment_id", ColumnTypes::TEXTCOL}}};
+    {AccountingTransactionTable::ENTITYID, ColumnSchema{"entity_id", ColumnTypes::TEXTCOL}}};
 
 std::map<AccountingEntryTable, ColumnSchema> util::enums::accountingEntryTableColumns = {
     {AccountingEntryTable::DATABASECODE, ColumnSchema{"database_code", ColumnTypes::TEXTCOL}},

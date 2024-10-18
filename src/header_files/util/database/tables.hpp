@@ -26,18 +26,18 @@ namespace util
         std::string getTableName();
     };
 
-    class SellableTable : public Table
+    class InventoryTable : public Table
     {
     private:
-        static SellableTable *instance;
+        static InventoryTable *instance;
 
     protected:
-        SellableTable(std::string tableName);
+        InventoryTable(std::string tableName);
 
     public:
-        static SellableTable *getInstance();
+        static InventoryTable *getInstance();
 
-        ~SellableTable();
+        ~InventoryTable();
     };
 
     class PurchaseTransactionTable : public Table
@@ -96,18 +96,18 @@ namespace util
         ~SellingTransactionTable();
     };
 
-    class DepreciableTable : public Table
+    class AssetsTable : public Table
     {
     private:
-        static DepreciableTable *instance;
+        static AssetsTable *instance;
 
     protected:
-        DepreciableTable(std::string tableName);
+        AssetsTable(std::string tableName);
 
     public:
-        static DepreciableTable *getInstance();
+        static AssetsTable *getInstance();
 
-        ~DepreciableTable();
+        ~AssetsTable();
     };
 
     class AccountingTransactionTable : public Table

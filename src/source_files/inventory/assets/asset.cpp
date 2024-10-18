@@ -1,7 +1,7 @@
 #include "inventory/assets/asset.hpp"
 using namespace inventory;
 
-util::Table *Asset::classTable = util::DepreciableTable::getInstance();
+util::Table *Asset::classTable = util::AssetsTable::getInstance();
 
 void Asset::insertToDB(){
     this->insertToDBWithTable(Asset::classTable);

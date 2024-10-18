@@ -19,8 +19,7 @@ Transaction::Transaction(std::string name, util::Date *transactionDate) : util::
     this->debitEntries = {};
     this->creditEntries = {};
     this->transactionDate = transactionDate;
-    this->inventoryID = "";
-    this->equipmentID = "";
+    this->entityID = "";
     this->setDBCode(this->createDBCode());
     this->insertToDB();
 }
@@ -35,16 +34,7 @@ Transaction::Transaction(std::string name, util::Date *transactionDate, std::str
     this->debitEntries = {};
     this->creditEntries = {};
     this->transactionDate = transactionDate;
-    if (pid.compare(0, 3, "INV") == 0)
-    {
-        this->inventoryID = pid;
-        this->equipmentID = "";
-    }
-    else
-    {
-        this->equipmentID = pid;
-        this->inventoryID = "";
-    }
+    this->entityID = pid;
     this->setDBCode(this->createDBCode());
     this->insertToDB();
 }
@@ -78,8 +68,7 @@ std::vector<std::string> Transaction::getInsertParameter()
     args.push_back(this->getDBCode());
     args.push_back(this->name);
     args.push_back(this->transactionDate->toDBFormat());
-    args.push_back(this->inventoryID == "" ? "NULL" : this->inventoryID);
-    args.push_back(this->equipmentID == "" ? "NULL" : this->equipmentID);
+    args.push_back(this->entityID == "" ? "NULL" : this->entityID);
     return args;
 }
 

@@ -1,10 +1,11 @@
 #include "util/factory/transaction_factory.hpp"
 using namespace util::factory;
 
-AccountingTransactionFactory::AccountingTransactionFactory(util::Date *transactionDate, std::string transactionName)
+AccountingTransactionFactory::AccountingTransactionFactory(util::Date* transactionDate, std::string transactionName, std::string foreignID)
 {
     this->transactionDate = transactionDate;
     this->transactionName = transactionName;
+    this->foreignID = foreignID;
 }
 
 AccountingTransactionFactory::~AccountingTransactionFactory()
@@ -19,7 +20,7 @@ accounting::Transaction *GoodsPurchaseFactory::createTransaction()
     {
         throw std::invalid_argument("total paid amount does not match purchase amount");
     }
-    accounting::Transaction *newTransaction = new accounting::Transaction(this->transactionName);
+    accounting::Transaction *newTransaction = new accounting::Transaction(this->transactionName, this->foreignID);
     accounting::Entry *increaseInventory = new accounting::Entry(true, this->purchaseAmount, util::enums::AccountTitles::ASSETS, util::enums::TAccounts::INVENTORY);
     newTransaction->addEntry(increaseInventory);
     if (this->paidCash > 0.0)
@@ -35,15 +36,11 @@ accounting::Transaction *GoodsPurchaseFactory::createTransaction()
     return newTransaction;
 };
 
-GoodsPurchaseFactory::GoodsPurchaseFactory(util::Date *transactionDate, std::string transactionName, double purchaseAmount, double paidCash, double paidCredit) : AccountingTransactionFactory(transactionDate, transactionName)
+GoodsPurchaseFactory::GoodsPurchaseFactory(util::Date* transactionDate, std::string transactionName, std::string foreignID, double purchaseAmount, double paidCash, double paidCredit) : AccountingTransactionFactory(transactionDate, transactionName, foreignID)
 {
     this->purchaseAmount = purchaseAmount;
     this->paidCash = paidCash;
     this->paidCredit = paidCredit;
-}
-
-GoodsPurchaseFactory::GoodsPurchaseFactory(std::string transactionName, double purchaseAmount, double paidCash, double paidCredit) : GoodsPurchaseFactory(new util::Date(), transactionName, purchaseAmount, paidCash, paidCredit)
-{
 }
 
 // Selling Goods
@@ -53,7 +50,7 @@ accounting::Transaction *GoodsSellingFactory::createTransaction()
     {
         throw std::invalid_argument("total paid amount does not match purchase amount");
     }
-    accounting::Transaction *newTransaction = new accounting::Transaction(this->transactionName);
+    accounting::Transaction *newTransaction = new accounting::Transaction(this->transactionName, this->foreignID);
     accounting::Entry *increaseRevenue = new accounting::Entry(false, this->sellAmount, util::enums::AccountTitles::STOCKHOLDERSEQUITY, util::enums::TAccounts::REV);
     newTransaction->addEntry(increaseRevenue);
     if (this->paidCash > 0.0)
@@ -69,21 +66,17 @@ accounting::Transaction *GoodsSellingFactory::createTransaction()
     return newTransaction;
 }
 
-GoodsSellingFactory::GoodsSellingFactory(util::Date *transactionDate, std::string transactionName, double sellAmount, double paidCash, double paidCredit) : AccountingTransactionFactory(transactionDate, transactionName)
+GoodsSellingFactory::GoodsSellingFactory(util::Date* transactionDate, std::string transactionName, std::string foreignID, double sellAmount, double paidCash, double paidCredit) : AccountingTransactionFactory(transactionDate, transactionName, foreignID)
 {
     this->sellAmount = sellAmount;
     this->paidCash = paidCash;
     this->paidCredit = paidCredit;
 }
 
-GoodsSellingFactory::GoodsSellingFactory(std::string transactionName, double sellAmount, double paidCash, double paidCredit) : GoodsSellingFactory(new util::Date(), transactionName, sellAmount, paidCash, paidCredit)
-{
-}
-
 // Adjusting Cost of Goods Sold
 accounting::Transaction *GoodsSoldCOGSFactory::createTransaction()
 {
-    accounting::Transaction *newTransaction = new accounting::Transaction(this->transactionName);
+    accounting::Transaction *newTransaction = new accounting::Transaction(this->transactionName, this->foreignID);
     accounting::Entry *reduceInventory = new accounting::Entry(false, this->cogs, util::enums::AccountTitles::ASSETS, util::enums::TAccounts::INVENTORY);
     newTransaction->addEntry(reduceInventory);
     accounting::Entry *increaseCOGS = new accounting::Entry(true, this->cogs, util::enums::AccountTitles::STOCKHOLDERSEQUITY, util::enums::TAccounts::COGS);
@@ -91,13 +84,9 @@ accounting::Transaction *GoodsSoldCOGSFactory::createTransaction()
     return newTransaction;
 }
 
-GoodsSoldCOGSFactory::GoodsSoldCOGSFactory(util::Date *transactionDate, std::string transactionName, double cogs) : AccountingTransactionFactory(transactionDate, transactionName)
+GoodsSoldCOGSFactory::GoodsSoldCOGSFactory(util::Date* transactionDate, std::string transactionName, std::string foreignID, double cogs) : AccountingTransactionFactory(transactionDate, transactionName, foreignID)
 {
     this->cogs = cogs;
-}
-
-GoodsSoldCOGSFactory::GoodsSoldCOGSFactory(std::string transactionName, double cogs) : GoodsSoldCOGSFactory(new util::Date(), transactionName, cogs)
-{
 }
 
 // Buy Equipment Transaction
@@ -107,7 +96,7 @@ accounting::Transaction *BuyEquipmentFactory::createTransaction()
     {
         throw std::invalid_argument("total paid amount does not match purchase amount");
     }
-    accounting::Transaction *newTransaction = new accounting::Transaction(this->transactionName);
+    accounting::Transaction *newTransaction = new accounting::Transaction(this->transactionName, this->foreignID);
     accounting::Entry *increaseAssets = new accounting::Entry(true, this->equipmentValue, util::enums::AccountTitles::ASSETS, util::enums::TAccounts::EQUIPMENT);
     newTransaction->addEntry(increaseAssets);
     if (this->paidCash > 0.0)
@@ -123,21 +112,17 @@ accounting::Transaction *BuyEquipmentFactory::createTransaction()
     return newTransaction;
 }
 
-BuyEquipmentFactory::BuyEquipmentFactory(util::Date *transactionDate, std::string transactionName, double equipmentValue, double paidCash, double paidCredit) : AccountingTransactionFactory(transactionDate, transactionName)
+BuyEquipmentFactory::BuyEquipmentFactory(util::Date* transactionDate, std::string transactionName, std::string foreignID, double equipmentValue, double paidCash, double paidCredit) : AccountingTransactionFactory(transactionDate, transactionName, foreignID)
 {
     this->equipmentValue = equipmentValue;
     this->paidCash = paidCash;
     this->paidCredit = paidCredit;
 }
 
-BuyEquipmentFactory::BuyEquipmentFactory(std::string transactionName, double equipmentValue, double paidCash, double paidCredit) : BuyEquipmentFactory(new util::Date(), transactionName, equipmentValue, paidCash, paidCredit)
-{
-}
-
 // Sell Equipment Transaction
 accounting::Transaction *SellEquipmentFactory::createTransaction()
 {
-    accounting::Transaction *newTransaction = new accounting::Transaction(this->transactionName);
+    accounting::Transaction *newTransaction = new accounting::Transaction(this->transactionName, this->foreignID);
     if (this->paidCash > 0.0)
     {
         accounting::Entry *increaseCash = new accounting::Entry(true, this->paidCash, util::enums::AccountTitles::ASSETS, util::enums::TAccounts::CASH);
@@ -167,7 +152,7 @@ accounting::Transaction *SellEquipmentFactory::createTransaction()
     return newTransaction;
 }
 
-SellEquipmentFactory::SellEquipmentFactory(util::Date *transactionDate, std::string transactionName, double accumulatedDepreciation, double initialValue, double paidCash, double paidCredit) : AccountingTransactionFactory(transactionDate, transactionName)
+SellEquipmentFactory::SellEquipmentFactory(util::Date* transactionDate, std::string transactionName, std::string foreignID, double accumulatedDepreciation, double initialValue, double paidCash, double paidCredit) : AccountingTransactionFactory(transactionDate, transactionName, foreignID)
 {
     this->accumulatedDepreciation = accumulatedDepreciation;
     this->initialValue = initialValue;
@@ -175,14 +160,10 @@ SellEquipmentFactory::SellEquipmentFactory(util::Date *transactionDate, std::str
     this->paidCredit = paidCredit;
 }
 
-SellEquipmentFactory::SellEquipmentFactory(std::string transactionName, double accumulatedDepreciation, double initialValue, double paidCash, double paidCredit) : SellEquipmentFactory(new util::Date(), transactionName, accumulatedDepreciation, initialValue, paidCash, paidCredit)
-{
-}
-
 // Apply Depreciation Transaction
 accounting::Transaction *ApplyDepreciationFactory::createTransaction()
 {
-    accounting::Transaction *newTransaction = new accounting::Transaction(this->transactionName);
+    accounting::Transaction *newTransaction = new accounting::Transaction(this->transactionName, this->foreignID);
     accounting::Entry *increaseAccumulatedDepreciation = new accounting::Entry(false, this->depreciationAmount, util::enums::AccountTitles::ASSETS, util::enums::TAccounts::ACCUMDEPRECIATION);
     newTransaction->addEntry(increaseAccumulatedDepreciation);
     accounting::Entry *reduceEquipment = new accounting::Entry(true, this->depreciationAmount, util::enums::AccountTitles::STOCKHOLDERSEQUITY, util::enums::TAccounts::DEPREXP);
@@ -190,19 +171,15 @@ accounting::Transaction *ApplyDepreciationFactory::createTransaction()
     return newTransaction;
 }
 
-ApplyDepreciationFactory::ApplyDepreciationFactory(util::Date *transactionDate, std::string transactionName, double depreciationAmount) : AccountingTransactionFactory(transactionDate, transactionName)
+ApplyDepreciationFactory::ApplyDepreciationFactory(util::Date* transactionDate, std::string transactionName, std::string foreignID, double depreciationAmount) : AccountingTransactionFactory(transactionDate, transactionName, foreignID)
 {
     this->depreciationAmount = depreciationAmount;
-}
-
-ApplyDepreciationFactory::ApplyDepreciationFactory(std::string transactionName, double depreciationAmount) : ApplyDepreciationFactory(new util::Date(), transactionName, depreciationAmount)
-{
 }
 
 // Pay Wages Transaction
 accounting::Transaction *EmployeeWagesFactory::createTransaction()
 {
-    accounting::Transaction *newTransaction = new accounting::Transaction(this->transactionName);
+    accounting::Transaction *newTransaction = new accounting::Transaction(this->transactionName, this->foreignID);
     accounting::Entry *reduceCash = new accounting::Entry(false, this->wagesAmount, util::enums::AccountTitles::ASSETS, util::enums::TAccounts::CASH);
     newTransaction->addEntry(reduceCash);
     accounting::Entry *increaseExpense = new accounting::Entry(true, this->wagesAmount, util::enums::AccountTitles::STOCKHOLDERSEQUITY, util::enums::TAccounts::WAGEEXP);
@@ -210,11 +187,7 @@ accounting::Transaction *EmployeeWagesFactory::createTransaction()
     return newTransaction;
 }
 
-EmployeeWagesFactory::EmployeeWagesFactory(util::Date *transactionDate, std::string transactionName, double wagesAmount) : AccountingTransactionFactory(transactionDate, transactionName)
+EmployeeWagesFactory::EmployeeWagesFactory(util::Date* transactionDate, std::string transactionName, std::string foreignID, double wagesAmount) : AccountingTransactionFactory(transactionDate, transactionName, foreignID)
 {
     this->wagesAmount = wagesAmount;
-}
-
-EmployeeWagesFactory::EmployeeWagesFactory(std::string transactionName, double wagesAmount) : EmployeeWagesFactory(new util::Date(), transactionName, wagesAmount)
-{
 }

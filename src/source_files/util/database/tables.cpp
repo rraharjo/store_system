@@ -1,14 +1,14 @@
 #include "util/database/tables.hpp"
 
 using namespace util;
-SellableTable *SellableTable::instance = NULL;
+InventoryTable *InventoryTable::instance = NULL;
 PurchaseTransactionTable *PurchaseTransactionTable::instance = NULL;
 PurchaseEntryTable *PurchaseEntryTable::instance = NULL;
 SellingEntryTable *SellingEntryTable::instance = NULL;
 SellingTransactionTable *SellingTransactionTable::instance = NULL;
 AccountingTransactionTable *AccountingTransactionTable::instance = NULL;
 AccountingEntryTable *AccountingEntryTable::instance = NULL;
-DepreciableTable *DepreciableTable::instance = NULL;
+AssetsTable *AssetsTable::instance = NULL;
 
 // parent class
 Table::Table(std::string tableName)
@@ -174,27 +174,27 @@ std::vector<std::string> Table::updateRow(std::string id, std::vector<std::strin
     return instance->executeQuery(query)[0];
 }
 
-// Sellable Table
-SellableTable::SellableTable(std::string tableName) : Table::Table(tableName)
+// Inventory Table
+InventoryTable::InventoryTable(std::string tableName) : Table::Table(tableName)
 {
-    for (auto it = util::enums::sellableTableColumns.begin(); it != util::enums::sellableTableColumns.end(); it++)
+    for (auto it = util::enums::inventoryTableColumns.begin(); it != util::enums::inventoryTableColumns.end(); it++)
     {
         this->schema.push_back(it->second);
     }
 }
 
-SellableTable::~SellableTable()
+InventoryTable::~InventoryTable()
 {
-    SellableTable::instance = NULL;
+    InventoryTable::instance = NULL;
 }
 
-SellableTable *SellableTable::getInstance()
+InventoryTable *InventoryTable::getInstance()
 {
-    if (SellableTable::instance == NULL)
+    if (InventoryTable::instance == NULL)
     {
-        SellableTable::instance = new SellableTable(util::enums::tableNamesMap[util::enums::TableNames::SELLABLE]);
+        InventoryTable::instance = new InventoryTable(util::enums::tableNamesMap[util::enums::TableNames::INVENTORY]);
     }
-    return SellableTable::instance;
+    return InventoryTable::instance;
 }
 
 // purchase transaction table
@@ -289,27 +289,27 @@ SellingTransactionTable *SellingTransactionTable::getInstance()
     return SellingTransactionTable::instance;
 }
 
-// Depreciable Table
-DepreciableTable::DepreciableTable(std::string tableName) : Table::Table(tableName)
+// Equipment Table
+AssetsTable::AssetsTable(std::string tableName) : Table::Table(tableName)
 {
-    for (auto it = util::enums::depreciableTableColumns.begin(); it != util::enums::depreciableTableColumns.end(); it++)
+    for (auto it = util::enums::assetsTableColumns.begin(); it != util::enums::assetsTableColumns.end(); it++)
     {
         this->schema.push_back(it->second);
     }
 }
 
-DepreciableTable::~DepreciableTable()
+AssetsTable::~AssetsTable()
 {
-    DepreciableTable::instance = NULL;
+    AssetsTable::instance = NULL;
 }
 
-DepreciableTable *DepreciableTable::getInstance()
+AssetsTable *AssetsTable::getInstance()
 {
-    if (DepreciableTable::instance == NULL)
+    if (AssetsTable::instance == NULL)
     {
-        DepreciableTable::instance = new DepreciableTable(util::enums::tableNamesMap[util::enums::TableNames::DEPRECIABLE]);
+        AssetsTable::instance = new AssetsTable(util::enums::tableNamesMap[util::enums::TableNames::ASSETS]);
     }
-    return DepreciableTable::instance;
+    return AssetsTable::instance;
 }
 
 // accounting transaction table
