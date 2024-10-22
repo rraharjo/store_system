@@ -1,7 +1,7 @@
 #include "util/factory/transaction_factory.hpp"
 using namespace util::factory;
 
-AccountingTransactionFactory::AccountingTransactionFactory(util::Date* transactionDate, std::string transactionName, std::string foreignID)
+AccountingTransactionFactory::AccountingTransactionFactory(util::Date *transactionDate, std::string transactionName, std::string foreignID)
 {
     this->transactionDate = transactionDate;
     this->transactionName = transactionName;
@@ -36,7 +36,7 @@ accounting::Transaction *GoodsPurchaseFactory::createTransaction()
     return newTransaction;
 };
 
-GoodsPurchaseFactory::GoodsPurchaseFactory(util::Date* transactionDate, std::string transactionName, std::string foreignID, double purchaseAmount, double paidCash, double paidCredit) : AccountingTransactionFactory(transactionDate, transactionName, foreignID)
+GoodsPurchaseFactory::GoodsPurchaseFactory(util::Date *transactionDate, std::string transactionName, std::string foreignID, double purchaseAmount, double paidCash, double paidCredit) : AccountingTransactionFactory(transactionDate, transactionName, foreignID)
 {
     this->purchaseAmount = purchaseAmount;
     this->paidCash = paidCash;
@@ -66,7 +66,7 @@ accounting::Transaction *GoodsSellingFactory::createTransaction()
     return newTransaction;
 }
 
-GoodsSellingFactory::GoodsSellingFactory(util::Date* transactionDate, std::string transactionName, std::string foreignID, double sellAmount, double paidCash, double paidCredit) : AccountingTransactionFactory(transactionDate, transactionName, foreignID)
+GoodsSellingFactory::GoodsSellingFactory(util::Date *transactionDate, std::string transactionName, std::string foreignID, double sellAmount, double paidCash, double paidCredit) : AccountingTransactionFactory(transactionDate, transactionName, foreignID)
 {
     this->sellAmount = sellAmount;
     this->paidCash = paidCash;
@@ -84,7 +84,8 @@ accounting::Transaction *GoodsSoldCOGSFactory::createTransaction()
     return newTransaction;
 }
 
-GoodsSoldCOGSFactory::GoodsSoldCOGSFactory(util::Date* transactionDate, std::string transactionName, std::string foreignID, double cogs) : AccountingTransactionFactory(transactionDate, transactionName, foreignID)
+GoodsSoldCOGSFactory::GoodsSoldCOGSFactory(util::Date *transactionDate, std::string transactionName, std::string foreignID, double cogs)
+    : AccountingTransactionFactory(transactionDate, transactionName, foreignID)
 {
     this->cogs = cogs;
 }
@@ -112,7 +113,7 @@ accounting::Transaction *BuyEquipmentFactory::createTransaction()
     return newTransaction;
 }
 
-BuyEquipmentFactory::BuyEquipmentFactory(util::Date* transactionDate, std::string transactionName, std::string foreignID, double equipmentValue, double paidCash, double paidCredit) : AccountingTransactionFactory(transactionDate, transactionName, foreignID)
+BuyEquipmentFactory::BuyEquipmentFactory(util::Date *transactionDate, std::string transactionName, std::string foreignID, double equipmentValue, double paidCash, double paidCredit) : AccountingTransactionFactory(transactionDate, transactionName, foreignID)
 {
     this->equipmentValue = equipmentValue;
     this->paidCash = paidCash;
@@ -152,7 +153,7 @@ accounting::Transaction *SellEquipmentFactory::createTransaction()
     return newTransaction;
 }
 
-SellEquipmentFactory::SellEquipmentFactory(util::Date* transactionDate, std::string transactionName, std::string foreignID, double accumulatedDepreciation, double initialValue, double paidCash, double paidCredit) : AccountingTransactionFactory(transactionDate, transactionName, foreignID)
+SellEquipmentFactory::SellEquipmentFactory(util::Date *transactionDate, std::string transactionName, std::string foreignID, double accumulatedDepreciation, double initialValue, double paidCash, double paidCredit) : AccountingTransactionFactory(transactionDate, transactionName, foreignID)
 {
     this->accumulatedDepreciation = accumulatedDepreciation;
     this->initialValue = initialValue;
@@ -171,7 +172,7 @@ accounting::Transaction *ApplyDepreciationFactory::createTransaction()
     return newTransaction;
 }
 
-ApplyDepreciationFactory::ApplyDepreciationFactory(util::Date* transactionDate, std::string transactionName, std::string foreignID, double depreciationAmount) : AccountingTransactionFactory(transactionDate, transactionName, foreignID)
+ApplyDepreciationFactory::ApplyDepreciationFactory(util::Date *transactionDate, std::string transactionName, std::string foreignID, double depreciationAmount) : AccountingTransactionFactory(transactionDate, transactionName, foreignID)
 {
     this->depreciationAmount = depreciationAmount;
 }
@@ -187,7 +188,7 @@ accounting::Transaction *EmployeeWagesFactory::createTransaction()
     return newTransaction;
 }
 
-EmployeeWagesFactory::EmployeeWagesFactory(util::Date* transactionDate, std::string transactionName, std::string foreignID, double wagesAmount) : AccountingTransactionFactory(transactionDate, transactionName, foreignID)
+EmployeeWagesFactory::EmployeeWagesFactory(util::Date *transactionDate, std::string transactionName, std::string foreignID, double wagesAmount) : AccountingTransactionFactory(transactionDate, transactionName, foreignID)
 {
     this->wagesAmount = wagesAmount;
 }

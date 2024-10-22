@@ -2,11 +2,13 @@
 using namespace inventory;
 Entry::Entry(std::string itemDBCode, std::string transactionCode, double price, int qty)
 {
-    if (!itemDBCode.compare(0, 3, "SEL")){
+    if (!itemDBCode.compare(0, 3, util::enums::primaryKeyCodesMap[util::enums::PrimaryKeyCodes::INVENTORY]))
+    {
         this->sellableDBCode = itemDBCode;
         this->propertiesDBCode = "";
     }
-    else{
+    else
+    {
         this->propertiesDBCode = itemDBCode;
         this->sellableDBCode = "";
     }
@@ -20,7 +22,8 @@ std::string Entry::getSellableDBCode()
     return this->sellableDBCode;
 }
 
-std::string Entry::getPropertiesDBCode(){
+std::string Entry::getPropertiesDBCode()
+{
     return this->propertiesDBCode;
 }
 
@@ -52,17 +55,12 @@ void Entry::setTransactionDate(util::Date *transactionDate)
 /******************************************************************************/
 
 util::Table *PurchaseEntry::classTable = util::PurchaseEntryTable::getInstance();
-int PurchaseEntry::nextItemCode = 0; //TO DO: change to count(*)
+int PurchaseEntry::nextItemCode = 0; // TO DO: change to count(*)
 
 std::vector<std::string> PurchaseEntry::getInsertParameter()
 {
     std::vector<std::string> args;
-    if (this->getDBCode() == ""){
-        args.push_back(this->createDBCode());
-    }
-    else{
-        args.push_back(this->getDBCode());
-    }
+    args.push_back(util::enums::primaryKeyCodesMap[util::enums::PrimaryKeyCodes::PURCHASEENTRY]);
     args.push_back(this->getSellableDBCode() == "" ? "NULL" : this->getSellableDBCode());
     args.push_back(this->getPropertiesDBCode() == "" ? "NULL" : this->getPropertiesDBCode());
     args.push_back(this->getTransactionDBCode());
@@ -72,25 +70,33 @@ std::vector<std::string> PurchaseEntry::getInsertParameter()
     return args;
 }
 
-void PurchaseEntry::insertToDB(){
+std::vector<std::string> PurchaseEntry::getUpdateParameter()
+{
+    std::vector<std::string> args;
+    args.push_back(this->getSellableDBCode() == "" ? "NULL" : this->getSellableDBCode());
+    args.push_back(this->getPropertiesDBCode() == "" ? "NULL" : this->getPropertiesDBCode());
+    args.push_back(this->getTransactionDBCode());
+    args.push_back(std::to_string(this->getPrice()));
+    args.push_back(std::to_string(this->getQty()));
+    args.push_back(std::to_string(this->getAvailableQty()));
+    return args;
+}
+
+void PurchaseEntry::insertToDB()
+{
     this->insertToDBWithTable(PurchaseEntry::classTable);
 }
 
-void PurchaseEntry::updateToDB(){
+void PurchaseEntry::updateToDB()
+{
     this->updateToDBWithTable(PurchaseEntry::classTable);
 }
 
-std::string PurchaseEntry::createDBCode(){
-    char numAsString[6];
-    sprintf(numAsString, "%05d", PurchaseEntry::nextItemCode++);
-    std::string countAsString = numAsString;
-    std::string dbCode = "PNT" + countAsString;
-    return dbCode;
-}
-
-PurchaseEntry::PurchaseEntry(std::string sellableDBCode, std::string transactionCode, double price, int qty) : Entry(sellableDBCode, transactionCode, price, qty)
+PurchaseEntry::PurchaseEntry(std::string sellableDBCode, std::string transactionCode, double price, int qty)
+    : Entry(sellableDBCode, transactionCode, price, qty)
 {
     this->availableQty = qty;
+    this->insertToDB();
 }
 
 int PurchaseEntry::getAvailableQty()
@@ -104,17 +110,12 @@ void PurchaseEntry::setAvailableQty(int qty)
 
 /************************************************************************/
 util::Table *SellingEntry::classTable = util::SellingEntryTable::getInstance();
-int SellingEntry::nextItemCode = 0;//TO DO: change to count(*)
+int SellingEntry::nextItemCode = 0; // TO DO: change to count(*)
 
 std::vector<std::string> SellingEntry::getInsertParameter()
 {
     std::vector<std::string> args;
-    if (this->getDBCode() == ""){
-        args.push_back(this->createDBCode());
-    }
-    else{
-        args.push_back(this->getDBCode());
-    }
+    args.push_back(util::enums::primaryKeyCodesMap[util::enums::PrimaryKeyCodes::SELLINGENTRY]);
     args.push_back(this->getSellableDBCode() == "" ? "NULL" : this->getSellableDBCode());
     args.push_back(this->getPropertiesDBCode() == "" ? "NULL" : this->getPropertiesDBCode());
     args.push_back(this->getTransactionDBCode());
@@ -123,22 +124,28 @@ std::vector<std::string> SellingEntry::getInsertParameter()
     return args;
 }
 
-void SellingEntry::insertToDB(){
+std::vector<std::string> SellingEntry::getUpdateParameter()
+{
+    std::vector<std::string> args;
+    args.push_back(this->getSellableDBCode() == "" ? "NULL" : this->getSellableDBCode());
+    args.push_back(this->getPropertiesDBCode() == "" ? "NULL" : this->getPropertiesDBCode());
+    args.push_back(this->getTransactionDBCode());
+    args.push_back(std::to_string(this->getPrice()));
+    args.push_back(std::to_string(this->getQty()));
+    return args;
+}
+
+void SellingEntry::insertToDB()
+{
     this->insertToDBWithTable(SellingEntry::classTable);
 }
 
-void SellingEntry::updateToDB(){
+void SellingEntry::updateToDB()
+{
     this->updateToDBWithTable(SellingEntry::classTable);
-}
-
-std::string SellingEntry::createDBCode(){
-    char numAsString[6];
-    sprintf(numAsString, "%05d", SellingEntry::nextItemCode++);
-    std::string countAsString = numAsString;
-    std::string dbCode = "SNT" + countAsString;
-    return dbCode;
 }
 
 SellingEntry::SellingEntry(std::string sellableDBCode, std::string transactionCode, double price, int qty) : Entry(sellableDBCode, transactionCode, price, qty)
 {
+    this->insertToDB();
 }

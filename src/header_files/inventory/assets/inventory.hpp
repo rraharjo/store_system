@@ -13,14 +13,13 @@ namespace inventory
     {
     private:
         static util::Table *classTable;
-        static int nextItemCode;
         double sellingPrice;
         // tax
 
     protected:
         std::vector<std::string> getInsertParameter() override;
 
-        std::string createDBCode() override;
+        std::vector<std::string> getUpdateParameter() override;
 
     public:
         void insertToDB() override;

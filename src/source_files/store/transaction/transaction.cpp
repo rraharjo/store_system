@@ -24,7 +24,6 @@ std::vector<inventory::Entry *> Transaction::getAllEntries()
 
 /************************PURCHASETRANSACTION****************************/
 util::Table *PurchaseTransaction::classTable = util::PurchaseTransactionTable::getInstance();
-int PurchaseTransaction::nextItemCode = 0;
 
 void PurchaseTransaction::insertToDB()
 {
@@ -39,7 +38,7 @@ void PurchaseTransaction::updateToDB()
 PurchaseTransaction::PurchaseTransaction(std::string seller, util::Date *purchaseDate) : Transaction::Transaction(purchaseDate)
 {
     this->seller = seller;
-    this->setDBCode(this->createDBCode());
+    //this->setDBCode(this->createDBCode());
     this->insertToDB();
 }
 
@@ -51,26 +50,25 @@ std::string PurchaseTransaction::getSeller()
 std::vector<std::string> PurchaseTransaction::getInsertParameter()
 {
     std::vector<std::string> args;
-    args.push_back(this->getDBCode());
+    args.push_back(util::enums::primaryKeyCodesMap[util::enums::PrimaryKeyCodes::PURCHASETRANSACTION]);
     args.push_back(this->getDate()->toDBFormat());
     args.push_back(this->getSeller());
     args.push_back(this->isFinished ? "true" : "false");
     return args;
 }
 
-std::string PurchaseTransaction::createDBCode()
+std::vector<std::string> PurchaseTransaction::getUpdateParameter()
 {
-    char numAsString[6];
-    sprintf(numAsString, "%05d", PurchaseTransaction::nextItemCode++);
-    std::string countAsString = numAsString;
-    std::string dbCode = "PTR" + countAsString;
-    return dbCode;
+    std::vector<std::string> args;
+    args.push_back(this->getDate()->toDBFormat());
+    args.push_back(this->getSeller());
+    args.push_back(this->isFinished ? "true" : "false");
+    return args;
 }
 
 /*********************SELLINGTRANSACTION***********************/
 
 util::Table *SellingTransaction::classTable = util::SellingTransactionTable::getInstance();
-int SellingTransaction::nextItemCode = 0;
 
 void SellingTransaction::insertToDB()
 {
@@ -82,25 +80,24 @@ void SellingTransaction::updateToDB()
     this->updateToDBWithTable(SellingTransaction::classTable);
 };
 
-std::string SellingTransaction::createDBCode()
-{
-    char numAsString[6];
-    sprintf(numAsString, "%05d", SellingTransaction::nextItemCode++);
-    std::string countAsString = numAsString;
-    std::string dbCode = "STR" + countAsString;
-    return dbCode;
-}
-
 SellingTransaction::SellingTransaction(util::Date *transactionDate) : Transaction::Transaction(transactionDate)
 {
-    this->setDBCode(this->createDBCode());
+    //this->setDBCode(this->createDBCode());
     this->insertToDB();
 }
 
 std::vector<std::string> SellingTransaction::getInsertParameter()
 {
     std::vector<std::string> args;
-    args.push_back(this->getDBCode());
+    args.push_back(util::enums::primaryKeyCodesMap[util::enums::PrimaryKeyCodes::SELLINGTRANSACTION]);
+    args.push_back(this->getDate()->toDBFormat());
+    args.push_back(this->isFinished ? "true" : "false");
+    return args;
+}
+
+std::vector<std::string> SellingTransaction::getUpdateParameter()
+{
+    std::vector<std::string> args;
     args.push_back(this->getDate()->toDBFormat());
     args.push_back(this->isFinished ? "true" : "false");
     return args;

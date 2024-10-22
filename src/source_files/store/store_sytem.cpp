@@ -22,8 +22,7 @@ void StoreSystem::sellItem(SellingTransaction *sellingTransaction)
     std::string incRevDesc = "Selling inventory";
     std::string incCOGSDesc = "Increase cost of goods sold";
     accounting::Transaction *accountingTransaction =
-        util::factory::GoodsSellingFactory(transactionDate, incRevDesc, sellingTransaction->getDBCode(),
-                                           sellAmount, sellAmount, 0)
+        util::factory::GoodsSellingFactory(transactionDate, incRevDesc, sellingTransaction->getDBCode(), sellAmount, sellAmount, 0)
             .createTransaction();
     accounting::Transaction *accountingTransaction2 =
         util::factory::GoodsSoldCOGSFactory(transactionDate, incCOGSDesc, sellingTransaction->getDBCode(), cogs)

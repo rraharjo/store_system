@@ -18,6 +18,24 @@ drop table accounting_transaction;
 drop table inventory;
 drop table assets;
 
+drop sequence inventory_seq;
+drop sequence assets_seq;
+drop sequence purchase_transaction_seq;
+drop sequence purchase_entry_seq;
+drop sequence selling_transaction_seq;
+drop sequence accounting_transaction_seq;
+drop sequence accounting_transaction_entry_seq;
+drop sequence selling_entry_seq;
+
+create sequence inventory_seq;
+create sequence assets_seq;
+create sequence purchase_transaction_seq;
+create sequence purchase_entry_seq;
+create sequence selling_transaction_seq;
+create sequence accounting_transaction_seq;
+create sequence accounting_transaction_entry_seq;
+create sequence selling_entry_seq;
+
 create table inventory(
     database_code    text          primary key,
     item_code        varchar(255),

@@ -8,15 +8,12 @@ namespace inventory
     class Equipment : public Asset
     {
     private:
-        static int nextItemCode;
         util::DepreciationMethod *depreciationMethod;
 
     protected:
-
-        std::string createDBCode() override;
+        std::vector<std::string> getInsertParameter() override;
 
     public:
-
         Equipment(std::string name, std::string itemCode, double residualValue, int yearUsefulLife, util::Date *dateBought);
 
         double getDepreciationExpenseAtYear(int year);

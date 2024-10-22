@@ -1,22 +1,26 @@
 #include "inventory/assets/equipment.hpp"
 using namespace inventory;
-int Equipment::nextItemCode = 0;//TO DO: change it to count(*)
 
 Equipment::Equipment(std::string name, std::string itemCode, double residualValue, int yearUsefulLife, util::Date *dateBought) : 
 Asset::Asset(name, itemCode, residualValue, yearUsefulLife, dateBought)
 {
     this->depreciationMethod = new util::DoubleDecliningDepreciation(this->getTotalValue(), this->getYearUsefulLife());
-    this->setDBCode(this->createDBCode());
+    //this->setDBCode(this->createDBCode());
     this->insertToDB();
 } 
 
-std::string Equipment::createDBCode(){
-    char numAsString[6];
-    sprintf(numAsString, "%05d", Equipment::nextItemCode++);
-    std::string countAsString = numAsString;
-    std::string dbCode = "PRP" + countAsString;
-    return dbCode;
-}
+std::vector<std::string> Equipment::getInsertParameter()
+{
+    std::vector<std::string> args;
+    args.push_back(util::enums::primaryKeyCodesMap[util::enums::PrimaryKeyCodes::EQUIPMENT]);
+    args.push_back(this->getName());
+    args.push_back(std::to_string(this->getTotalValue()));
+    args.push_back(std::to_string(this->getResidualValue()));
+    args.push_back(std::to_string(this->getYearUsefulLife()));
+    args.push_back(this->getDateBought()->toDBFormat());
+    args.push_back(this->getExpiryDate() ? this->getExpiryDate()->toDBFormat() : "NULL");
+    return args;
+};
 
 double Equipment::getDepreciationExpenseAtYear(int year)
 {

@@ -13,10 +13,14 @@ namespace util
         std::string tableName;
 
     protected:
+        std::string sequenceName;
+
         std::vector<ColumnSchema> schema;
-        Table(std::string tableName);
+
+        Table(std::string tableName, std::string sequenceName);
 
     public:
+
         std::vector<std::string> insertRow(std::vector<std::string> &values);
 
         std::vector<std::string> updateRow(std::string id, std::vector<std::string> &values);
@@ -32,7 +36,7 @@ namespace util
         static InventoryTable *instance;
 
     protected:
-        InventoryTable(std::string tableName);
+        InventoryTable(std::string tableName, std::string sequenceName);
 
     public:
         static InventoryTable *getInstance();
@@ -46,7 +50,7 @@ namespace util
         static PurchaseTransactionTable *instance;
 
     protected:
-        PurchaseTransactionTable(std::string tableName);
+        PurchaseTransactionTable(std::string tableName, std::string sequenceName);
 
     public:
         static PurchaseTransactionTable *getInstance();
@@ -60,7 +64,7 @@ namespace util
         static PurchaseEntryTable *instance;
 
     protected:
-        PurchaseEntryTable(std::string tableName);
+        PurchaseEntryTable(std::string tableName, std::string sequenceName);
 
     public:
         static PurchaseEntryTable *getInstance();
@@ -74,7 +78,7 @@ namespace util
         static SellingEntryTable *instance;
 
     protected:
-        SellingEntryTable(std::string tableName);
+        SellingEntryTable(std::string tableName, std::string sequenceName);
 
     public:
         static SellingEntryTable *getInstance();
@@ -88,7 +92,7 @@ namespace util
         static SellingTransactionTable *instance;
 
     protected:
-        SellingTransactionTable(std::string tableName);
+        SellingTransactionTable(std::string tableName, std::string sequenceName);
 
     public:
         static SellingTransactionTable *getInstance();
@@ -102,7 +106,7 @@ namespace util
         static AssetsTable *instance;
 
     protected:
-        AssetsTable(std::string tableName);
+        AssetsTable(std::string tableName, std::string sequenceName);
 
     public:
         static AssetsTable *getInstance();
@@ -116,7 +120,7 @@ namespace util
         static AccountingTransactionTable *instance;
 
     protected:
-        AccountingTransactionTable(std::string tableName);
+        AccountingTransactionTable(std::string tableName, std::string sequenceName);
 
     public:
         static AccountingTransactionTable *getInstance();
@@ -130,7 +134,7 @@ namespace util
         static AccountingEntryTable *instance;
 
     protected:
-        AccountingEntryTable(std::string tableName);
+        AccountingEntryTable(std::string tableName, std::string sequenceName);
 
     public:
         static AccountingEntryTable *getInstance();

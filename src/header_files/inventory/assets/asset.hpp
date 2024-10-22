@@ -16,9 +16,11 @@ namespace inventory
     protected:
         static util::Table *classTable;
 
-        std::vector<std::string> getInsertParameter() override;
+        std::vector<std::string> getUpdateParameter() override;
+
         int yearUsefulLife;
         util::Date *dateBought;
+        
         Asset(std::string name, std::string itemCode, double residualValue, int yearUsefulLife, util::Date *dateBought);
 
     public:

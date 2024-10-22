@@ -32,18 +32,18 @@ namespace store
     {
     private:
         static util::Table *classTable;
-        static int nextItemCode;
         std::string seller;
 
     protected:
         std::vector<std::string> getInsertParameter() override;
 
-        std::string createDBCode() override;
+        std::vector<std::string> getUpdateParameter() override;
 
     public:
         void insertToDB() override;
 
         void updateToDB() override;
+        
         PurchaseTransaction(std::string seller, util::Date *purchaseDate);
 
         std::string getSeller();
@@ -56,7 +56,6 @@ namespace store
 
     private:
         static util::Table *classTable;
-        static int nextItemCode;
 
     public:
         void insertToDB() override;
@@ -68,7 +67,7 @@ namespace store
     protected:
         std::vector<std::string> getInsertParameter() override;
 
-        std::string createDBCode() override;
+        std::vector<std::string> getUpdateParameter() override;
     };
 };
 #endif

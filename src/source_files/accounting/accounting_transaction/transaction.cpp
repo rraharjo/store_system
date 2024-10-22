@@ -3,8 +3,6 @@ using namespace accounting;
 
 util::Table *Transaction::classTable = util::AccountingTransactionTable::getInstance();
 
-int Transaction::nextItemCode = 0; // TO DO:
-
 void Transaction::insertToDB(){
     this->insertToDBWithTable(Transaction::classTable);
 };
@@ -20,7 +18,7 @@ Transaction::Transaction(std::string name, util::Date *transactionDate) : util::
     this->creditEntries = {};
     this->transactionDate = transactionDate;
     this->entityID = "";
-    this->setDBCode(this->createDBCode());
+    //this->setDBCode(this->createDBCode());
     this->insertToDB();
 }
 
@@ -35,7 +33,7 @@ Transaction::Transaction(std::string name, util::Date *transactionDate, std::str
     this->creditEntries = {};
     this->transactionDate = transactionDate;
     this->entityID = pid;
-    this->setDBCode(this->createDBCode());
+    //this->setDBCode(this->createDBCode());
     this->insertToDB();
 }
 
@@ -65,20 +63,21 @@ Transaction::~Transaction()
 std::vector<std::string> Transaction::getInsertParameter()
 {
     std::vector<std::string> args;
-    args.push_back(this->getDBCode());
+    args.push_back(util::enums::primaryKeyCodesMap[util::enums::PrimaryKeyCodes::ACCOUNTINGTRANSACTION]);
     args.push_back(this->name);
     args.push_back(this->transactionDate->toDBFormat());
     args.push_back(this->entityID == "" ? "NULL" : this->entityID);
     return args;
 }
 
-std::string Transaction::createDBCode()
+
+std::vector<std::string> Transaction::getUpdateParameter()
 {
-    char numAsString[6];
-    sprintf(numAsString, "%05d", Transaction::nextItemCode++);
-    std::string countAsString = numAsString;
-    std::string dbCode = "ATR" + countAsString;
-    return dbCode;
+    std::vector<std::string> args;
+    args.push_back(this->name);
+    args.push_back(this->transactionDate->toDBFormat());
+    args.push_back(this->entityID == "" ? "NULL" : this->entityID);
+    return args;
 }
 
 std::vector<Entry *> &Transaction::getDebitEntries()

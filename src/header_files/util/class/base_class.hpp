@@ -20,7 +20,7 @@ namespace util
 
             virtual std::vector<std::string> getInsertParameter() = 0;
 
-            virtual std::string createDBCode() = 0;
+            virtual std::vector<std::string> getUpdateParameter() = 0;
 
             void insertToDBWithTable(util::Table *table);
 

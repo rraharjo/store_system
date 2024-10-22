@@ -3,7 +3,6 @@
 using namespace inventory;
 
 util::Table *Inventory::classTable = util::InventoryTable::getInstance();
-int Inventory::nextItemCode = 0; //TO DO: change to count(*)
 
 void Inventory::insertToDB() {
     this->insertToDBWithTable(Inventory::classTable);
@@ -17,17 +16,26 @@ Inventory::Inventory(std::string name, std::string itemCode, double sellingPrice
 {
     this->sellingPrice = sellingPrice;
     this->qty = 0;
-    this->setDBCode(this->createDBCode());
+    //this->setDBCode(this->createDBCode());
     this->insertToDB();
 }
 
-std::string Inventory::createDBCode(){
-    char numAsString[6];
-    sprintf(numAsString, "%05d", Inventory::nextItemCode++);
-    std::string countAsString = numAsString;
-    std::string dbCode = "SEL" + countAsString;
-    return dbCode;
-}
+std::vector<std::string> Inventory::getInsertParameter(){
+    std::vector<std::string> args;
+    args.push_back(util::enums::primaryKeyCodesMap[util::enums::PrimaryKeyCodes::INVENTORY]);
+    args.push_back(this->getItemCode());
+    args.push_back(this->getName());
+    args.push_back(std::to_string(this->getSellingPrice()));
+    return args;
+};
+
+std::vector<std::string> Inventory::getUpdateParameter(){
+    std::vector<std::string> args;
+    args.push_back(this->getItemCode());
+    args.push_back(this->getName());
+    args.push_back(std::to_string(this->getSellingPrice()));
+    return args;
+};
 
 double Inventory::sellItems(SellingEntry *entry)
 {
@@ -46,15 +54,6 @@ void Inventory::addPurchase(PurchaseEntry *entry)
     this->purchaseHistory->addEntry(entry);
     this->qty += entry->getQty();
 }
-
-std::vector<std::string> Inventory::getInsertParameter(){
-    std::vector<std::string> args;
-    args.push_back(this->getDBCode());
-    args.push_back(this->getItemCode());
-    args.push_back(this->getName());
-    args.push_back(std::to_string(this->getSellingPrice()));
-    return args;
-};
 
 double Inventory::getSellingPrice()
 {

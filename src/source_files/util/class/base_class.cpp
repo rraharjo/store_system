@@ -1,7 +1,6 @@
 #include "util/class/base_class.hpp"
 using namespace util;
 baseclass::HasTable::HasTable(){
-    //this->setTable();
 };
 
 void util::baseclass::HasTable::setDBCode(std::string dbCode){
@@ -9,13 +8,12 @@ void util::baseclass::HasTable::setDBCode(std::string dbCode){
 }
 
 void util::baseclass::HasTable::insertToDBWithTable(util::Table *table){
-    //set the DBCode
     std::vector<std::string> args = this->getInsertParameter();
     this->setDBCode(table->insertRow(args)[0]);
 }
 
 void util::baseclass::HasTable::updateToDBWithTable(util::Table *table){
-    std::vector<std::string> args = this->getInsertParameter();
+    std::vector<std::string> args = this->getUpdateParameter();
     table->updateRow(this->dbCode, args);
 }
 

@@ -20,10 +20,9 @@ Asset::Asset(std::string name, std::string itemCode, double residualValue, int y
     this->expiryDate = NULL;
 } 
 
-std::vector<std::string> Asset::getInsertParameter()
+std::vector<std::string> Asset::getUpdateParameter()
 {
     std::vector<std::string> args;
-    args.push_back(this->getDBCode());
     args.push_back(this->name);
     args.push_back(std::to_string(this->getTotalValue()));
     args.push_back(std::to_string(this->getResidualValue()));

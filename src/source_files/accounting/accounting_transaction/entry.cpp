@@ -3,8 +3,6 @@ using namespace accounting;
 
 util::Table *Entry::classTable = util::AccountingEntryTable::getInstance();
 
-int Entry::nextItemCode = 0; // TO DO: change to count(*)
-
 void Entry::insertToDB(){
     this->insertToDBWithTable(Entry::classTable);
 };
@@ -13,26 +11,21 @@ void Entry::updateToDB(){
     this->updateToDBWithTable(Entry::classTable);
 };
 
-std::string Entry::createDBCode()
-{
-    char numAsString[6];
-    sprintf(numAsString, "%05d", Entry::nextItemCode++);
-    std::string countAsString = numAsString;
-    std::string dbCode = "ANT" + countAsString;
-    return dbCode;
-}
-
 std::vector<std::string> Entry::getInsertParameter()
 {
     std::vector<std::string> toRet;
-    if (this->getDBCode() == "")
-    {
-        toRet.push_back(this->createDBCode());
-    }
-    else
-    {
-        toRet.push_back(this->getDBCode());
-    }
+    toRet.push_back(util::enums::primaryKeyCodesMap[util::enums::PrimaryKeyCodes::ACCOUNTINGENTRY]);
+    toRet.push_back(this->transactionDB);
+    toRet.push_back(this->debit ? "true" : "false");
+    toRet.push_back(std::to_string(this->amount));
+    toRet.push_back(util::enums::tAccountsNameMap[this->tAccount]);
+    toRet.push_back(util::enums::accountTitlesMap[this->account]);
+    return toRet;
+}
+
+std::vector<std::string> Entry::getUpdateParameter()
+{
+    std::vector<std::string> toRet;
     toRet.push_back(this->transactionDB);
     toRet.push_back(this->debit ? "true" : "false");
     toRet.push_back(std::to_string(this->amount));

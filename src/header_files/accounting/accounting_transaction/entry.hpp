@@ -13,7 +13,6 @@ namespace accounting
 
     private:
         static util::Table *classTable;
-        static int nextItemCode;
         
         bool debit;
         double amount;
@@ -25,7 +24,7 @@ namespace accounting
     protected:
         std::vector<std::string> getInsertParameter() override;
 
-        std::string createDBCode() override;
+        std::vector<std::string> getUpdateParameter() override;
 
     public:
         void insertToDB() override;

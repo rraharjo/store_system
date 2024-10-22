@@ -6,6 +6,35 @@ namespace util
 {
     namespace enums
     {
+
+        enum class PrimaryKeyCodes
+        {
+            INVENTORY = 0,
+            PURCHASEENTRY,
+            PURCHASETRANSACTION,
+            SELLINGENTRY,
+            SELLINGTRANSACTION,
+            EQUIPMENT,
+            ACCOUNTINGTRANSACTION,
+            ACCOUNTINGENTRY
+        };
+
+        extern std::map<PrimaryKeyCodes, std::string> primaryKeyCodesMap;
+
+        enum class SequenceNames
+        {
+            INVENTORY = 0,
+            PURCHASEENTRY,
+            PURCHASETRANSACTION,
+            SELLINGENTRY,
+            SELLINGTRANSACTION,
+            ASSETS,
+            ACCOUNTINGTRANSACTION,
+            ACCOUNTINGENTRY
+        };
+
+        extern std::map<SequenceNames, std::string> sequenceNamesMap;
+
         enum class TableNames
         {
             INVENTORY = 0,
