@@ -21,16 +21,22 @@ accounting::Transaction *GoodsPurchaseFactory::createTransaction()
         throw std::invalid_argument("total paid amount does not match purchase amount");
     }
     accounting::Transaction *newTransaction = new accounting::Transaction(this->transactionName, this->foreignID);
-    accounting::Entry *increaseInventory = new accounting::Entry(true, this->purchaseAmount, util::enums::AccountTitles::ASSETS, util::enums::TAccounts::INVENTORY);
+    accounting::Entry *increaseInventory =
+        new accounting::Entry(true, this->purchaseAmount, util::enums::AccountTitles::ASSETS,
+                              util::enums::TAccounts::INVENTORY, newTransaction->getDBCode());
     newTransaction->addEntry(increaseInventory);
     if (this->paidCash > 0.0)
     {
-        accounting::Entry *reduceCash = new accounting::Entry(false, this->paidCash, util::enums::AccountTitles::ASSETS, util::enums::TAccounts::CASH);
+        accounting::Entry *reduceCash =
+            new accounting::Entry(false, this->paidCash, util::enums::AccountTitles::ASSETS,
+                                  util::enums::TAccounts::CASH, newTransaction->getDBCode());
         newTransaction->addEntry(reduceCash);
     }
     if (this->paidCredit > 0.0)
     {
-        accounting::Entry *increasePayable = new accounting::Entry(false, this->paidCredit, util::enums::AccountTitles::LIABILITIES, util::enums::TAccounts::NOTEPAYABLE);
+        accounting::Entry *increasePayable =
+            new accounting::Entry(false, this->paidCredit, util::enums::AccountTitles::LIABILITIES,
+                                  util::enums::TAccounts::NOTEPAYABLE, newTransaction->getDBCode());
         newTransaction->addEntry(increasePayable);
     }
     return newTransaction;
@@ -51,16 +57,22 @@ accounting::Transaction *GoodsSellingFactory::createTransaction()
         throw std::invalid_argument("total paid amount does not match purchase amount");
     }
     accounting::Transaction *newTransaction = new accounting::Transaction(this->transactionName, this->foreignID);
-    accounting::Entry *increaseRevenue = new accounting::Entry(false, this->sellAmount, util::enums::AccountTitles::STOCKHOLDERSEQUITY, util::enums::TAccounts::REV);
+    accounting::Entry *increaseRevenue =
+        new accounting::Entry(false, this->sellAmount, util::enums::AccountTitles::STOCKHOLDERSEQUITY,
+                              util::enums::TAccounts::REV, newTransaction->getDBCode());
     newTransaction->addEntry(increaseRevenue);
     if (this->paidCash > 0.0)
     {
-        accounting::Entry *increaseCash = new accounting::Entry(true, this->paidCash, util::enums::AccountTitles::ASSETS, util::enums::TAccounts::CASH);
+        accounting::Entry *increaseCash =
+            new accounting::Entry(true, this->paidCash, util::enums::AccountTitles::ASSETS,
+                                  util::enums::TAccounts::CASH, newTransaction->getDBCode());
         newTransaction->addEntry(increaseCash);
     }
     if (this->paidCredit > 0.0)
     {
-        accounting::Entry *increaseReceivable = new accounting::Entry(true, this->paidCredit, util::enums::AccountTitles::ASSETS, util::enums::TAccounts::NOTERCV);
+        accounting::Entry *increaseReceivable =
+            new accounting::Entry(true, this->paidCredit, util::enums::AccountTitles::ASSETS,
+                                  util::enums::TAccounts::NOTERCV, newTransaction->getDBCode());
         newTransaction->addEntry(increaseReceivable);
     }
     return newTransaction;
@@ -77,9 +89,13 @@ GoodsSellingFactory::GoodsSellingFactory(util::Date *transactionDate, std::strin
 accounting::Transaction *GoodsSoldCOGSFactory::createTransaction()
 {
     accounting::Transaction *newTransaction = new accounting::Transaction(this->transactionName, this->foreignID);
-    accounting::Entry *reduceInventory = new accounting::Entry(false, this->cogs, util::enums::AccountTitles::ASSETS, util::enums::TAccounts::INVENTORY);
+    accounting::Entry *reduceInventory =
+        new accounting::Entry(false, this->cogs, util::enums::AccountTitles::ASSETS,
+                              util::enums::TAccounts::INVENTORY, newTransaction->getDBCode());
     newTransaction->addEntry(reduceInventory);
-    accounting::Entry *increaseCOGS = new accounting::Entry(true, this->cogs, util::enums::AccountTitles::STOCKHOLDERSEQUITY, util::enums::TAccounts::COGS);
+    accounting::Entry *increaseCOGS =
+        new accounting::Entry(true, this->cogs, util::enums::AccountTitles::STOCKHOLDERSEQUITY,
+                              util::enums::TAccounts::COGS, newTransaction->getDBCode());
     newTransaction->addEntry(increaseCOGS);
     return newTransaction;
 }
@@ -98,16 +114,22 @@ accounting::Transaction *BuyEquipmentFactory::createTransaction()
         throw std::invalid_argument("total paid amount does not match purchase amount");
     }
     accounting::Transaction *newTransaction = new accounting::Transaction(this->transactionName, this->foreignID);
-    accounting::Entry *increaseAssets = new accounting::Entry(true, this->equipmentValue, util::enums::AccountTitles::ASSETS, util::enums::TAccounts::EQUIPMENT);
+    accounting::Entry *increaseAssets =
+        new accounting::Entry(true, this->equipmentValue, util::enums::AccountTitles::ASSETS,
+                              util::enums::TAccounts::EQUIPMENT, newTransaction->getDBCode());
     newTransaction->addEntry(increaseAssets);
     if (this->paidCash > 0.0)
     {
-        accounting::Entry *reduceCash = new accounting::Entry(false, this->paidCash, util::enums::AccountTitles::ASSETS, util::enums::TAccounts::CASH);
+        accounting::Entry *reduceCash =
+            new accounting::Entry(false, this->paidCash, util::enums::AccountTitles::ASSETS,
+                                  util::enums::TAccounts::CASH, newTransaction->getDBCode());
         newTransaction->addEntry(reduceCash);
     }
     if (this->paidCredit)
     {
-        accounting::Entry *increasePayable = new accounting::Entry(false, this->paidCredit, util::enums::AccountTitles::LIABILITIES, util::enums::TAccounts::NOTEPAYABLE);
+        accounting::Entry *increasePayable =
+            new accounting::Entry(false, this->paidCredit, util::enums::AccountTitles::LIABILITIES,
+                                  util::enums::TAccounts::NOTEPAYABLE, newTransaction->getDBCode());
         newTransaction->addEntry(increasePayable);
     }
     return newTransaction;
@@ -126,28 +148,40 @@ accounting::Transaction *SellEquipmentFactory::createTransaction()
     accounting::Transaction *newTransaction = new accounting::Transaction(this->transactionName, this->foreignID);
     if (this->paidCash > 0.0)
     {
-        accounting::Entry *increaseCash = new accounting::Entry(true, this->paidCash, util::enums::AccountTitles::ASSETS, util::enums::TAccounts::CASH);
+        accounting::Entry *increaseCash =
+            new accounting::Entry(true, this->paidCash, util::enums::AccountTitles::ASSETS,
+                                  util::enums::TAccounts::CASH, newTransaction->getDBCode());
         newTransaction->addEntry(increaseCash);
     }
     if (this->paidCredit)
     {
-        accounting::Entry *increaseReceivable = new accounting::Entry(true, this->paidCredit, util::enums::AccountTitles::ASSETS, util::enums::TAccounts::NOTERCV);
+        accounting::Entry *increaseReceivable =
+            new accounting::Entry(true, this->paidCredit, util::enums::AccountTitles::ASSETS,
+                                  util::enums::TAccounts::NOTERCV, newTransaction->getDBCode());
         newTransaction->addEntry(increaseReceivable);
     }
-    accounting::Entry *reduceEquipment = new accounting::Entry(false, this->initialValue, util::enums::AccountTitles::ASSETS, util::enums::TAccounts::EQUIPMENT);
+    accounting::Entry *reduceEquipment =
+        new accounting::Entry(false, this->initialValue, util::enums::AccountTitles::ASSETS,
+                              util::enums::TAccounts::EQUIPMENT, newTransaction->getDBCode());
     newTransaction->addEntry(reduceEquipment);
-    accounting::Entry *reduceAccumulatedDepreciation = new accounting::Entry(true, this->accumulatedDepreciation, util::enums::AccountTitles::ASSETS, util::enums::TAccounts::ACCUMDEPRECIATION);
+    accounting::Entry *reduceAccumulatedDepreciation =
+        new accounting::Entry(true, this->accumulatedDepreciation, util::enums::AccountTitles::ASSETS,
+                              util::enums::TAccounts::ACCUMDEPRECIATION, newTransaction->getDBCode());
     newTransaction->addEntry(reduceAccumulatedDepreciation);
     double revenue = this->paidCash + this->paidCredit + this->accumulatedDepreciation - this->initialValue;
     if (revenue > 0)
     { // Gain
-        accounting::Entry *increaseRevenue = new accounting::Entry(false, revenue, util::enums::AccountTitles::STOCKHOLDERSEQUITY, util::enums::TAccounts::REV);
+        accounting::Entry *increaseRevenue =
+            new accounting::Entry(false, revenue, util::enums::AccountTitles::STOCKHOLDERSEQUITY,
+                                  util::enums::TAccounts::REV, newTransaction->getDBCode());
         newTransaction->addEntry(increaseRevenue);
     }
 
     if (revenue < 0)
     { // Loss
-        accounting::Entry *reduceRevenue = new accounting::Entry(true, std::abs(revenue), util::enums::AccountTitles::STOCKHOLDERSEQUITY, util::enums::TAccounts::REV);
+        accounting::Entry *reduceRevenue =
+            new accounting::Entry(true, std::abs(revenue), util::enums::AccountTitles::STOCKHOLDERSEQUITY,
+                                  util::enums::TAccounts::REV, newTransaction->getDBCode());
         newTransaction->addEntry(reduceRevenue);
     }
     return newTransaction;
@@ -165,9 +199,13 @@ SellEquipmentFactory::SellEquipmentFactory(util::Date *transactionDate, std::str
 accounting::Transaction *ApplyDepreciationFactory::createTransaction()
 {
     accounting::Transaction *newTransaction = new accounting::Transaction(this->transactionName, this->foreignID);
-    accounting::Entry *increaseAccumulatedDepreciation = new accounting::Entry(false, this->depreciationAmount, util::enums::AccountTitles::ASSETS, util::enums::TAccounts::ACCUMDEPRECIATION);
+    accounting::Entry *increaseAccumulatedDepreciation =
+        new accounting::Entry(false, this->depreciationAmount, util::enums::AccountTitles::ASSETS,
+                              util::enums::TAccounts::ACCUMDEPRECIATION, newTransaction->getDBCode());
     newTransaction->addEntry(increaseAccumulatedDepreciation);
-    accounting::Entry *reduceEquipment = new accounting::Entry(true, this->depreciationAmount, util::enums::AccountTitles::STOCKHOLDERSEQUITY, util::enums::TAccounts::DEPREXP);
+    accounting::Entry *reduceEquipment =
+        new accounting::Entry(true, this->depreciationAmount, util::enums::AccountTitles::STOCKHOLDERSEQUITY,
+                              util::enums::TAccounts::DEPREXP, newTransaction->getDBCode());
     newTransaction->addEntry(reduceEquipment);
     return newTransaction;
 }
@@ -181,9 +219,13 @@ ApplyDepreciationFactory::ApplyDepreciationFactory(util::Date *transactionDate, 
 accounting::Transaction *EmployeeWagesFactory::createTransaction()
 {
     accounting::Transaction *newTransaction = new accounting::Transaction(this->transactionName, this->foreignID);
-    accounting::Entry *reduceCash = new accounting::Entry(false, this->wagesAmount, util::enums::AccountTitles::ASSETS, util::enums::TAccounts::CASH);
+    accounting::Entry *reduceCash =
+        new accounting::Entry(false, this->wagesAmount, util::enums::AccountTitles::ASSETS,
+                              util::enums::TAccounts::CASH, newTransaction->getDBCode());
     newTransaction->addEntry(reduceCash);
-    accounting::Entry *increaseExpense = new accounting::Entry(true, this->wagesAmount, util::enums::AccountTitles::STOCKHOLDERSEQUITY, util::enums::TAccounts::WAGEEXP);
+    accounting::Entry *increaseExpense =
+        new accounting::Entry(true, this->wagesAmount, util::enums::AccountTitles::STOCKHOLDERSEQUITY,
+                              util::enums::TAccounts::WAGEEXP, newTransaction->getDBCode());
     newTransaction->addEntry(increaseExpense);
     return newTransaction;
 }

@@ -25,6 +25,7 @@ namespace inventory
         void insertToDB() override;
 
         void updateToDB() override;
+        
         Inventory(std::string name, std::string itemCode, double sellingPrice);
 
         double sellItems(SellingEntry *entry) override;

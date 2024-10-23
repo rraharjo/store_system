@@ -3,8 +3,10 @@ using namespace inventory;
 
 InventorySystem *InventorySystem::instance = NULL;
 
-InventorySystem* InventorySystem::getInstance(){
-    if (InventorySystem::instance == NULL){
+InventorySystem *InventorySystem::getInstance()
+{
+    if (InventorySystem::instance == NULL)
+    {
         InventorySystem::instance = new InventorySystem();
     }
     return InventorySystem::instance;
@@ -16,8 +18,13 @@ InventorySystem::InventorySystem()
     this->assets = {};
 }
 
-Asset *InventorySystem::getProperty(std::string dbCode){
+Asset *InventorySystem::getProperty(std::string dbCode)
+{
     return this->assets[dbCode];
+}
+
+Inventory *InventorySystem::getInventory(std::string dbCode){
+    return this->sellables[dbCode];
 }
 
 double InventorySystem::sellSellables(Entry *newEntry)
@@ -26,7 +33,7 @@ double InventorySystem::sellSellables(Entry *newEntry)
     {
         return -1;
     }
-    return this->sellables[newEntry->getSellableDBCode()]->sellItems((SellingEntry*) newEntry);
+    return this->sellables[newEntry->getSellableDBCode()]->sellItems((SellingEntry *)newEntry);
 }
 
 void InventorySystem::purchaseSellables(Entry *newEntry)
@@ -35,7 +42,7 @@ void InventorySystem::purchaseSellables(Entry *newEntry)
     {
         return;
     }
-    this->sellables[newEntry->getSellableDBCode()]->addPurchase((PurchaseEntry*) newEntry);
+    this->sellables[newEntry->getSellableDBCode()]->addPurchase((PurchaseEntry *)newEntry);
 }
 
 double InventorySystem::sellProperties(Entry *newEntry)
@@ -44,7 +51,7 @@ double InventorySystem::sellProperties(Entry *newEntry)
     {
         return -1;
     }
-    return this->assets[newEntry->getPropertiesDBCode()]->sellItems((SellingEntry*) newEntry);
+    return this->assets[newEntry->getPropertiesDBCode()]->sellItems((SellingEntry *)newEntry);
 }
 
 void InventorySystem::purchaseProperties(Entry *newEntry)
@@ -53,26 +60,34 @@ void InventorySystem::purchaseProperties(Entry *newEntry)
     {
         return;
     }
-    this->assets[newEntry->getPropertiesDBCode()]->addPurchase((PurchaseEntry*) newEntry);
+    this->assets[newEntry->getPropertiesDBCode()]->addPurchase((PurchaseEntry *)newEntry);
 }
 
 void InventorySystem::addNewItem(Inventory *newSellable)
 {
-    this->sellables[newSellable->getDBCode()] = newSellable;
+    if (this->sellables.find(newSellable->getDBCode()) == this->sellables.end())
+    {
+        this->sellables[newSellable->getDBCode()] = newSellable;
+    }
 }
 
-void InventorySystem::addNewProperty(Asset *newDepreciable){
-    this->assets[newDepreciable->getDBCode()] = newDepreciable;
+void InventorySystem::addNewProperty(Asset *newDepreciable)
+{
+    if (this->assets.find(newDepreciable->getDBCode()) == this->assets.end())
+    {
+        this->assets[newDepreciable->getDBCode()] = newDepreciable;
+    }
 }
 
 std::string InventorySystem::to_string()
 {
     std::string toRet = "";
-    for (auto it = this->sellables.begin() ; it != this->sellables.end() ; it++)
+    for (auto it = this->sellables.begin(); it != this->sellables.end(); it++)
     {
         toRet += it->second->to_string();
     }
-    for (auto it = this->assets.begin() ; it != this->assets.end() ; it++){
+    for (auto it = this->assets.begin(); it != this->assets.end(); it++)
+    {
         toRet += it->second->toString();
     }
     return toRet;

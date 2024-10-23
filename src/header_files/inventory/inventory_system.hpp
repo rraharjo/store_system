@@ -18,6 +18,8 @@ namespace inventory
 
         Asset *getProperty(std::string dbCode);
 
+        Inventory *getInventory(std::string dbCode);
+
         double sellSellables(Entry *newEntry); // return the COGS
 
         void purchaseSellables(Entry *newEntry);

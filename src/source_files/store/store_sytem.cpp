@@ -31,7 +31,7 @@ void StoreSystem::sellItem(SellingTransaction *sellingTransaction)
     this->aSystem->addTransaction(accountingTransaction2);
 }
 
-void StoreSystem::buyItem(PurchaseTransaction *purchaseTransaction) // break here
+void StoreSystem::buyItem(PurchaseTransaction *purchaseTransaction)
 {
     double purchaseAmount = 0;
     for (inventory::Entry *entry : purchaseTransaction->getAllEntries())
@@ -48,7 +48,7 @@ void StoreSystem::buyItem(PurchaseTransaction *purchaseTransaction) // break her
     this->aSystem->addTransaction(accountingTransaction);
 }
 
-void StoreSystem::buyAsset(PurchaseTransaction *purchaseTransaction)
+void StoreSystem::capitalizeAsset(PurchaseTransaction *purchaseTransaction)
 {
     double amount = 0.0;
     for (inventory::Entry *entry : purchaseTransaction->getAllEntries())
@@ -73,7 +73,7 @@ void StoreSystem::disposeAsset(SellingTransaction *sellingTransaction)
     {
         sellAmount += entry->getPrice();
         propertyValuation += this->iSystem->sellProperties(entry);
-        toDispose = (inventory::Equipment *)this->iSystem->getProperty(entry->getPropertiesDBCode()); // TO DO: verify the casting process
+        toDispose = (inventory::Equipment *)this->iSystem->getProperty(entry->getPropertiesDBCode());
     }
     util::Date *transactionDate = new util::Date();
     std::string description = "Asset disposal";
@@ -93,6 +93,10 @@ void StoreSystem::addItem(inventory::Inventory *newSellable)
 void StoreSystem::addProperty(inventory::Equipment *newProperty)
 {
     this->iSystem->addNewProperty(newProperty);
+}
+
+inventory::Inventory *StoreSystem::getInventory(std::string dbCode){
+    return this->iSystem->getInventory(dbCode);
 }
 
 std::string StoreSystem::toString()

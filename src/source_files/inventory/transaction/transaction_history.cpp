@@ -14,7 +14,7 @@ TransactionHistory::TransactionHistory()
 void TransactionHistory::addEntry(Entry *entry)
 {
     this->entries.push_back(entry);
-    entry->insertToDB();
+    //entry->insertToDB();
     /*auto end = this->entries.end() - 1;
     while (end != this->entries.begin() && (*end)->getTransactionDate() < (*(end - 1))->getTransactionDate())
     {

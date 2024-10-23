@@ -3,11 +3,13 @@ using namespace accounting;
 
 util::Table *Entry::classTable = util::AccountingEntryTable::getInstance();
 
-void Entry::insertToDB(){
+void Entry::insertToDB()
+{
     this->insertToDBWithTable(Entry::classTable);
 };
 
-void Entry::updateToDB(){
+void Entry::updateToDB()
+{
     this->updateToDBWithTable(Entry::classTable);
 };
 
@@ -34,13 +36,17 @@ std::vector<std::string> Entry::getUpdateParameter()
     return toRet;
 }
 
-Entry::Entry(bool debit, double amount, util::enums::AccountTitles account, util::enums::TAccounts tAccount) : util::baseclass::HasTable()
+Entry::Entry(bool debit, double amount, util::enums::AccountTitles account,
+             util::enums::TAccounts tAccount, std::string transactionDBCode)
+    : util::baseclass::HasTable()
 {
     this->debit = debit;
     this->amount = amount;
     this->account = account;
     this->tAccount = tAccount;
     this->transactionTitle = "";
+    this->transactionDB = transactionDBCode;
+    this->insertToDB();
 }
 
 bool Entry::isDebit()

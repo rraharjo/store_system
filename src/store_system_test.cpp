@@ -33,8 +33,8 @@ int main(int argc, char** argv){
     store::PurchaseTransaction *purchaseBuilding = new store::PurchaseTransaction("", buyBuilding);
     inventory::PurchaseEntry *purchaseBuildingEntry = new inventory::PurchaseEntry(building->getDBCode(), purchaseBuilding->getDBCode(), 500000, 1);
     purchaseBuilding->addEntry(purchaseBuildingEntry);
-    sSystem->buyAsset(purchaseCar);
-    sSystem->buyAsset(purchaseBuilding);
+    sSystem->capitalizeAsset(purchaseCar);
+    sSystem->capitalizeAsset(purchaseBuilding);
     //std::cout << sSystem->toString() << '\n';
     util::Date *sellCarDate = new util::Date();
     store::SellingTransaction *sellCar = new store::SellingTransaction(sellCarDate);
