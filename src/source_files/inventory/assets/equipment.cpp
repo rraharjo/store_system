@@ -5,7 +5,6 @@ Equipment::Equipment(std::string name, std::string itemCode, double residualValu
 Asset::Asset(name, itemCode, residualValue, yearUsefulLife, dateBought)
 {
     this->depreciationMethod = new util::DoubleDecliningDepreciation(this->getTotalValue(), this->getYearUsefulLife());
-    //this->setDBCode(this->createDBCode());
     this->insertToDB();
 } 
 
@@ -77,4 +76,5 @@ void Equipment::setTotalValue(double newValue){
         return;
     }
     Asset::setTotalValue(newValue);
+    this->depreciationMethod->setCost(newValue);
 }

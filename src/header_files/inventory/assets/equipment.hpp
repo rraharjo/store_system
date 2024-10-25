@@ -14,6 +14,8 @@ namespace inventory
         std::vector<std::string> getInsertParameter() override;
 
     public:
+        void setTotalValue(double newValue) override;
+        
         Equipment(std::string name, std::string itemCode, double residualValue, int yearUsefulLife, util::Date *dateBought);
 
         double getDepreciationExpenseAtYear(int year);
@@ -27,8 +29,6 @@ namespace inventory
         double getCurrentAccumulatedDepreciation();
 
         double getCurrentValue();
-
-        void setTotalValue(double newValue);
     };
 }
 

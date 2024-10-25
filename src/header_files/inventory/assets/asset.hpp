@@ -44,7 +44,7 @@ namespace inventory
 
         double getCurrentValue();
 
-        void setTotalValue(double newValue);
+        virtual void setTotalValue(double newValue);
 
         std::string toString();
     };

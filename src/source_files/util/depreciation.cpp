@@ -8,7 +8,12 @@ DepreciationMethod::DepreciationMethod(double cost, double residualValue, int ye
     this->yearUsefulLife = yearUsefulLife;
 }
 
-//Straight line depreciation
+void DepreciationMethod::setCost(double cost)
+{
+    this->cost = cost;
+}
+
+// Straight line depreciation
 StraightLineDepreciation::StraightLineDepreciation(double cost, double residualValue, int yearUsefulLife) : DepreciationMethod::DepreciationMethod(cost, residualValue, yearUsefulLife) {}
 
 double StraightLineDepreciation::getAccumulatedDepreciationAtYear(int year)
@@ -29,15 +34,21 @@ double StraightLineDepreciation::getDepreciationExpenseAtYear(int year)
     return (this->cost - this->residualValue) / this->yearUsefulLife;
 }
 
-//Double declining depreciation
+// Double declining depreciation
+void DoubleDecliningDepreciation::setCost(double cost)
+{
+    DepreciationMethod::setCost(cost);
+    DoubleDecliningDepreciation::initiateAccumulatedDepreciation();
+}
+
 DoubleDecliningDepreciation::DoubleDecliningDepreciation(double cost, int yearUsefulLife) : DepreciationMethod::DepreciationMethod(cost, 0, yearUsefulLife)
 {
-    this->accumulatedDepreciation = {0};
     DoubleDecliningDepreciation::initiateAccumulatedDepreciation();
 }
 
 void DoubleDecliningDepreciation::initiateAccumulatedDepreciation()
 {
+    this->accumulatedDepreciation = {0};
     for (int i = 1; i <= this->yearUsefulLife; i++)
     {
         this->accumulatedDepreciation.push_back(this->accumulatedDepreciation[i - 1] + getDepreciationExpenseAtYear(i));

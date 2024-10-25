@@ -39,7 +39,8 @@ double Asset::sellItems(SellingEntry *entry){
 }
 
 void Asset::addPurchase(PurchaseEntry *entry){
-    this->value += entry->getPrice();
+    //this->value += entry->getPrice();
+    setTotalValue(this->value + entry->getPrice());
     this->purchaseHistory->addEntry(entry);
     this->updateToDB();
 }
