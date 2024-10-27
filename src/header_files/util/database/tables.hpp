@@ -7,6 +7,22 @@
 namespace util
 {
     // namespace database
+    enum class TableComparator{
+        LESSTHAN = 0,
+        LESSTHANEQUAL,
+        EQUAL,
+        MORETHANEQUAL,
+        MORETHAN,
+        LIKE
+    };
+
+    struct TableCondition
+    {
+        ColumnSchema col;
+        std::string value;
+        TableComparator comparator;
+    };
+
     class Table
     {
     private:
@@ -20,6 +36,11 @@ namespace util
         Table(std::string tableName, std::string sequenceName);
 
     public:
+        std::vector<std::vector<std::string>> getRecords(std::vector<std::string>, std::vector<TableCondition>);
+
+        std::vector<std::vector<std::string>> getRecords(std::vector<TableCondition>);
+
+        std::vector<std::vector<std::string>> getRecords();
 
         std::vector<std::string> insertRow(std::vector<std::string> &values);
 
@@ -28,6 +49,8 @@ namespace util
         std::vector<ColumnSchema> getSchema();
 
         std::string getTableName();
+
+        ColumnSchema getColumn(std::string);
     };
 
     class InventoryTable : public Table

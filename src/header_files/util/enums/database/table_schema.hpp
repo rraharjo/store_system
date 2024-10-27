@@ -1,12 +1,29 @@
 #include <map>
-#include "util/enums/database/column_schema.hpp"
+#include <string>
 #ifndef TABLE_SCHEMA_HPP
 #define TABLE_SCHEMA_HPP
 namespace util
 {
     namespace enums
     {
+        enum class ColumnTypes
+        {
+            CUSTOMSERIALCOL = 0, // is a text 
+            NUMBERCOL,
+            FLOATCOL,
+            TEXTCOL,
+            DATECOL,
+            BOOLCOL
+        };
 
+    }
+    struct ColumnSchema
+    {
+        std::string columnName;
+        util::enums::ColumnTypes type;
+    };
+    namespace enums
+    {
         enum class PrimaryKeyCodes
         {
             INVENTORY = 0,
@@ -138,5 +155,6 @@ namespace util
 
         extern std::map<AccountingEntryTable, ColumnSchema> accountingEntryTableColumns;
     }
+
 }
 #endif
