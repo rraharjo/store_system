@@ -24,7 +24,9 @@ int main(int argc, char** argv){
     util::Date *buyCar = new util::Date();
     util::Date *buyBuilding = new util::Date();
     inventory::Equipment *car = new inventory::Equipment("car", "", 100, 10, buyCar);
+    car->insertToDB();
     inventory::Equipment *building = new inventory::Equipment("Building", "", 1000, 30, buyBuilding);
+    building->insertToDB();
     sSystem->addProperty(car);
     sSystem->addProperty(building);
     store::PurchaseTransaction *purchaseCar = new store::PurchaseTransaction("", buyCar);

@@ -15,8 +15,6 @@ namespace util
             virtual accounting::Transaction *createTransaction() = 0;
 
             AccountingTransactionFactory(util::Date *, std::string, std::string);
-
-            virtual ~AccountingTransactionFactory();
         };
 
         class GoodsPurchaseFactory : public AccountingTransactionFactory

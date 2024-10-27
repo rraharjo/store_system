@@ -117,6 +117,7 @@ void addNewInventory(store::StoreSystem *sSystem)
     std::string itemCode = getString("Enter item code:");
     double price = getDouble("Enter price:", 0.0, std::numeric_limits<double>::max());
     inventory::Inventory *newInventory = new inventory::Inventory(name, itemCode, price);
+    newInventory->insertToDB();
     sSystem->addItem(newInventory);
     std::cout << "new inventory added" << '\n';
 }
@@ -126,6 +127,7 @@ void purchaseInventory(store::StoreSystem *sSystem)
     std::string seller = getString("Enter transaction seller:");
     util::Date *transDate = getDate("Enter date: ");
     store::PurchaseTransaction *newTransaction = new store::PurchaseTransaction(seller, transDate);
+    newTransaction->insertToDB();
     addPurchaseEntry(newTransaction);
     int more = getInt("more?", 0, 1);
     while (more)
@@ -143,6 +145,7 @@ void addPurchaseEntry(store::PurchaseTransaction *p)
     double price = getDouble("Enter each item price", 0.0, std::numeric_limits<double>::max());
     int qty = getInt("Enter qty purchased: ", 0, INT_MAX);
     inventory::PurchaseEntry *newEntry = new inventory::PurchaseEntry(itemCode, p->getDBCode(), price, qty);
+    newEntry->insertToDB();
     p->addEntry(newEntry);
 }
 
@@ -155,8 +158,11 @@ void purchaseAsset(store::StoreSystem *sSystem)
     int usefulLife = getInt("Year useful life: ", 1, 99);
     util::Date *datePurchased = getDate("date purchased ");
     inventory::Equipment *newEqp = new inventory::Equipment(name, itemCode, residualValue, usefulLife, datePurchased);
+    newEqp->insertToDB();
     store::PurchaseTransaction *newTransaction = new store::PurchaseTransaction("", datePurchased);
+    newTransaction->insertToDB();
     inventory::PurchaseEntry *newEntry = new inventory::PurchaseEntry(newEqp->getDBCode(), newTransaction->getDBCode(), purchaseCost, 1);
+    newEntry->insertToDB();
     newTransaction->addEntry(newEntry);
     sSystem->addProperty(newEqp);
     sSystem->capitalizeAsset(newTransaction);
@@ -168,7 +174,9 @@ void capitalizeAssets(store::StoreSystem *sSystem)
     double capitalizedAmt = getDouble("Capitalized amount: ", 0.0, std::numeric_limits<double>::max());
     util::Date *transDate = getDate("transaction date: ");
     store::PurchaseTransaction *newTransaction = new store::PurchaseTransaction("", transDate);
+    newTransaction->insertToDB();
     inventory::PurchaseEntry *newEntry = new inventory::PurchaseEntry(itemCode, newTransaction->getDBCode(), capitalizedAmt, 1);
+    newEntry->insertToDB();
     newTransaction->addEntry(newEntry);
     sSystem->capitalizeAsset(newTransaction);
 }
@@ -180,7 +188,9 @@ void sellInventory(store::StoreSystem *sSystem)
     double price = sSystem->getInventory(itemCode)->getSellingPrice();
     util::Date *date = getDate("enter date: ");
     store::SellingTransaction *newTransaction = new store::SellingTransaction(date);
+    newTransaction->insertToDB();
     inventory::SellingEntry *newEntry = new inventory::SellingEntry(itemCode, newTransaction->getDBCode(), price, qty);
+    newEntry->insertToDB();
     newTransaction->addEntry(newEntry);
     int more = getInt("more?", 0, 1);
     while (more)
@@ -189,6 +199,7 @@ void sellInventory(store::StoreSystem *sSystem)
         qty = getInt("qty: ", 1, INT_MAX);
         price = sSystem->getInventory(itemCode)->getSellingPrice();
         newEntry = new inventory::SellingEntry(itemCode, newTransaction->getDBCode(), price, qty);
+        newEntry->insertToDB();
         newTransaction->addEntry(newEntry);
         more = getInt("more?", 0, 1);
     }
@@ -201,7 +212,9 @@ void sellAssets(store::StoreSystem *sSystem)
     double price = getDouble("selling price", 0, std::numeric_limits<double>::max());
     util::Date *date = getDate("enter date: ");
     store::SellingTransaction *newTransaction = new store::SellingTransaction(date);
+    newTransaction->insertToDB();
     inventory::SellingEntry *newEntry = new inventory::SellingEntry(itemCode, newTransaction->getDBCode(), price, 1);
+    newEntry->insertToDB();
     newTransaction->addEntry(newEntry);
     sSystem->disposeAsset(newTransaction);
 }

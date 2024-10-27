@@ -96,7 +96,6 @@ PurchaseEntry::PurchaseEntry(std::string sellableDBCode, std::string transaction
     : Entry(sellableDBCode, transactionCode, price, qty)
 {
     this->availableQty = qty;
-    this->insertToDB();
 }
 
 int PurchaseEntry::getAvailableQty()
@@ -147,5 +146,4 @@ void SellingEntry::updateToDB()
 
 SellingEntry::SellingEntry(std::string sellableDBCode, std::string transactionCode, double price, int qty) : Entry(sellableDBCode, transactionCode, price, qty)
 {
-    this->insertToDB();
 }

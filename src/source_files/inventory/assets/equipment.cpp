@@ -1,12 +1,11 @@
 #include "inventory/assets/equipment.hpp"
 using namespace inventory;
 
-Equipment::Equipment(std::string name, std::string itemCode, double residualValue, int yearUsefulLife, util::Date *dateBought) : 
-Asset::Asset(name, itemCode, residualValue, yearUsefulLife, dateBought)
+Equipment::Equipment(std::string name, std::string itemCode, double residualValue, int yearUsefulLife, util::Date *dateBought)
+    : Asset::Asset(name, itemCode, residualValue, yearUsefulLife, dateBought)
 {
     this->depreciationMethod = new util::DoubleDecliningDepreciation(this->getTotalValue(), this->getYearUsefulLife());
-    this->insertToDB();
-} 
+}
 
 std::vector<std::string> Equipment::getInsertParameter()
 {
@@ -52,7 +51,7 @@ double Equipment::getValueAtYear(int year)
 double Equipment::getCurrentDepreciationExpense()
 {
     util::Date *now = new util::Date();
-    int age = this->dateBought->diffYearsTo(now);//TO DO: change to year
+    int age = this->dateBought->diffYearsTo(now); // TO DO: change to year
     return this->getDepreciationExpenseAtYear(age);
 }
 
@@ -71,8 +70,10 @@ double Equipment::getCurrentValue()
     return this->getValueAtYear(age);
 }
 
-void Equipment::setTotalValue(double newValue){
-    if (newValue < this->getTotalValue()){
+void Equipment::setTotalValue(double newValue)
+{
+    if (newValue < this->getTotalValue())
+    {
         return;
     }
     Asset::setTotalValue(newValue);

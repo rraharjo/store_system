@@ -16,8 +16,6 @@ Inventory::Inventory(std::string name, std::string itemCode, double sellingPrice
 {
     this->sellingPrice = sellingPrice;
     this->qty = 0;
-    //this->setDBCode(this->createDBCode());
-    this->insertToDB();
 }
 
 std::vector<std::string> Inventory::getInsertParameter(){

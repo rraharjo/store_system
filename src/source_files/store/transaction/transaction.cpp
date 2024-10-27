@@ -38,8 +38,6 @@ void PurchaseTransaction::updateToDB()
 PurchaseTransaction::PurchaseTransaction(std::string seller, util::Date *purchaseDate) : Transaction::Transaction(purchaseDate)
 {
     this->seller = seller;
-    //this->setDBCode(this->createDBCode());
-    this->insertToDB();
 }
 
 std::string PurchaseTransaction::getSeller()
@@ -82,8 +80,6 @@ void SellingTransaction::updateToDB()
 
 SellingTransaction::SellingTransaction(util::Date *transactionDate) : Transaction::Transaction(transactionDate)
 {
-    //this->setDBCode(this->createDBCode());
-    this->insertToDB();
 }
 
 std::vector<std::string> SellingTransaction::getInsertParameter()

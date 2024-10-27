@@ -46,7 +46,6 @@ Entry::Entry(bool debit, double amount, util::enums::AccountTitles account,
     this->tAccount = tAccount;
     this->transactionTitle = "";
     this->transactionDB = transactionDBCode;
-    this->insertToDB();
 }
 
 bool Entry::isDebit()

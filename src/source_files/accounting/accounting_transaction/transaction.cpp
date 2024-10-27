@@ -18,8 +18,6 @@ Transaction::Transaction(std::string name, util::Date *transactionDate) : util::
     this->creditEntries = {};
     this->transactionDate = transactionDate;
     this->entityID = "";
-    //this->setDBCode(this->createDBCode());
-    this->insertToDB();
 }
 
 Transaction::Transaction(std::string name) : Transaction::Transaction(name, new util::Date())
@@ -33,8 +31,6 @@ Transaction::Transaction(std::string name, util::Date *transactionDate, std::str
     this->creditEntries = {};
     this->transactionDate = transactionDate;
     this->entityID = pid;
-    //this->setDBCode(this->createDBCode());
-    this->insertToDB();
 }
 
 Transaction::Transaction(std::string name, std::string pid) : Transaction::Transaction(name, new util::Date(), pid)

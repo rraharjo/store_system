@@ -11,6 +11,8 @@ namespace accounting
     private:
         static AccountingSystem *instance;
 
+        std::map<std::string, Transaction *> transactions;
+
         AccountingSystem();
 
         void addEntry(Entry *entry);

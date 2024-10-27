@@ -8,7 +8,8 @@ AccountingSystem::AccountingSystem()
     this->stockholdersEquity = new StockholdersEquityAccount();
 }
 
-AccountingSystem::~AccountingSystem(){
+AccountingSystem::~AccountingSystem()
+{
     delete this->assets;
     delete this->liabilities;
     delete this->stockholdersEquity;
@@ -49,6 +50,7 @@ void AccountingSystem::addTransaction(Transaction *transaction)
     {
         this->addEntry(entry);
     }
+    this->transactions[transaction->getDBCode()] = transaction;
 }
 
 std::string AccountingSystem::to_string()
