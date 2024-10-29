@@ -10,8 +10,12 @@ namespace inventory
         static InventorySystem *instance;
         std::map<std::string, Inventory *> sellables;
         std::map<std::string, Asset *> assets; 
+
         InventorySystem();
 
+        void addExistingAsset(Asset *);
+
+        void addExistingInventory(Inventory *);
     public:
     
         static InventorySystem *getInstance();

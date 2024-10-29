@@ -2,13 +2,14 @@
 #include "util/database/tables.hpp"
 #include "util/misc.hpp"
 #include "accounting/accounting_transaction/transaction.hpp"
+#include "inventory/inventory_system.hpp"
 
 void printVec(std::vector<std::string> &);
 void printTable(std::vector<std::vector<std::string>> &);
 
 int main(int argc, char **argv)
 {
-    util::AccountingTransactionTable *myTable = util::AccountingTransactionTable::getInstance();
+    util::InventoryTable *myTable = util::InventoryTable::getInstance();
     std::vector<util::TableCondition> conditions;
     std::string val = "01-01-2024";
     util::TableCondition newCondition, cond2;
@@ -18,10 +19,10 @@ int main(int argc, char **argv)
     conditions.push_back(newCondition);
     std::vector<std::vector<std::string>> res = myTable->getRecords();
     printTable(res);
-    std::vector<accounting::Transaction *> transactions = accounting::Transaction::generateFromDatabase();
-    for (accounting::Transaction *transaction : transactions)
+    std::vector<inventory::Inventory *> inventories = inventory::Inventory::generateFromDatabase();
+    for (inventory::Inventory *inventory : inventories)
     {
-        std::cout << transaction->toString() << "\n";
+        std::cout << inventory->to_string() << "\n";
     }
     
     return 0;

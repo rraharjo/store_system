@@ -15,6 +15,10 @@ AccountingSystem::~AccountingSystem()
     delete this->stockholdersEquity;
 }
 
+void AccountingSystem::addExistingTransaction(Transaction *transaction){
+    this->addTransaction(transaction);
+}
+
 void AccountingSystem::addEntry(Entry *entry)
 {
     switch (entry->getAccountTitle())

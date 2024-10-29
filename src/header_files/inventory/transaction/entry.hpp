@@ -33,7 +33,9 @@ namespace inventory
     {
     private:
         static util::Table *classTable;
-        static int nextItemCode;
+
+        static std::vector<PurchaseEntry *> generateFromDatabase(std::string);
+
         int availableQty;
 
     protected:
@@ -46,11 +48,16 @@ namespace inventory
 
         void updateToDB() override;
 
-        PurchaseEntry(std::string itemDBCode, std::string transactionCode, double price, int qty);
+        PurchaseEntry(std::string dbCode, std::string itemDBCode, std::string transactionDBCode,
+                      double price, int allQty, int availableQty);
+
+        PurchaseEntry(std::string itemDBCode, std::string transactionDBCode, double price, int qty);
 
         int getAvailableQty();
 
         void setAvailableQty(int qty);
+
+        friend class Inventory;
     };
 
     /**********************************SELLINGENTRY*********************************/

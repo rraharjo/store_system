@@ -13,8 +13,13 @@ namespace inventory
     {
     private:
         static util::Table *classTable;
+
         double sellingPrice;
         // tax
+
+        void addExistingPurchaseEntry(PurchaseEntry *);
+
+        void addExistingSellingEntry(SellingEntry *);
 
     protected:
         std::vector<std::string> getInsertParameter() override;
@@ -22,11 +27,15 @@ namespace inventory
         std::vector<std::string> getUpdateParameter() override;
 
     public:
+        static std::vector<Inventory *> generateFromDatabase();
+
         void insertToDB() override;
 
         void updateToDB() override;
-        
-        Inventory(std::string name, std::string itemCode, double sellingPrice);
+
+        Inventory(std::string, std::string, std::string, double);
+
+        Inventory(std::string itemCode, std::string name, double sellingPrice);
 
         double sellItems(SellingEntry *entry) override;
 

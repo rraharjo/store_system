@@ -116,7 +116,7 @@ void addNewInventory(store::StoreSystem *sSystem)
     std::string name = getString("Enter product name:");
     std::string itemCode = getString("Enter item code:");
     double price = getDouble("Enter price:", 0.0, std::numeric_limits<double>::max());
-    inventory::Inventory *newInventory = new inventory::Inventory(name, itemCode, price);
+    inventory::Inventory *newInventory = new inventory::Inventory(itemCode, name, price);
     newInventory->insertToDB();
     sSystem->addItem(newInventory);
     std::cout << "new inventory added" << '\n';

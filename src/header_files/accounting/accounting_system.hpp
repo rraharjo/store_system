@@ -16,6 +16,8 @@ namespace accounting
 
         void addEntry(Entry *entry);
 
+        void addExistingTransaction(Transaction *transaction);
+
     public:
         Assets *assets;
         Liabilities *liabilities;

@@ -18,6 +18,14 @@ InventorySystem::InventorySystem()
     this->assets = {};
 }
 
+void InventorySystem::addExistingInventory(Inventory *inv){
+    this->addNewItem(inv);
+}
+
+void InventorySystem::addExistingAsset(Asset *asset){
+    this->addNewProperty(asset);
+}
+
 Asset *InventorySystem::getProperty(std::string dbCode)
 {
     return this->assets[dbCode];

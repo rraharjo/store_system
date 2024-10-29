@@ -55,7 +55,33 @@ void Entry::setTransactionDate(util::Date *transactionDate)
 /******************************************************************************/
 
 util::Table *PurchaseEntry::classTable = util::PurchaseEntryTable::getInstance();
-int PurchaseEntry::nextItemCode = 0; // TO DO: change to count(*)
+
+std::vector<PurchaseEntry *> PurchaseEntry::generateFromDatabase(std::string invDBCode)
+{
+    std::vector<PurchaseEntry *> toRet;
+    std::vector<util::TableCondition> conditions;
+    std::vector<std::string> columns;
+    for (auto it = util::enums::purchaseEntryTableColumns.begin() ; it != util::enums::purchaseEntryTableColumns.end() ; it++){
+        columns.push_back(it->second.columnName);
+    }
+    util::TableCondition cond1 = util::TableCondition(), cond2 = util::TableCondition();
+    cond1.col = util::enums::purchaseEntryTableColumns[util::enums::PurchaseEntryTable::INVENTORYDBCODE];
+    cond1.comparator = util::TableComparator::EQUAL;
+    cond1.value = invDBCode;
+    cond2.col = util::enums::purchaseEntryTableColumns[util::enums::PurchaseEntryTable::AVAILABLEQTY];
+    cond2.comparator = util::TableComparator::MORETHAN;
+    cond2.value = "0";
+    conditions.push_back(cond1);
+    conditions.push_back(cond2);
+    std::vector<std::vector<std::string>> records = PurchaseEntry::classTable->getRecords(columns, conditions);
+    for (std::vector<std::string> &record : records)
+    {
+        PurchaseEntry *newEntry = new PurchaseEntry(record[0], record[1], record[3],
+                                                    std::stod(record[4]), std::stoi(record[5]), std::stoi(record[6]));
+        toRet.push_back(newEntry);
+    }
+    return toRet;
+}
 
 std::vector<std::string> PurchaseEntry::getInsertParameter()
 {
@@ -92,10 +118,17 @@ void PurchaseEntry::updateToDB()
     this->updateToDBWithTable(PurchaseEntry::classTable);
 }
 
-PurchaseEntry::PurchaseEntry(std::string sellableDBCode, std::string transactionCode, double price, int qty)
-    : Entry(sellableDBCode, transactionCode, price, qty)
+PurchaseEntry::PurchaseEntry(std::string dbCode, std::string invDBCode, std::string transactionDBCode,
+                             double price, int allQty, int availableQty)
+    : Entry(invDBCode, transactionDBCode, price, allQty)
 {
-    this->availableQty = qty;
+    this->setDBCode(dbCode);
+    this->availableQty = availableQty;
+}
+
+PurchaseEntry::PurchaseEntry(std::string invDBCode, std::string transactionDBCode, double price, int qty)
+    : PurchaseEntry("", invDBCode, transactionDBCode, price, qty, qty)
+{
 }
 
 int PurchaseEntry::getAvailableQty()

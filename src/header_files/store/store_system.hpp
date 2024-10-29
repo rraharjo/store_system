@@ -11,7 +11,6 @@ namespace store {
             std::vector<SellingTransaction*> sellingTransactions;
             accounting::AccountingSystem* aSystem;
             inventory::InventorySystem* iSystem;
-        
 
         public:
             StoreSystem();

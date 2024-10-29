@@ -36,9 +36,9 @@ namespace util
         Table(std::string tableName, std::string sequenceName);
 
     public:
-        std::vector<std::vector<std::string>> getRecords(std::vector<std::string>, std::vector<TableCondition>);
+        virtual std::vector<std::vector<std::string>> getRecords(std::vector<std::string>, std::vector<TableCondition>);
 
-        std::vector<std::vector<std::string>> getRecords(std::vector<TableCondition>);
+        virtual std::vector<std::vector<std::string>> getRecords(std::vector<TableCondition>);
 
         std::vector<std::vector<std::string>> getRecords();
 
@@ -91,6 +91,8 @@ namespace util
 
     public:
         static PurchaseEntryTable *getInstance();
+
+        std::vector<std::vector<std::string>> getRecords(std::vector<std::string>, std::vector<TableCondition>) override;
 
         ~PurchaseEntryTable();
     };

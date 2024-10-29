@@ -11,6 +11,17 @@ std::string generateColumnName(std::vector<std::string> &names)
     return result;
 }
 
+std::string generateColumnName(std::string abbreviation, std::vector<std::string> &names)
+{
+    std::string result = "";
+    for (int i = 0; i < names.size() - 1; i++)
+    {
+        result += abbreviation + "." + names[i] + ", ";
+    }
+    result += names[names.size() - 1];
+    return result;
+}
+
 std::string generateSingleCondition(util::TableCondition &condition)
 {
     util::TableComparator comp = condition.comparator;
@@ -97,9 +108,12 @@ std::vector<util::ColumnSchema> Table::getSchema()
     return this->schema;
 }
 
-ColumnSchema Table::getColumn(std::string colName){
-    for (ColumnSchema schema : this->schema){
-        if (schema.columnName == colName){
+ColumnSchema Table::getColumn(std::string colName)
+{
+    for (ColumnSchema schema : this->schema)
+    {
+        if (schema.columnName == colName)
+        {
             return schema;
         }
     }
@@ -342,6 +356,28 @@ PurchaseTransactionTable *PurchaseTransactionTable::getInstance()
 }
 
 // purchase entry table
+std::vector<std::vector<std::string>> PurchaseEntryTable::getRecords(std::vector<std::string> columns,
+                                                                     std::vector<TableCondition> conditions)
+{
+    std::string entryAbbr = "et", transactionAbbr = "pt";
+    std::string transactionTableName = util::enums::tableNamesMap[util::enums::TableNames::PURCHASETRANSACTION];
+    std::string dateCol =
+        util::enums::purchaseTransactionTableColumns[util::enums::PurchaseTransactionTable::DATEPURCHASED].columnName;
+    std::string entryJoinCol =
+        util::enums::purchaseEntryTableColumns[util::enums::PurchaseEntryTable::PURCHASETRANSACTIONCODE].columnName;
+    std::string transactionJoinCol =
+        util::enums::purchaseTransactionTableColumns[util::enums::PurchaseTransactionTable::DATABASECODE].columnName;
+    size_t colSize = columns.size(), condSize = conditions.size();
+    std::string query = "select " + generateColumnName(entryAbbr, columns) + " from " +
+                        this->getTableName() + " " + entryAbbr + " inner join " + transactionTableName + " " + transactionAbbr +
+                        " on " + entryAbbr + "." + entryJoinCol + " = " + transactionAbbr + "." + transactionJoinCol + " where ";
+    query += generateConditions(conditions);
+    query += " order by " + transactionAbbr + "." + dateCol;
+    query += ";";
+    DB *instance = DB::getInstance();
+    return instance->executeQuery(query);
+}
+
 PurchaseEntryTable::PurchaseEntryTable(std::string tableName, std::string sequenceName)
     : Table::Table(tableName, sequenceName)
 {
