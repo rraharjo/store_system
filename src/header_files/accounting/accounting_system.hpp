@@ -1,4 +1,3 @@
-#pragma once
 #include "accounting/accounts/account.hpp"
 #include "accounting/accounting_transaction/transaction.hpp"
 

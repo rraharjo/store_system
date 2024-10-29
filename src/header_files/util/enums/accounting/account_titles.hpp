@@ -20,6 +20,8 @@ namespace util
         extern AccountTitles allAccountTitles[3];
 
         std::string getName(util::enums::AccountTitles);
+
+        AccountTitles getAccountEnum(std::string);
     };
 };
 

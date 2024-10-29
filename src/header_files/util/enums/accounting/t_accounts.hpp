@@ -44,6 +44,8 @@ namespace util
         extern std::vector<TAccounts> stockholdersTAccounts;
 
         std::string getName(util::enums::TAccounts);
+
+        TAccounts getTAccountEnum(std::string);
     };
 };
 

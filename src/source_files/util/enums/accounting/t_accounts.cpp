@@ -58,3 +58,12 @@ std::vector<TAccounts> util::enums::stockholdersTAccounts = {
 std::string util::enums::getName(util::enums::TAccounts tAccount){
     return tAccountsNameMap[tAccount];
 }
+
+TAccounts util::enums::getTAccountEnum(std::string name){
+    for (auto it = tAccountsNameMap.begin() ; it != tAccountsNameMap.end() ; it++){
+        if (it->second == name){
+            return it->first;
+        }
+    }
+    throw std::invalid_argument(name + " does not match any T-account");
+}

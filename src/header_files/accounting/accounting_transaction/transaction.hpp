@@ -19,7 +19,6 @@ namespace accounting
         std::string name;
         util::Date *transactionDate;
         std::string entityID;
-        int dbCode;
 
     protected:
         std::vector<std::string> getInsertParameter() override;
@@ -27,17 +26,21 @@ namespace accounting
         std::vector<std::string> getUpdateParameter() override;
 
     public:
+        static std::vector<Transaction *> generateFromDatabase();
+
         void insertToDB() override;
 
         void updateToDB() override;
-        
-        Transaction(std::string name, util::Date *transactionDate);
 
-        Transaction(std::string name);
+        Transaction(std::string dbCode, std::string name, util::Date *transactionDate, std::string pid);
 
         Transaction(std::string name, util::Date *transactionDate, std::string pid);
 
+        Transaction(std::string name, util::Date *transactionDate);
+
         Transaction(std::string name, std::string pid);
+
+        Transaction(std::string name);
 
         ~Transaction();
 
@@ -52,6 +55,8 @@ namespace accounting
         void addEntry(Entry *entry);
 
         bool isBalanced();
+
+        std::string toString();
     };
 };
 #endif

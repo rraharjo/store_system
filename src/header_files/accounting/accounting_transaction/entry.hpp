@@ -13,7 +13,9 @@ namespace accounting
 
     private:
         static util::Table *classTable;
-        
+
+        static std::vector<Entry *> generateFromDB(std::string);
+
         bool debit;
         double amount;
         std::string transactionTitle;
@@ -30,8 +32,12 @@ namespace accounting
         void insertToDB() override;
 
         void updateToDB() override;
-        
-        Entry(bool debit, double amount, util::enums::AccountTitles account, util::enums::TAccounts tAccount, std::string transactionDBCode);
+
+        Entry(std::string transactionDBCode, bool debit, double amount, util::enums::TAccounts tAccount,
+              util::enums::AccountTitles account);
+
+        Entry(std::string dbCode, std::string transactionDBCode, bool debit, double amount,
+              util::enums::TAccounts tAccount, util::enums::AccountTitles account);
 
         bool isDebit();
 
@@ -54,6 +60,8 @@ namespace accounting
         void setTransactionTitle(std::string title);
 
         std::string to_string();
+
+        friend class Transaction;
     };
 };
 #endif
