@@ -58,6 +58,8 @@ namespace inventory
         void setAvailableQty(int qty);
 
         friend class Inventory;
+
+        friend class Equipment;
     };
 
     /**********************************SELLINGENTRY*********************************/

@@ -1,10 +1,42 @@
 #include "inventory/assets/equipment.hpp"
 using namespace inventory;
 
-Equipment::Equipment(std::string name, std::string itemCode, double residualValue, int yearUsefulLife, util::Date *dateBought)
-    : Asset::Asset(name, itemCode, residualValue, yearUsefulLife, dateBought)
+std::vector<Equipment *> Equipment::generateFromDatabase()
+{
+    std::vector<Equipment *> toRet;
+    std::vector<std::vector<std::string>> records = Asset::classTable->getRecords();
+    for (std::vector<std::string> &record : records)
+    {
+        util::Date *purchase = NULL, *sold = NULL;
+        if (record[5] != "")
+        {
+            purchase = new util::Date(record[5], "%Y-%m-%d");
+        }
+        if (record[6] != "")
+        {
+            sold = new util::Date(record[6], "%Y-%m-%d");
+        }
+        Equipment *newEquipment = new Equipment(record[0], record[1], "", std::stod(record[2]),
+                                                std::stod(record[3]), std::stoi(record[4]), purchase, sold);
+        std::vector<PurchaseEntry *> entries = PurchaseEntry::generateFromDatabase(newEquipment->getDBCode());
+        for (PurchaseEntry *entry : entries){
+            newEquipment->addExistingPurchaseEntry(entry);
+        }
+        toRet.push_back(newEquipment);
+    }
+    return toRet;
+}
+
+Equipment::Equipment(std::string dbCode, std::string name, std::string itemCode,
+                     double totalValue, double residualValue, int yearUsefulLife, util::Date *dateBought, util::Date *dateSold)
+    : Asset(dbCode, name, itemCode, totalValue, residualValue, yearUsefulLife, dateBought, dateSold)
 {
     this->depreciationMethod = new util::DoubleDecliningDepreciation(this->getTotalValue(), this->getYearUsefulLife());
+}
+
+Equipment::Equipment(std::string name, std::string itemCode, double residualValue, int yearUsefulLife, util::Date *dateBought)
+    : Equipment("", name, itemCode, 0, residualValue, yearUsefulLife, dateBought, NULL)
+{
 }
 
 std::vector<std::string> Equipment::getInsertParameter()

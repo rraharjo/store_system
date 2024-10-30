@@ -54,16 +54,9 @@ void Entry::setTransactionDate(util::Date *transactionDate)
 
 /******************************************************************************/
 
-util::Table *PurchaseEntry::classTable = util::PurchaseEntryTable::getInstance();
-
-std::vector<PurchaseEntry *> PurchaseEntry::generateFromDatabase(std::string invDBCode)
+std::vector<util::TableCondition> getInventoryCondition(std::string invDBCode)
 {
-    std::vector<PurchaseEntry *> toRet;
     std::vector<util::TableCondition> conditions;
-    std::vector<std::string> columns;
-    for (auto it = util::enums::purchaseEntryTableColumns.begin() ; it != util::enums::purchaseEntryTableColumns.end() ; it++){
-        columns.push_back(it->second.columnName);
-    }
     util::TableCondition cond1 = util::TableCondition(), cond2 = util::TableCondition();
     cond1.col = util::enums::purchaseEntryTableColumns[util::enums::PurchaseEntryTable::INVENTORYDBCODE];
     cond1.comparator = util::TableComparator::EQUAL;
@@ -73,10 +66,45 @@ std::vector<PurchaseEntry *> PurchaseEntry::generateFromDatabase(std::string inv
     cond2.value = "0";
     conditions.push_back(cond1);
     conditions.push_back(cond2);
-    std::vector<std::vector<std::string>> records = PurchaseEntry::classTable->getRecords(columns, conditions);
+    return conditions;
+}
+
+std::vector<util::TableCondition> getEquipmentCondition(std::string eqpDBCode)
+{
+    std::vector<util::TableCondition> conditions;
+    util::TableCondition cond1 = util::TableCondition();
+    cond1.col = util::enums::purchaseEntryTableColumns[util::enums::PurchaseEntryTable::ASSETSCODE];
+    cond1.comparator = util::TableComparator::EQUAL;
+    cond1.value = eqpDBCode;
+    conditions.push_back(cond1);
+    return conditions;
+}
+
+util::Table *PurchaseEntry::classTable = util::PurchaseEntryTable::getInstance();
+
+std::vector<PurchaseEntry *> PurchaseEntry::generateFromDatabase(std::string itemDBCode)
+{
+    std::vector<PurchaseEntry *> toRet;
+    std::vector<util::TableCondition> conditions;
+    std::vector<std::string> columns;
+    std::vector<std::vector<std::string>> records;
+    size_t itemIndex;
+    for (auto it = util::enums::purchaseEntryTableColumns.begin(); it != util::enums::purchaseEntryTableColumns.end(); it++)
+    {
+        columns.push_back(it->second.columnName);
+    }
+    if (itemDBCode.compare(0, 3, "INV") == 0){
+        conditions = getInventoryCondition(itemDBCode);
+        itemIndex = 1;
+    }
+    else{
+        conditions = getEquipmentCondition(itemDBCode);
+        itemIndex = 2;
+    }
+    records = PurchaseEntry::classTable->getRecords(columns, conditions);
     for (std::vector<std::string> &record : records)
     {
-        PurchaseEntry *newEntry = new PurchaseEntry(record[0], record[1], record[3],
+        PurchaseEntry *newEntry = new PurchaseEntry(record[0], record[itemIndex], record[3],
                                                     std::stod(record[4]), std::stoi(record[5]), std::stoi(record[6]));
         toRet.push_back(newEntry);
     }

@@ -9,7 +9,7 @@ void printTable(std::vector<std::vector<std::string>> &);
 
 int main(int argc, char **argv)
 {
-    util::InventoryTable *myTable = util::InventoryTable::getInstance();
+    util::AssetsTable *myTable = util::AssetsTable::getInstance();
     std::vector<util::TableCondition> conditions;
     std::string val = "01-01-2024";
     util::TableCondition newCondition, cond2;
@@ -19,10 +19,10 @@ int main(int argc, char **argv)
     conditions.push_back(newCondition);
     std::vector<std::vector<std::string>> res = myTable->getRecords();
     printTable(res);
-    std::vector<inventory::Inventory *> inventories = inventory::Inventory::generateFromDatabase();
-    for (inventory::Inventory *inventory : inventories)
+    std::vector<inventory::Equipment *> equipments = inventory::Equipment::generateFromDatabase();
+    for (inventory::Equipment *equipment : equipments)
     {
-        std::cout << inventory->to_string() << "\n";
+        std::cout << equipment->toString() << "\n";
     }
     
     return 0;

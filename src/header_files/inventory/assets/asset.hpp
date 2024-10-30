@@ -15,12 +15,14 @@ namespace inventory
 
     protected:
         static util::Table *classTable;
+        int yearUsefulLife;
+        util::Date *dateBought;
 
         std::vector<std::string> getUpdateParameter() override;
 
-        int yearUsefulLife;
-        util::Date *dateBought;
-        
+        Asset(std::string dbCode, std::string name, std::string itemCode,
+              double totalValue, double residualValue, int yearUsefulLife, util::Date *dateBought, util::Date *dateSold);
+
         Asset(std::string name, std::string itemCode, double residualValue, int yearUsefulLife, util::Date *dateBought);
 
     public:

@@ -3,22 +3,32 @@ using namespace inventory;
 
 util::Table *Asset::classTable = util::AssetsTable::getInstance();
 
-void Asset::insertToDB(){
+void Asset::insertToDB()
+{
     this->insertToDBWithTable(Asset::classTable);
 };
 
-void Asset::updateToDB(){
+void Asset::updateToDB()
+{
     this->updateToDBWithTable(Asset::classTable);
 };
 
-Asset::Asset(std::string name, std::string itemCode, double residualValue, int yearUsefulLife, util::Date *dateBought) : Item::Item(name, itemCode)
+Asset::Asset(std::string dbCode, std::string name, std::string itemCode,
+             double totalValue, double residualValue, int yearUsefulLife, util::Date *dateBought, util::Date *dateSold)
+    : Item(name, itemCode)
 {
     this->name = name;
+    this->value = totalValue;
     this->residualValue = residualValue;
     this->yearUsefulLife = yearUsefulLife;
     this->dateBought = dateBought;
-    this->expiryDate = NULL;
-} 
+    this->expiryDate = dateSold;
+}
+
+Asset::Asset(std::string name, std::string itemCode, double residualValue, int yearUsefulLife, util::Date *dateBought)
+    : Asset("", name, itemCode, 0, residualValue, yearUsefulLife, dateBought, NULL)
+{
+}
 
 std::vector<std::string> Asset::getUpdateParameter()
 {
@@ -32,36 +42,43 @@ std::vector<std::string> Asset::getUpdateParameter()
     return args;
 };
 
-double Asset::sellItems(SellingEntry *entry){
+double Asset::sellItems(SellingEntry *entry)
+{
     this->sellingHistory->addEntry(entry);
-    //TO DO: update to db
+    // TO DO: update to db
     return this->getTotalValue();
 }
 
-void Asset::addPurchase(PurchaseEntry *entry){
-    //this->value += entry->getPrice();
+void Asset::addPurchase(PurchaseEntry *entry)
+{
+    // this->value += entry->getPrice();
     setTotalValue(this->value + entry->getPrice());
     this->purchaseHistory->addEntry(entry);
     this->updateToDB();
 }
 
-double Asset::getTotalValue(){
+double Asset::getTotalValue()
+{
     return this->value;
 }
 
-double Asset::getResidualValue(){
+double Asset::getResidualValue()
+{
     return this->residualValue;
 }
 
-int Asset::getYearUsefulLife(){
+int Asset::getYearUsefulLife()
+{
     return this->yearUsefulLife;
 }
 
-util::Date *Asset::getDateBought(){
+util::Date *Asset::getDateBought()
+{
     return this->dateBought;
 }
 
-util::Date *Asset::getExpiryDate(){
+util::Date *Asset::getExpiryDate()
+{
     return this->expiryDate;
 }
 
@@ -70,15 +87,18 @@ double Asset::getCurrentValue()
     return this->getTotalValue();
 }
 
-void Asset::setTotalValue(double newValue){
+void Asset::setTotalValue(double newValue)
+{
     this->value = newValue;
-    //TO DO: update database
+    // TO DO: update database
 }
 
-std::string Asset::toString(){
+std::string Asset::toString()
+{
     std::string toRet = "";
     toRet += "name : ";
     toRet += this->name + "\n";
+    toRet += "valuation: " + std::to_string(this->value) + "\n";
     toRet += "purchase date: " + this->getDateBought()->to_string() + "\n";
     toRet += "sold date: ";
     toRet += this->getExpiryDate() ? this->getExpiryDate()->to_string() : "not sold";

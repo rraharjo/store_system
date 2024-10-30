@@ -14,8 +14,13 @@ namespace inventory
         std::vector<std::string> getInsertParameter() override;
 
     public:
+        static std::vector<Equipment *> generateFromDatabase();
+
         void setTotalValue(double newValue) override;
-        
+
+        Equipment(std::string dbCode, std::string name, std::string itemCode,
+                  double totalValue, double residualValue, int yearUsefulLife, util::Date *dateBought, util::Date *dateSold);
+
         Equipment(std::string name, std::string itemCode, double residualValue, int yearUsefulLife, util::Date *dateBought);
 
         double getDepreciationExpenseAtYear(int year);

@@ -17,9 +17,7 @@ namespace inventory
         double sellingPrice;
         // tax
 
-        void addExistingPurchaseEntry(PurchaseEntry *);
-
-        void addExistingSellingEntry(SellingEntry *);
+        void addExistingPurchaseEntry(PurchaseEntry *) override;
 
     protected:
         std::vector<std::string> getInsertParameter() override;

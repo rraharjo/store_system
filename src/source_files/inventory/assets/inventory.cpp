@@ -12,7 +12,8 @@ std::vector<Inventory *> Inventory::generateFromDatabase()
     {
         Inventory *newInventory = new Inventory(record[0], record[1], record[2], std::stod(record[3]));
         std::vector<PurchaseEntry *> entries = PurchaseEntry::generateFromDatabase(newInventory->getDBCode());
-        for (PurchaseEntry *entry : entries){
+        for (PurchaseEntry *entry : entries)
+        {
             newInventory->addExistingPurchaseEntry(entry);
         }
         toRet.push_back(newInventory);
@@ -64,13 +65,8 @@ std::vector<std::string> Inventory::getUpdateParameter()
 
 void Inventory::addExistingPurchaseEntry(PurchaseEntry *entry)
 {
+    Item::addExistingPurchaseEntry(entry);
     this->qty += entry->getAvailableQty();
-    this->purchaseHistory->addEntry(entry);
-}
-
-void Inventory::addExistingSellingEntry(SellingEntry *entry)
-{
-    this->sellingHistory->addEntry(entry);
 }
 
 double Inventory::sellItems(SellingEntry *entry)

@@ -124,7 +124,7 @@ accounting::Transaction *BuyEquipmentFactory::createTransaction()
     newTransaction->insertToDB();
     accounting::Entry *increaseAssets =
         new accounting::Entry(newTransaction->getDBCode(), true, this->equipmentValue,
-                              util::enums::TAccounts::EQUIPMENT, util::enums::AccountTitles::ASSETS);
+                              util::enums::TAccounts::EQUIPMENT, util::enums::AccountTitles::ASSETS);//error
     increaseAssets->insertToDB();
     newTransaction->addEntry(increaseAssets);
     if (this->paidCash > 0.0)

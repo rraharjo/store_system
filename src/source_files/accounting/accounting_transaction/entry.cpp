@@ -56,12 +56,6 @@ std::vector<std::string> Entry::getUpdateParameter()
     return toRet;
 }
 
-Entry::Entry(std::string transactionDBCode, bool debit, double amount,
-             util::enums::TAccounts tAccount, util::enums::AccountTitles account)
-    : Entry("", transactionDB, debit, amount, tAccount, account)
-{
-}
-
 Entry::Entry(std::string dbCode, std::string transactionDBCode, bool debit, double amount,
              util::enums::TAccounts tAccount, util::enums::AccountTitles account)
     : util::baseclass::HasTable()
@@ -73,6 +67,12 @@ Entry::Entry(std::string dbCode, std::string transactionDBCode, bool debit, doub
     this->tAccount = tAccount;
     this->transactionTitle = "";
     this->transactionDB = transactionDBCode;
+}
+
+Entry::Entry(std::string transactionDBCode, bool debit, double amount,
+             util::enums::TAccounts tAccount, util::enums::AccountTitles account)
+    : Entry::Entry("", transactionDBCode, debit, amount, tAccount, account)
+{
 }
 
 bool Entry::isDebit()
