@@ -81,6 +81,7 @@ void StoreSystem::disposeAsset(SellingTransaction *sellingTransaction)
     for (inventory::Entry *entry : sellingTransaction->getAllEntries())
     {
         sellAmount += entry->getPrice();
+        entry->setTransactionDate(sellingTransaction->getDate());
         propertyValuation += this->iSystem->sellProperties(entry);
         toDispose = (inventory::Equipment *)this->iSystem->getProperty(entry->getPropertiesDBCode());
     }

@@ -17,6 +17,7 @@ Asset::Asset(std::string dbCode, std::string name, std::string itemCode,
              double totalValue, double residualValue, int yearUsefulLife, util::Date *dateBought, util::Date *dateSold)
     : Item(name, itemCode)
 {
+    this->setDBCode(dbCode);
     this->name = name;
     this->value = totalValue;
     this->residualValue = residualValue;
@@ -30,7 +31,8 @@ Asset::Asset(std::string name, std::string itemCode, double residualValue, int y
 {
 }
 
-void Asset::addExistingPurchaseEntry(PurchaseEntry *entry){
+void Asset::addExistingPurchaseEntry(PurchaseEntry *entry)
+{
     Item::addExistingPurchaseEntry(entry);
 }
 
@@ -49,13 +51,13 @@ std::vector<std::string> Asset::getUpdateParameter()
 double Asset::sellItems(SellingEntry *entry)
 {
     this->sellingHistory->addEntry(entry);
-    // TO DO: update to db
+    this->expiryDate = entry->getTransactionDate();
+    this->updateToDB();
     return this->getTotalValue();
 }
 
 void Asset::addPurchase(PurchaseEntry *entry)
 {
-    // this->value += entry->getPrice();
     setTotalValue(this->value + entry->getPrice());
     this->purchaseHistory->addEntry(entry);
     this->updateToDB();
@@ -94,14 +96,13 @@ double Asset::getCurrentValue()
 void Asset::setTotalValue(double newValue)
 {
     this->value = newValue;
-    // TO DO: update database
 }
 
 std::string Asset::toString()
 {
     std::string toRet = "";
-    toRet += "name : ";
-    toRet += this->name + "\n";
+    toRet += "DB code " + this->getDBCode() + "\n";
+    toRet += "name : " + this->name + "\n";
     toRet += "valuation: " + std::to_string(this->value) + "\n";
     toRet += "purchase date: " + this->getDateBought()->to_string() + "\n";
     toRet += "sold date: ";
