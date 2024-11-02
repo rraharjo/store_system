@@ -135,11 +135,16 @@ std::vector<std::vector<std::string>> Table::getRecords(
 std::vector<std::vector<std::string>> Table::getRecords(std::vector<TableCondition> conditions)
 {
     size_t size = conditions.size();
+    std::vector<std::string> colNames;
     if (size == 0)
     {
         return this->getRecords();
     }
-    std::string query = "select * from " + this->tableName + " where ";
+    for (ColumnSchema schema : this->getSchema())
+    {
+        colNames.push_back(schema.columnName);
+    }
+    std::string query = "select " + generateColumnName(colNames) + " from " + this->tableName + " where ";
     query += generateConditions(conditions);
     query += ";";
     DB *instance = DB::getInstance();
@@ -148,7 +153,12 @@ std::vector<std::vector<std::string>> Table::getRecords(std::vector<TableConditi
 
 std::vector<std::vector<std::string>> Table::getRecords()
 {
-    std::string query = "select * from " + this->tableName + ";";
+    std::vector<std::string> colNames;
+    for (ColumnSchema schema : this->getSchema())
+    {
+        colNames.push_back(schema.columnName);
+    }
+    std::string query = "select " + generateColumnName(colNames) + " from " + this->tableName + ";";
     DB *instance = DB::getInstance();
     return instance->executeQuery(query);
 }

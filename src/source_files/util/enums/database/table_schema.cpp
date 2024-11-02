@@ -51,6 +51,8 @@ std::map<PurchaseTransactionTable, ColumnSchema> util::enums::purchaseTransactio
     {PurchaseTransactionTable::DATABASECODE, ColumnSchema{"database_code", ColumnTypes::CUSTOMSERIALCOL}},
     {PurchaseTransactionTable::DATEPURCHASED, ColumnSchema{"date_purchased", ColumnTypes::DATECOL}},
     {PurchaseTransactionTable::SELLER, ColumnSchema{"seller", ColumnTypes::TEXTCOL}},
+    {PurchaseTransactionTable::PAIDCASH, ColumnSchema{"paid_cash", ColumnTypes::FLOATCOL}},
+    {PurchaseTransactionTable::PAIDCREDIT, ColumnSchema{"paid_credit", ColumnTypes::FLOATCOL}},
     {PurchaseTransactionTable::ISFINISHED, ColumnSchema{"is_finished", ColumnTypes::BOOLCOL}}};
 
 std::map<SellingEntryTable, ColumnSchema> util::enums::sellingEntryTableColumns = {
@@ -64,6 +66,8 @@ std::map<SellingEntryTable, ColumnSchema> util::enums::sellingEntryTableColumns 
 std::map<SellingTransactionTable, ColumnSchema> util::enums::sellingTransactionTableColumns = {
     {SellingTransactionTable::DATABASECODE, ColumnSchema{"database_code", ColumnTypes::CUSTOMSERIALCOL}},
     {SellingTransactionTable::TRANSACTIONDATE, ColumnSchema{"transaction_date", ColumnTypes::DATECOL}},
+    {SellingTransactionTable::PAIDCASH, ColumnSchema{"paid_cash", ColumnTypes::FLOATCOL}},
+    {SellingTransactionTable::PAIDCREDIT, ColumnSchema{"paid_credit", ColumnTypes::FLOATCOL}},
     {SellingTransactionTable::ISFINISHED, ColumnSchema{"is_finished", ColumnTypes::BOOLCOL}}};
 
 std::map<AssetsTable, ColumnSchema> util::enums::assetsTableColumns = {

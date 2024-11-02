@@ -57,13 +57,15 @@ create table purchase_transaction(
     database_code    text      primary key,
     date_purchased   date        not null,
     seller           varchar(100),
+    paid_cash        numeric(12, 2)  not null,
+    paid_credit      numeric(12, 2)  not null,
     is_finished      boolean    not null
 );
 
 create table purchase_entry(
     database_code       text           primary key,
-    inventory_db_code    text,
-    assets_db_code  text,
+    inventory_db_code   text,
+    assets_db_code      text,
     purchase_db_Code    text             not null,
     purchase_price      numeric(12, 2)   not null,
     qty                 numeric(7)       not null,
@@ -90,16 +92,18 @@ add constraint inventory_assets_or_not_null check
 create table selling_transaction(
     database_code       text            primary key,
     transaction_date    date            not null,
+    paid_cash           numeric(12, 2)  not null,
+    paid_credit         numeric(12, 2)  not null,
     is_finished         boolean         not null      
 );
 
 create table selling_entry(
-    database_code       text            primary key,
-    inventory_db_code    text,
-    assets_db_code  text,
+    database_code               text            primary key,
+    inventory_db_code           text,
+    assets_db_code              text,
     selling_transaction_db_code text,
-    selling_price       numeric(12, 2),
-    qty                 int
+    selling_price               numeric(12, 2),
+    qty                         int
 );
 
 alter table selling_entry
@@ -123,7 +127,7 @@ create table accounting_transaction(
     database_code       text          primary key,
     transaction_name    varchar(50),
     transaction_date    date,
-    entity_id text
+    entity_id           text
 );
 
 create table accounting_transaction_entry(

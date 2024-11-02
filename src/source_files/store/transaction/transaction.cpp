@@ -1,10 +1,39 @@
 #include "store/transaction/transaction.hpp"
 using namespace store;
 
-Transaction::Transaction(util::Date *transactionDate)
+Transaction::Transaction(util::Date *transactionDate, double paidCash, double paidCredit)
+    : util::baseclass::HasTable()
 {
     this->transactionDate = transactionDate;
+    this->paidCash = paidCash;
+    this->paidCredit = paidCredit;
+    this->isFinished = this->paidCredit == 0.0 ? true : false;
     this->entries = {};
+}
+
+Transaction::Transaction(util::Date *transactionDate)
+    : Transaction::Transaction(transactionDate, 0, 0)
+{
+}
+
+double Transaction::getPaidCash()
+{
+    return this->paidCash;
+}
+
+double Transaction::getPaidCredit()
+{
+    return this->paidCredit;
+}
+
+double Transaction::getTransactionAmount()
+{
+    double toRet = 0.0;
+    for (inventory::Entry *entry : this->entries)
+    {
+        toRet += entry->getPrice() * entry->getQty();
+    }
+    return toRet;
 }
 
 util::Date *Transaction::getDate()
@@ -15,6 +44,16 @@ util::Date *Transaction::getDate()
 void Transaction::addEntry(inventory::Entry *entry)
 {
     this->entries.push_back(entry);
+}
+
+void Transaction::setPaidCash(double amount)
+{
+    this->paidCash = amount;
+}
+
+void Transaction::setPaidCredit(double amount)
+{
+    this->paidCredit = amount;
 }
 
 std::vector<inventory::Entry *> Transaction::getAllEntries()
@@ -51,6 +90,8 @@ std::vector<std::string> PurchaseTransaction::getInsertParameter()
     args.push_back(util::enums::primaryKeyCodesMap[util::enums::PrimaryKeyCodes::PURCHASETRANSACTION]);
     args.push_back(this->getDate()->toDBFormat());
     args.push_back(this->getSeller());
+    args.push_back(std::to_string(this->getPaidCash()));
+    args.push_back(std::to_string(this->getPaidCredit()));
     args.push_back(this->isFinished ? "true" : "false");
     return args;
 }
@@ -60,6 +101,8 @@ std::vector<std::string> PurchaseTransaction::getUpdateParameter()
     std::vector<std::string> args;
     args.push_back(this->getDate()->toDBFormat());
     args.push_back(this->getSeller());
+    args.push_back(std::to_string(this->getPaidCash()));
+    args.push_back(std::to_string(this->getPaidCredit()));
     args.push_back(this->isFinished ? "true" : "false");
     return args;
 }
@@ -87,6 +130,8 @@ std::vector<std::string> SellingTransaction::getInsertParameter()
     std::vector<std::string> args;
     args.push_back(util::enums::primaryKeyCodesMap[util::enums::PrimaryKeyCodes::SELLINGTRANSACTION]);
     args.push_back(this->getDate()->toDBFormat());
+    args.push_back(std::to_string(this->getPaidCash()));
+    args.push_back(std::to_string(this->getPaidCredit()));
     args.push_back(this->isFinished ? "true" : "false");
     return args;
 }
@@ -95,6 +140,8 @@ std::vector<std::string> SellingTransaction::getUpdateParameter()
 {
     std::vector<std::string> args;
     args.push_back(this->getDate()->toDBFormat());
+    args.push_back(std::to_string(this->getPaidCash()));
+    args.push_back(std::to_string(this->getPaidCredit()));
     args.push_back(this->isFinished ? "true" : "false");
     return args;
 }

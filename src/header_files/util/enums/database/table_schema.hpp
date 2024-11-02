@@ -8,7 +8,7 @@ namespace util
     {
         enum class ColumnTypes
         {
-            CUSTOMSERIALCOL = 0, // is a text 
+            CUSTOMSERIALCOL = 0, // is a text
             NUMBERCOL,
             FLOATCOL,
             TEXTCOL,
@@ -93,6 +93,8 @@ namespace util
         {
             DATABASECODE = 0,
             DATEPURCHASED,
+            PAIDCASH,
+            PAIDCREDIT,
             SELLER,
             ISFINISHED
         };
@@ -115,6 +117,8 @@ namespace util
         {
             DATABASECODE = 0,
             TRANSACTIONDATE,
+            PAIDCASH,
+            PAIDCREDIT,
             ISFINISHED
         };
 
