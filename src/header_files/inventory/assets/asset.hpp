@@ -18,6 +18,8 @@ namespace inventory
         int yearUsefulLife;
         util::Date *dateBought;
 
+        void addExistingPurchaseEntry(PurchaseEntry *entry) override;
+
         std::vector<std::string> getUpdateParameter() override;
 
         Asset(std::string dbCode, std::string name, std::string itemCode,
@@ -49,6 +51,8 @@ namespace inventory
         virtual void setTotalValue(double newValue);
 
         std::string toString();
+
+        friend class Equipment;
     };
 }
 #endif

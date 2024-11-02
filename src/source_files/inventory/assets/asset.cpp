@@ -30,6 +30,10 @@ Asset::Asset(std::string name, std::string itemCode, double residualValue, int y
 {
 }
 
+void Asset::addExistingPurchaseEntry(PurchaseEntry *entry){
+    Item::addExistingPurchaseEntry(entry);
+}
+
 std::vector<std::string> Asset::getUpdateParameter()
 {
     std::vector<std::string> args;

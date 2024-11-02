@@ -2,7 +2,7 @@
 #include <limits>
 #include "store/store_system.hpp"
 
-#define OPT_SIZE 7
+#define OPT_SIZE 8
 std::string menu();
 int getInt(std::string, int, int);
 double getDouble(std::string, double, double);
@@ -15,10 +15,11 @@ void purchaseAsset(store::StoreSystem *);
 void capitalizeAssets(store::StoreSystem *);
 void sellInventory(store::StoreSystem *);
 void sellAssets(store::StoreSystem *);
+void listOfItems(store::StoreSystem *);
 
 int main(int argc, char *argv[])
 {
-    store::StoreSystem *mySystem = new store::StoreSystem();
+    store::StoreSystem *mySystem = store::StoreSystem::getInstance();
     int option = -1;
     while (option)
     {
@@ -43,6 +44,10 @@ int main(int argc, char *argv[])
             break;
         case 6:
             sellAssets(mySystem);
+            break;
+        case 7:
+            listOfItems(mySystem);
+            break;
         default:
             break;
         }
@@ -58,6 +63,7 @@ std::string menu()
     toRet += "4. Capitalize asset\n";
     toRet += "5. Sell inventory\n";
     toRet += "6. Sell Asset\n";
+    toRet += "7. Get a list of item\n";
     return toRet;
 }
 
@@ -217,4 +223,8 @@ void sellAssets(store::StoreSystem *sSystem)
     newEntry->insertToDB();
     newTransaction->addEntry(newEntry);
     sSystem->disposeAsset(newTransaction);
+}
+
+void listOfItems(store::StoreSystem *sSystem){
+    std::cout << sSystem->toStringInv() << std::endl;
 }

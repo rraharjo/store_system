@@ -1,9 +1,9 @@
 #include "inventory/assets/equipment.hpp"
 using namespace inventory;
 
-std::vector<Equipment *> Equipment::generateFromDatabase()
+std::vector<Asset *> Equipment::generateFromDatabase()
 {
-    std::vector<Equipment *> toRet;
+    std::vector<Asset *> toRet;
     std::vector<std::vector<std::string>> records = Asset::classTable->getRecords();
     for (std::vector<std::string> &record : records)
     {
@@ -16,7 +16,7 @@ std::vector<Equipment *> Equipment::generateFromDatabase()
         {
             sold = new util::Date(record[6], "%Y-%m-%d");
         }
-        Equipment *newEquipment = new Equipment(record[0], record[1], "", std::stod(record[2]),
+        Asset *newEquipment = new Equipment(record[0], record[1], "", std::stod(record[2]),
                                                 std::stod(record[3]), std::stoi(record[4]), purchase, sold);
         std::vector<PurchaseEntry *> entries = PurchaseEntry::generateFromDatabase(newEquipment->getDBCode());
         for (PurchaseEntry *entry : entries){
@@ -37,6 +37,10 @@ Equipment::Equipment(std::string dbCode, std::string name, std::string itemCode,
 Equipment::Equipment(std::string name, std::string itemCode, double residualValue, int yearUsefulLife, util::Date *dateBought)
     : Equipment("", name, itemCode, 0, residualValue, yearUsefulLife, dateBought, NULL)
 {
+}
+
+void Equipment::addExistingPurchaseEntry(PurchaseEntry *entry){
+    Asset::addExistingPurchaseEntry(entry);
 }
 
 std::vector<std::string> Equipment::getInsertParameter()

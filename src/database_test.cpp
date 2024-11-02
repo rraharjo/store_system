@@ -19,8 +19,8 @@ int main(int argc, char **argv)
     conditions.push_back(newCondition);
     std::vector<std::vector<std::string>> res = myTable->getRecords();
     printTable(res);
-    std::vector<inventory::Equipment *> equipments = inventory::Equipment::generateFromDatabase();
-    for (inventory::Equipment *equipment : equipments)
+    std::vector<inventory::Asset *> equipments = inventory::Equipment::generateFromDatabase();
+    for (inventory::Asset *equipment : equipments)
     {
         std::cout << equipment->toString() << "\n";
     }

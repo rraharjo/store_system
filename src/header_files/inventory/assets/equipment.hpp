@@ -11,10 +11,12 @@ namespace inventory
         util::DepreciationMethod *depreciationMethod;
 
     protected:
+        void addExistingPurchaseEntry(PurchaseEntry *entry) override;
+
         std::vector<std::string> getInsertParameter() override;
 
     public:
-        static std::vector<Equipment *> generateFromDatabase();
+        static std::vector<Asset *> generateFromDatabase();
 
         void setTotalValue(double newValue) override;
 

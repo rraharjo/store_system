@@ -1,6 +1,15 @@
 #include "store/store_system.hpp"
 using namespace store;
 
+StoreSystem *StoreSystem::instance = NULL;
+
+StoreSystem *StoreSystem::getInstance(){
+    if (StoreSystem::instance == NULL){
+        StoreSystem::instance = new StoreSystem();
+    }
+    return StoreSystem::instance;
+}
+
 StoreSystem::StoreSystem()
 {
     this->aSystem = accounting::AccountingSystem::getInstance();
@@ -97,6 +106,10 @@ void StoreSystem::addProperty(inventory::Equipment *newProperty)
 
 inventory::Inventory *StoreSystem::getInventory(std::string dbCode){
     return this->iSystem->getInventory(dbCode);
+}
+
+std::string StoreSystem::toStringInv(){
+    return this->iSystem->to_string();
 }
 
 std::string StoreSystem::toString()
