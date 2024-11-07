@@ -49,11 +49,13 @@ void Transaction::addEntry(inventory::Entry *entry)
 void Transaction::setPaidCash(double amount)
 {
     this->paidCash = amount;
+    this->isFinished = this->paidCash == this->getTransactionAmount() ? true : false;
 }
 
 void Transaction::setPaidCredit(double amount)
 {
     this->paidCredit = amount;
+    this->isFinished = this->paidCredit == 0 ? true : false;
 }
 
 std::vector<inventory::Entry *> Transaction::getAllEntries()
