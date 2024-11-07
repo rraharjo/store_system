@@ -7,7 +7,6 @@ InventorySystem *InventorySystem::getInstance()
 {
     if (InventorySystem::instance == NULL)
     {
-        // To Do: Test if this is working properly (Nov 1, 2024)
         InventorySystem::instance = new InventorySystem();
         std::vector<Inventory *> inventories = Inventory::generateFromDatabase();
         for (Inventory *inventory : inventories){

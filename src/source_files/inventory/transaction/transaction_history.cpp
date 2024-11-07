@@ -34,9 +34,9 @@ double PurchaseHistory::sellItemFirstIn(int qty)
     while (qty > 0)
     {
         PurchaseEntry *earliest = (PurchaseEntry*) this->entries.front();
-        int toSubtract = std::min(qty, earliest->getQty());
+        int toSubtract = std::min(qty, earliest->getAvailableQty());
         qty -= toSubtract;
-        earliest->setAvailableQty(earliest->getQty() - toSubtract);
+        earliest->setAvailableQty(earliest->getAvailableQty() - toSubtract);
         toRet += toSubtract * (earliest->getPrice());
         earliest->updateToDB();
         if (!earliest->getAvailableQty())

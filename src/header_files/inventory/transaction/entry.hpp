@@ -25,7 +25,10 @@ namespace inventory
         double getPrice();
         int getQty();
         util::Date *getTransactionDate();
+
         void setTransactionDate(util::Date *transactionDate);
+
+        void setTransactionDBCode(std::string dbCode);
     };
 
     /**********************************PURCHASEENTRY*********************************/

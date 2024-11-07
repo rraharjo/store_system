@@ -2,7 +2,7 @@
 using namespace store;
 
 Transaction::Transaction(util::Date *transactionDate, double paidCash, double paidCredit)
-    : util::baseclass::HasTable()
+    : util::baseclass::HasTable() // To do: is finished field is not working properly
 {
     this->transactionDate = transactionDate;
     this->paidCash = paidCash;
@@ -67,6 +67,11 @@ util::Table *PurchaseTransaction::classTable = util::PurchaseTransactionTable::g
 void PurchaseTransaction::insertToDB()
 {
     this->insertToDBWithTable(PurchaseTransaction::classTable);
+    for (inventory::Entry *entry : this->getAllEntries())
+    {
+        entry->setTransactionDBCode(this->getDBCode());
+        entry->insertToDB();
+    }
 };
 
 void PurchaseTransaction::updateToDB()
@@ -114,6 +119,11 @@ util::Table *SellingTransaction::classTable = util::SellingTransactionTable::get
 void SellingTransaction::insertToDB()
 {
     this->insertToDBWithTable(SellingTransaction::classTable);
+    for (inventory::Entry *entry : this->getAllEntries())
+    {
+        entry->setTransactionDBCode(this->getDBCode());
+        entry->insertToDB();
+    }
 };
 
 void SellingTransaction::updateToDB()

@@ -15,7 +15,6 @@ std::vector<Entry *> Entry::generateFromDB(std::string transactionCode)
     std::vector<std::vector<std::string>> records = classTable->getRecords(conditions);
     for (std::vector<std::string> &record : records)
     {
-        // To Do
         Entry *newEntry = new Entry(record[0], record[1], record[2] == "t" ? true : false, std::stod(record[3]),
                                     util::enums::getTAccountEnum(record[4]), util::enums::getAccountEnum(record[5]));
         toRet.push_back(newEntry);

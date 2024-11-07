@@ -93,9 +93,9 @@ namespace util
         {
             DATABASECODE = 0,
             DATEPURCHASED,
+            SELLER,
             PAIDCASH,
             PAIDCREDIT,
-            SELLER,
             ISFINISHED
         };
 

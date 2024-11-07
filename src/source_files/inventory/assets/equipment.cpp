@@ -87,7 +87,7 @@ double Equipment::getValueAtYear(int year)
 double Equipment::getCurrentDepreciationExpense()
 {
     util::Date *now = new util::Date();
-    int age = this->dateBought->diffYearsTo(now); // TO DO: change to year
+    int age = this->dateBought->diffYearsTo(now);
     return this->getDepreciationExpenseAtYear(age);
 }
 

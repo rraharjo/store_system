@@ -52,6 +52,10 @@ void Entry::setTransactionDate(util::Date *transactionDate)
     this->transactionDate = transactionDate;
 }
 
+void Entry::setTransactionDBCode(std::string dbCode){
+    this->transactionDBCode = dbCode;
+}
+
 /******************************************************************************/
 
 std::vector<util::TableCondition> getInventoryCondition(std::string invDBCode)
@@ -170,7 +174,7 @@ void PurchaseEntry::setAvailableQty(int qty)
 
 /************************************************************************/
 util::Table *SellingEntry::classTable = util::SellingEntryTable::getInstance();
-int SellingEntry::nextItemCode = 0; // TO DO: change to count(*)
+int SellingEntry::nextItemCode = 0; 
 
 std::vector<std::string> SellingEntry::getInsertParameter()
 {

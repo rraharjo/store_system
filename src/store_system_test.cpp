@@ -1,7 +1,7 @@
 #include "store/store_system.hpp"
 
 int main(int argc, char** argv){
-    store::StoreSystem *sSystem = new store::StoreSystem();
+    store::StoreSystem *sSystem = store::StoreSystem::getInstance();
     util::Date *trans1Date = new util::Date();
     store::PurchaseTransaction *trans1 = new store::PurchaseTransaction("seller1", trans1Date);
     inventory::Inventory *sellable1 = new inventory::Inventory("Hand Drill", "HD001", 100);

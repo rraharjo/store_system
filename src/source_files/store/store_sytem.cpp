@@ -1,10 +1,25 @@
 #include "store/store_system.hpp"
 using namespace store;
 
+void checkTransaction(Transaction *transaction)
+{
+    double totalAmount = 0;
+    for (inventory::Entry *entry : transaction->getAllEntries())
+    {
+        totalAmount += entry->getPrice() * entry->getQty();
+    }
+    if (totalAmount != transaction->getPaidCash() + transaction->getPaidCredit())
+    {
+        throw std::invalid_argument("Amount paid does not equal to the purchase price; paid credit: " + std::to_string(transaction->getPaidCredit()) + " paid cash: " + std::to_string(transaction->getPaidCash()) + " purchase amount: " + std::to_string(totalAmount));
+    }
+}
+
 StoreSystem *StoreSystem::instance = NULL;
 
-StoreSystem *StoreSystem::getInstance(){
-    if (StoreSystem::instance == NULL){
+StoreSystem *StoreSystem::getInstance()
+{
+    if (StoreSystem::instance == NULL)
+    {
         StoreSystem::instance = new StoreSystem();
     }
     return StoreSystem::instance;
@@ -20,6 +35,7 @@ StoreSystem::StoreSystem()
 
 void StoreSystem::sellItem(SellingTransaction *sellingTransaction)
 {
+    checkTransaction(sellingTransaction);
     double cogs = 0;
     double sellAmount = 0;
     for (inventory::Entry *entry : sellingTransaction->getAllEntries())
@@ -31,7 +47,8 @@ void StoreSystem::sellItem(SellingTransaction *sellingTransaction)
     std::string incRevDesc = "Selling inventory";
     std::string incCOGSDesc = "Increase cost of goods sold";
     accounting::Transaction *accountingTransaction =
-        util::factory::GoodsSellingFactory(transactionDate, incRevDesc, sellingTransaction->getDBCode(), sellAmount, sellAmount, 0)
+        util::factory::GoodsSellingFactory(transactionDate, incRevDesc, sellingTransaction->getDBCode(), sellAmount,
+                                           sellingTransaction->getPaidCash(), sellingTransaction->getPaidCredit())
             .createTransaction();
     accounting::Transaction *accountingTransaction2 =
         util::factory::GoodsSoldCOGSFactory(transactionDate, incCOGSDesc, sellingTransaction->getDBCode(), cogs)
@@ -42,6 +59,7 @@ void StoreSystem::sellItem(SellingTransaction *sellingTransaction)
 
 void StoreSystem::buyItem(PurchaseTransaction *purchaseTransaction)
 {
+    checkTransaction(purchaseTransaction);
     double purchaseAmount = 0;
     for (inventory::Entry *entry : purchaseTransaction->getAllEntries())
     {
@@ -52,13 +70,14 @@ void StoreSystem::buyItem(PurchaseTransaction *purchaseTransaction)
     std::string description = "Purchase inventory";
     accounting::Transaction *accountingTransaction =
         util::factory::GoodsPurchaseFactory(transactionDate, description, purchaseTransaction->getDBCode(),
-                                            purchaseAmount, purchaseAmount, 0)
+                                            purchaseAmount, purchaseTransaction->getPaidCash(), purchaseTransaction->getPaidCredit())
             .createTransaction();
     this->aSystem->addTransaction(accountingTransaction);
 }
 
 void StoreSystem::capitalizeAsset(PurchaseTransaction *purchaseTransaction)
 {
+    checkTransaction(purchaseTransaction);
     double amount = 0.0;
     for (inventory::Entry *entry : purchaseTransaction->getAllEntries())
     {
@@ -68,13 +87,15 @@ void StoreSystem::capitalizeAsset(PurchaseTransaction *purchaseTransaction)
     util::Date *transactionDate = new util::Date();
     std::string description = "Purchase asset";
     accounting::Transaction *accountingTransaction =
-        util::factory::BuyEquipmentFactory(transactionDate, description, purchaseTransaction->getDBCode(), amount, amount, 0)
+        util::factory::BuyEquipmentFactory(transactionDate, description, purchaseTransaction->getDBCode(),
+                                           amount, purchaseTransaction->getPaidCash(), purchaseTransaction->getPaidCash())
             .createTransaction();
     this->aSystem->addTransaction(accountingTransaction);
 }
 
 void StoreSystem::disposeAsset(SellingTransaction *sellingTransaction)
 { // one transaction one property
+    checkTransaction(sellingTransaction);
     inventory::Equipment *toDispose = NULL;
     double sellAmount = 0.0;
     double propertyValuation = 0.0;
@@ -90,7 +111,7 @@ void StoreSystem::disposeAsset(SellingTransaction *sellingTransaction)
     accounting::Transaction *accountingTransaction =
         util::factory::SellEquipmentFactory(transactionDate, description, sellingTransaction->getDBCode(),
                                             toDispose->getCurrentAccumulatedDepreciation(), propertyValuation,
-                                            sellAmount, 0)
+                                            sellingTransaction->getPaidCash(), sellingTransaction->getPaidCredit())
             .createTransaction();
     this->aSystem->addTransaction(accountingTransaction);
 }
@@ -105,11 +126,13 @@ void StoreSystem::addProperty(inventory::Equipment *newProperty)
     this->iSystem->addNewProperty(newProperty);
 }
 
-inventory::Inventory *StoreSystem::getInventory(std::string dbCode){
+inventory::Inventory *StoreSystem::getInventory(std::string dbCode)
+{
     return this->iSystem->getInventory(dbCode);
 }
 
-std::string StoreSystem::toStringInv(){
+std::string StoreSystem::toStringInv()
+{
     return this->iSystem->to_string();
 }
 

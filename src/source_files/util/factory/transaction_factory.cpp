@@ -34,7 +34,7 @@ accounting::Transaction *GoodsPurchaseFactory::createTransaction()
     {
         accounting::Entry *increasePayable =
             new accounting::Entry(newTransaction->getDBCode(), false, this->paidCredit,
-                                  util::enums::TAccounts::NOTEPAYABLE, util::enums::AccountTitles::LIABILITIES);
+                                  util::enums::TAccounts::ACCPAYABLE, util::enums::AccountTitles::LIABILITIES);
         increasePayable->insertToDB();
         newTransaction->addEntry(increasePayable);
     }
@@ -74,7 +74,7 @@ accounting::Transaction *GoodsSellingFactory::createTransaction()
     {
         accounting::Entry *increaseReceivable =
             new accounting::Entry(newTransaction->getDBCode(), true, this->paidCredit,
-                                  util::enums::TAccounts::NOTERCV, util::enums::AccountTitles::ASSETS);
+                                  util::enums::TAccounts::ACCTRCV, util::enums::AccountTitles::ASSETS);
         increaseReceivable->insertToDB();
         newTransaction->addEntry(increaseReceivable);
     }
@@ -139,7 +139,7 @@ accounting::Transaction *BuyEquipmentFactory::createTransaction()
     {
         accounting::Entry *increasePayable =
             new accounting::Entry(newTransaction->getDBCode(), false, this->paidCredit,
-                                  util::enums::TAccounts::NOTEPAYABLE, util::enums::AccountTitles::LIABILITIES);
+                                  util::enums::TAccounts::ACCPAYABLE, util::enums::AccountTitles::LIABILITIES);
         increasePayable->insertToDB();
         newTransaction->addEntry(increasePayable);
     }
@@ -172,7 +172,7 @@ accounting::Transaction *SellEquipmentFactory::createTransaction()
     {
         accounting::Entry *increaseReceivable =
             new accounting::Entry(newTransaction->getDBCode(), true, this->paidCredit,
-                                  util::enums::TAccounts::NOTERCV, util::enums::AccountTitles::ASSETS);
+                                  util::enums::TAccounts::ACCTRCV, util::enums::AccountTitles::ASSETS);
         increaseReceivable->insertToDB();
         newTransaction->addEntry(increaseReceivable);
     }

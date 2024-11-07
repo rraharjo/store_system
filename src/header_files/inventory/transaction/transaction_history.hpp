@@ -18,7 +18,7 @@ namespace inventory
         TransactionHistory();
 
     public:
-        void addEntry(Entry *entry);//TO DO: Insert entry inside this function
+        void addEntry(Entry *entry);
     };
 
     /*************************************Purchase History*************************************/
