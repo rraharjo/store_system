@@ -4,8 +4,8 @@ int main(){
     inventory::InventorySystem *system = InventorySystem::getInstance();
     std::string propPurchaseTransactionCode = "PTR00001";
     std::string propSellTranscationCode = "STR00001";
-    Sellable *sellable1 = new Sellable("Drill battery", "DB123", 100.00);
-    Sellable *sellable2 = new Sellable("JackHammer", "JH123", 120.00);
+    Inventory *sellable1 = new Inventory("Drill battery", "DB123", 100.00);
+    Inventory *sellable2 = new Inventory("JackHammer", "JH123", 120.00);
     std::string dbCode1 = sellable1->getDBCode();
     std::string dbCode2 = sellable2->getDBCode();
     system->addNewItem(sellable1);
@@ -22,8 +22,8 @@ int main(){
     std::cout << system->to_string() << std::endl;
     util::Date *buyCar = new util::Date();
     util::Date *buyBuilding = new util::Date();
-    Depreciable *car = new Depreciable("Car", "", 200, 5, buyCar);
-    Depreciable *shop = new Depreciable("Shop", "", 200, 10, buyBuilding);
+    Equipment *car = new Equipment("Car", "", 200, 5, buyCar);
+    Equipment *shop = new Equipment("Shop", "", 200, 10, buyBuilding);
     system->addNewProperty(car);
     system->addNewProperty(shop);
     PurchaseEntry *propEntry1 = new PurchaseEntry(car->getDBCode(), propPurchaseTransactionCode, 1000, 1);

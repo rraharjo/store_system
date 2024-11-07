@@ -10,6 +10,16 @@ Item::Item(std::string name = "", std::string itemCode = "")
     this->sellingHistory = new SellingHistory();
 }
 
+void Item::addExistingPurchaseEntry(PurchaseEntry *entry)
+{
+    this->purchaseHistory->addEntry(entry);
+}
+
+void Item::addExistingSellingEntry(SellingEntry *entry)
+{
+    this->sellingHistory->addEntry(entry);
+}
+
 std::string Item::getName()
 {
     return this->name;

@@ -4,31 +4,39 @@
 #include "util/factory/transaction_factory.hpp"
 #ifndef STORE_SYSTEM_HPP
 #define STORE_SYSTEM_HPP
-namespace store {
-    class StoreSystem {
-        private:
-            std::vector<PurchaseTransaction*> purchaseTransactions;
-            std::vector<SellingTransaction*> sellingTransactions;
-            accounting::AccountingSystem* aSystem;
-            inventory::InventorySystem* iSystem;
-        
+namespace store
+{
+    class StoreSystem
+    {
+    private:
+        static StoreSystem *instance;
+        std::vector<PurchaseTransaction *> purchaseTransactions;
+        std::vector<SellingTransaction *> sellingTransactions;
+        accounting::AccountingSystem *aSystem;
+        inventory::InventorySystem *iSystem;
 
-        public:
-            StoreSystem();
+        StoreSystem();
 
-            void sellItem(SellingTransaction* sellTransaction);
+    public:
+        static StoreSystem *getInstance();
 
-            void buyItem(PurchaseTransaction* purchaseTransaction);
+        void sellItem(SellingTransaction *sellTransaction);
 
-            void buyProperty(PurchaseTransaction* purchaseTransaction);
-            
-            void disposeProperty(SellingTransaction* sellTransaction);
+        void buyItem(PurchaseTransaction *purchaseTransaction);
 
-            void addItem(inventory::Sellable *newSellable);
+        void capitalizeAsset(PurchaseTransaction *purchaseTransaction);
 
-            void addProperty(inventory::Depreciable *newProperty);
+        void disposeAsset(SellingTransaction *sellTransaction);
 
-            std::string toString();
+        void addItem(inventory::Inventory *newSellable);
+
+        void addProperty(inventory::Equipment *newProperty);
+
+        inventory::Inventory *getInventory(std::string dbCode);
+
+        std::string toStringInv();
+
+        std::string toString();
     };
 }
 #endif

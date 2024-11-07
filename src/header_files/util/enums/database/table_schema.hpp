@@ -1,26 +1,72 @@
 #include <map>
-#include "util/enums/database/column_schema.hpp"
+#include <string>
 #ifndef TABLE_SCHEMA_HPP
 #define TABLE_SCHEMA_HPP
 namespace util
 {
     namespace enums
     {
-        enum class TableNames
+        enum class ColumnTypes
         {
-            SELLABLE = 0,
+            CUSTOMSERIALCOL = 0, // is a text
+            NUMBERCOL,
+            FLOATCOL,
+            TEXTCOL,
+            DATECOL,
+            BOOLCOL
+        };
+
+    }
+    struct ColumnSchema
+    {
+        std::string columnName;
+        util::enums::ColumnTypes type;
+    };
+    namespace enums
+    {
+        enum class PrimaryKeyCodes
+        {
+            INVENTORY = 0,
             PURCHASEENTRY,
             PURCHASETRANSACTION,
             SELLINGENTRY,
             SELLINGTRANSACTION,
-            DEPRECIABLE,
+            EQUIPMENT,
+            ACCOUNTINGTRANSACTION,
+            ACCOUNTINGENTRY
+        };
+
+        extern std::map<PrimaryKeyCodes, std::string> primaryKeyCodesMap;
+
+        enum class SequenceNames
+        {
+            INVENTORY = 0,
+            PURCHASEENTRY,
+            PURCHASETRANSACTION,
+            SELLINGENTRY,
+            SELLINGTRANSACTION,
+            ASSETS,
+            ACCOUNTINGTRANSACTION,
+            ACCOUNTINGENTRY
+        };
+
+        extern std::map<SequenceNames, std::string> sequenceNamesMap;
+
+        enum class TableNames
+        {
+            INVENTORY = 0,
+            PURCHASEENTRY,
+            PURCHASETRANSACTION,
+            SELLINGENTRY,
+            SELLINGTRANSACTION,
+            ASSETS,
             ACCOUNTINGTRANSACTION,
             ACCOUNTINGENTRY
         };
 
         extern std::map<TableNames, std::string> tableNamesMap;
 
-        enum class SellableTable
+        enum class InventoryTable
         {
             DATABASECODE = 0,
             ITEMCODE,
@@ -28,13 +74,13 @@ namespace util
             SELLINGPRICE
         };
 
-        extern std::map<SellableTable, ColumnSchema> sellableTableColumns;
+        extern std::map<InventoryTable, ColumnSchema> inventoryTableColumns;
 
         enum class PurchaseEntryTable
         {
             DATABASECODE = 0,
-            SELLABLECODE,
-            PROPERTIESCODE,
+            INVENTORYDBCODE,
+            ASSETSCODE,
             PURCHASETRANSACTIONCODE,
             PURCHASEPRICE,
             BOUGHTQTY,
@@ -47,7 +93,10 @@ namespace util
         {
             DATABASECODE = 0,
             DATEPURCHASED,
-            SELLER
+            SELLER,
+            PAIDCASH,
+            PAIDCREDIT,
+            ISFINISHED
         };
 
         extern std::map<PurchaseTransactionTable, ColumnSchema> purchaseTransactionTableColumns;
@@ -55,8 +104,8 @@ namespace util
         enum class SellingEntryTable
         {
             DATABASECODE = 0,
-            SELLABLECODE,
-            PROPERTIESCODE,
+            INVENTORYDBCODE,
+            ASSETSCODE,
             SELLINGTRANSACTIONCODE,
             SELLINGPRICE,
             QTY
@@ -67,12 +116,15 @@ namespace util
         enum class SellingTransactionTable
         {
             DATABASECODE = 0,
-            TRANSACTIONDATE
+            TRANSACTIONDATE,
+            PAIDCASH,
+            PAIDCREDIT,
+            ISFINISHED
         };
 
         extern std::map<SellingTransactionTable, ColumnSchema> sellingTransactionTableColumns;
 
-        enum class DepreciableTable
+        enum class AssetsTable
         {
             DATABASECODE = 0,
             ITEMNAME,
@@ -83,13 +135,14 @@ namespace util
             DATESOLD
         };
 
-        extern std::map<DepreciableTable, ColumnSchema> depreciableTableColumns;
+        extern std::map<AssetsTable, ColumnSchema> assetsTableColumns;
 
         enum class AccountingTransactionTable
         {
             DATABASECODE = 0,
             TRANSACTIONNAME,
-            TRANSACTIONDATE
+            TRANSACTIONDATE,
+            ENTITYID
         };
 
         extern std::map<AccountingTransactionTable, ColumnSchema> accountingTransactionTableColumns;
@@ -106,5 +159,6 @@ namespace util
 
         extern std::map<AccountingEntryTable, ColumnSchema> accountingEntryTableColumns;
     }
+
 }
 #endif

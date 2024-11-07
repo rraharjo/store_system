@@ -1,4 +1,3 @@
-#pragma once
 #include "accounting/accounts/account.hpp"
 #include "accounting/accounting_transaction/transaction.hpp"
 
@@ -11,9 +10,13 @@ namespace accounting
     private:
         static AccountingSystem *instance;
 
+        std::map<std::string, Transaction *> transactions;
+
         AccountingSystem();
 
         void addEntry(Entry *entry);
+
+        void addExistingTransaction(Transaction *transaction);
 
     public:
         Assets *assets;

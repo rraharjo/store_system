@@ -7,16 +7,41 @@
 namespace util
 {
     // namespace database
+    enum class TableComparator{
+        LESSTHAN = 0,
+        LESSTHANEQUAL,
+        EQUAL,
+        MORETHANEQUAL,
+        MORETHAN,
+        LIKE
+    };
+
+    struct TableCondition
+    {
+        ColumnSchema col;
+        std::string value;
+        TableComparator comparator;
+    };
+
     class Table
     {
     private:
         std::string tableName;
 
     protected:
+        std::string sequenceName;
+
         std::vector<ColumnSchema> schema;
-        Table(std::string tableName);
+
+        Table(std::string tableName, std::string sequenceName);
 
     public:
+        virtual std::vector<std::vector<std::string>> getRecords(std::vector<std::string>, std::vector<TableCondition>);
+
+        virtual std::vector<std::vector<std::string>> getRecords(std::vector<TableCondition>);
+
+        std::vector<std::vector<std::string>> getRecords();
+
         std::vector<std::string> insertRow(std::vector<std::string> &values);
 
         std::vector<std::string> updateRow(std::string id, std::vector<std::string> &values);
@@ -24,20 +49,22 @@ namespace util
         std::vector<ColumnSchema> getSchema();
 
         std::string getTableName();
+
+        ColumnSchema getColumn(std::string);
     };
 
-    class SellableTable : public Table
+    class InventoryTable : public Table
     {
     private:
-        static SellableTable *instance;
+        static InventoryTable *instance;
 
     protected:
-        SellableTable(std::string tableName);
+        InventoryTable(std::string tableName, std::string sequenceName);
 
     public:
-        static SellableTable *getInstance();
+        static InventoryTable *getInstance();
 
-        ~SellableTable();
+        ~InventoryTable();
     };
 
     class PurchaseTransactionTable : public Table
@@ -46,7 +73,7 @@ namespace util
         static PurchaseTransactionTable *instance;
 
     protected:
-        PurchaseTransactionTable(std::string tableName);
+        PurchaseTransactionTable(std::string tableName, std::string sequenceName);
 
     public:
         static PurchaseTransactionTable *getInstance();
@@ -60,10 +87,12 @@ namespace util
         static PurchaseEntryTable *instance;
 
     protected:
-        PurchaseEntryTable(std::string tableName);
+        PurchaseEntryTable(std::string tableName, std::string sequenceName);
 
     public:
         static PurchaseEntryTable *getInstance();
+
+        std::vector<std::vector<std::string>> getRecords(std::vector<std::string>, std::vector<TableCondition>) override;
 
         ~PurchaseEntryTable();
     };
@@ -74,7 +103,7 @@ namespace util
         static SellingEntryTable *instance;
 
     protected:
-        SellingEntryTable(std::string tableName);
+        SellingEntryTable(std::string tableName, std::string sequenceName);
 
     public:
         static SellingEntryTable *getInstance();
@@ -88,7 +117,7 @@ namespace util
         static SellingTransactionTable *instance;
 
     protected:
-        SellingTransactionTable(std::string tableName);
+        SellingTransactionTable(std::string tableName, std::string sequenceName);
 
     public:
         static SellingTransactionTable *getInstance();
@@ -96,18 +125,18 @@ namespace util
         ~SellingTransactionTable();
     };
 
-    class DepreciableTable : public Table
+    class AssetsTable : public Table
     {
     private:
-        static DepreciableTable *instance;
+        static AssetsTable *instance;
 
     protected:
-        DepreciableTable(std::string tableName);
+        AssetsTable(std::string tableName, std::string sequenceName);
 
     public:
-        static DepreciableTable *getInstance();
+        static AssetsTable *getInstance();
 
-        ~DepreciableTable();
+        ~AssetsTable();
     };
 
     class AccountingTransactionTable : public Table
@@ -116,7 +145,7 @@ namespace util
         static AccountingTransactionTable *instance;
 
     protected:
-        AccountingTransactionTable(std::string tableName);
+        AccountingTransactionTable(std::string tableName, std::string sequenceName);
 
     public:
         static AccountingTransactionTable *getInstance();
@@ -130,7 +159,7 @@ namespace util
         static AccountingEntryTable *instance;
 
     protected:
-        AccountingEntryTable(std::string tableName);
+        AccountingEntryTable(std::string tableName, std::string sequenceName);
 
     public:
         static AccountingEntryTable *getInstance();

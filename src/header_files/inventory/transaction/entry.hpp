@@ -25,41 +25,63 @@ namespace inventory
         double getPrice();
         int getQty();
         util::Date *getTransactionDate();
+
         void setTransactionDate(util::Date *transactionDate);
+
+        void setTransactionDBCode(std::string dbCode);
     };
 
+    /**********************************PURCHASEENTRY*********************************/
     class PurchaseEntry : public Entry
     {
     private:
-        static int nextItemCode;
+        static util::Table *classTable;
+
+        static std::vector<PurchaseEntry *> generateFromDatabase(std::string);
+
         int availableQty;
 
     protected:
-        void setTable() override;
-
         std::vector<std::string> getInsertParameter() override;
 
-        std::string createDBCode() override;
+        std::vector<std::string> getUpdateParameter() override;
 
     public:
-        PurchaseEntry(std::string itemDBCode, std::string transactionCode, double price, int qty);
+        void insertToDB() override;
+
+        void updateToDB() override;
+
+        PurchaseEntry(std::string dbCode, std::string itemDBCode, std::string transactionDBCode,
+                      double price, int allQty, int availableQty);
+
+        PurchaseEntry(std::string itemDBCode, std::string transactionDBCode, double price, int qty);
+
         int getAvailableQty();
+
         void setAvailableQty(int qty);
+
+        friend class Inventory;
+
+        friend class Equipment;
     };
 
+    /**********************************SELLINGENTRY*********************************/
     class SellingEntry : public Entry
     {
     private:
+        static util::Table *classTable;
         static int nextItemCode;
 
     protected:
-        void setTable() override;
-
         std::vector<std::string> getInsertParameter() override;
 
-        std::string createDBCode() override;
+        std::vector<std::string> getUpdateParameter() override;
 
     public:
+        void insertToDB() override;
+
+        void updateToDB() override;
+
         SellingEntry(std::string itemDBCode, std::string transactionCode, double price, int qty);
     };
 }

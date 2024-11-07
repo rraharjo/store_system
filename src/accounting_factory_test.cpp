@@ -2,7 +2,7 @@
 #include "header_files/accounting/accounting_system.hpp"
 #include "util/factory/transaction_factory.hpp"
 
-int main()
+/*int main()
 {
     accounting::AccountingSystem *aSystem = accounting::AccountingSystem::getInstance();
     double buyItem = 199.99;
@@ -42,5 +42,5 @@ int main()
     delete buyExcavator;
     delete sellingExcavator;
     return 0;
-}
+}*/
 

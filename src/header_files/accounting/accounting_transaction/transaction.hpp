@@ -13,22 +13,32 @@ namespace accounting
     class Transaction : public util::baseclass::HasTable
     {
     private:
-        static int nextItemCode;
+        static util::Table *classTable;
         std::vector<Entry *> debitEntries;
         std::vector<Entry *> creditEntries;
         std::string name;
         util::Date *transactionDate;
-        int dbCode;
+        std::string entityID;
 
     protected:
-        void setTable() override;
-
         std::vector<std::string> getInsertParameter() override;
 
-        std::string createDBCode() override;
+        std::vector<std::string> getUpdateParameter() override;
 
     public:
+        static std::vector<Transaction *> generateFromDatabase();
+
+        void insertToDB() override;
+
+        void updateToDB() override;
+
+        Transaction(std::string dbCode, std::string name, util::Date *transactionDate, std::string pid);
+
+        Transaction(std::string name, util::Date *transactionDate, std::string pid);
+
         Transaction(std::string name, util::Date *transactionDate);
+
+        Transaction(std::string name, std::string pid);
 
         Transaction(std::string name);
 
@@ -45,6 +55,8 @@ namespace accounting
         void addEntry(Entry *entry);
 
         bool isBalanced();
+
+        std::string toString();
     };
 };
 #endif

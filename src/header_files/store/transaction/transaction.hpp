@@ -12,53 +12,77 @@ namespace store
     {
     private:
         util::Date *transactionDate;
+        double paidCash;
+        double paidCredit;
         std::vector<inventory::Entry *> entries;
 
     protected:
-        Transaction(util::Date *transaction_date);
+        bool isFinished;
+
+        Transaction(util::Date *transactionDate, double paidCash, double paidCredit);
+
+        Transaction(util::Date *transactionDate);
 
     public:
         util::Date *getDate();
 
+        double getPaidCash();
+
+        double getPaidCredit();
+
+        double getTransactionAmount();
+
         void addEntry(inventory::Entry *entry);
+
+        void setPaidCash(double amount);
+
+        void setPaidCredit(double amount);
 
         std::vector<inventory::Entry *> getAllEntries();
     };
 
+    /*****************************************PURCHASETRANSACTION*****************************************/
+
     class PurchaseTransaction : public Transaction
     {
     private:
-        static int nextItemCode;
+        static util::Table *classTable;
         std::string seller;
 
     protected:
-        void setTable() override;
-
         std::vector<std::string> getInsertParameter() override;
 
-        std::string createDBCode() override;
+        std::vector<std::string> getUpdateParameter() override;
 
     public:
+        void insertToDB() override;
+
+        void updateToDB() override;
+
         PurchaseTransaction(std::string seller, util::Date *purchaseDate);
 
         std::string getSeller();
     };
 
+    /*****************************************SELLINGTRANSACTION*****************************************/
+
     class SellingTransaction : public Transaction
     {
 
     private:
-        static int nextItemCode;
+        static util::Table *classTable;
 
     public:
+        void insertToDB() override;
+
+        void updateToDB() override;
+
         SellingTransaction(util::Date *transactionDate);
 
     protected:
-        void setTable() override;
-
         std::vector<std::string> getInsertParameter() override;
 
-        std::string createDBCode() override;
+        std::vector<std::string> getUpdateParameter() override;
     };
 };
 #endif

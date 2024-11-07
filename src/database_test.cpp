@@ -1,23 +1,46 @@
 #include "util/database/db.hpp"
 #include "util/database/tables.hpp"
 #include "util/misc.hpp"
+#include "accounting/accounting_transaction/transaction.hpp"
+#include "inventory/inventory_system.hpp"
 
-int main(int argc, char** argv){
-    //util::DB *instance = util::DB::get_instance();
-    //std::vector<std::vector<std::string>> result = instance->execute_query("insert into sellable (itemcode, itemname, sellingprice) values('10', 'testing', 100.00) returning *");
-    //util::printTable(result);
-    util::AccountingEntryTable* myTable = util::AccountingEntryTable::getInstance();
-    std::cout << myTable << std::endl;
-    //std::cout << util::AccountingEntryTable::instance << std::endl;
-    delete myTable;
-    std::cout << myTable << std::endl;
-    //std::cout << util::AccountingEntryTable::instance << std::endl;
-    int *myInt = new int(5);
-    myTable = util::AccountingEntryTable::getInstance();
-    std::cout << myTable << std::endl;
-    //std::cout << util::AccountingEntryTable::instance << std::endl;
-    //std::vector<std::string> myStr;
-    //myTable->insertRow(myStr);
+void printVec(std::vector<std::string> &);
+void printTable(std::vector<std::vector<std::string>> &);
 
+int main(int argc, char **argv)
+{
+    util::AssetsTable *myTable = util::AssetsTable::getInstance();
+    std::vector<util::TableCondition> conditions;
+    std::string val = "01-01-2024";
+    util::TableCondition newCondition, cond2;
+    newCondition.col = myTable->getColumn("transaction_date");
+    newCondition.value = val;
+    newCondition.comparator = util::TableComparator::LESSTHAN;
+    conditions.push_back(newCondition);
+    std::vector<std::vector<std::string>> res = myTable->getRecords();
+    printTable(res);
+    std::vector<inventory::Asset *> equipments = inventory::Equipment::generateFromDatabase();
+    for (inventory::Asset *equipment : equipments)
+    {
+        std::cout << equipment->toString() << "\n";
+    }
+    
     return 0;
+}
+
+void printVec(std::vector<std::string> &v)
+{
+    for (std::string &s : v)
+    {
+        std::cout << s << " ";
+    }
+}
+
+void printTable(std::vector<std::vector<std::string>> &t)
+{
+    for (std::vector<std::string> &v : t)
+    {
+        printVec(v);
+        std::cout << '\n';
+    }
 }

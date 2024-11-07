@@ -1,19 +1,102 @@
 #include "util/database/tables.hpp"
-
 using namespace util;
-SellableTable *SellableTable::instance = NULL;
+std::string generateColumnName(std::vector<std::string> &names)
+{
+    std::string result = "";
+    for (int i = 0; i < names.size() - 1; i++)
+    {
+        result += names[i] + ", ";
+    }
+    result += names[names.size() - 1];
+    return result;
+}
+
+std::string generateColumnName(std::string abbreviation, std::vector<std::string> &names)
+{
+    std::string result = "";
+    for (int i = 0; i < names.size() - 1; i++)
+    {
+        result += abbreviation + "." + names[i] + ", ";
+    }
+    result += names[names.size() - 1];
+    return result;
+}
+
+std::string generateSingleCondition(util::TableCondition &condition)
+{
+    util::TableComparator comp = condition.comparator;
+    util::enums::ColumnTypes type = condition.col.type;
+    std::string result = condition.col.columnName;
+
+    switch (comp)
+    {
+    case TableComparator::LESSTHAN:
+        result += " < ";
+        break;
+    case TableComparator::LESSTHANEQUAL:
+        result += " <= ";
+        break;
+    case TableComparator::EQUAL:
+        result += " = ";
+        break;
+    case TableComparator::MORETHANEQUAL:
+        result += " >= ";
+        break;
+    case TableComparator::MORETHAN:
+        result += " > ";
+        break;
+    case TableComparator::LIKE:
+        result += " like ";
+        break;
+    default:
+        break;
+    }
+    switch (type)
+    {
+    case util::enums::ColumnTypes::BOOLCOL:
+    case util::enums::ColumnTypes::NUMBERCOL:
+    case util::enums::ColumnTypes::FLOATCOL:
+        result += condition.value;
+        break;
+    case util::enums::ColumnTypes::CUSTOMSERIALCOL:
+    case util::enums::ColumnTypes::TEXTCOL:
+        result += "'" + condition.value + "'";
+        break;
+    case util::enums::ColumnTypes::DATECOL:
+        result += "to_date('" + condition.value + "', 'dd-mm-yyyy')";
+    default:
+        break;
+    }
+    // result += " ";
+    return result;
+}
+
+std::string generateConditions(std::vector<util::TableCondition> &conditions)
+{
+    std::string query = "";
+    for (int i = 0; i < conditions.size() - 1; i++)
+    {
+        query += generateSingleCondition(conditions[i]);
+        query += " and ";
+    }
+    query += generateSingleCondition(conditions[conditions.size() - 1]);
+    return query;
+}
+
+InventoryTable *InventoryTable::instance = NULL;
 PurchaseTransactionTable *PurchaseTransactionTable::instance = NULL;
 PurchaseEntryTable *PurchaseEntryTable::instance = NULL;
 SellingEntryTable *SellingEntryTable::instance = NULL;
 SellingTransactionTable *SellingTransactionTable::instance = NULL;
 AccountingTransactionTable *AccountingTransactionTable::instance = NULL;
 AccountingEntryTable *AccountingEntryTable::instance = NULL;
-DepreciableTable *DepreciableTable::instance = NULL;
+AssetsTable *AssetsTable::instance = NULL;
 
 // parent class
-Table::Table(std::string tableName)
+Table::Table(std::string tableName, std::string sequenceName)
 {
     this->tableName = tableName;
+    this->sequenceName = sequenceName;
 }
 std::string Table::getTableName()
 {
@@ -25,6 +108,61 @@ std::vector<util::ColumnSchema> Table::getSchema()
     return this->schema;
 }
 
+ColumnSchema Table::getColumn(std::string colName)
+{
+    for (ColumnSchema schema : this->schema)
+    {
+        if (schema.columnName == colName)
+        {
+            return schema;
+        }
+    }
+    return ColumnSchema();
+}
+
+std::vector<std::vector<std::string>> Table::getRecords(
+    std::vector<std::string> columns,
+    std::vector<TableCondition> conditions)
+{
+    size_t colSize = columns.size(), condSize = conditions.size();
+    std::string query = "select " + generateColumnName(columns) + " from " + this->tableName + " where ";
+    query += generateConditions(conditions);
+    query += ";";
+    DB *instance = DB::getInstance();
+    return instance->executeQuery(query);
+}
+
+std::vector<std::vector<std::string>> Table::getRecords(std::vector<TableCondition> conditions)
+{
+    size_t size = conditions.size();
+    std::vector<std::string> colNames;
+    if (size == 0)
+    {
+        return this->getRecords();
+    }
+    for (ColumnSchema schema : this->getSchema())
+    {
+        colNames.push_back(schema.columnName);
+    }
+    std::string query = "select " + generateColumnName(colNames) + " from " + this->tableName + " where ";
+    query += generateConditions(conditions);
+    query += ";";
+    DB *instance = DB::getInstance();
+    return instance->executeQuery(query);
+}
+
+std::vector<std::vector<std::string>> Table::getRecords()
+{
+    std::vector<std::string> colNames;
+    for (ColumnSchema schema : this->getSchema())
+    {
+        colNames.push_back(schema.columnName);
+    }
+    std::string query = "select " + generateColumnName(colNames) + " from " + this->tableName + ";";
+    DB *instance = DB::getInstance();
+    return instance->executeQuery(query);
+}
+
 std::vector<std::string> Table::insertRow(std::vector<std::string> &values)
 {
     int schemaSize = this->getSchema().size();
@@ -32,10 +170,6 @@ std::vector<std::string> Table::insertRow(std::vector<std::string> &values)
     std::string query = "insert into " + this->getTableName() + "(";
     for (int i = 0; i < schemaSize - 1; i++)
     {
-        if (this->getSchema()[i].type == util::enums::ColumnTypes::SERIALCOL)
-        {
-            continue;
-        }
         query += this->getSchema()[i].columnName + ", ";
     }
     query += this->getSchema()[schemaSize - 1].columnName + ") values(";
@@ -50,7 +184,9 @@ std::vector<std::string> Table::insertRow(std::vector<std::string> &values)
         }
         switch (this->getSchema()[i].type)
         {
-        case util::enums::ColumnTypes::SERIALCOL:
+        case util::enums::ColumnTypes::CUSTOMSERIALCOL:
+            query += "concat('" + values[curValue++] +
+                     "', lpad(nextval('" + this->sequenceName + "')::text, 6, '0')), ";
             break;
         case util::enums::ColumnTypes::TEXTCOL:
             query += "'" + values[curValue++] + "',";
@@ -59,7 +195,7 @@ std::vector<std::string> Table::insertRow(std::vector<std::string> &values)
             query += "to_date('" + values[curValue++] + "', 'dd-MM-yyyy'),";
             break;
         case util::enums::ColumnTypes::BOOLCOL:
-            query += std::stoi(values[curValue++]) ? "true," : "false,";
+            query += values[curValue++] + ",";
             break;
         case util::enums::ColumnTypes::FLOATCOL:
         case util::enums::ColumnTypes::NUMBERCOL:
@@ -75,7 +211,9 @@ std::vector<std::string> Table::insertRow(std::vector<std::string> &values)
     {
         switch (this->getSchema()[schemaSize - 1].type)
         {
-        case util::enums::ColumnTypes::SERIALCOL:
+        case util::enums::ColumnTypes::CUSTOMSERIALCOL:
+            query += "concat('" + values[curValue++] +
+                     "', lpad(nextval('" + this->sequenceName + "')::text, 6, '0'))";
             break;
         case util::enums::ColumnTypes::TEXTCOL:
             query += "'" + values[curValue++] + "')";
@@ -84,7 +222,7 @@ std::vector<std::string> Table::insertRow(std::vector<std::string> &values)
             query += "to_date('" + values[curValue++] + "', 'dd-MM-yyyy'))";
             break;
         case util::enums::ColumnTypes::BOOLCOL:
-            query += std::stoi(values[curValue++]) ? "true)" : "false)";
+            query += values[curValue++] + ")"; // Error
             break;
         case util::enums::ColumnTypes::FLOATCOL:
         case util::enums::ColumnTypes::NUMBERCOL:
@@ -93,9 +231,9 @@ std::vector<std::string> Table::insertRow(std::vector<std::string> &values)
         }
     }
 
-    query += "returning *";
-    DB *instance = DB::get_instance();
-    return instance->execute_query(query)[0];
+    query += "returning *;";
+    DB *instance = DB::getInstance();
+    return instance->executeQuery(query)[0];
 }
 
 std::vector<std::string> Table::updateRow(std::string id, std::vector<std::string> &values)
@@ -106,6 +244,10 @@ std::vector<std::string> Table::updateRow(std::string id, std::vector<std::strin
     for (int i = 0; i < schemaSize - 1; i++)
     {
         util::ColumnSchema currentCol = this->getSchema()[i];
+        if (currentCol.type == util::enums::ColumnTypes::CUSTOMSERIALCOL)
+        {
+            continue;
+        }
         if (values[curValue] == "NULL")
         {
             query += currentCol.columnName + " = NULL,";
@@ -115,8 +257,6 @@ std::vector<std::string> Table::updateRow(std::string id, std::vector<std::strin
 
         switch (currentCol.type)
         {
-        case util::enums::ColumnTypes::SERIALCOL:
-            break;
         case util::enums::ColumnTypes::TEXTCOL:
             query += currentCol.columnName + " = ";
             query += "'" + values[curValue++] + "',";
@@ -137,7 +277,11 @@ std::vector<std::string> Table::updateRow(std::string id, std::vector<std::strin
         }
     }
     util::ColumnSchema currentCol = this->getSchema()[schemaSize - 1];
-    if (values[curValue] == "NULL")
+    if (currentCol.type == util::enums::ColumnTypes::CUSTOMSERIALCOL)
+    {
+        query[query.length() - 1] = ' ';
+    }
+    else if (values[curValue] == "NULL")
     {
         query += currentCol.columnName + " = NULL ";
         curValue++;
@@ -146,9 +290,6 @@ std::vector<std::string> Table::updateRow(std::string id, std::vector<std::strin
     {
         switch (currentCol.type)
         {
-        case util::enums::ColumnTypes::SERIALCOL:
-            query[query.length() - 1] = ' ';
-            break;
         case util::enums::ColumnTypes::TEXTCOL:
             query += currentCol.columnName + " = ";
             query += "'" + values[curValue++] + "' ";
@@ -169,36 +310,38 @@ std::vector<std::string> Table::updateRow(std::string id, std::vector<std::strin
         }
     }
     query += "where " + this->getSchema()[0].columnName + " = '" + id + "' returning *;";
-    // std::cout << query << std::endl;
-    DB *instance = DB::get_instance();
-    return instance->execute_query(query)[0];
+    DB *instance = DB::getInstance();
+    return instance->executeQuery(query)[0];
 }
 
-// Sellable Table
-SellableTable::SellableTable(std::string tableName) : Table::Table(tableName)
+// Inventory Table
+InventoryTable::InventoryTable(std::string tableName, std::string sequenceName)
+    : Table::Table(tableName, sequenceName)
 {
-    for (auto it = util::enums::sellableTableColumns.begin(); it != util::enums::sellableTableColumns.end(); it++)
+    for (auto it = util::enums::inventoryTableColumns.begin(); it != util::enums::inventoryTableColumns.end(); it++)
     {
         this->schema.push_back(it->second);
     }
 }
 
-SellableTable::~SellableTable()
+InventoryTable::~InventoryTable()
 {
-    SellableTable::instance = NULL;
+    InventoryTable::instance = NULL;
 }
 
-SellableTable *SellableTable::getInstance()
+InventoryTable *InventoryTable::getInstance()
 {
-    if (SellableTable::instance == NULL)
+    if (InventoryTable::instance == NULL)
     {
-        SellableTable::instance = new SellableTable(util::enums::tableNamesMap[util::enums::TableNames::SELLABLE]);
+        InventoryTable::instance = new InventoryTable(util::enums::tableNamesMap[util::enums::TableNames::INVENTORY],
+                                                      util::enums::sequenceNamesMap[util::enums::SequenceNames::INVENTORY]);
     }
-    return SellableTable::instance;
+    return InventoryTable::instance;
 }
 
 // purchase transaction table
-PurchaseTransactionTable::PurchaseTransactionTable(std::string tableName) : Table::Table(tableName)
+PurchaseTransactionTable::PurchaseTransactionTable(std::string tableName, std::string sequenceName)
+    : Table::Table(tableName, sequenceName)
 {
     for (auto it = util::enums::purchaseTransactionTableColumns.begin(); it != util::enums::purchaseTransactionTableColumns.end(); it++)
     {
@@ -215,15 +358,41 @@ PurchaseTransactionTable *PurchaseTransactionTable::getInstance()
 {
     if (PurchaseTransactionTable::instance == NULL)
     {
-        PurchaseTransactionTable::instance = new PurchaseTransactionTable(util::enums::tableNamesMap[util::enums::TableNames::PURCHASETRANSACTION]);
+        PurchaseTransactionTable::instance =
+            new PurchaseTransactionTable(util::enums::tableNamesMap[util::enums::TableNames::PURCHASETRANSACTION],
+                                         util::enums::sequenceNamesMap[util::enums::SequenceNames::PURCHASETRANSACTION]);
     }
     return PurchaseTransactionTable::instance;
 }
 
 // purchase entry table
-PurchaseEntryTable::PurchaseEntryTable(std::string tableName) : Table::Table(tableName)
+std::vector<std::vector<std::string>> PurchaseEntryTable::getRecords(std::vector<std::string> columns,
+                                                                     std::vector<TableCondition> conditions)
 {
-    for (auto it = util::enums::purchaseEntryTableColumns.begin(); it != util::enums::purchaseEntryTableColumns.end(); it++)
+    std::string entryAbbr = "et", transactionAbbr = "pt";
+    std::string transactionTableName = util::enums::tableNamesMap[util::enums::TableNames::PURCHASETRANSACTION];
+    std::string dateCol =
+        util::enums::purchaseTransactionTableColumns[util::enums::PurchaseTransactionTable::DATEPURCHASED].columnName;
+    std::string entryJoinCol =
+        util::enums::purchaseEntryTableColumns[util::enums::PurchaseEntryTable::PURCHASETRANSACTIONCODE].columnName;
+    std::string transactionJoinCol =
+        util::enums::purchaseTransactionTableColumns[util::enums::PurchaseTransactionTable::DATABASECODE].columnName;
+    size_t colSize = columns.size(), condSize = conditions.size();
+    std::string query = "select " + generateColumnName(entryAbbr, columns) + " from " +
+                        this->getTableName() + " " + entryAbbr + " inner join " + transactionTableName + " " + transactionAbbr +
+                        " on " + entryAbbr + "." + entryJoinCol + " = " + transactionAbbr + "." + transactionJoinCol + " where ";
+    query += generateConditions(conditions);
+    query += " order by " + transactionAbbr + "." + dateCol;
+    query += ";";
+    DB *instance = DB::getInstance();
+    return instance->executeQuery(query);
+}
+
+PurchaseEntryTable::PurchaseEntryTable(std::string tableName, std::string sequenceName)
+    : Table::Table(tableName, sequenceName)
+{
+    for (auto it = util::enums::purchaseEntryTableColumns.begin();
+         it != util::enums::purchaseEntryTableColumns.end(); it++)
     {
         this->schema.push_back(it->second);
     }
@@ -238,13 +407,16 @@ PurchaseEntryTable *PurchaseEntryTable::getInstance()
 {
     if (PurchaseEntryTable::instance == NULL)
     {
-        PurchaseEntryTable::instance = new PurchaseEntryTable(util::enums::tableNamesMap[util::enums::TableNames::PURCHASEENTRY]);
+        PurchaseEntryTable::instance =
+            new PurchaseEntryTable(util::enums::tableNamesMap[util::enums::TableNames::PURCHASEENTRY],
+                                   util::enums::sequenceNamesMap[util::enums::SequenceNames::PURCHASEENTRY]);
     }
     return PurchaseEntryTable::instance;
 }
 
 // selling entry table
-SellingEntryTable::SellingEntryTable(std::string tableName) : Table::Table(tableName)
+SellingEntryTable::SellingEntryTable(std::string tableName, std::string sequenceName)
+    : Table::Table(tableName, sequenceName)
 {
     for (auto it = util::enums::sellingEntryTableColumns.begin(); it != util::enums::sellingEntryTableColumns.end(); it++)
     {
@@ -261,13 +433,16 @@ SellingEntryTable *SellingEntryTable::getInstance()
 {
     if (SellingEntryTable::instance == NULL)
     {
-        SellingEntryTable::instance = new SellingEntryTable(util::enums::tableNamesMap[util::enums::TableNames::SELLINGENTRY]);
+        SellingEntryTable::instance =
+            new SellingEntryTable(util::enums::tableNamesMap[util::enums::TableNames::SELLINGENTRY],
+                                  util::enums::sequenceNamesMap[util::enums::SequenceNames::SELLINGENTRY]);
     }
     return SellingEntryTable::instance;
 }
 
 // selling transaction table
-SellingTransactionTable::SellingTransactionTable(std::string tableName) : Table::Table(tableName)
+SellingTransactionTable::SellingTransactionTable(std::string tableName, std::string sequenceName)
+    : Table::Table(tableName, sequenceName)
 {
     for (auto it = util::enums::sellingTransactionTableColumns.begin(); it != util::enums::sellingTransactionTableColumns.end(); it++)
     {
@@ -284,38 +459,43 @@ SellingTransactionTable *SellingTransactionTable::getInstance()
 {
     if (SellingTransactionTable::instance == NULL)
     {
-        SellingTransactionTable::instance = new SellingTransactionTable(util::enums::tableNamesMap[util::enums::TableNames::SELLINGTRANSACTION]);
+        SellingTransactionTable::instance =
+            new SellingTransactionTable(util::enums::tableNamesMap[util::enums::TableNames::SELLINGTRANSACTION],
+                                        util::enums::sequenceNamesMap[util::enums::SequenceNames::SELLINGTRANSACTION]);
     }
     return SellingTransactionTable::instance;
 }
 
-// Depreciable Table
-DepreciableTable::DepreciableTable(std::string tableName) : Table::Table(tableName)
+// Equipment Table
+AssetsTable::AssetsTable(std::string tableName, std::string sequenceName) : Table::Table(tableName, sequenceName)
 {
-    for (auto it = util::enums::depreciableTableColumns.begin(); it != util::enums::depreciableTableColumns.end(); it++)
+    for (auto it = util::enums::assetsTableColumns.begin(); it != util::enums::assetsTableColumns.end(); it++)
     {
         this->schema.push_back(it->second);
     }
 }
 
-DepreciableTable::~DepreciableTable()
+AssetsTable::~AssetsTable()
 {
-    DepreciableTable::instance = NULL;
+    AssetsTable::instance = NULL;
 }
 
-DepreciableTable *DepreciableTable::getInstance()
+AssetsTable *AssetsTable::getInstance()
 {
-    if (DepreciableTable::instance == NULL)
+    if (AssetsTable::instance == NULL)
     {
-        DepreciableTable::instance = new DepreciableTable(util::enums::tableNamesMap[util::enums::TableNames::DEPRECIABLE]);
+        AssetsTable::instance = new AssetsTable(util::enums::tableNamesMap[util::enums::TableNames::ASSETS],
+                                                util::enums::sequenceNamesMap[util::enums::SequenceNames::ASSETS]);
     }
-    return DepreciableTable::instance;
+    return AssetsTable::instance;
 }
 
 // accounting transaction table
-AccountingTransactionTable::AccountingTransactionTable(std::string tableName) : Table::Table(tableName)
+AccountingTransactionTable::AccountingTransactionTable(std::string tableName, std::string sequenceName)
+    : Table::Table(tableName, sequenceName)
 {
-    for (auto it = util::enums::accountingTransactionTableColumns.begin(); it != util::enums::accountingTransactionTableColumns.end(); it++)
+    for (auto it = util::enums::accountingTransactionTableColumns.begin();
+         it != util::enums::accountingTransactionTableColumns.end(); it++)
     {
         this->schema.push_back(it->second);
     }
@@ -330,15 +510,19 @@ AccountingTransactionTable *AccountingTransactionTable::getInstance()
 {
     if (AccountingTransactionTable::instance == NULL)
     {
-        AccountingTransactionTable::instance = new AccountingTransactionTable(util::enums::tableNamesMap[util::enums::TableNames::ACCOUNTINGTRANSACTION]);
+        AccountingTransactionTable::instance =
+            new AccountingTransactionTable(util::enums::tableNamesMap[util::enums::TableNames::ACCOUNTINGTRANSACTION],
+                                           util::enums::sequenceNamesMap[util::enums::SequenceNames::ACCOUNTINGTRANSACTION]);
     }
     return AccountingTransactionTable::instance;
 }
 
 // accounting entry table
-AccountingEntryTable::AccountingEntryTable(std::string tableName) : Table::Table(tableName)
+AccountingEntryTable::AccountingEntryTable(std::string tableName, std::string sequenceName)
+    : Table::Table(tableName, sequenceName)
 {
-    for (auto it = util::enums::accountingEntryTableColumns.begin(); it != util::enums::accountingEntryTableColumns.end(); it++)
+    for (auto it = util::enums::accountingEntryTableColumns.begin();
+         it != util::enums::accountingEntryTableColumns.end(); it++)
     {
         this->schema.push_back(it->second);
     }
@@ -346,7 +530,6 @@ AccountingEntryTable::AccountingEntryTable(std::string tableName) : Table::Table
 
 AccountingEntryTable::~AccountingEntryTable()
 {
-    std::cout << "destructor called" << std::endl;
     AccountingEntryTable::instance = NULL;
 }
 
@@ -354,7 +537,9 @@ AccountingEntryTable *AccountingEntryTable::getInstance()
 {
     if (AccountingEntryTable::instance == NULL)
     {
-        AccountingEntryTable::instance = new AccountingEntryTable(util::enums::tableNamesMap[util::enums::TableNames::ACCOUNTINGENTRY]);
+        AccountingEntryTable::instance =
+            new AccountingEntryTable(util::enums::tableNamesMap[util::enums::TableNames::ACCOUNTINGENTRY],
+                                     util::enums::sequenceNamesMap[util::enums::SequenceNames::ACCOUNTINGENTRY]);
     }
     return AccountingEntryTable::instance;
 }

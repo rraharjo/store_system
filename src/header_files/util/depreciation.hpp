@@ -12,11 +12,13 @@ namespace util
         int yearUsefulLife;
 
     public:
-        DepreciationMethod(double cost, double residualValue, int yearUsefulLife);
-
         virtual double getAccumulatedDepreciationAtYear(int year) = 0;
 
         virtual double getDepreciationExpenseAtYear(int year) = 0;
+
+        virtual void setCost(double cost);
+
+        DepreciationMethod(double cost, double residualValue, int yearUsefulLife);
     };
 
     class StraightLineDepreciation : public DepreciationMethod
@@ -37,6 +39,8 @@ namespace util
         void initiateAccumulatedDepreciation();
 
     public:
+        void setCost(double cost) override;
+
         DoubleDecliningDepreciation(double cost, int yearUsefulLife);
 
         double getAccumulatedDepreciationAtYear(int year) override;

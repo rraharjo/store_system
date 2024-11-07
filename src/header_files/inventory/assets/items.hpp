@@ -13,15 +13,23 @@ namespace inventory
         PurchaseHistory *purchaseHistory;
         SellingHistory *sellingHistory;
         int qty;
+
         Item(std::string name, std::string itemCode);
+
+        virtual void addExistingPurchaseEntry(PurchaseEntry *);
+
+        void addExistingSellingEntry(SellingEntry *);
 
     public:
         std::string getName();
         std::string getItemCode();
+
         int getQty();
+
         virtual double sellItems(SellingEntry *entry) = 0;
+
         virtual void addPurchase(PurchaseEntry *entry) = 0;
     };
- };
+};
 
 #endif

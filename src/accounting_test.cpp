@@ -2,7 +2,7 @@
 #include "header_files/accounting/accounting_system.hpp"
 #include "header_files/util/date.hpp"
 
-int main()
+/*int main()
 {
     accounting::AccountingSystem *aSystem = accounting::AccountingSystem::getInstance();
     accounting::Transaction *transaction1 = new accounting::Transaction("Transaction 1");
@@ -15,5 +15,5 @@ int main()
     std::cout << aSystem->to_string() << std::endl;
     delete aSystem;
     return 0;
-}
+}*/
 

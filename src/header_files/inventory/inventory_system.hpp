@@ -1,5 +1,5 @@
-#include "./assets/sellable.hpp"
-#include "./assets/depreciable.hpp"
+#include "./assets/inventory.hpp"
+#include "./assets/equipment.hpp"
 #ifndef INVENTORYSYSTEM_HPP
 #define INVENTORYSYSTEM_HPP
 namespace inventory
@@ -8,28 +8,33 @@ namespace inventory
     {
     private:
         static InventorySystem *instance;
-        std::map<std::string, Sellable *> sellables;
-        std::map<std::string, Depreciable *> properties; 
+        std::map<std::string, Inventory *> sellables;
+        std::map<std::string, Asset *> assets; 
+
         InventorySystem();
 
+        void addExistingAsset(Asset *);
+
+        void addExistingInventory(Inventory *);
     public:
     
         static InventorySystem *getInstance();
 
-        Depreciable *getProperty(std::string dbCode);
+        Asset *getProperty(std::string dbCode);
+
+        Inventory *getInventory(std::string dbCode);
 
         double sellSellables(Entry *newEntry); // return the COGS
 
         void purchaseSellables(Entry *newEntry);
-        // void purchaseItem(int itemDBCode, int qty);
 
         double sellProperties(Entry *newEntry);
 
         void purchaseProperties(Entry *newEntry);
 
-        void addNewItem(Sellable *newSellable);
+        void addNewItem(Inventory *newSellable);
 
-        void addNewProperty(Depreciable *newProperty);
+        void addNewProperty(Asset *newProperty);
 
         std::string to_string();
     };

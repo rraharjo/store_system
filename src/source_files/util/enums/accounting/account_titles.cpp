@@ -16,3 +16,12 @@ std::string util::enums::getName(util::enums::AccountTitles title)
 {
     return accountTitlesMap[title];
 }
+
+AccountTitles util::enums::getAccountEnum(std::string name){
+    for (auto it = accountTitlesMap.begin() ; it != accountTitlesMap.end() ; it++){
+        if (it->second == name){
+            return it->first;
+        }
+    }
+    throw std::invalid_argument(name + " does not match any account");
+}
