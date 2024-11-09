@@ -2,7 +2,7 @@
 #include <limits>
 #include "store/store_system.hpp"
 
-#define OPT_SIZE 8
+#define OPT_SIZE 9
 std::string menu();
 int getInt(std::string, int, int);
 double getDouble(std::string, double, double);
@@ -15,6 +15,7 @@ void purchaseAsset(store::StoreSystem *);
 void capitalizeAssets(store::StoreSystem *);
 void sellInventory(store::StoreSystem *);
 void sellAssets(store::StoreSystem *);
+void endOfYear(store::StoreSystem *);
 void listOfItems(store::StoreSystem *);
 
 int main(int argc, char *argv[])
@@ -46,6 +47,9 @@ int main(int argc, char *argv[])
             sellAssets(mySystem);
             break;
         case 7:
+            endOfYear(mySystem);
+            break;
+        case 8:
             listOfItems(mySystem);
             break;
         default:
@@ -63,7 +67,8 @@ std::string menu()
     toRet += "4. Capitalize asset\n";
     toRet += "5. Sell inventory\n";
     toRet += "6. Sell Asset\n";
-    toRet += "7. Get a list of item\n";
+    toRet += "7. End of the year\n";
+    toRet += "8. Get a list of item\n";
     return toRet;
 }
 
@@ -166,13 +171,13 @@ void purchaseAsset(store::StoreSystem *sSystem)
     int usefulLife = getInt("Year useful life: ", 1, 99);
     util::Date *datePurchased = getDate("date purchased ");
     inventory::Equipment *newEqp = new inventory::Equipment(name, itemCode, residualValue, usefulLife, datePurchased);
+    newEqp->insertToDB();
     store::PurchaseTransaction *newTransaction = new store::PurchaseTransaction("", datePurchased);
     inventory::PurchaseEntry *newEntry = new inventory::PurchaseEntry(newEqp->getDBCode(), "", purchaseCost, 1);
     newTransaction->addEntry(newEntry);
     double paidCash = getDouble("How much cash paid? ", 0, newTransaction->getTransactionAmount());
     newTransaction->setPaidCash(paidCash);
     newTransaction->setPaidCredit(newTransaction->getTransactionAmount() - paidCash);
-    newEqp->insertToDB();
     newTransaction->insertToDB();
     sSystem->addProperty(newEqp);
     sSystem->capitalizeAsset(newTransaction);
@@ -233,6 +238,10 @@ void sellAssets(store::StoreSystem *sSystem)
     newTransaction->setPaidCredit(newTransaction->getTransactionAmount() - paidCash);
     newTransaction->insertToDB();
     sSystem->disposeAsset(newTransaction);
+}
+
+void endOfYear(store::StoreSystem *sSystem){
+    sSystem->endYearAdjustment();
 }
 
 void listOfItems(store::StoreSystem *sSystem)

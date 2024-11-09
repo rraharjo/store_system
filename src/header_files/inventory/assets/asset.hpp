@@ -36,6 +36,10 @@ namespace inventory
 
         double sellItems(SellingEntry *entry) override;
 
+        virtual double getReducedValueAtYear(int year) = 0;
+
+        virtual double getReducedValueCurrentYear() = 0;
+
         double getResidualValue();
 
         int getYearUsefulLife();

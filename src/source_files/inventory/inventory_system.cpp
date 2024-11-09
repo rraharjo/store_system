@@ -9,13 +9,16 @@ InventorySystem *InventorySystem::getInstance()
     {
         InventorySystem::instance = new InventorySystem();
         std::vector<Inventory *> inventories = Inventory::generateFromDatabase();
-        for (Inventory *inventory : inventories){
+        for (Inventory *inventory : inventories)
+        {
             InventorySystem::instance->sellables[inventory->getDBCode()] = inventory;
         }
         std::vector<Asset *> equipments = Equipment::generateFromDatabase();
-        for (Asset *equipment : equipments){
+        for (Asset *equipment : equipments)
+        {
             InventorySystem::instance->assets[equipment->getDBCode()] = equipment;
         }
+        InventorySystem::instance->setASystem(accounting::AccountingSystem::getInstance());
     }
     return InventorySystem::instance;
 }
@@ -26,11 +29,18 @@ InventorySystem::InventorySystem()
     this->assets = {};
 }
 
-void InventorySystem::addExistingInventory(Inventory *inv){
+void InventorySystem::setASystem(accounting::AccountingSystem *aSystem)
+{
+    this->aSystem = aSystem;
+}
+
+void InventorySystem::addExistingInventory(Inventory *inv)
+{
     this->addNewItem(inv);
 }
 
-void InventorySystem::addExistingAsset(Asset *asset){
+void InventorySystem::addExistingAsset(Asset *asset)
+{
     this->addNewProperty(asset);
 }
 
@@ -39,7 +49,8 @@ Asset *InventorySystem::getProperty(std::string dbCode)
     return this->assets[dbCode];
 }
 
-Inventory *InventorySystem::getInventory(std::string dbCode){
+Inventory *InventorySystem::getInventory(std::string dbCode)
+{
     return this->sellables[dbCode];
 }
 
@@ -92,6 +103,23 @@ void InventorySystem::addNewProperty(Asset *newDepreciable)
     if (this->assets.find(newDepreciable->getDBCode()) == this->assets.end())
     {
         this->assets[newDepreciable->getDBCode()] = newDepreciable;
+    }
+}
+
+void InventorySystem::applyDepreciation(std::string assetDBCode)
+{
+    double depreciationAmountThisYear = this->assets[assetDBCode]->getReducedValueCurrentYear();
+    util::Date *now = new util::Date();
+    std::string accountingTransactionTitle = "Incurred depreciation expense";
+    accounting::Transaction *newTransaction =
+        util::factory::ApplyDepreciationFactory(now, accountingTransactionTitle, assetDBCode, depreciationAmountThisYear)
+            .createTransaction();
+    this->aSystem->addTransaction(newTransaction);
+}
+
+void InventorySystem::applyAllDepreciation(){
+    for (auto it = this->assets.begin() ; it != this->assets.end() ; it++){
+        this->applyDepreciation(it->first);
     }
 }
 

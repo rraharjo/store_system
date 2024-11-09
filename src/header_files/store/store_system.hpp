@@ -32,6 +32,8 @@ namespace store
 
         void addProperty(inventory::Equipment *newProperty);
 
+        void endYearAdjustment();
+
         inventory::Inventory *getInventory(std::string dbCode);
 
         std::string toStringInv();

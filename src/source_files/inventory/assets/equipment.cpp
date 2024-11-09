@@ -56,6 +56,14 @@ std::vector<std::string> Equipment::getInsertParameter()
     return args;
 };
 
+double Equipment::getReducedValueAtYear(int year){
+    return this->getDepreciationExpenseAtYear(year);
+}
+
+double Equipment::getReducedValueCurrentYear(){
+    return this->getCurrentDepreciationExpense();
+}
+
 double Equipment::getDepreciationExpenseAtYear(int year)
 {
     if (year < 0 || year > this->yearUsefulLife)

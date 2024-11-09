@@ -25,6 +25,10 @@ namespace inventory
 
         Equipment(std::string name, std::string itemCode, double residualValue, int yearUsefulLife, util::Date *dateBought);
 
+        double getReducedValueAtYear(int year) override;
+
+        double getReducedValueCurrentYear() override;
+
         double getDepreciationExpenseAtYear(int year);
 
         double getAccumulatedDepreciationAtYear(int year);
