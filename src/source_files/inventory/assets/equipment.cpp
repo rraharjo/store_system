@@ -7,19 +7,23 @@ std::vector<Asset *> Equipment::generateFromDatabase()
     std::vector<std::vector<std::string>> records = Asset::classTable->getRecords();
     for (std::vector<std::string> &record : records)
     {
-        util::Date *purchase = NULL, *sold = NULL;
+        util::Date *purchase = NULL, *depreciationDate = NULL, *sold = NULL;
         if (record[5] != "")
         {
             purchase = new util::Date(record[5], "%Y-%m-%d");
         }
-        if (record[6] != "")
+        if (record[6] != ""){
+            depreciationDate = new util::Date(record[6], "%Y-%m-%d");
+        }
+        if (record[7] != "")
         {
             sold = new util::Date(record[6], "%Y-%m-%d");
         }
         Asset *newEquipment = new Equipment(record[0], record[1], "", std::stod(record[2]),
-                                                std::stod(record[3]), std::stoi(record[4]), purchase, sold);
+                                            std::stod(record[3]), std::stoi(record[4]), purchase, depreciationDate, sold);
         std::vector<PurchaseEntry *> entries = PurchaseEntry::generateFromDatabase(newEquipment->getDBCode());
-        for (PurchaseEntry *entry : entries){
+        for (PurchaseEntry *entry : entries)
+        {
             newEquipment->addExistingPurchaseEntry(entry);
         }
         toRet.push_back(newEquipment);
@@ -28,18 +32,20 @@ std::vector<Asset *> Equipment::generateFromDatabase()
 }
 
 Equipment::Equipment(std::string dbCode, std::string name, std::string itemCode,
-                     double totalValue, double residualValue, int yearUsefulLife, util::Date *dateBought, util::Date *dateSold)
-    : Asset(dbCode, name, itemCode, totalValue, residualValue, yearUsefulLife, dateBought, dateSold)
+                     double totalValue, double residualValue, int yearUsefulLife,
+                     util::Date *dateBought, util::Date *lastDepreciationDate, util::Date *dateSold)
+    : Asset(dbCode, name, itemCode, totalValue, residualValue, yearUsefulLife, dateBought, lastDepreciationDate, dateSold)
 {
     this->depreciationMethod = new util::DoubleDecliningDepreciation(this->getTotalValue(), this->getYearUsefulLife());
 }
 
 Equipment::Equipment(std::string name, std::string itemCode, double residualValue, int yearUsefulLife, util::Date *dateBought)
-    : Equipment("", name, itemCode, 0, residualValue, yearUsefulLife, dateBought, NULL)
+    : Equipment("", name, itemCode, 0, residualValue, yearUsefulLife, dateBought, NULL, NULL)
 {
 }
 
-void Equipment::addExistingPurchaseEntry(PurchaseEntry *entry){
+void Equipment::addExistingPurchaseEntry(PurchaseEntry *entry)
+{
     Asset::addExistingPurchaseEntry(entry);
 }
 
@@ -52,15 +58,18 @@ std::vector<std::string> Equipment::getInsertParameter()
     args.push_back(std::to_string(this->getResidualValue()));
     args.push_back(std::to_string(this->getYearUsefulLife()));
     args.push_back(this->getDateBought()->toDBFormat());
+    args.push_back(this->getLastDepreciationDate() ? this->getLastDepreciationDate()->toDBFormat() : "NULL");
     args.push_back(this->getExpiryDate() ? this->getExpiryDate()->toDBFormat() : "NULL");
     return args;
 };
 
-double Equipment::getReducedValueAtYear(int year){
+double Equipment::getReducedValueAtYear(int year)
+{
     return this->getDepreciationExpenseAtYear(year);
 }
 
-double Equipment::getReducedValueCurrentYear(){
+double Equipment::getReducedValueCurrentYear()
+{
     return this->getCurrentDepreciationExpense();
 }
 

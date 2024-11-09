@@ -44,13 +44,14 @@ create table inventory(
 );
 
 create table assets(
-    database_code       text          primary key,
-    item_name           text,
-    purchase_cost       numeric(12, 2)  not null,
-    residual_value      numeric(12, 2)  not null,
-    year_useful_life    int             not null,
-    date_purchased      date            not null,
-    date_sold           date
+    database_code               text          primary key,
+    item_name                   text,
+    purchase_cost               numeric(12, 2)  not null,
+    residual_value              numeric(12, 2)  not null,
+    year_useful_life            int             not null,
+    date_purchased              date            not null,
+    last_depreciation_applied   date,
+    date_sold                   date
 );
 
 create table purchase_transaction(

@@ -77,6 +77,7 @@ std::map<AssetsTable, ColumnSchema> util::enums::assetsTableColumns = {
     {AssetsTable::RESIDUALVALUE, ColumnSchema{"residual_value", ColumnTypes::FLOATCOL}},
     {AssetsTable::YEARUSEFULLIFE, ColumnSchema{"year_useful_life", ColumnTypes::NUMBERCOL}},
     {AssetsTable::DATEPURCHASED, ColumnSchema{"date_purchased", ColumnTypes::DATECOL}},
+    {AssetsTable::LASTDEPRECIATIONAPPLIED, ColumnSchema{"last_depreciation_applied", ColumnTypes::DATECOL}},
     {AssetsTable::DATESOLD, ColumnSchema{"date_sold", ColumnTypes::DATECOL}}};
 
 std::map<AccountingTransactionTable, ColumnSchema> util::enums::accountingTransactionTableColumns = {

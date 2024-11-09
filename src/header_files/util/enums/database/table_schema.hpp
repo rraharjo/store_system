@@ -132,6 +132,7 @@ namespace util
             RESIDUALVALUE,
             YEARUSEFULLIFE,
             DATEPURCHASED,
+            LASTDEPRECIATIONAPPLIED,
             DATESOLD
         };
 
