@@ -40,7 +40,7 @@ Equipment::Equipment(std::string dbCode, std::string name, std::string itemCode,
 }
 
 Equipment::Equipment(std::string name, std::string itemCode, double residualValue, int yearUsefulLife, util::Date *dateBought)
-    : Equipment("", name, itemCode, 0, residualValue, yearUsefulLife, dateBought, NULL, NULL)
+    : Equipment("", name, itemCode, 0, residualValue, yearUsefulLife, dateBought, dateBought, NULL)
 {
 }
 

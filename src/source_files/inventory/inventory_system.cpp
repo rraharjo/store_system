@@ -108,8 +108,19 @@ void InventorySystem::addNewProperty(Asset *newDepreciable)
 
 void InventorySystem::applyDepreciation(std::string assetDBCode)
 {
-    double depreciationAmountThisYear = this->assets[assetDBCode]->getReducedValueCurrentYear();
+    // TO DO: asset is not depreciated if last depreciation happened less than a year ago
+    Asset *asset = this->assets[assetDBCode];
     util::Date *now = new util::Date();
+    if ((!asset->getLastDepreciationDate() && now->diffYearsTo(asset->getDateBought()) >= 0) ||
+        now->diffYearsTo(asset->getLastDepreciationDate()) >= 0)
+    {
+        delete now;
+        return;
+    }
+    double depreciationAmountThisYear = asset->getReducedValueCurrentYear();
+    util::Date *newDepreciationDate = new util::Date();
+    delete asset->getLastDepreciationDate();
+    asset->setLastDepreciationDate(newDepreciationDate);
     std::string accountingTransactionTitle = "Incurred depreciation expense";
     accounting::Transaction *newTransaction =
         util::factory::ApplyDepreciationFactory(now, accountingTransactionTitle, assetDBCode, depreciationAmountThisYear)
@@ -117,8 +128,10 @@ void InventorySystem::applyDepreciation(std::string assetDBCode)
     this->aSystem->addTransaction(newTransaction);
 }
 
-void InventorySystem::applyAllDepreciation(){
-    for (auto it = this->assets.begin() ; it != this->assets.end() ; it++){
+void InventorySystem::applyAllDepreciation()
+{
+    for (auto it = this->assets.begin(); it != this->assets.end(); it++)
+    {
         this->applyDepreciation(it->first);
     }
 }

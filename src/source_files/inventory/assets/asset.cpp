@@ -14,7 +14,7 @@ void Asset::updateToDB()
 };
 
 Asset::Asset(std::string dbCode, std::string name, std::string itemCode,
-             double totalValue, double residualValue, int yearUsefulLife, 
+             double totalValue, double residualValue, int yearUsefulLife,
              util::Date *dateBought, util::Date *lastDepreciationDate, util::Date *dateSold)
     : Item(name, itemCode)
 {
@@ -86,7 +86,8 @@ util::Date *Asset::getDateBought()
     return this->dateBought;
 }
 
-util::Date *Asset::getLastDepreciationDate(){
+util::Date *Asset::getLastDepreciationDate()
+{
     return this->lastDepreciationDate;
 }
 
@@ -103,6 +104,12 @@ double Asset::getCurrentValue()
 void Asset::setTotalValue(double newValue)
 {
     this->value = newValue;
+}
+
+void Asset::setLastDepreciationDate(util::Date *depreciationDate)
+{
+    this->lastDepreciationDate = depreciationDate;
+    this->updateToDB();
 }
 
 std::string Asset::toString()

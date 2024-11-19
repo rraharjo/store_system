@@ -47,7 +47,7 @@ namespace inventory
         util::Date *getDateBought();
 
         util::Date *getLastDepreciationDate();
-        
+
         util::Date *getExpiryDate();
 
         double getTotalValue();
@@ -55,6 +55,8 @@ namespace inventory
         double getCurrentValue();
 
         virtual void setTotalValue(double newValue);
+
+        void setLastDepreciationDate(util::Date *);
 
         std::string toString();
 
