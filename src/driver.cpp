@@ -157,7 +157,7 @@ void addPurchaseEntry(store::PurchaseTransaction *p)
 {
     std::string itemCode = getString("Enter item DB Code:");
     double price = getDouble("Enter each item price", 0.0, std::numeric_limits<double>::max());
-    int qty = getInt("Enter qty purchased: ", 0, INT_MAX);
+    int qty = getInt("Enter qty purchased: ", 0, std::numeric_limits<int>::max());
     inventory::PurchaseEntry *newEntry = new inventory::PurchaseEntry(itemCode, p->getDBCode(), price, qty);
     p->addEntry(newEntry);
 }
@@ -201,7 +201,7 @@ void capitalizeAssets(store::StoreSystem *sSystem)
 void sellInventory(store::StoreSystem *sSystem)
 {
     std::string itemCode = getString("inventory item code: ");
-    int qty = getInt("qty: ", 1, INT_MAX);
+    int qty = getInt("qty: ", 1, std::numeric_limits<int>::max());
     double price = sSystem->getInventory(itemCode)->getSellingPrice();
     util::Date *date = getDate("enter date: ");
     store::SellingTransaction *newTransaction = new store::SellingTransaction(date);
@@ -211,7 +211,7 @@ void sellInventory(store::StoreSystem *sSystem)
     while (more)
     {
         itemCode = getString("inventory item code: ");
-        qty = getInt("qty: ", 1, INT_MAX);
+        qty = getInt("qty: ", 1, std::numeric_limits<int>::max());
         price = sSystem->getInventory(itemCode)->getSellingPrice();
         newEntry = new inventory::SellingEntry(itemCode, newTransaction->getDBCode(), price, qty);
         newTransaction->addEntry(newEntry);

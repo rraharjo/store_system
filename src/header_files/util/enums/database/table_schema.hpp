@@ -154,8 +154,7 @@ namespace util
             ATDBCODE,
             DEBIT,
             AMOUNT,
-            TACCOUNTNUM,
-            ACCOUNTTITLE
+            TACCOUNTNUM
         };
 
         extern std::map<AccountingEntryTable, ColumnSchema> accountingEntryTableColumns;

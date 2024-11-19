@@ -19,14 +19,14 @@ accounting::Transaction *GoodsPurchaseFactory::createTransaction()
     newTransaction->insertToDB();
     accounting::Entry *increaseInventory =
         new accounting::Entry(newTransaction->getDBCode(), true, this->purchaseAmount,
-                              util::enums::TAccounts::INVENTORY, util::enums::AccountTitles::ASSETS);
+                              util::enums::TAccounts::INVENTORY);
     increaseInventory->insertToDB();
     newTransaction->addEntry(increaseInventory);
     if (this->paidCash > 0.0)
     {
         accounting::Entry *reduceCash =
             new accounting::Entry(newTransaction->getDBCode(), false,
-                                  this->paidCash, util::enums::TAccounts::CASH, util::enums::AccountTitles::ASSETS);
+                                  this->paidCash, util::enums::TAccounts::CASH);
         reduceCash->insertToDB();
         newTransaction->addEntry(reduceCash);
     }
@@ -34,7 +34,7 @@ accounting::Transaction *GoodsPurchaseFactory::createTransaction()
     {
         accounting::Entry *increasePayable =
             new accounting::Entry(newTransaction->getDBCode(), false, this->paidCredit,
-                                  util::enums::TAccounts::ACCPAYABLE, util::enums::AccountTitles::LIABILITIES);
+                                  util::enums::TAccounts::ACCPAYABLE);
         increasePayable->insertToDB();
         newTransaction->addEntry(increasePayable);
     }
@@ -59,14 +59,14 @@ accounting::Transaction *GoodsSellingFactory::createTransaction()
     newTransaction->insertToDB();
     accounting::Entry *increaseRevenue =
         new accounting::Entry(newTransaction->getDBCode(), false, this->sellAmount,
-                              util::enums::TAccounts::REV, util::enums::AccountTitles::STOCKHOLDERSEQUITY);
+                              util::enums::TAccounts::REV);
     increaseRevenue->insertToDB();
     newTransaction->addEntry(increaseRevenue);
     if (this->paidCash > 0.0)
     {
         accounting::Entry *increaseCash =
             new accounting::Entry(newTransaction->getDBCode(), true, this->paidCash,
-                                  util::enums::TAccounts::CASH, util::enums::AccountTitles::ASSETS);
+                                  util::enums::TAccounts::CASH);
         increaseCash->insertToDB();
         newTransaction->addEntry(increaseCash);
     }
@@ -74,7 +74,7 @@ accounting::Transaction *GoodsSellingFactory::createTransaction()
     {
         accounting::Entry *increaseReceivable =
             new accounting::Entry(newTransaction->getDBCode(), true, this->paidCredit,
-                                  util::enums::TAccounts::ACCTRCV, util::enums::AccountTitles::ASSETS);
+                                  util::enums::TAccounts::ACCTRCV);
         increaseReceivable->insertToDB();
         newTransaction->addEntry(increaseReceivable);
     }
@@ -95,12 +95,12 @@ accounting::Transaction *GoodsSoldCOGSFactory::createTransaction()
     newTransaction->insertToDB();
     accounting::Entry *reduceInventory =
         new accounting::Entry(newTransaction->getDBCode(), false, this->cogs,
-                              util::enums::TAccounts::INVENTORY, util::enums::AccountTitles::ASSETS);
+                              util::enums::TAccounts::INVENTORY);
     reduceInventory->insertToDB();
     newTransaction->addEntry(reduceInventory);
     accounting::Entry *increaseCOGS =
         new accounting::Entry(newTransaction->getDBCode(), true, this->cogs,
-                              util::enums::TAccounts::COGS, util::enums::AccountTitles::STOCKHOLDERSEQUITY);
+                              util::enums::TAccounts::COGS);
     increaseCOGS->insertToDB();
     newTransaction->addEntry(increaseCOGS);
     return newTransaction;
@@ -124,14 +124,14 @@ accounting::Transaction *BuyEquipmentFactory::createTransaction()
     newTransaction->insertToDB();
     accounting::Entry *increaseAssets =
         new accounting::Entry(newTransaction->getDBCode(), true, this->equipmentValue,
-                              util::enums::TAccounts::EQUIPMENT, util::enums::AccountTitles::ASSETS);//error
+                              util::enums::TAccounts::EQUIPMENT);
     increaseAssets->insertToDB();
     newTransaction->addEntry(increaseAssets);
     if (this->paidCash > 0.0)
     {
         accounting::Entry *reduceCash =
             new accounting::Entry(newTransaction->getDBCode(), false, this->paidCash,
-                                  util::enums::TAccounts::CASH, util::enums::AccountTitles::ASSETS);
+                                  util::enums::TAccounts::CASH);
         reduceCash->insertToDB();
         newTransaction->addEntry(reduceCash);
     }
@@ -139,7 +139,7 @@ accounting::Transaction *BuyEquipmentFactory::createTransaction()
     {
         accounting::Entry *increasePayable =
             new accounting::Entry(newTransaction->getDBCode(), false, this->paidCredit,
-                                  util::enums::TAccounts::ACCPAYABLE, util::enums::AccountTitles::LIABILITIES);
+                                  util::enums::TAccounts::ACCPAYABLE);
         increasePayable->insertToDB();
         newTransaction->addEntry(increasePayable);
     }
@@ -164,7 +164,7 @@ accounting::Transaction *SellEquipmentFactory::createTransaction()
     {
         accounting::Entry *increaseCash =
             new accounting::Entry(newTransaction->getDBCode(), true, this->paidCash,
-                                  util::enums::TAccounts::CASH, util::enums::AccountTitles::ASSETS);
+                                  util::enums::TAccounts::CASH);
         increaseCash->insertToDB();
         newTransaction->addEntry(increaseCash);
     }
@@ -172,18 +172,18 @@ accounting::Transaction *SellEquipmentFactory::createTransaction()
     {
         accounting::Entry *increaseReceivable =
             new accounting::Entry(newTransaction->getDBCode(), true, this->paidCredit,
-                                  util::enums::TAccounts::ACCTRCV, util::enums::AccountTitles::ASSETS);
+                                  util::enums::TAccounts::ACCTRCV);
         increaseReceivable->insertToDB();
         newTransaction->addEntry(increaseReceivable);
     }
     accounting::Entry *reduceEquipment =
         new accounting::Entry(newTransaction->getDBCode(), false, this->initialValue,
-                              util::enums::TAccounts::EQUIPMENT, util::enums::AccountTitles::ASSETS);
+                              util::enums::TAccounts::EQUIPMENT);
     reduceEquipment->insertToDB();
     newTransaction->addEntry(reduceEquipment);
     accounting::Entry *reduceAccumulatedDepreciation =
         new accounting::Entry(newTransaction->getDBCode(), true, this->accumulatedDepreciation,
-                              util::enums::TAccounts::ACCUMDEPRECIATION, util::enums::AccountTitles::ASSETS);
+                              util::enums::TAccounts::ACCUMDEPRECIATION);
     reduceAccumulatedDepreciation->insertToDB();
     newTransaction->addEntry(reduceAccumulatedDepreciation);
     double revenue = this->paidCash + this->paidCredit + this->accumulatedDepreciation - this->initialValue;
@@ -191,7 +191,7 @@ accounting::Transaction *SellEquipmentFactory::createTransaction()
     { // Gain
         accounting::Entry *increaseRevenue =
             new accounting::Entry(newTransaction->getDBCode(), false, revenue,
-                                  util::enums::TAccounts::REV, util::enums::AccountTitles::STOCKHOLDERSEQUITY);
+                                  util::enums::TAccounts::REV);
         increaseRevenue->insertToDB();
         newTransaction->addEntry(increaseRevenue);
     }
@@ -200,7 +200,7 @@ accounting::Transaction *SellEquipmentFactory::createTransaction()
     { // Loss
         accounting::Entry *reduceRevenue =
             new accounting::Entry(newTransaction->getDBCode(), true, std::abs(revenue),
-                                  util::enums::TAccounts::REV, util::enums::AccountTitles::STOCKHOLDERSEQUITY);
+                                  util::enums::TAccounts::REV);
         reduceRevenue->insertToDB();
         newTransaction->addEntry(reduceRevenue);
     }
@@ -222,12 +222,12 @@ accounting::Transaction *ApplyDepreciationFactory::createTransaction()
     newTransaction->insertToDB();
     accounting::Entry *increaseAccumulatedDepreciation =
         new accounting::Entry(newTransaction->getDBCode(), false, this->depreciationAmount,
-                              util::enums::TAccounts::ACCUMDEPRECIATION, util::enums::AccountTitles::ASSETS);
+                              util::enums::TAccounts::ACCUMDEPRECIATION);
     increaseAccumulatedDepreciation->insertToDB();
     newTransaction->addEntry(increaseAccumulatedDepreciation);
     accounting::Entry *reduceEquipment =
         new accounting::Entry(newTransaction->getDBCode(), true, this->depreciationAmount,
-                              util::enums::TAccounts::DEPREXP, util::enums::AccountTitles::STOCKHOLDERSEQUITY);
+                              util::enums::TAccounts::DEPREXP);
     reduceEquipment->insertToDB();
     newTransaction->addEntry(reduceEquipment);
     return newTransaction;
@@ -245,12 +245,12 @@ accounting::Transaction *EmployeeWagesFactory::createTransaction()
     newTransaction->insertToDB();
     accounting::Entry *reduceCash =
         new accounting::Entry(newTransaction->getDBCode(), false, this->wagesAmount,
-                              util::enums::TAccounts::CASH, util::enums::AccountTitles::ASSETS);
+                              util::enums::TAccounts::CASH);
     reduceCash->insertToDB();
     newTransaction->addEntry(reduceCash);
     accounting::Entry *increaseExpense =
         new accounting::Entry(newTransaction->getDBCode(), true, this->wagesAmount,
-                              util::enums::TAccounts::WAGEEXP, util::enums::AccountTitles::STOCKHOLDERSEQUITY);
+                              util::enums::TAccounts::WAGEEXP);
     increaseExpense->insertToDB();
     newTransaction->addEntry(increaseExpense);
     return newTransaction;

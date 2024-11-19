@@ -16,7 +16,7 @@ std::vector<Entry *> Entry::generateFromDB(std::string transactionCode)
     for (std::vector<std::string> &record : records)
     {
         Entry *newEntry = new Entry(record[0], record[1], record[2] == "t" ? true : false, std::stod(record[3]),
-                                    util::enums::getTAccountEnum(record[4]), util::enums::getAccountEnum(record[5]));
+                                    util::enums::getTAccountEnum(record[4]));
         toRet.push_back(newEntry);
     }
     return toRet;
@@ -56,21 +56,21 @@ std::vector<std::string> Entry::getUpdateParameter()
 }
 
 Entry::Entry(std::string dbCode, std::string transactionDBCode, bool debit, double amount,
-             util::enums::TAccounts tAccount, util::enums::AccountTitles account)
+             util::enums::TAccounts tAccount)
     : util::baseclass::HasTable()
 {
     this->setDBCode(dbCode);
     this->debit = debit;
     this->amount = amount;
-    this->account = account;
     this->tAccount = tAccount;
+    this->account = util::enums::getAccountTitle(this->tAccount);
     this->transactionTitle = "";
     this->transactionDB = transactionDBCode;
 }
 
 Entry::Entry(std::string transactionDBCode, bool debit, double amount,
-             util::enums::TAccounts tAccount, util::enums::AccountTitles account)
-    : Entry::Entry("", transactionDBCode, debit, amount, tAccount, account)
+             util::enums::TAccounts tAccount)
+    : Entry::Entry("", transactionDBCode, debit, amount, tAccount)
 {
 }
 

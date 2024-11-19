@@ -2,6 +2,7 @@
 #include <string>
 #include <map>
 #include <vector>
+#include "util/enums/accounting/account_titles.hpp"
 
 #ifndef TACCOUNTS_HPP
 #define TACCOUNTS_HPP
@@ -46,6 +47,8 @@ namespace util
         std::string getName(util::enums::TAccounts);
 
         TAccounts getTAccountEnum(std::string);
+
+        AccountTitles getAccountTitle(util::enums::TAccounts);
     };
 };
 

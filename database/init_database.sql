@@ -136,8 +136,7 @@ create table accounting_transaction_entry(
     at_db_code          text            not null,
     debit               boolean         not null,
     amount              numeric(12, 2)  not null,
-    t_account_number    varchar(25),
-    account_title       varchar(50)
+    t_account_number    varchar(25)
 );
 
 alter table accounting_transaction_entry
