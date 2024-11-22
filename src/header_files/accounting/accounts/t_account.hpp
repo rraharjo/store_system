@@ -7,7 +7,7 @@
 #define TACCOUNT
 namespace accounting
 {
-    class TAccount
+    class TAccount// TO DO: add amount of each tAccount; create a new table ?; load all when rebooting
     {
     private:
         util::enums::TAccounts title;

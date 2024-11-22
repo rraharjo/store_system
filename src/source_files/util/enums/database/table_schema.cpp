@@ -30,7 +30,8 @@ std::map<TableNames, std::string> util::enums::tableNamesMap = {
     {TableNames::SELLINGTRANSACTION, "selling_transaction"},
     {TableNames::ASSETS, "assets"},
     {TableNames::ACCOUNTINGTRANSACTION, "accounting_transaction"},
-    {TableNames::ACCOUNTINGENTRY, "accounting_transaction_entry"}};
+    {TableNames::ACCOUNTINGENTRY, "accounting_transaction_entry"},
+    {TableNames::TACCOUNTS, "t_account_table"}};
 
 /**************************************************************************************************************************/
 
@@ -94,3 +95,8 @@ std::map<AccountingEntryTable, ColumnSchema> util::enums::accountingEntryTableCo
     {AccountingEntryTable::DEBIT, ColumnSchema{"debit", ColumnTypes::BOOLCOL}},
     {AccountingEntryTable::AMOUNT, ColumnSchema{"amount", ColumnTypes::FLOATCOL}},
     {AccountingEntryTable::TACCOUNTNUM, ColumnSchema{"t_account_number", ColumnTypes::TEXTCOL}}};
+
+std::map<TAccountTable, ColumnSchema> util::enums::tAccountTableColumns = {
+    {TAccountTable::TITLE, ColumnSchema{"title", ColumnTypes::TEXTCOL}},
+    {TAccountTable::DEBITAMOUNT, ColumnSchema{"debit_amount", ColumnTypes::FLOATCOL}},
+    {TAccountTable::CREDITAMOUNT, ColumnSchema{"credit_amount", ColumnTypes::FLOATCOL}}};

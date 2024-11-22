@@ -166,5 +166,18 @@ namespace util
 
         ~AccountingEntryTable();
     };
-};
+
+    class TAccountTable : public Table{
+        private:
+            static TAccountTable *instance;
+
+        protected:
+            TAccountTable(std::string tableName);
+        
+        public:
+            static TAccountTable *getInstance();
+
+            ~TAccountTable();
+    };
+}
 #endif

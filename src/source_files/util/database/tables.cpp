@@ -543,3 +543,24 @@ AccountingEntryTable *AccountingEntryTable::getInstance()
     }
     return AccountingEntryTable::instance;
 }
+
+//
+TAccountTable::TAccountTable(std::string tableName)
+    : Table::Table(tableName, "")
+{
+    for (auto it = util::enums::tAccountTableColumns.begin(); it != util::enums::tAccountTableColumns.end(); it++)
+    {
+        this->schema.push_back(it->second);
+    }
+}
+
+TAccountTable::~TAccountTable(){
+    TAccountTable::instance = NULL;
+}
+
+TAccountTable *TAccountTable::getInstance(){
+    if (TAccountTable::instance == NULL){
+        TAccountTable::instance = new TAccountTable(util::enums::tableNamesMap[util::enums::TableNames::TACCOUNTS]);
+    }
+    return TAccountTable::instance;
+}
