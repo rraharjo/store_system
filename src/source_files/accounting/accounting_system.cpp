@@ -15,7 +15,8 @@ AccountingSystem::~AccountingSystem()
     delete this->stockholdersEquity;
 }
 
-void AccountingSystem::addExistingTransaction(Transaction *transaction){
+void AccountingSystem::addExistingTransaction(Transaction *transaction)
+{
     this->addTransaction(transaction);
 }
 
@@ -55,6 +56,17 @@ void AccountingSystem::addTransaction(Transaction *transaction)
         this->addEntry(entry);
     }
     this->transactions[transaction->getDBCode()] = transaction;
+}
+
+void AccountingSystem::endYearAdjustment()
+{
+    util::Date *now = new util::Date();
+    std::string transactionTitle = "Closing the book";
+    std::vector<TAccount *> temporaryAccounts = this->stockholdersEquity->getTemporaryAccounts();
+    accounting::Transaction *closeTheBook =
+        util::factory::ClosingTemporaryAccountsFactory(now, transactionTitle, temporaryAccounts)
+            .createTransaction();
+    this->addTransaction(closeTheBook);
 }
 
 std::string AccountingSystem::to_string()

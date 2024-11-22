@@ -108,7 +108,6 @@ void InventorySystem::addNewProperty(Asset *newDepreciable)
 
 void InventorySystem::applyDepreciation(std::string assetDBCode)
 {
-    // TO DO: asset is not depreciated if last depreciation happened less than a year ago
     Asset *asset = this->assets[assetDBCode];
     util::Date *now = new util::Date();
     if ((!asset->getLastDepreciationDate() && now->diffYearsTo(asset->getDateBought()) >= 0) ||

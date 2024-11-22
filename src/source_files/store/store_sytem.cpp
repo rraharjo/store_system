@@ -129,6 +129,7 @@ void StoreSystem::addProperty(inventory::Equipment *newProperty)
 
 void StoreSystem::endYearAdjustment(){
     this->iSystem->applyAllDepreciation();
+    this->aSystem->endYearAdjustment();
 }
 
 inventory::Inventory *StoreSystem::getInventory(std::string dbCode)

@@ -258,5 +258,42 @@ accounting::Transaction *EmployeeWagesFactory::createTransaction()
 
 EmployeeWagesFactory::EmployeeWagesFactory(util::Date *transactionDate, std::string transactionName, std::string foreignID, double wagesAmount) : AccountingTransactionFactory(transactionDate, transactionName, foreignID)
 {
-    this->wagesAmount = wagesAmount;
+}
+
+// Closing the book
+accounting::Transaction *ClosingTemporaryAccountsFactory::createTransaction()
+{
+    double retainedEarningsCredit = 0.0;
+    accounting::Transaction *closingTheBook =
+        new accounting::Transaction(this->transactionName);
+    closingTheBook->insertToDB();
+    accounting::Entry *temporary = NULL;
+    for (accounting::TAccount *tAccount : this->tAccounts)
+    {
+        double tAccountDebit = tAccount->getDebitAmount() - tAccount->getCreditAmount();
+        if (tAccountDebit > 0) //Zero it with credit amount, reduce retained earnings
+        {
+            temporary = new accounting::Entry(closingTheBook->getDBCode(), false, tAccountDebit, tAccount->getTitle());
+            temporary->insertToDB();
+            closingTheBook->addEntry(temporary);
+            retainedEarningsCredit -= tAccountDebit;
+        }
+        if (tAccountDebit < 0) //Zero it with debit amount, increase retained earnings
+        {
+            temporary = new accounting::Entry(closingTheBook->getDBCode(), true, std::abs(tAccountDebit), tAccount->getTitle());
+            temporary->insertToDB();
+            closingTheBook->addEntry(temporary);
+            retainedEarningsCredit += tAccountDebit;
+        }
+    }
+    return closingTheBook;
+}
+
+ClosingTemporaryAccountsFactory::ClosingTemporaryAccountsFactory(
+    util::Date *transactionDate,
+    std::string transactionName,
+    std::vector<accounting::TAccount *> &temporaryAccounts)
+    : AccountingTransactionFactory(transactionDate, transactionName, "")
+{
+    this->tAccounts = temporaryAccounts;
 }

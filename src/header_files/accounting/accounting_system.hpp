@@ -1,5 +1,6 @@
 #include "accounting/accounts/account.hpp"
 #include "accounting/accounting_transaction/transaction.hpp"
+#include "util/factory/transaction_factory.hpp"
 
 #ifndef ACCOUNTINGSYSTEM_HPP
 #define ACCOUNTINGSYSTEM_HPP
@@ -27,6 +28,8 @@ namespace accounting
         ~AccountingSystem();
 
         void addTransaction(Transaction *transaction);
+
+        void endYearAdjustment();
 
         std::string to_string();
     };

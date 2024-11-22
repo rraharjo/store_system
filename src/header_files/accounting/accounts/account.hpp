@@ -15,11 +15,11 @@ namespace accounting
         util::enums::AccountTitles title;
 
     protected:
+        std::map<util::enums::TAccounts, TAccount *> tAccounts;
+
         Account(bool debit, util::enums::AccountTitles title);
 
         virtual ~Account();
-
-        std::map<util::enums::TAccounts, TAccount *> tAccounts;
 
         void addTAccount(util::enums::TAccounts tAccount);
 
@@ -27,7 +27,7 @@ namespace accounting
         util::enums::AccountTitles getTitle();
 
         std::string getTitleName();
-        
+
         double getTotalDebit();
 
         double getTotalCredit();
@@ -61,6 +61,8 @@ namespace accounting
         StockholdersEquityAccount();
 
         void initiateTAccount() override;
+
+        std::vector<TAccount *> getTemporaryAccounts();
     };
 };
 #endif
