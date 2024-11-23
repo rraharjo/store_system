@@ -6,6 +6,7 @@
 
 #ifndef TACCOUNTS_HPP
 #define TACCOUNTS_HPP
+#define FIRST_TACCOUNT util::enums::TAccounts::CASH
 #define MAX_ASSET util::enums::TAccounts::ACCPAYABLE
 #define MAX_LIABILITY util::enums::TAccounts::COMMONSTOCK
 #define MAX_STOCKHOLDER util::enums::TAccounts::END

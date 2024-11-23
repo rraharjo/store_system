@@ -40,6 +40,7 @@ AccountingSystem *AccountingSystem::getInstance()
 {
     if (AccountingSystem::instance == NULL)
     {
+        TAccount::initiateTAccountOnDB();
         AccountingSystem::instance = new AccountingSystem();
     }
     return AccountingSystem::instance;

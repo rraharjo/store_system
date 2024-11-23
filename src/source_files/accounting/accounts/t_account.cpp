@@ -1,11 +1,75 @@
 #include "accounting/accounts/t_account.hpp"
 using namespace accounting;
 
-TAccount::TAccount(util::enums::TAccounts title)
+util::Table *TAccount::classTable = util::TAccountTable::getInstance();
+
+void TAccount::initiateTAccountOnDB(){
+    std::vector<TAccount *> tAccountCollections;
+    for (util::enums::TAccounts current = FIRST_TACCOUNT ; current != LAST_TACCOUNT ; ++current){
+        TAccount *newTAccount = new TAccount(current);
+        newTAccount->insertToDB();
+        tAccountCollections.push_back(newTAccount);
+    }
+    for (TAccount *tAccount : tAccountCollections){
+        delete tAccount;
+    }
+}
+
+TAccount *TAccount::generateFromDatabase(util::enums::TAccounts tAccount)
+{
+    std::vector<util::TableCondition> conditions;
+    std::vector<std::vector<std::string>> records;
+    util::TableCondition matchingTitle = util::TableCondition();
+    matchingTitle.col = util::enums::tAccountTableColumns[util::enums::TAccountTable::TITLE];
+    matchingTitle.comparator = util::TableComparator::EQUAL;
+    matchingTitle.value = util::enums::tAccountsNameMap[tAccount];
+    conditions.push_back(matchingTitle);
+    records = TAccount::classTable->getRecords(conditions);
+    return new TAccount(tAccount, std::stod(records[0][1]), std::stod(records[0][2]));
+}
+
+std::vector<std::string> TAccount::getInsertParameter()
+{
+    std::vector<std::string> toRet;
+    toRet.push_back(util::enums::tAccountsNameMap[this->title]);
+    toRet.push_back(std::to_string(this->debitAmount));
+    toRet.push_back(std::to_string(this->creditAmount));
+    return toRet;
+}
+
+std::vector<std::string> TAccount::getUpdateParameter()
+{
+    std::vector<std::string> toRet;
+    toRet.push_back(util::enums::tAccountsNameMap[this->title]);
+    toRet.push_back(std::to_string(this->debitAmount));
+    toRet.push_back(std::to_string(this->creditAmount));
+    return toRet;
+}
+
+void TAccount::insertToDB()
+{
+    this->insertToDBWithTable(TAccount::classTable, false);
+};
+
+void TAccount::updateToDB()
+{
+    this->updateToDBWithTable(TAccount::classTable);
+};
+
+TAccount::TAccount(util::enums::TAccounts title, double debit, double credit)
+    : util::baseclass::HasTable()
 {
     this->title = title;
+    this->debitAmount = debit;
+    this->creditAmount = credit;
+    this->setDBCode(util::enums::tAccountsNameMap[this->title]);
     this->debitEntries = {};
     this->creditEntries = {};
+}
+
+TAccount::TAccount(util::enums::TAccounts title)
+    : TAccount(title, 0, 0)
+{
 }
 
 TAccount::~TAccount()
@@ -35,11 +99,14 @@ void TAccount::addEntry(Entry *entry)
     if (entry->isDebit())
     {
         this->debitEntries.push_back(entry);
+        this->debitAmount += entry->getAmount();
     }
     else
     {
         this->creditEntries.push_back(entry);
+        this->creditAmount += entry->getAmount();
     }
+    this->updateToDB();
 }
 
 double TAccount::getDebitAmount()

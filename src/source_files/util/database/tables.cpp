@@ -91,6 +91,7 @@ SellingTransactionTable *SellingTransactionTable::instance = NULL;
 AccountingTransactionTable *AccountingTransactionTable::instance = NULL;
 AccountingEntryTable *AccountingEntryTable::instance = NULL;
 AssetsTable *AssetsTable::instance = NULL;
+TAccountTable *TAccountTable::instance = NULL;
 
 // parent class
 Table::Table(std::string tableName, std::string sequenceName)
@@ -103,7 +104,7 @@ std::string Table::getTableName()
     return this->tableName;
 }
 
-std::vector<util::ColumnSchema> Table::getSchema()
+std::vector<util::ColumnSchema> &Table::getSchema()
 {
     return this->schema;
 }
@@ -544,7 +545,81 @@ AccountingEntryTable *AccountingEntryTable::getInstance()
     return AccountingEntryTable::instance;
 }
 
-//
+// TAccount table
+std::vector<std::string> TAccountTable::insertRow(std::vector<std::string> &values)
+{
+    int schemaSize = this->getSchema().size();
+    int valuesSize = values.size();
+    std::string query = "insert into " + this->getTableName() + "(";
+    for (int i = 0; i < schemaSize - 1; i++)
+    {
+        query += this->getSchema()[i].columnName + ", ";
+    }
+    query += this->getSchema()[schemaSize - 1].columnName + ") values(";
+    int curValue = 0;
+    for (int i = 0; i < schemaSize - 1; i++)
+    {
+        if (values[curValue] == "NULL")
+        {
+            query += "NULL,";
+            curValue++;
+            continue;
+        }
+        switch (this->getSchema()[i].type)
+        {
+        case util::enums::ColumnTypes::CUSTOMSERIALCOL:
+            query += "concat('" + values[curValue++] +
+                     "', lpad(nextval('" + this->sequenceName + "')::text, 6, '0')), ";
+            break;
+        case util::enums::ColumnTypes::TEXTCOL:
+            query += "'" + values[curValue++] + "',";
+            break;
+        case util::enums::ColumnTypes::DATECOL:
+            query += "to_date('" + values[curValue++] + "', 'dd-MM-yyyy'),";
+            break;
+        case util::enums::ColumnTypes::BOOLCOL:
+            query += values[curValue++] + ",";
+            break;
+        case util::enums::ColumnTypes::FLOATCOL:
+        case util::enums::ColumnTypes::NUMBERCOL:
+            query += values[curValue++] + ",";
+            break;
+        }
+    }
+    if (values[curValue] == "NULL")
+    {
+        query += "NULL)";
+    }
+    else
+    {
+        switch (this->getSchema()[schemaSize - 1].type)
+        {
+        case util::enums::ColumnTypes::CUSTOMSERIALCOL:
+            query += "concat('" + values[curValue++] +
+                     "', lpad(nextval('" + this->sequenceName + "')::text, 6, '0'))";
+            break;
+        case util::enums::ColumnTypes::TEXTCOL:
+            query += "'" + values[curValue++] + "')";
+            break;
+        case util::enums::ColumnTypes::DATECOL:
+            query += "to_date('" + values[curValue++] + "', 'dd-MM-yyyy'))";
+            break;
+        case util::enums::ColumnTypes::BOOLCOL:
+            query += values[curValue++] + ")"; // Error
+            break;
+        case util::enums::ColumnTypes::FLOATCOL:
+        case util::enums::ColumnTypes::NUMBERCOL:
+            query += values[curValue++] + ")";
+            break;
+        }
+    }
+
+    query += " on conflict do nothing returning *;";
+    DB *instance = DB::getInstance();
+    std::vector<std::vector<std::string>> result = instance->executeQuery(query);
+    return result.size() ? result[0] : std::vector<std::string>();
+}
+
 TAccountTable::TAccountTable(std::string tableName)
     : Table::Table(tableName, "")
 {
@@ -554,12 +629,15 @@ TAccountTable::TAccountTable(std::string tableName)
     }
 }
 
-TAccountTable::~TAccountTable(){
+TAccountTable::~TAccountTable()
+{
     TAccountTable::instance = NULL;
 }
 
-TAccountTable *TAccountTable::getInstance(){
-    if (TAccountTable::instance == NULL){
+TAccountTable *TAccountTable::getInstance()
+{
+    if (TAccountTable::instance == NULL)
+    {
         TAccountTable::instance = new TAccountTable(util::enums::tableNamesMap[util::enums::TableNames::TACCOUNTS]);
     }
     return TAccountTable::instance;

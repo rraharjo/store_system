@@ -27,4 +27,3 @@ g++ store_system_test.cpp -I ./header_files ./source_files/accounting/accounting
 Loaded data:
 assets and its purchase entries
 inventories and its purchase entries
-accounting entries for temporary accounts

@@ -8,6 +8,7 @@ delete from accounting_transaction_entry;
 delete from accounting_transaction;
 delete from inventory;
 delete from assets;
+delete from t_account_table;
 
 drop table selling_entry;
 drop table purchase_entry;
@@ -17,6 +18,7 @@ drop table accounting_transaction_entry;
 drop table accounting_transaction;
 drop table inventory;
 drop table assets;
+drop table t_account_table;
 
 drop sequence inventory_seq;
 drop sequence assets_seq;
@@ -144,9 +146,9 @@ add constraint fk_accounting_transaction foreign key (at_db_code)
     references accounting_transaction (database_code);
 
 create table t_account_table(
-    title               text,
+    title               text            primary key,
     debit_amount        numeric(12, 2)  not null,
     credit_amount       numeric(12, 2)  not null,
-    check (debit_amount > 0),
-    check (credit_amount > 0)
+    check (debit_amount >= 0),
+    check (credit_amount >= 0)
 );

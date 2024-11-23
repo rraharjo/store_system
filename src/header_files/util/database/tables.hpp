@@ -7,7 +7,8 @@
 namespace util
 {
     // namespace database
-    enum class TableComparator{
+    enum class TableComparator
+    {
         LESSTHAN = 0,
         LESSTHANEQUAL,
         EQUAL,
@@ -42,11 +43,11 @@ namespace util
 
         std::vector<std::vector<std::string>> getRecords();
 
-        std::vector<std::string> insertRow(std::vector<std::string> &values);
+        virtual std::vector<std::string> insertRow(std::vector<std::string> &values);
 
         std::vector<std::string> updateRow(std::string id, std::vector<std::string> &values);
 
-        std::vector<ColumnSchema> getSchema();
+        std::vector<ColumnSchema> &getSchema();
 
         std::string getTableName();
 
@@ -167,17 +168,20 @@ namespace util
         ~AccountingEntryTable();
     };
 
-    class TAccountTable : public Table{
-        private:
-            static TAccountTable *instance;
+    class TAccountTable : public Table
+    {
+    private:
+        static TAccountTable *instance;
 
-        protected:
-            TAccountTable(std::string tableName);
-        
-        public:
-            static TAccountTable *getInstance();
+    protected:
+        TAccountTable(std::string tableName);
 
-            ~TAccountTable();
+    public:
+        static TAccountTable *getInstance();
+
+        std::vector<std::string> insertRow(std::vector<std::string> &values) override;
+
+        ~TAccountTable();
     };
 }
 #endif

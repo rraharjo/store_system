@@ -18,7 +18,7 @@ std::map<TAccounts, std::string> util::enums::tAccountsNameMap = {
     // stockholders equity
     {TAccounts::COMMONSTOCK, "Common Stock"},
     {TAccounts::ADDTLCPT, "Additional Paid-in Capital"},
-    {TAccounts::OWNEREQ, "Owner's Equity"},
+    {TAccounts::OWNEREQ, "Owners Equity"},
     {TAccounts::DIVIDEND, "Dividends"},
     {TAccounts::REV, "Revenue"},
     {TAccounts::EXPENSE, "Expense"},
