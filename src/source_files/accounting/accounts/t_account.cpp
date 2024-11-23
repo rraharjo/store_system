@@ -3,14 +3,17 @@ using namespace accounting;
 
 util::Table *TAccount::classTable = util::TAccountTable::getInstance();
 
-void TAccount::initiateTAccountOnDB(){
+void TAccount::initiateTAccountOnDB()
+{
     std::vector<TAccount *> tAccountCollections;
-    for (util::enums::TAccounts current = FIRST_TACCOUNT ; current != LAST_TACCOUNT ; ++current){
+    for (util::enums::TAccounts current = FIRST_TACCOUNT; current != LAST_TACCOUNT; ++current)
+    {
         TAccount *newTAccount = new TAccount(current);
         newTAccount->insertToDB();
         tAccountCollections.push_back(newTAccount);
     }
-    for (TAccount *tAccount : tAccountCollections){
+    for (TAccount *tAccount : tAccountCollections)
+    {
         delete tAccount;
     }
 }
@@ -40,7 +43,7 @@ std::vector<std::string> TAccount::getInsertParameter()
 std::vector<std::string> TAccount::getUpdateParameter()
 {
     std::vector<std::string> toRet;
-    toRet.push_back(util::enums::tAccountsNameMap[this->title]);
+    toRet.push_back(this->getDBCode());
     toRet.push_back(std::to_string(this->debitAmount));
     toRet.push_back(std::to_string(this->creditAmount));
     return toRet;
@@ -63,8 +66,8 @@ TAccount::TAccount(util::enums::TAccounts title, double debit, double credit)
     this->debitAmount = debit;
     this->creditAmount = credit;
     this->setDBCode(util::enums::tAccountsNameMap[this->title]);
-    this->debitEntries = {};
-    this->creditEntries = {};
+    this->debitEntries = std::vector<Entry *>();
+    this->creditEntries = std::vector<Entry *>();
 }
 
 TAccount::TAccount(util::enums::TAccounts title)

@@ -59,7 +59,7 @@ void AccountingSystem::addTransaction(Transaction *transaction)
     this->transactions[transaction->getDBCode()] = transaction;
 }
 
-void AccountingSystem::endYearAdjustment()
+void AccountingSystem::endYearAdjustment()//TO DO: adjust the closing the book entries for all temporary t-accounts
 {
     util::Date *now = new util::Date();
     std::string transactionTitle = "Closing the book";

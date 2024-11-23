@@ -61,7 +61,8 @@ std::vector<TAccounts> util::enums::stockholdersTAccounts = {
     TAccounts::DIVIDEND,
     TAccounts::COGS,
     TAccounts::DEPREXP,
-    TAccounts::WAGEEXP};
+    TAccounts::WAGEEXP,
+    TAccounts::RETAINEDEARNINGS};
 
 std::string util::enums::getName(TAccounts tAccount)
 {

@@ -271,21 +271,34 @@ accounting::Transaction *ClosingTemporaryAccountsFactory::createTransaction()
     for (accounting::TAccount *tAccount : this->tAccounts)
     {
         double tAccountDebit = tAccount->getDebitAmount() - tAccount->getCreditAmount();
-        if (tAccountDebit > 0) //Zero it with credit amount, reduce retained earnings
+        if (tAccountDebit > 0) // Zero it with credit amount, reduce retained earnings
         {
             temporary = new accounting::Entry(closingTheBook->getDBCode(), false, tAccountDebit, tAccount->getTitle());
             temporary->insertToDB();
             closingTheBook->addEntry(temporary);
             retainedEarningsCredit -= tAccountDebit;
         }
-        if (tAccountDebit < 0) //Zero it with debit amount, increase retained earnings
+        if (tAccountDebit < 0) // Zero it with debit amount, increase retained earnings
         {
             temporary = new accounting::Entry(closingTheBook->getDBCode(), true, std::abs(tAccountDebit), tAccount->getTitle());
             temporary->insertToDB();
             closingTheBook->addEntry(temporary);
-            retainedEarningsCredit += tAccountDebit;
+            retainedEarningsCredit += std::abs(tAccountDebit);
         }
     }
+    bool debitEntry;
+    if (retainedEarningsCredit > 0){
+        debitEntry = false;
+    }
+    else{
+        debitEntry = true;
+    }
+    temporary = new accounting::Entry(closingTheBook->getDBCode(),
+                                      debitEntry, 
+                                      std::abs(retainedEarningsCredit), 
+                                      util::enums::TAccounts::RETAINEDEARNINGS);
+    temporary->insertToDB();
+    closingTheBook->addEntry(temporary);
     return closingTheBook;
 }
 
