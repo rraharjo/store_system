@@ -9,7 +9,7 @@
 #define TACCOUNT
 namespace accounting
 {
-    class TAccount : public util::baseclass::HasTable // TO DO: add amount of each tAccount; create a new table ?; load all when rebooting
+    class TAccount : public util::baseclass::HasTable
     {
     private:
         static util::Table *classTable;

@@ -2,7 +2,7 @@
 using namespace store;
 
 Transaction::Transaction(util::Date *transactionDate, double paidCash, double paidCredit)
-    : util::baseclass::HasTable() // To do: is finished field is not working properly
+    : util::baseclass::HasTable()
 {
     this->transactionDate = transactionDate;
     this->paidCash = paidCash;
