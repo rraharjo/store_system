@@ -3,67 +3,96 @@
 using namespace util::enums;
 
 std::map<TAccounts, std::string> util::enums::tAccountsNameMap = {
-    //assets
-    {util::enums::TAccounts::CASH, "Cash"},
-    {util::enums::TAccounts::EQUIPMENT, "Equipment"},
-    {util::enums::TAccounts::ACCTRCV, "Accounts Receivable"},
-    {util::enums::TAccounts::NOTERCV, "Notes Receivable"},
-    {util::enums::TAccounts::LAND, "Land"},
-    {util::enums::TAccounts::ACCUMDEPRECIATION, "Accumulated Depreciation"},
-    {util::enums::TAccounts::INVENTORY, "Inventory"},
-    //liabilities
-    {util::enums::TAccounts::ACCPAYABLE, "Accounts Payable"},
-    {util::enums::TAccounts::NOTEPAYABLE, "Notes Payable"},
-    {util::enums::TAccounts::UNEARNEDREV, "Unearned Revenue"},
-    //stockholders equity
-    {util::enums::TAccounts::COMMONSTOCK, "Common Stock"},
-    {util::enums::TAccounts::ADDTLCPT, "Additional Paid-in Capital"},
-    {util::enums::TAccounts::REV, "Revenue"},
-    {util::enums::TAccounts::EXPENSE, "Expense"},
-    {util::enums::TAccounts::OWNEREQ, "Owner's Equity"},
-    {util::enums::TAccounts::DIVIDEND, "Dividends"},
-    {util::enums::TAccounts::COGS, "Cost of Goods Sold"},
-    {util::enums::TAccounts::DEPREXP, "Depreciation Expense"},
-    {util::enums::TAccounts::WAGEEXP, "Wages Expense"},
-};
+    // assets
+    {TAccounts::CASH, "Cash"},
+    {TAccounts::EQUIPMENT, "Equipment"},
+    {TAccounts::ACCTRCV, "Accounts Receivable"},
+    {TAccounts::NOTERCV, "Notes Receivable"},
+    {TAccounts::LAND, "Land"},
+    {TAccounts::ACCUMDEPRECIATION, "Accumulated Depreciation"},
+    {TAccounts::INVENTORY, "Inventory"},
+    // liabilities
+    {TAccounts::ACCPAYABLE, "Accounts Payable"},
+    {TAccounts::NOTEPAYABLE, "Notes Payable"},
+    {TAccounts::UNEARNEDREV, "Unearned Revenue"},
+    // stockholders equity
+    {TAccounts::COMMONSTOCK, "Common Stock"},
+    {TAccounts::ADDTLCPT, "Additional Paid-in Capital"},
+    {TAccounts::OWNEREQ, "Owners Equity"},
+    {TAccounts::DIVIDEND, "Dividends"},
+    {TAccounts::REV, "Revenue"},
+    {TAccounts::EXPENSE, "Expense"},
+    {TAccounts::COGS, "Cost of Goods Sold"},
+    {TAccounts::DEPREXP, "Depreciation Expense"},
+    {TAccounts::WAGEEXP, "Wages Expense"},
+    {TAccounts::RETAINEDEARNINGS, "Retained Earnings"},
+    {TAccounts::END, "HOLD"}};
+
+TAccounts &util::enums::operator++(TAccounts &tAccount)
+{
+    if (tAccount == LAST_TACCOUNT){
+        throw std::invalid_argument("Maximum value reached");
+    }
+    int intEqui = static_cast<int>(tAccount) + 1;
+    tAccount = static_cast<TAccounts>(intEqui);
+    return tAccount;
+}
 
 std::vector<TAccounts> util::enums::assetsTAccounts = {
-    util::enums::TAccounts::CASH,
-    util::enums::TAccounts::EQUIPMENT,
-    util::enums::TAccounts::ACCTRCV,
-    util::enums::TAccounts::NOTERCV,
-    util::enums::TAccounts::LAND,
-    util::enums::TAccounts::ACCUMDEPRECIATION,
-    util::enums::TAccounts::INVENTORY
-};
+    TAccounts::CASH,
+    TAccounts::EQUIPMENT,
+    TAccounts::ACCTRCV,
+    TAccounts::NOTERCV,
+    TAccounts::LAND,
+    TAccounts::ACCUMDEPRECIATION,
+    TAccounts::INVENTORY};
 
 std::vector<TAccounts> util::enums::liabilitiesTAccounts = {
-    util::enums::TAccounts::ACCPAYABLE,
-    util::enums::TAccounts::NOTEPAYABLE,
-    util::enums::TAccounts::UNEARNEDREV
-};
+    TAccounts::ACCPAYABLE,
+    TAccounts::NOTEPAYABLE,
+    TAccounts::UNEARNEDREV};
 
 std::vector<TAccounts> util::enums::stockholdersTAccounts = {
-    util::enums::TAccounts::COMMONSTOCK,
-    util::enums::TAccounts::ADDTLCPT,
-    util::enums::TAccounts::REV,
-    util::enums::TAccounts::EXPENSE,
-    util::enums::TAccounts::OWNEREQ,
-    util::enums::TAccounts::DIVIDEND,
-    util::enums::TAccounts::COGS,
-    util::enums::TAccounts::DEPREXP,
-    util::enums::TAccounts::WAGEEXP
-};
+    TAccounts::COMMONSTOCK,
+    TAccounts::ADDTLCPT,
+    TAccounts::REV,
+    TAccounts::EXPENSE,
+    TAccounts::OWNEREQ,
+    TAccounts::DIVIDEND,
+    TAccounts::COGS,
+    TAccounts::DEPREXP,
+    TAccounts::WAGEEXP,
+    TAccounts::RETAINEDEARNINGS};
 
-std::string util::enums::getName(util::enums::TAccounts tAccount){
+std::string util::enums::getName(TAccounts tAccount)
+{
     return tAccountsNameMap[tAccount];
 }
 
-TAccounts util::enums::getTAccountEnum(std::string name){
-    for (auto it = tAccountsNameMap.begin() ; it != tAccountsNameMap.end() ; it++){
-        if (it->second == name){
+TAccounts util::enums::getTAccountEnum(std::string name)
+{
+    for (auto it = tAccountsNameMap.begin(); it != tAccountsNameMap.end(); it++)
+    {
+        if (it->second == name)
+        {
             return it->first;
         }
     }
     throw std::invalid_argument(name + " does not match any T-account");
+}
+
+AccountTitles util::enums::getAccountTitle(TAccounts tAccountName)
+{
+    if (tAccountName < MAX_ASSET)
+    {
+        return AccountTitles::ASSETS;
+    }
+    if (tAccountName < MAX_LIABILITY)
+    {
+        return AccountTitles::LIABILITIES;
+    }
+    if (tAccountName < MAX_STOCKHOLDER){
+        return AccountTitles::STOCKHOLDERSEQUITY;
+    }
+    throw std::invalid_argument("T-Account doesn't exist");
 }

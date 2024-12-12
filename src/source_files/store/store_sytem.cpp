@@ -1,5 +1,6 @@
 #include "store/store_system.hpp"
 using namespace store;
+//TO DO: provide end-year procedure
 
 void checkTransaction(Transaction *transaction)
 {
@@ -88,7 +89,7 @@ void StoreSystem::capitalizeAsset(PurchaseTransaction *purchaseTransaction)
     std::string description = "Purchase asset";
     accounting::Transaction *accountingTransaction =
         util::factory::BuyEquipmentFactory(transactionDate, description, purchaseTransaction->getDBCode(),
-                                           amount, purchaseTransaction->getPaidCash(), purchaseTransaction->getPaidCash())
+                                           amount, purchaseTransaction->getPaidCash(), purchaseTransaction->getPaidCredit())
             .createTransaction();
     this->aSystem->addTransaction(accountingTransaction);
 }
@@ -124,6 +125,11 @@ void StoreSystem::addItem(inventory::Inventory *newSellable)
 void StoreSystem::addProperty(inventory::Equipment *newProperty)
 {
     this->iSystem->addNewProperty(newProperty);
+}
+
+void StoreSystem::endYearAdjustment(){
+    this->iSystem->applyAllDepreciation();
+    this->aSystem->endYearAdjustment();
 }
 
 inventory::Inventory *StoreSystem::getInventory(std::string dbCode)

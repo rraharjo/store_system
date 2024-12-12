@@ -21,9 +21,14 @@ namespace inventory
         void setTotalValue(double newValue) override;
 
         Equipment(std::string dbCode, std::string name, std::string itemCode,
-                  double totalValue, double residualValue, int yearUsefulLife, util::Date *dateBought, util::Date *dateSold);
+                  double totalValue, double residualValue, int yearUsefulLife, 
+                  util::Date *dateBought,  util::Date *lastDepreciationDate, util::Date *dateSold);
 
         Equipment(std::string name, std::string itemCode, double residualValue, int yearUsefulLife, util::Date *dateBought);
+
+        double getReducedValueAtYear(int year) override;
+
+        double getReducedValueCurrentYear() override;
 
         double getDepreciationExpenseAtYear(int year);
 

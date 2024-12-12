@@ -1,4 +1,5 @@
 #include "accounting/accounting_transaction/transaction.hpp"
+#include "accounting/accounts/t_account.hpp"
 #ifndef ACCOUNTINGTRANSACTION_HPP
 #define ACCOUNTINGTRANSACTION_HPP
 namespace util
@@ -41,7 +42,7 @@ namespace util
         public:
             accounting::Transaction *createTransaction() override;
 
-            GoodsSellingFactory &setForeignID(std::string);
+            // GoodsSellingFactory &setForeignID(std::string);
 
             GoodsSellingFactory(util::Date *, std::string, std::string, double sellAmount, double paidCash, double paidCredit);
         };
@@ -106,6 +107,17 @@ namespace util
             accounting::Transaction *createTransaction() override;
 
             EmployeeWagesFactory(util::Date *, std::string, std::string, double wagesAmount);
+        };
+
+        class ClosingTemporaryAccountsFactory : public AccountingTransactionFactory
+        {
+        private:
+            std::vector<accounting::TAccount *> tAccounts;
+
+        public:
+            accounting::Transaction *createTransaction() override;
+            
+            ClosingTemporaryAccountsFactory(util::Date *, std::string, std::vector<accounting::TAccount *> &);
         };
     }
 }

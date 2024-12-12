@@ -61,7 +61,8 @@ namespace util
             SELLINGTRANSACTION,
             ASSETS,
             ACCOUNTINGTRANSACTION,
-            ACCOUNTINGENTRY
+            ACCOUNTINGENTRY,
+            TACCOUNTS
         };
 
         extern std::map<TableNames, std::string> tableNamesMap;
@@ -132,6 +133,7 @@ namespace util
             RESIDUALVALUE,
             YEARUSEFULLIFE,
             DATEPURCHASED,
+            LASTDEPRECIATIONAPPLIED,
             DATESOLD
         };
 
@@ -153,11 +155,18 @@ namespace util
             ATDBCODE,
             DEBIT,
             AMOUNT,
-            TACCOUNTNUM,
-            ACCOUNTTITLE
+            TACCOUNTNUM
         };
 
         extern std::map<AccountingEntryTable, ColumnSchema> accountingEntryTableColumns;
+
+        enum class TAccountTable{
+            TITLE = 0,
+            DEBITAMOUNT,
+            CREDITAMOUNT
+        };
+
+        extern std::map<TAccountTable, ColumnSchema> tAccountTableColumns;
     }
 
 }

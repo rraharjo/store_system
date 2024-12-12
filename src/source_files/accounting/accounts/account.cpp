@@ -3,7 +3,7 @@ using namespace accounting;
 
 void Account::addTAccount(util::enums::TAccounts tAccount)
 {
-    this->tAccounts[tAccount] = new TAccount(tAccount);
+    this->tAccounts[tAccount] = TAccount::generateFromDatabase(tAccount);
 }
 
 Account::Account(bool debit, util::enums::AccountTitles title)
@@ -31,17 +31,21 @@ std::string Account::getTitleName()
     return util::enums::getName(this->title);
 }
 
-double Account::getTotalCredit(){
+double Account::getTotalCredit()
+{
     double toRet = 0.0;
-    for (auto it = this->tAccounts.begin() ; it != this->tAccounts.end() ; it++){
+    for (auto it = this->tAccounts.begin(); it != this->tAccounts.end(); it++)
+    {
         toRet += it->second->getCreditAmount();
     }
     return toRet;
 }
 
-double Account::getTotalDebit(){
+double Account::getTotalDebit()
+{
     double toRet = 0.0;
-    for (auto it = this->tAccounts.begin() ; it != this->tAccounts.end() ; it++){
+    for (auto it = this->tAccounts.begin(); it != this->tAccounts.end(); it++)
+    {
         toRet += it->second->getDebitAmount();
     }
     return toRet;
@@ -50,7 +54,6 @@ double Account::getTotalDebit(){
 void Account::addEntry(Entry *entry)
 {
     this->tAccounts[entry->getTAccount()]->addEntry(entry);
-    //entry->insertToDB();
 }
 
 std::string Account::to_string()
@@ -102,4 +105,15 @@ void StockholdersEquityAccount::initiateTAccount()
     {
         this->addTAccount(tAccount);
     }
+}
+
+std::vector<TAccount *> StockholdersEquityAccount::getTemporaryAccounts()
+{
+    std::vector<TAccount *> tAccounts;
+    for (util::enums::TAccounts currentAccount = MIN_TEMPORARY_ACCOUNT;
+         currentAccount < MAX_TEMPORARY_ACCOUNT; ++currentAccount)
+    {
+        tAccounts.push_back(this->tAccounts[currentAccount]);
+    }
+    return tAccounts;
 }

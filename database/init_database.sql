@@ -8,6 +8,7 @@ delete from accounting_transaction_entry;
 delete from accounting_transaction;
 delete from inventory;
 delete from assets;
+delete from t_account_table;
 
 drop table selling_entry;
 drop table purchase_entry;
@@ -17,6 +18,7 @@ drop table accounting_transaction_entry;
 drop table accounting_transaction;
 drop table inventory;
 drop table assets;
+drop table t_account_table;
 
 drop sequence inventory_seq;
 drop sequence assets_seq;
@@ -44,13 +46,14 @@ create table inventory(
 );
 
 create table assets(
-    database_code       text          primary key,
-    item_name           text,
-    purchase_cost       numeric(12, 2)  not null,
-    residual_value      numeric(12, 2)  not null,
-    year_useful_life    int             not null,
-    date_purchased      date            not null,
-    date_sold           date
+    database_code               text          primary key,
+    item_name                   text,
+    purchase_cost               numeric(12, 2)  not null,
+    residual_value              numeric(12, 2)  not null,
+    year_useful_life            int             not null,
+    date_purchased              date            not null,
+    last_depreciation_applied   date,
+    date_sold                   date
 );
 
 create table purchase_transaction(
@@ -135,10 +138,17 @@ create table accounting_transaction_entry(
     at_db_code          text            not null,
     debit               boolean         not null,
     amount              numeric(12, 2)  not null,
-    t_account_number    varchar(25),
-    account_title       varchar(50)
+    t_account_number    varchar(25)
 );
 
 alter table accounting_transaction_entry
 add constraint fk_accounting_transaction foreign key (at_db_code)
     references accounting_transaction (database_code);
+
+create table t_account_table(
+    title               text            primary key,
+    debit_amount        numeric(12, 2)  not null,
+    credit_amount       numeric(12, 2)  not null,
+    check (debit_amount >= 0),
+    check (credit_amount >= 0)
+);

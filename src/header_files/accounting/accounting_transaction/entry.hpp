@@ -33,11 +33,10 @@ namespace accounting
 
         void updateToDB() override;
 
-        Entry(std::string transactionDBCode, bool debit, double amount, util::enums::TAccounts tAccount,
-              util::enums::AccountTitles account);
+        Entry(std::string transactionDBCode, bool debit, double amount, util::enums::TAccounts tAccount);
 
         Entry(std::string dbCode, std::string transactionDBCode, bool debit, double amount,
-              util::enums::TAccounts tAccount, util::enums::AccountTitles account);
+              util::enums::TAccounts tAccount);
 
         bool isDebit();
 

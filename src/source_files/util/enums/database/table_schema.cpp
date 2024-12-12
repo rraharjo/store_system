@@ -30,8 +30,11 @@ std::map<TableNames, std::string> util::enums::tableNamesMap = {
     {TableNames::SELLINGTRANSACTION, "selling_transaction"},
     {TableNames::ASSETS, "assets"},
     {TableNames::ACCOUNTINGTRANSACTION, "accounting_transaction"},
-    {TableNames::ACCOUNTINGENTRY, "accounting_transaction_entry"}};
+    {TableNames::ACCOUNTINGENTRY, "accounting_transaction_entry"},
+    {TableNames::TACCOUNTS, "t_account_table"}};
+
 /**************************************************************************************************************************/
+
 std::map<InventoryTable, ColumnSchema> util::enums::inventoryTableColumns = {
     {InventoryTable::DATABASECODE, ColumnSchema{"database_code", ColumnTypes::CUSTOMSERIALCOL}},
     {InventoryTable::ITEMCODE, ColumnSchema{"item_code", ColumnTypes::TEXTCOL}},
@@ -77,6 +80,7 @@ std::map<AssetsTable, ColumnSchema> util::enums::assetsTableColumns = {
     {AssetsTable::RESIDUALVALUE, ColumnSchema{"residual_value", ColumnTypes::FLOATCOL}},
     {AssetsTable::YEARUSEFULLIFE, ColumnSchema{"year_useful_life", ColumnTypes::NUMBERCOL}},
     {AssetsTable::DATEPURCHASED, ColumnSchema{"date_purchased", ColumnTypes::DATECOL}},
+    {AssetsTable::LASTDEPRECIATIONAPPLIED, ColumnSchema{"last_depreciation_applied", ColumnTypes::DATECOL}},
     {AssetsTable::DATESOLD, ColumnSchema{"date_sold", ColumnTypes::DATECOL}}};
 
 std::map<AccountingTransactionTable, ColumnSchema> util::enums::accountingTransactionTableColumns = {
@@ -90,5 +94,9 @@ std::map<AccountingEntryTable, ColumnSchema> util::enums::accountingEntryTableCo
     {AccountingEntryTable::ATDBCODE, ColumnSchema{"at_db_code", ColumnTypes::TEXTCOL}},
     {AccountingEntryTable::DEBIT, ColumnSchema{"debit", ColumnTypes::BOOLCOL}},
     {AccountingEntryTable::AMOUNT, ColumnSchema{"amount", ColumnTypes::FLOATCOL}},
-    {AccountingEntryTable::TACCOUNTNUM, ColumnSchema{"t_account_number", ColumnTypes::TEXTCOL}},
-    {AccountingEntryTable::ACCOUNTTITLE, ColumnSchema{"account_title", ColumnTypes::TEXTCOL}}};
+    {AccountingEntryTable::TACCOUNTNUM, ColumnSchema{"t_account_number", ColumnTypes::TEXTCOL}}};
+
+std::map<TAccountTable, ColumnSchema> util::enums::tAccountTableColumns = {
+    {TAccountTable::TITLE, ColumnSchema{"title", ColumnTypes::TEXTCOL}},
+    {TAccountTable::DEBITAMOUNT, ColumnSchema{"debit_amount", ColumnTypes::FLOATCOL}},
+    {TAccountTable::CREDITAMOUNT, ColumnSchema{"credit_amount", ColumnTypes::FLOATCOL}}};

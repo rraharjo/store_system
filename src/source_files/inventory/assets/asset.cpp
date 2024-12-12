@@ -14,7 +14,8 @@ void Asset::updateToDB()
 };
 
 Asset::Asset(std::string dbCode, std::string name, std::string itemCode,
-             double totalValue, double residualValue, int yearUsefulLife, util::Date *dateBought, util::Date *dateSold)
+             double totalValue, double residualValue, int yearUsefulLife,
+             util::Date *dateBought, util::Date *lastDepreciationDate, util::Date *dateSold)
     : Item(name, itemCode)
 {
     this->setDBCode(dbCode);
@@ -23,11 +24,12 @@ Asset::Asset(std::string dbCode, std::string name, std::string itemCode,
     this->residualValue = residualValue;
     this->yearUsefulLife = yearUsefulLife;
     this->dateBought = dateBought;
+    this->lastDepreciationDate = lastDepreciationDate;
     this->expiryDate = dateSold;
 }
 
 Asset::Asset(std::string name, std::string itemCode, double residualValue, int yearUsefulLife, util::Date *dateBought)
-    : Asset("", name, itemCode, 0, residualValue, yearUsefulLife, dateBought, NULL)
+    : Asset("", name, itemCode, 0, residualValue, yearUsefulLife, dateBought, NULL, NULL)
 {
 }
 
@@ -44,6 +46,7 @@ std::vector<std::string> Asset::getUpdateParameter()
     args.push_back(std::to_string(this->getResidualValue()));
     args.push_back(std::to_string(this->getYearUsefulLife()));
     args.push_back(this->getDateBought()->toDBFormat());
+    args.push_back(this->getLastDepreciationDate() ? this->getLastDepreciationDate()->toDBFormat() : "NULL");
     args.push_back(this->getExpiryDate() ? this->getExpiryDate()->toDBFormat() : "NULL");
     return args;
 };
@@ -83,6 +86,11 @@ util::Date *Asset::getDateBought()
     return this->dateBought;
 }
 
+util::Date *Asset::getLastDepreciationDate()
+{
+    return this->lastDepreciationDate;
+}
+
 util::Date *Asset::getExpiryDate()
 {
     return this->expiryDate;
@@ -96,6 +104,12 @@ double Asset::getCurrentValue()
 void Asset::setTotalValue(double newValue)
 {
     this->value = newValue;
+}
+
+void Asset::setLastDepreciationDate(util::Date *depreciationDate)
+{
+    this->lastDepreciationDate = depreciationDate;
+    this->updateToDB();
 }
 
 std::string Asset::toString()

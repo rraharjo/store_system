@@ -2,16 +2,25 @@
 #include <string>
 #include <map>
 #include <vector>
+#include "util/enums/accounting/account_titles.hpp"
 
 #ifndef TACCOUNTS_HPP
 #define TACCOUNTS_HPP
+#define FIRST_TACCOUNT util::enums::TAccounts::CASH
+#define MAX_ASSET util::enums::TAccounts::ACCPAYABLE
+#define MAX_LIABILITY util::enums::TAccounts::COMMONSTOCK
+#define MAX_STOCKHOLDER util::enums::TAccounts::END
+#define MIN_TEMPORARY_ACCOUNT util::enums::TAccounts::REV
+#define MAX_TEMPORARY_ACCOUNT util::enums::TAccounts::RETAINEDEARNINGS
+#define LAST_TACCOUNT util::enums::TAccounts::END
 namespace util
 {
     namespace enums
     {
+
         enum class TAccounts
         {
-            //assets
+            // assets
             CASH = 0,
             EQUIPMENT,
             ACCTRCV,
@@ -19,11 +28,11 @@ namespace util
             LAND,
             ACCUMDEPRECIATION,
             INVENTORY,
-            //liabilities
+            // liabilities
             ACCPAYABLE,
             NOTEPAYABLE,
             UNEARNEDREV,
-            //stockholders equity
+            // stockholders equity
             COMMONSTOCK,
             ADDTLCPT,
             OWNEREQ,
@@ -32,13 +41,18 @@ namespace util
             EXPENSE,
             COGS,
             DEPREXP,
-            WAGEEXP
+            WAGEEXP,
+            RETAINEDEARNINGS,
+            // END placeholder
+            END
         };
+
+        TAccounts &operator++(TAccounts &tAccount);
 
         extern std::map<TAccounts, std::string> tAccountsNameMap;
 
         extern std::vector<TAccounts> assetsTAccounts;
-        
+
         extern std::vector<TAccounts> liabilitiesTAccounts;
 
         extern std::vector<TAccounts> stockholdersTAccounts;
@@ -46,6 +60,8 @@ namespace util
         std::string getName(util::enums::TAccounts);
 
         TAccounts getTAccountEnum(std::string);
+
+        AccountTitles getAccountTitle(util::enums::TAccounts);
     };
 };
 

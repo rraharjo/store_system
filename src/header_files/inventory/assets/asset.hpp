@@ -7,15 +7,14 @@ namespace inventory
 {
     class Asset : public Item
     {
-    private:
+    protected:
+        static util::Table *classTable;
         std::string name;
         double value = 0;
         double residualValue;
-        util::Date *expiryDate;
-
-    protected:
-        static util::Table *classTable;
         int yearUsefulLife;
+        util::Date *expiryDate;
+        util::Date *lastDepreciationDate;
         util::Date *dateBought;
 
         void addExistingPurchaseEntry(PurchaseEntry *entry) override;
@@ -23,7 +22,8 @@ namespace inventory
         std::vector<std::string> getUpdateParameter() override;
 
         Asset(std::string dbCode, std::string name, std::string itemCode,
-              double totalValue, double residualValue, int yearUsefulLife, util::Date *dateBought, util::Date *dateSold);
+              double totalValue, double residualValue, int yearUsefulLife,
+              util::Date *dateBought, util::Date *lastDepreciationDate, util::Date *dateSold);
 
         Asset(std::string name, std::string itemCode, double residualValue, int yearUsefulLife, util::Date *dateBought);
 
@@ -36,11 +36,17 @@ namespace inventory
 
         double sellItems(SellingEntry *entry) override;
 
+        virtual double getReducedValueAtYear(int year) = 0;
+
+        virtual double getReducedValueCurrentYear() = 0;
+
         double getResidualValue();
 
         int getYearUsefulLife();
 
         util::Date *getDateBought();
+
+        util::Date *getLastDepreciationDate();
 
         util::Date *getExpiryDate();
 
@@ -49,6 +55,8 @@ namespace inventory
         double getCurrentValue();
 
         virtual void setTotalValue(double newValue);
+
+        void setLastDepreciationDate(util::Date *);
 
         std::string toString();
 
