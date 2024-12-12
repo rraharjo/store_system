@@ -57,9 +57,9 @@ std::vector<std::string> Equipment::getInsertParameter()
     args.push_back(std::to_string(this->getTotalValue()));
     args.push_back(std::to_string(this->getResidualValue()));
     args.push_back(std::to_string(this->getYearUsefulLife()));
-    args.push_back(this->getDateBought()->toDBFormat());
-    args.push_back(this->getLastDepreciationDate() ? this->getLastDepreciationDate()->toDBFormat() : "NULL");
-    args.push_back(this->getExpiryDate() ? this->getExpiryDate()->toDBFormat() : "NULL");
+    args.push_back(this->getDateBought()->to_db_format());
+    args.push_back(this->getLastDepreciationDate() ? this->getLastDepreciationDate()->to_db_format() : "NULL");
+    args.push_back(this->getExpiryDate() ? this->getExpiryDate()->to_db_format() : "NULL");
     return args;
 };
 
@@ -104,21 +104,21 @@ double Equipment::getValueAtYear(int year)
 double Equipment::getCurrentDepreciationExpense()
 {
     util::Date *now = new util::Date();
-    int age = this->dateBought->diffYearsTo(now);
+    int age = this->dateBought->diff_years_to(now);
     return this->getDepreciationExpenseAtYear(age);
 }
 
 double Equipment::getCurrentAccumulatedDepreciation()
 {
     util::Date *now = new util::Date();
-    int age = this->dateBought->diffYearsTo(now);
+    int age = this->dateBought->diff_years_to(now);
     return this->getAccumulatedDepreciationAtYear(age);
 }
 
 double Equipment::getCurrentValue()
 {
     util::Date *now = new util::Date();
-    int age = this->dateBought->diffYearsTo(now);
+    int age = this->dateBought->diff_years_to(now);
     delete now;
     return this->getValueAtYear(age);
 }

@@ -6,15 +6,15 @@ util::Table *Transaction::classTable = util::AccountingTransactionTable::getInst
 std::vector<Transaction *> Transaction::generateFromDatabase()
 {
     util::Date now = util::Date();
-    std::string stringDate = std::to_string(now.getMDay()) + "/" +
-                             std::to_string(now.getMonth()) + "/" +
-                             std::to_string(now.getYear() - 1);
+    std::string stringDate = std::to_string(now.get_m_day()) + "/" +
+                             std::to_string(now.get_month()) + "/" +
+                             std::to_string(now.get_year() - 1);
     util::Date lastYear = util::Date(stringDate);
     std::vector<util::TableCondition> conditions;
     util::TableCondition cond1 = util::TableCondition();
     cond1.col = util::enums::accountingTransactionTableColumns[util::enums::AccountingTransactionTable::TRANSACTIONDATE];
     cond1.comparator = util::TableComparator::MORETHAN;
-    cond1.value = lastYear.toDBFormat();
+    cond1.value = lastYear.to_db_format();
     conditions.push_back(cond1);
     std::vector<Transaction *> toRet;
     std::vector<std::vector<std::string>> records = classTable->getRecords(conditions);
@@ -100,7 +100,7 @@ std::vector<std::string> Transaction::getInsertParameter()
     std::vector<std::string> args;
     args.push_back(util::enums::primaryKeyCodesMap[util::enums::PrimaryKeyCodes::ACCOUNTINGTRANSACTION]);
     args.push_back(this->name);
-    args.push_back(this->transactionDate->toDBFormat());
+    args.push_back(this->transactionDate->to_db_format());
     args.push_back(this->entityID == "" ? "NULL" : this->entityID);
     return args;
 }
@@ -109,7 +109,7 @@ std::vector<std::string> Transaction::getUpdateParameter()
 {
     std::vector<std::string> args;
     args.push_back(this->name);
-    args.push_back(this->transactionDate->toDBFormat());
+    args.push_back(this->transactionDate->to_db_format());
     args.push_back(this->entityID == "" ? "NULL" : this->entityID);
     return args;
 }

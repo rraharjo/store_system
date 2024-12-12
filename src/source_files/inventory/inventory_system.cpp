@@ -110,8 +110,8 @@ void InventorySystem::applyDepreciation(std::string assetDBCode)
 {
     Asset *asset = this->assets[assetDBCode];
     util::Date *now = new util::Date();
-    if ((!asset->getLastDepreciationDate() && now->diffYearsTo(asset->getDateBought()) >= 0) ||
-        now->diffYearsTo(asset->getLastDepreciationDate()) >= 0)
+    if ((!asset->getLastDepreciationDate() && now->diff_years_to(asset->getDateBought()) >= 0) ||
+        now->diff_years_to(asset->getLastDepreciationDate()) >= 0)
     {
         delete now;
         return;

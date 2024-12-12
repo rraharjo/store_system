@@ -45,9 +45,9 @@ std::vector<std::string> Asset::getUpdateParameter()
     args.push_back(std::to_string(this->getTotalValue()));
     args.push_back(std::to_string(this->getResidualValue()));
     args.push_back(std::to_string(this->getYearUsefulLife()));
-    args.push_back(this->getDateBought()->toDBFormat());
-    args.push_back(this->getLastDepreciationDate() ? this->getLastDepreciationDate()->toDBFormat() : "NULL");
-    args.push_back(this->getExpiryDate() ? this->getExpiryDate()->toDBFormat() : "NULL");
+    args.push_back(this->getDateBought()->to_db_format());
+    args.push_back(this->getLastDepreciationDate() ? this->getLastDepreciationDate()->to_db_format() : "NULL");
+    args.push_back(this->getExpiryDate() ? this->getExpiryDate()->to_db_format() : "NULL");
     return args;
 };
 
