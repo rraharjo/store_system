@@ -12,27 +12,27 @@ namespace accounting
     class TAccount : public util::baseclass::HasTable
     {
     private:
-        static util::Table *classTable;
+        static util::Table *class_table;
 
-        static void initiateTAccountOnDB();
+        static void initiate_t_account_on_db();
 
-        static TAccount *generateFromDatabase(util::enums::TAccounts);
+        static TAccount *generate_from_database(util::enums::TAccounts);
 
         util::enums::TAccounts title;
-        double debitAmount;
-        double creditAmount;
-        std::vector<Entry *> debitEntries;
-        std::vector<Entry *> creditEntries;
+        double debit_amount;
+        double credit_amount;
+        std::vector<Entry *> debit_entries;
+        std::vector<Entry *> credit_entries;
 
     protected:
-        std::vector<std::string> getInsertParameter() override;
+        std::vector<std::string> get_insert_parameter() override;
 
-        std::vector<std::string> getUpdateParameter() override;
+        std::vector<std::string> get_update_parameter() override;
 
     public:
-        void insertToDB() override;
+        void insert_to_db() override;
 
-        void updateToDB() override;
+        void update_to_db() override;
 
         TAccount(util::enums::TAccounts title, double debit, double credit);
 
@@ -40,17 +40,17 @@ namespace accounting
 
         ~TAccount();
 
-        util::enums::TAccounts getTitle();
+        util::enums::TAccounts get_title();
 
-        std::string getTitleName();
+        std::string get_title_name();
 
-        void addEntry(Entry *entry);
+        void add_entry(Entry *entry);
 
-        double getDebitAmount();
+        double get_debit_amount();
 
-        double getCreditAmount();
+        double get_credit_amount();
 
-        double getTotalAmount();
+        double get_total_amount();
 
         std::string to_string();
 

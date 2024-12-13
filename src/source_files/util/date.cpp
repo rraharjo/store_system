@@ -77,7 +77,7 @@ std::string Date::to_string()
     int month = this->get_month();
     int month_day = this->get_m_day();
     to_ret += std::to_string(month_day) + "-";
-    to_ret += util::getMonthName(month) + "-";
+    to_ret += util::get_month_name(month) + "-";
     to_ret += std::to_string(year);
     return to_ret;
 }

@@ -18,7 +18,7 @@ namespace inventory
         TransactionHistory();
 
     public:
-        void addEntry(Entry *entry);
+        void add_entry(Entry *entry);
     };
 
     /*************************************Purchase History*************************************/
@@ -30,9 +30,9 @@ namespace inventory
     public:
         PurchaseHistory();
 
-        double sellItemFirstIn(int qty);
+        double sell_item_first_in(int qty);
 
-        double sellItemLastIn(int qty);
+        double sell_item_last_in(int qty);
     };
 
     /*************************************Selling History*************************************/

@@ -2,7 +2,7 @@
 
 using namespace util;
 
-void util::printVec(std::vector<int> &v)
+void util::print_vec(std::vector<int> &v)
 {
     std::cout << "|";
     for (int i : v)
@@ -11,7 +11,7 @@ void util::printVec(std::vector<int> &v)
     }
     std::cout << std::endl;
 }
-void util::printVec(std::vector<std::string> &v)
+void util::print_vec(std::vector<std::string> &v)
 {
     std::cout << "|";
     for (std::string &s : v)
@@ -21,7 +21,7 @@ void util::printVec(std::vector<std::string> &v)
     std::cout << std::endl;
 }
 
-void util::printTable(std::vector<std::vector<std::string>> &t, bool truncated)
+void util::print_table(std::vector<std::vector<std::string>> &t, bool truncated)
 {
     int rows = t.size();
     int cols = t[0].size();
@@ -39,15 +39,15 @@ void util::printTable(std::vector<std::vector<std::string>> &t, bool truncated)
     }
     else
     {
-        std::vector<int> maxWidths;
+        std::vector<int> max_widths;
         for (int i = 0; i < cols; i++)
         {
-            int maxWidth = 0;
+            int max_width = 0;
             for (int j = 0; j < rows; j++)
             {
-                maxWidth = std::max((int)t[j][i].length(), maxWidth);
+                max_width = std::max((int)t[j][i].length(), max_width);
             }
-            maxWidths.push_back(maxWidth);
+            max_widths.push_back(max_width);
         }
 
         for (int i = 0; i < rows; i++)
@@ -55,18 +55,18 @@ void util::printTable(std::vector<std::vector<std::string>> &t, bool truncated)
             std::cout << "|";
             for (int j = 0; j < cols; j++)
             {
-                std::cout << std::setw(std::max(maxWidths[j], 10)) << t[j][i] << "|";
+                std::cout << std::setw(std::max(max_widths[j], 10)) << t[j][i] << "|";
             }
             std::cout << std::endl;
         }
     }
 }
-void util::printTable(std::vector<std::vector<std::string>> &t)
+void util::print_table(std::vector<std::vector<std::string>> &t)
 {
-    util::printTable(t, true);
+    util::print_table(t, true);
 }
 
-void util::printTableInt(std::vector<std::vector<int>> &t)
+void util::print_table_int(std::vector<std::vector<int>> &t)
 {
     for (std::vector<int> &row : t)
     {

@@ -1,312 +1,312 @@
 #include "util/factory/transaction_factory.hpp"
 using namespace util::factory;
 
-AccountingTransactionFactory::AccountingTransactionFactory(util::Date *transactionDate, std::string transactionName, std::string foreignID)
+AccountingTransactionFactory::AccountingTransactionFactory(util::Date *transaction_date, std::string transaction_name, std::string foreign_id)
 {
-    this->transactionDate = transactionDate;
-    this->transactionName = transactionName;
-    this->foreignID = foreignID;
+    this->transaction_date = transaction_date;
+    this->transaction_name = transaction_name;
+    this->foreign_id = foreign_id;
 }
 
 // Purchasing Goods
-accounting::Transaction *GoodsPurchaseFactory::createTransaction()
+accounting::Transaction *GoodsPurchaseFactory::create_transaction()
 {
-    if (this->purchaseAmount != this->paidCash + this->paidCredit)
+    if (this->purchase_amount != this->paid_cash + this->paid_credit)
     {
         throw std::invalid_argument("total paid amount does not match purchase amount");
     }
-    accounting::Transaction *newTransaction = new accounting::Transaction(this->transactionName, this->foreignID);
-    newTransaction->insertToDB();
-    accounting::Entry *increaseInventory =
-        new accounting::Entry(newTransaction->getDBCode(), true, this->purchaseAmount,
+    accounting::Transaction *new_transaction = new accounting::Transaction(this->transaction_name, this->foreign_id);
+    new_transaction->insert_to_db();
+    accounting::Entry *increase_inventory =
+        new accounting::Entry(new_transaction->get_db_code(), true, this->purchase_amount,
                               util::enums::TAccounts::INVENTORY);
-    increaseInventory->insertToDB();
-    newTransaction->addEntry(increaseInventory);
-    if (this->paidCash > 0.0)
+    increase_inventory->insert_to_db();
+    new_transaction->add_entry(increase_inventory);
+    if (this->paid_cash > 0.0)
     {
-        accounting::Entry *reduceCash =
-            new accounting::Entry(newTransaction->getDBCode(), false,
-                                  this->paidCash, util::enums::TAccounts::CASH);
-        reduceCash->insertToDB();
-        newTransaction->addEntry(reduceCash);
+        accounting::Entry *reduce_cash =
+            new accounting::Entry(new_transaction->get_db_code(), false,
+                                  this->paid_cash, util::enums::TAccounts::CASH);
+        reduce_cash->insert_to_db();
+        new_transaction->add_entry(reduce_cash);
     }
-    if (this->paidCredit > 0.0)
+    if (this->paid_credit > 0.0)
     {
-        accounting::Entry *increasePayable =
-            new accounting::Entry(newTransaction->getDBCode(), false, this->paidCredit,
+        accounting::Entry *increase_payable =
+            new accounting::Entry(new_transaction->get_db_code(), false, this->paid_credit,
                                   util::enums::TAccounts::ACCPAYABLE);
-        increasePayable->insertToDB();
-        newTransaction->addEntry(increasePayable);
+        increase_payable->insert_to_db();
+        new_transaction->add_entry(increase_payable);
     }
-    return newTransaction;
+    return new_transaction;
 };
 
-GoodsPurchaseFactory::GoodsPurchaseFactory(util::Date *transactionDate, std::string transactionName, std::string foreignID, double purchaseAmount, double paidCash, double paidCredit) : AccountingTransactionFactory(transactionDate, transactionName, foreignID)
+GoodsPurchaseFactory::GoodsPurchaseFactory(util::Date *transaction_date, std::string transaction_name, std::string foreign_id, double purchase_amount, double paid_cash, double paid_credit) : AccountingTransactionFactory(transaction_date, transaction_name, foreign_id)
 {
-    this->purchaseAmount = purchaseAmount;
-    this->paidCash = paidCash;
-    this->paidCredit = paidCredit;
+    this->purchase_amount = purchase_amount;
+    this->paid_cash = paid_cash;
+    this->paid_credit = paid_credit;
 }
 
 // Selling Goods
-accounting::Transaction *GoodsSellingFactory::createTransaction()
+accounting::Transaction *GoodsSellingFactory::create_transaction()
 {
-    if (this->sellAmount != this->paidCash + this->paidCredit)
+    if (this->sell_amount != this->paid_cash + this->paid_credit)
     {
         throw std::invalid_argument("total paid amount does not match purchase amount");
     }
-    accounting::Transaction *newTransaction = new accounting::Transaction(this->transactionName, this->foreignID);
-    newTransaction->insertToDB();
-    accounting::Entry *increaseRevenue =
-        new accounting::Entry(newTransaction->getDBCode(), false, this->sellAmount,
+    accounting::Transaction *new_transaction = new accounting::Transaction(this->transaction_name, this->foreign_id);
+    new_transaction->insert_to_db();
+    accounting::Entry *increase_revenue =
+        new accounting::Entry(new_transaction->get_db_code(), false, this->sell_amount,
                               util::enums::TAccounts::REV);
-    increaseRevenue->insertToDB();
-    newTransaction->addEntry(increaseRevenue);
-    if (this->paidCash > 0.0)
+    increase_revenue->insert_to_db();
+    new_transaction->add_entry(increase_revenue);
+    if (this->paid_cash > 0.0)
     {
-        accounting::Entry *increaseCash =
-            new accounting::Entry(newTransaction->getDBCode(), true, this->paidCash,
+        accounting::Entry *increase_cash =
+            new accounting::Entry(new_transaction->get_db_code(), true, this->paid_cash,
                                   util::enums::TAccounts::CASH);
-        increaseCash->insertToDB();
-        newTransaction->addEntry(increaseCash);
+        increase_cash->insert_to_db();
+        new_transaction->add_entry(increase_cash);
     }
-    if (this->paidCredit > 0.0)
+    if (this->paid_credit > 0.0)
     {
-        accounting::Entry *increaseReceivable =
-            new accounting::Entry(newTransaction->getDBCode(), true, this->paidCredit,
+        accounting::Entry *increase_receivable =
+            new accounting::Entry(new_transaction->get_db_code(), true, this->paid_credit,
                                   util::enums::TAccounts::ACCTRCV);
-        increaseReceivable->insertToDB();
-        newTransaction->addEntry(increaseReceivable);
+        increase_receivable->insert_to_db();
+        new_transaction->add_entry(increase_receivable);
     }
-    return newTransaction;
+    return new_transaction;
 }
 
-GoodsSellingFactory::GoodsSellingFactory(util::Date *transactionDate, std::string transactionName, std::string foreignID, double sellAmount, double paidCash, double paidCredit) : AccountingTransactionFactory(transactionDate, transactionName, foreignID)
+GoodsSellingFactory::GoodsSellingFactory(util::Date *transaction_date, std::string transaction_name, std::string foreign_id, double sell_amount, double paid_cash, double paid_credit) : AccountingTransactionFactory(transaction_date, transaction_name, foreign_id)
 {
-    this->sellAmount = sellAmount;
-    this->paidCash = paidCash;
-    this->paidCredit = paidCredit;
+    this->sell_amount = sell_amount;
+    this->paid_cash = paid_cash;
+    this->paid_credit = paid_credit;
 }
 
 // Adjusting Cost of Goods Sold
-accounting::Transaction *GoodsSoldCOGSFactory::createTransaction()
+accounting::Transaction *GoodsSoldCOGSFactory::create_transaction()
 {
-    accounting::Transaction *newTransaction = new accounting::Transaction(this->transactionName, this->foreignID);
-    newTransaction->insertToDB();
-    accounting::Entry *reduceInventory =
-        new accounting::Entry(newTransaction->getDBCode(), false, this->cogs,
+    accounting::Transaction *new_transaction = new accounting::Transaction(this->transaction_name, this->foreign_id);
+    new_transaction->insert_to_db();
+    accounting::Entry *reduce_inventory =
+        new accounting::Entry(new_transaction->get_db_code(), false, this->cogs,
                               util::enums::TAccounts::INVENTORY);
-    reduceInventory->insertToDB();
-    newTransaction->addEntry(reduceInventory);
-    accounting::Entry *increaseCOGS =
-        new accounting::Entry(newTransaction->getDBCode(), true, this->cogs,
+    reduce_inventory->insert_to_db();
+    new_transaction->add_entry(reduce_inventory);
+    accounting::Entry *increase_cogs =
+        new accounting::Entry(new_transaction->get_db_code(), true, this->cogs,
                               util::enums::TAccounts::COGS);
-    increaseCOGS->insertToDB();
-    newTransaction->addEntry(increaseCOGS);
-    return newTransaction;
+    increase_cogs->insert_to_db();
+    new_transaction->add_entry(increase_cogs);
+    return new_transaction;
 }
 
-GoodsSoldCOGSFactory::GoodsSoldCOGSFactory(util::Date *transactionDate, std::string transactionName,
-                                           std::string foreignID, double cogs)
-    : AccountingTransactionFactory(transactionDate, transactionName, foreignID)
+GoodsSoldCOGSFactory::GoodsSoldCOGSFactory(util::Date *transaction_date, std::string transaction_name,
+                                           std::string foreign_id, double cogs)
+    : AccountingTransactionFactory(transaction_date, transaction_name, foreign_id)
 {
     this->cogs = cogs;
 }
 
 // Buy Equipment Transaction
-accounting::Transaction *BuyEquipmentFactory::createTransaction()
+accounting::Transaction *BuyEquipmentFactory::create_transaction()
 {
-    if (this->equipmentValue != this->paidCash + this->paidCredit)
+    if (this->equipment_value != this->paid_cash + this->paid_credit)
     {
         throw std::invalid_argument("total paid amount does not match purchase amount");
     }
-    accounting::Transaction *newTransaction = new accounting::Transaction(this->transactionName, this->foreignID);
-    newTransaction->insertToDB();
-    accounting::Entry *increaseAssets =
-        new accounting::Entry(newTransaction->getDBCode(), true, this->equipmentValue,
+    accounting::Transaction *new_transaction = new accounting::Transaction(this->transaction_name, this->foreign_id);
+    new_transaction->insert_to_db();
+    accounting::Entry *increase_asset =
+        new accounting::Entry(new_transaction->get_db_code(), true, this->equipment_value,
                               util::enums::TAccounts::EQUIPMENT);
-    increaseAssets->insertToDB();
-    newTransaction->addEntry(increaseAssets);
-    if (this->paidCash > 0.0)
+    increase_asset->insert_to_db();
+    new_transaction->add_entry(increase_asset);
+    if (this->paid_cash > 0.0)
     {
-        accounting::Entry *reduceCash =
-            new accounting::Entry(newTransaction->getDBCode(), false, this->paidCash,
+        accounting::Entry *reduce_cash =
+            new accounting::Entry(new_transaction->get_db_code(), false, this->paid_cash,
                                   util::enums::TAccounts::CASH);
-        reduceCash->insertToDB();
-        newTransaction->addEntry(reduceCash);
+        reduce_cash->insert_to_db();
+        new_transaction->add_entry(reduce_cash);
     }
-    if (this->paidCredit)
+    if (this->paid_credit)
     {
-        accounting::Entry *increasePayable =
-            new accounting::Entry(newTransaction->getDBCode(), false, this->paidCredit,
+        accounting::Entry *increase_payable =
+            new accounting::Entry(new_transaction->get_db_code(), false, this->paid_credit,
                                   util::enums::TAccounts::ACCPAYABLE);
-        increasePayable->insertToDB();
-        newTransaction->addEntry(increasePayable);
+        increase_payable->insert_to_db();
+        new_transaction->add_entry(increase_payable);
     }
-    return newTransaction;
+    return new_transaction;
 }
 
-BuyEquipmentFactory::BuyEquipmentFactory(util::Date *transactionDate, std::string transactionName,
-                                         std::string foreignID, double equipmentValue, double paidCash, double paidCredit)
-    : AccountingTransactionFactory(transactionDate, transactionName, foreignID)
+BuyEquipmentFactory::BuyEquipmentFactory(util::Date *transaction_date, std::string transaction_name,
+                                         std::string foreign_id, double equipment_value, double paid_cash, double paid_credit)
+    : AccountingTransactionFactory(transaction_date, transaction_name, foreign_id)
 {
-    this->equipmentValue = equipmentValue;
-    this->paidCash = paidCash;
-    this->paidCredit = paidCredit;
+    this->equipment_value = equipment_value;
+    this->paid_cash = paid_cash;
+    this->paid_credit = paid_credit;
 }
 
 // Sell Equipment Transaction
-accounting::Transaction *SellEquipmentFactory::createTransaction()
+accounting::Transaction *SellEquipmentFactory::create_transaction()
 {
-    accounting::Transaction *newTransaction = new accounting::Transaction(this->transactionName, this->foreignID);
-    newTransaction->insertToDB();
-    if (this->paidCash > 0.0)
+    accounting::Transaction *new_transaction = new accounting::Transaction(this->transaction_name, this->foreign_id);
+    new_transaction->insert_to_db();
+    if (this->paid_cash > 0.0)
     {
-        accounting::Entry *increaseCash =
-            new accounting::Entry(newTransaction->getDBCode(), true, this->paidCash,
+        accounting::Entry *increase_cash =
+            new accounting::Entry(new_transaction->get_db_code(), true, this->paid_cash,
                                   util::enums::TAccounts::CASH);
-        increaseCash->insertToDB();
-        newTransaction->addEntry(increaseCash);
+        increase_cash->insert_to_db();
+        new_transaction->add_entry(increase_cash);
     }
-    if (this->paidCredit > 0.0)
+    if (this->paid_credit > 0.0)
     {
-        accounting::Entry *increaseReceivable =
-            new accounting::Entry(newTransaction->getDBCode(), true, this->paidCredit,
+        accounting::Entry *increase_receivable =
+            new accounting::Entry(new_transaction->get_db_code(), true, this->paid_credit,
                                   util::enums::TAccounts::ACCTRCV);
-        increaseReceivable->insertToDB();
-        newTransaction->addEntry(increaseReceivable);
+        increase_receivable->insert_to_db();
+        new_transaction->add_entry(increase_receivable);
     }
-    accounting::Entry *reduceEquipment =
-        new accounting::Entry(newTransaction->getDBCode(), false, this->initialValue,
+    accounting::Entry *reduce_equipment =
+        new accounting::Entry(new_transaction->get_db_code(), false, this->initial_value,
                               util::enums::TAccounts::EQUIPMENT);
-    reduceEquipment->insertToDB();
-    newTransaction->addEntry(reduceEquipment);
-    accounting::Entry *reduceAccumulatedDepreciation =
-        new accounting::Entry(newTransaction->getDBCode(), true, this->accumulatedDepreciation,
+    reduce_equipment->insert_to_db();
+    new_transaction->add_entry(reduce_equipment);
+    accounting::Entry *reduce_accumulated_depreciation =
+        new accounting::Entry(new_transaction->get_db_code(), true, this->accumulated_depreciation,
                               util::enums::TAccounts::ACCUMDEPRECIATION);
-    reduceAccumulatedDepreciation->insertToDB();
-    newTransaction->addEntry(reduceAccumulatedDepreciation);
-    double revenue = this->paidCash + this->paidCredit + this->accumulatedDepreciation - this->initialValue;
+    reduce_accumulated_depreciation->insert_to_db();
+    new_transaction->add_entry(reduce_accumulated_depreciation);
+    double revenue = this->paid_cash + this->paid_credit + this->accumulated_depreciation - this->initial_value;
     if (revenue > 0)
     { // Gain
-        accounting::Entry *increaseRevenue =
-            new accounting::Entry(newTransaction->getDBCode(), false, revenue,
+        accounting::Entry *increase_revenue =
+            new accounting::Entry(new_transaction->get_db_code(), false, revenue,
                                   util::enums::TAccounts::REV);
-        increaseRevenue->insertToDB();
-        newTransaction->addEntry(increaseRevenue);
+        increase_revenue->insert_to_db();
+        new_transaction->add_entry(increase_revenue);
     }
 
     if (revenue < 0)
     { // Loss
-        accounting::Entry *reduceRevenue =
-            new accounting::Entry(newTransaction->getDBCode(), true, std::abs(revenue),
+        accounting::Entry *reduce_revenue =
+            new accounting::Entry(new_transaction->get_db_code(), true, std::abs(revenue),
                                   util::enums::TAccounts::REV);
-        reduceRevenue->insertToDB();
-        newTransaction->addEntry(reduceRevenue);
+        reduce_revenue->insert_to_db();
+        new_transaction->add_entry(reduce_revenue);
     }
-    return newTransaction;
+    return new_transaction;
 }
 
-SellEquipmentFactory::SellEquipmentFactory(util::Date *transactionDate, std::string transactionName, std::string foreignID, double accumulatedDepreciation, double initialValue, double paidCash, double paidCredit) : AccountingTransactionFactory(transactionDate, transactionName, foreignID)
+SellEquipmentFactory::SellEquipmentFactory(util::Date *transaction_date, std::string transaction_name, std::string foreign_id, double accumulated_depreciation, double initial_value, double paid_cash, double paid_credit) : AccountingTransactionFactory(transaction_date, transaction_name, foreign_id)
 {
-    this->accumulatedDepreciation = accumulatedDepreciation;
-    this->initialValue = initialValue;
-    this->paidCash = paidCash;
-    this->paidCredit = paidCredit;
+    this->accumulated_depreciation = accumulated_depreciation;
+    this->initial_value = initial_value;
+    this->paid_cash = paid_cash;
+    this->paid_credit = paid_credit;
 }
 
 // Apply Depreciation Transaction
-accounting::Transaction *ApplyDepreciationFactory::createTransaction()
+accounting::Transaction *ApplyDepreciationFactory::create_transaction()
 {
-    accounting::Transaction *newTransaction = new accounting::Transaction(this->transactionName, this->foreignID);
-    newTransaction->insertToDB();
-    accounting::Entry *increaseAccumulatedDepreciation =
-        new accounting::Entry(newTransaction->getDBCode(), false, this->depreciationAmount,
+    accounting::Transaction *new_transaction = new accounting::Transaction(this->transaction_name, this->foreign_id);
+    new_transaction->insert_to_db();
+    accounting::Entry *increase_accumulated_depreciation =
+        new accounting::Entry(new_transaction->get_db_code(), false, this->depreciation_amount,
                               util::enums::TAccounts::ACCUMDEPRECIATION);
-    increaseAccumulatedDepreciation->insertToDB();
-    newTransaction->addEntry(increaseAccumulatedDepreciation);
-    accounting::Entry *reduceEquipment =
-        new accounting::Entry(newTransaction->getDBCode(), true, this->depreciationAmount,
+    increase_accumulated_depreciation->insert_to_db();
+    new_transaction->add_entry(increase_accumulated_depreciation);
+    accounting::Entry *reduce_equipment =
+        new accounting::Entry(new_transaction->get_db_code(), true, this->depreciation_amount,
                               util::enums::TAccounts::DEPREXP);
-    reduceEquipment->insertToDB();
-    newTransaction->addEntry(reduceEquipment);
-    return newTransaction;
+    reduce_equipment->insert_to_db();
+    new_transaction->add_entry(reduce_equipment);
+    return new_transaction;
 }
 
-ApplyDepreciationFactory::ApplyDepreciationFactory(util::Date *transactionDate, std::string transactionName, std::string foreignID, double depreciationAmount) : AccountingTransactionFactory(transactionDate, transactionName, foreignID)
+ApplyDepreciationFactory::ApplyDepreciationFactory(util::Date *transaction_date, std::string transaction_name, std::string foreign_id, double depreciation_amount) : AccountingTransactionFactory(transaction_date, transaction_name, foreign_id)
 {
-    this->depreciationAmount = depreciationAmount;
+    this->depreciation_amount = depreciation_amount;
 }
 
 // Pay Wages Transaction
-accounting::Transaction *EmployeeWagesFactory::createTransaction()
+accounting::Transaction *EmployeeWagesFactory::create_transaction()
 {
-    accounting::Transaction *newTransaction = new accounting::Transaction(this->transactionName, this->foreignID);
-    newTransaction->insertToDB();
-    accounting::Entry *reduceCash =
-        new accounting::Entry(newTransaction->getDBCode(), false, this->wagesAmount,
+    accounting::Transaction *new_transaction = new accounting::Transaction(this->transaction_name, this->foreign_id);
+    new_transaction->insert_to_db();
+    accounting::Entry *reduce_cash =
+        new accounting::Entry(new_transaction->get_db_code(), false, this->wages_amount,
                               util::enums::TAccounts::CASH);
-    reduceCash->insertToDB();
-    newTransaction->addEntry(reduceCash);
-    accounting::Entry *increaseExpense =
-        new accounting::Entry(newTransaction->getDBCode(), true, this->wagesAmount,
+    reduce_cash->insert_to_db();
+    new_transaction->add_entry(reduce_cash);
+    accounting::Entry *increase_expense =
+        new accounting::Entry(new_transaction->get_db_code(), true, this->wages_amount,
                               util::enums::TAccounts::WAGEEXP);
-    increaseExpense->insertToDB();
-    newTransaction->addEntry(increaseExpense);
-    return newTransaction;
+    increase_expense->insert_to_db();
+    new_transaction->add_entry(increase_expense);
+    return new_transaction;
 }
 
-EmployeeWagesFactory::EmployeeWagesFactory(util::Date *transactionDate, std::string transactionName, std::string foreignID, double wagesAmount) : AccountingTransactionFactory(transactionDate, transactionName, foreignID)
+EmployeeWagesFactory::EmployeeWagesFactory(util::Date *transaction_date, std::string transaction_name, std::string foreign_id, double wages_amount) : AccountingTransactionFactory(transaction_date, transaction_name, foreign_id)
 {
 }
 
 // Closing the book
-accounting::Transaction *ClosingTemporaryAccountsFactory::createTransaction()
+accounting::Transaction *ClosingTemporaryAccountsFactory::create_transaction()
 {
-    double retainedEarningsCredit = 0.0;
-    accounting::Transaction *closingTheBook =
-        new accounting::Transaction(this->transactionName);
-    closingTheBook->insertToDB();
+    double retained_earnings_credit = 0.0;
+    accounting::Transaction *closing_the_book =
+        new accounting::Transaction(this->transaction_name);
+    closing_the_book->insert_to_db();
     accounting::Entry *temporary = NULL;
-    for (accounting::TAccount *tAccount : this->tAccounts)
+    for (accounting::TAccount *t_account : this->t_accounts)
     {
-        double tAccountDebit = tAccount->getDebitAmount() - tAccount->getCreditAmount();
-        if (tAccountDebit > 0) // Zero it with credit amount, reduce retained earnings
+        double t_account_debit = t_account->get_debit_amount() - t_account->get_credit_amount();
+        if (t_account_debit > 0) // Zero it with credit amount, reduce retained earnings
         {
-            temporary = new accounting::Entry(closingTheBook->getDBCode(), false, tAccountDebit, tAccount->getTitle());
-            temporary->insertToDB();
-            closingTheBook->addEntry(temporary);
-            retainedEarningsCredit -= tAccountDebit;
+            temporary = new accounting::Entry(closing_the_book->get_db_code(), false, t_account_debit, t_account->get_title());
+            temporary->insert_to_db();
+            closing_the_book->add_entry(temporary);
+            retained_earnings_credit -= t_account_debit;
         }
-        if (tAccountDebit < 0) // Zero it with debit amount, increase retained earnings
+        if (t_account_debit < 0) // Zero it with debit amount, increase retained earnings
         {
-            temporary = new accounting::Entry(closingTheBook->getDBCode(), true, std::abs(tAccountDebit), tAccount->getTitle());
-            temporary->insertToDB();
-            closingTheBook->addEntry(temporary);
-            retainedEarningsCredit += std::abs(tAccountDebit);
+            temporary = new accounting::Entry(closing_the_book->get_db_code(), true, std::abs(t_account_debit), t_account->get_title());
+            temporary->insert_to_db();
+            closing_the_book->add_entry(temporary);
+            retained_earnings_credit += std::abs(t_account_debit);
         }
     }
-    bool debitEntry;
-    if (retainedEarningsCredit > 0){
-        debitEntry = false;
+    bool debit_entry;
+    if (retained_earnings_credit > 0){
+        debit_entry = false;
     }
     else{
-        debitEntry = true;
+        debit_entry = true;
     }
-    temporary = new accounting::Entry(closingTheBook->getDBCode(),
-                                      debitEntry, 
-                                      std::abs(retainedEarningsCredit), 
+    temporary = new accounting::Entry(closing_the_book->get_db_code(),
+                                      debit_entry, 
+                                      std::abs(retained_earnings_credit), 
                                       util::enums::TAccounts::RETAINEDEARNINGS);
-    temporary->insertToDB();
-    closingTheBook->addEntry(temporary);
-    return closingTheBook;
+    temporary->insert_to_db();
+    closing_the_book->add_entry(temporary);
+    return closing_the_book;
 }
 
 ClosingTemporaryAccountsFactory::ClosingTemporaryAccountsFactory(
-    util::Date *transactionDate,
-    std::string transactionName,
-    std::vector<accounting::TAccount *> &temporaryAccounts)
-    : AccountingTransactionFactory(transactionDate, transactionName, "")
+    util::Date *transaction_date,
+    std::string transaction_name,
+    std::vector<accounting::TAccount *> &temporary_accounts)
+    : AccountingTransactionFactory(transaction_date, transaction_name, "")
 {
-    this->tAccounts = temporaryAccounts;
+    this->t_accounts = temporary_accounts;
 }

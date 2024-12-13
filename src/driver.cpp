@@ -20,7 +20,7 @@ void list_of_items(store::StoreSystem *);
 
 int main(int argc, char *argv[])
 {
-    store::StoreSystem *my_system = store::StoreSystem::getInstance();
+    store::StoreSystem *my_system = store::StoreSystem::get_instance();
     int option = -1;
     while (option)
     {
@@ -128,8 +128,8 @@ void add_new_inventory(store::StoreSystem *s_system)
     std::string item_code = get_string("Enter item code:");
     double price = get_double("Enter price:", 0.0, std::numeric_limits<double>::max());
     inventory::Inventory *new_inventory = new inventory::Inventory(item_code, name, price);
-    new_inventory->insertToDB();
-    s_system->addItem(new_inventory);
+    new_inventory->insert_to_db();
+    s_system->add_item(new_inventory);
     std::cout << "new inventory added" << '\n';
 }
 
@@ -145,11 +145,11 @@ void purchase_inventory(store::StoreSystem *s_system)
         add_purchase_entry(new_transaction);
         more = get_int("more?", 0, 1);
     }
-    double paid_cash = get_double("How much cash paid? ", 0, new_transaction->getTransactionAmount());
-    new_transaction->setPaidCash(paid_cash);
-    new_transaction->setPaidCredit(new_transaction->getTransactionAmount() - paid_cash);
-    new_transaction->insertToDB();
-    s_system->buyItem(new_transaction);
+    double paid_cash = get_double("How much cash paid? ", 0, new_transaction->get_transaction_amount());
+    new_transaction->set_paid_cash(paid_cash);
+    new_transaction->set_paid_credit(new_transaction->get_transaction_amount() - paid_cash);
+    new_transaction->insert_to_db();
+    s_system->buy_item(new_transaction);
     return;
 }
 
@@ -158,8 +158,8 @@ void add_purchase_entry(store::PurchaseTransaction *p)
     std::string item_code = get_string("Enter item DB Code:");
     double price = get_double("Enter each item price", 0.0, std::numeric_limits<double>::max());
     int qty = get_int("Enter qty purchased: ", 0, std::numeric_limits<int>::max());
-    inventory::PurchaseEntry *new_entry = new inventory::PurchaseEntry(item_code, p->getDBCode(), price, qty);
-    p->addEntry(new_entry);
+    inventory::PurchaseEntry *new_entry = new inventory::PurchaseEntry(item_code, p->get_db_code(), price, qty);
+    p->add_entry(new_entry);
 }
 
 void purchase_asset(store::StoreSystem *s_system)
@@ -171,16 +171,16 @@ void purchase_asset(store::StoreSystem *s_system)
     int useful_life = get_int("Year useful life: ", 1, 99);
     util::Date *date_purchased = get_date("date purchased ");
     inventory::Equipment *new_eqp = new inventory::Equipment(name, item_code, residual_value, useful_life, date_purchased);
-    new_eqp->insertToDB();
+    new_eqp->insert_to_db();
     store::PurchaseTransaction *new_transaction = new store::PurchaseTransaction("", date_purchased);
-    inventory::PurchaseEntry *new_entry = new inventory::PurchaseEntry(new_eqp->getDBCode(), "", purchase_cost, 1);
-    new_transaction->addEntry(new_entry);
-    double paid_cash = get_double("How much cash paid? ", 0, new_transaction->getTransactionAmount());
-    new_transaction->setPaidCash(paid_cash);
-    new_transaction->setPaidCredit(new_transaction->getTransactionAmount() - paid_cash);
-    new_transaction->insertToDB();
-    s_system->addProperty(new_eqp);
-    s_system->capitalizeAsset(new_transaction);
+    inventory::PurchaseEntry *new_entry = new inventory::PurchaseEntry(new_eqp->get_db_code(), "", purchase_cost, 1);
+    new_transaction->add_entry(new_entry);
+    double paid_cash = get_double("How much cash paid? ", 0, new_transaction->get_transaction_amount());
+    new_transaction->set_paid_cash(paid_cash);
+    new_transaction->set_paid_credit(new_transaction->get_transaction_amount() - paid_cash);
+    new_transaction->insert_to_db();
+    s_system->add_property(new_eqp);
+    s_system->capitalize_asset(new_transaction);
 }
 
 void capitalize_assets(store::StoreSystem *s_system)
@@ -189,39 +189,39 @@ void capitalize_assets(store::StoreSystem *s_system)
     double capitalized_amt = get_double("Capitalized amount: ", 0.0, std::numeric_limits<double>::max());
     util::Date *trans_date = get_date("transaction date: ");
     store::PurchaseTransaction *new_transaction = new store::PurchaseTransaction("", trans_date);
-    inventory::PurchaseEntry *new_entry = new inventory::PurchaseEntry(item_code, new_transaction->getDBCode(), capitalized_amt, 1);
-    new_transaction->addEntry(new_entry);
-    double paid_cash = get_double("How much cash paid? ", 0, new_transaction->getTransactionAmount());
-    new_transaction->setPaidCash(paid_cash);
-    new_transaction->setPaidCredit(new_transaction->getTransactionAmount() - paid_cash);
-    new_transaction->insertToDB();
-    s_system->capitalizeAsset(new_transaction);
+    inventory::PurchaseEntry *new_entry = new inventory::PurchaseEntry(item_code, new_transaction->get_db_code(), capitalized_amt, 1);
+    new_transaction->add_entry(new_entry);
+    double paid_cash = get_double("How much cash paid? ", 0, new_transaction->get_transaction_amount());
+    new_transaction->set_paid_cash(paid_cash);
+    new_transaction->set_paid_credit(new_transaction->get_transaction_amount() - paid_cash);
+    new_transaction->insert_to_db();
+    s_system->capitalize_asset(new_transaction);
 }
 
 void sell_inventory(store::StoreSystem *s_system)
 {
     std::string item_code = get_string("inventory item code: ");
     int qty = get_int("qty: ", 1, std::numeric_limits<int>::max());
-    double price = s_system->getInventory(item_code)->getSellingPrice();
+    double price = s_system->get_inventory(item_code)->get_selling_price();
     util::Date *date = get_date("enter date: ");
     store::SellingTransaction *new_transaction = new store::SellingTransaction(date);
-    inventory::SellingEntry *new_entry = new inventory::SellingEntry(item_code, new_transaction->getDBCode(), price, qty);
-    new_transaction->addEntry(new_entry);
+    inventory::SellingEntry *new_entry = new inventory::SellingEntry(item_code, new_transaction->get_db_code(), price, qty);
+    new_transaction->add_entry(new_entry);
     int more = get_int("more?", 0, 1);
     while (more)
     {
         item_code = get_string("inventory item code: ");
         qty = get_int("qty: ", 1, std::numeric_limits<int>::max());
-        price = s_system->getInventory(item_code)->getSellingPrice();
-        new_entry = new inventory::SellingEntry(item_code, new_transaction->getDBCode(), price, qty);
-        new_transaction->addEntry(new_entry);
+        price = s_system->get_inventory(item_code)->get_selling_price();
+        new_entry = new inventory::SellingEntry(item_code, new_transaction->get_db_code(), price, qty);
+        new_transaction->add_entry(new_entry);
         more = get_int("more?", 0, 1);
     }
-    double paid_cash = get_double("How much cash paid?", 0, new_transaction->getTransactionAmount());
-    new_transaction->setPaidCash(paid_cash);
-    new_transaction->setPaidCredit(new_transaction->getTransactionAmount() - paid_cash);
-    new_transaction->insertToDB();
-    s_system->sellItem(new_transaction);
+    double paid_cash = get_double("How much cash paid?", 0, new_transaction->get_transaction_amount());
+    new_transaction->set_paid_cash(paid_cash);
+    new_transaction->set_paid_credit(new_transaction->get_transaction_amount() - paid_cash);
+    new_transaction->insert_to_db();
+    s_system->sell_item(new_transaction);
 }
 
 void sell_assets(store::StoreSystem *s_system)
@@ -231,20 +231,20 @@ void sell_assets(store::StoreSystem *s_system)
     util::Date *date = get_date("enter date: ");
     store::SellingTransaction *new_transaction = new store::SellingTransaction(date);
     
-    inventory::SellingEntry *new_entry = new inventory::SellingEntry(item_code, new_transaction->getDBCode(), price, 1);
-    new_transaction->addEntry(new_entry);
-    double paid_cash = get_double("How much cash paid?", 0, new_transaction->getTransactionAmount());
-    new_transaction->setPaidCash(paid_cash);
-    new_transaction->setPaidCredit(new_transaction->getTransactionAmount() - paid_cash);
-    new_transaction->insertToDB();
-    s_system->disposeAsset(new_transaction);
+    inventory::SellingEntry *new_entry = new inventory::SellingEntry(item_code, new_transaction->get_db_code(), price, 1);
+    new_transaction->add_entry(new_entry);
+    double paid_cash = get_double("How much cash paid?", 0, new_transaction->get_transaction_amount());
+    new_transaction->set_paid_cash(paid_cash);
+    new_transaction->set_paid_credit(new_transaction->get_transaction_amount() - paid_cash);
+    new_transaction->insert_to_db();
+    s_system->dispose_asset(new_transaction);
 }
 
 void end_of_year(store::StoreSystem *s_system){
-    s_system->endYearAdjustment();
+    s_system->end_year_adjustment();
 }
 
 void list_of_items(store::StoreSystem *s_system)
 {
-    std::cout << s_system->toStringInv() << std::endl;
+    std::cout << s_system->to_string_inv() << std::endl;
 }

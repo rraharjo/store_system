@@ -15,28 +15,28 @@ namespace accounting
         util::enums::AccountTitles title;
 
     protected:
-        std::map<util::enums::TAccounts, TAccount *> tAccounts;
+        std::map<util::enums::TAccounts, TAccount *> t_accounts;
 
         Account(bool debit, util::enums::AccountTitles title);
 
         virtual ~Account();
 
-        void addTAccount(util::enums::TAccounts tAccount);
+        void add_t_account(util::enums::TAccounts t_account);
 
     public:
-        util::enums::AccountTitles getTitle();
+        util::enums::AccountTitles get_title();
 
-        std::string getTitleName();
+        std::string get_title_name();
 
-        double getTotalDebit();
+        double get_total_debit();
 
-        double getTotalCredit();
+        double get_total_credit();
 
-        void addEntry(Entry *entry);
+        void add_entry(Entry *entry);
 
         std::string to_string();
 
-        virtual void initiateTAccount() = 0;
+        virtual void initiate_t_account() = 0;
     };
 
     class Assets : public Account
@@ -44,7 +44,7 @@ namespace accounting
     public:
         Assets();
 
-        void initiateTAccount() override;
+        void initiate_t_account() override;
     };
 
     class Liabilities : public Account
@@ -52,7 +52,7 @@ namespace accounting
     public:
         Liabilities();
 
-        void initiateTAccount() override;
+        void initiate_t_account() override;
     };
 
     class StockholdersEquityAccount : public Account
@@ -60,9 +60,9 @@ namespace accounting
     public:
         StockholdersEquityAccount();
 
-        void initiateTAccount() override;
+        void initiate_t_account() override;
 
-        std::vector<TAccount *> getTemporaryAccounts();
+        std::vector<TAccount *> get_temporary_accounts();
     };
 };
 #endif

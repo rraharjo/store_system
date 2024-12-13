@@ -9,26 +9,26 @@ namespace inventory
     {
     protected:
         std::string name;
-        std::string itemCode;
-        PurchaseHistory *purchaseHistory;
-        SellingHistory *sellingHistory;
+        std::string item_code;
+        PurchaseHistory *purchase_history;
+        SellingHistory *selling_history;
         int qty;
 
-        Item(std::string name, std::string itemCode);
+        Item(std::string name, std::string item_code);
 
-        virtual void addExistingPurchaseEntry(PurchaseEntry *);
+        virtual void add_existing_purchase_entry(PurchaseEntry *);
 
-        void addExistingSellingEntry(SellingEntry *);
+        void add_existing_selling_entry(SellingEntry *);
 
     public:
-        std::string getName();
-        std::string getItemCode();
+        std::string get_name();
+        std::string get_item_code();
 
-        int getQty();
+        int get_qty();
 
-        virtual double sellItems(SellingEntry *entry) = 0;
+        virtual double sell_items(SellingEntry *entry) = 0;
 
-        virtual void addPurchase(PurchaseEntry *entry) = 0;
+        virtual void add_purchase(PurchaseEntry *entry) = 0;
     };
 };
 

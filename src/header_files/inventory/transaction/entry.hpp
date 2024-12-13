@@ -8,57 +8,57 @@ namespace inventory
     class Entry : public util::baseclass::HasTable
     {
     private:
-        util::Date *transactionDate;
-        std::string sellableDBCode;
-        std::string propertiesDBCode;
-        std::string transactionDBCode;
+        util::Date *transaction_date;
+        std::string sellable_db_code;
+        std::string properties_db_code;
+        std::string transaction_db_code;
         double price;
         int qty;
 
     protected:
-        Entry(std::string itemDBCode, std::string transactionCode, double price, int qty);
+        Entry(std::string item_db_code, std::string transaction_code, double price, int qty);
 
     public:
-        std::string getSellableDBCode();
-        std::string getPropertiesDBCode();
-        std::string getTransactionDBCode();
-        double getPrice();
-        int getQty();
-        util::Date *getTransactionDate();
+        std::string get_sellable_db_code();
+        std::string get_properties_db_code();
+        std::string get_transaction_db_code();
+        double get_price();
+        int get_qty();
+        util::Date *get_transaction_date();
 
-        void setTransactionDate(util::Date *transactionDate);
+        void set_transaction_date(util::Date *transaction_date);
 
-        void setTransactionDBCode(std::string dbCode);
+        void set_transaction_db_code(std::string db_code);
     };
 
     /**********************************PURCHASEENTRY*********************************/
     class PurchaseEntry : public Entry
     {
     private:
-        static util::Table *classTable;
+        static util::Table *class_table;
 
-        static std::vector<PurchaseEntry *> generateFromDatabase(std::string);
+        static std::vector<PurchaseEntry *> generate_from_database(std::string);
 
-        int availableQty;
+        int available_qty;
 
     protected:
-        std::vector<std::string> getInsertParameter() override;
+        std::vector<std::string> get_insert_parameter() override;
 
-        std::vector<std::string> getUpdateParameter() override;
+        std::vector<std::string> get_update_parameter() override;
 
     public:
-        void insertToDB() override;
+        void insert_to_db() override;
 
-        void updateToDB() override;
+        void update_to_db() override;
 
-        PurchaseEntry(std::string dbCode, std::string itemDBCode, std::string transactionDBCode,
-                      double price, int allQty, int availableQty);
+        PurchaseEntry(std::string db_code, std::string item_db_code, std::string transaction_db_code,
+                      double price, int all_qty, int available_qty);
 
-        PurchaseEntry(std::string itemDBCode, std::string transactionDBCode, double price, int qty);
+        PurchaseEntry(std::string item_db_code, std::string transaction_db_code, double price, int qty);
 
-        int getAvailableQty();
+        int get_available_qty();
 
-        void setAvailableQty(int qty);
+        void set_available_qty(int qty);
 
         friend class Inventory;
 
@@ -69,20 +69,20 @@ namespace inventory
     class SellingEntry : public Entry
     {
     private:
-        static util::Table *classTable;
-        static int nextItemCode;
+        static util::Table *class_table;
+        static int next_item_code;
 
     protected:
-        std::vector<std::string> getInsertParameter() override;
+        std::vector<std::string> get_insert_parameter() override;
 
-        std::vector<std::string> getUpdateParameter() override;
+        std::vector<std::string> get_update_parameter() override;
 
     public:
-        void insertToDB() override;
+        void insert_to_db() override;
 
-        void updateToDB() override;
+        void update_to_db() override;
 
-        SellingEntry(std::string itemDBCode, std::string transactionCode, double price, int qty);
+        SellingEntry(std::string item_db_code, std::string transaction_code, double price, int qty);
     };
 }
 #endif

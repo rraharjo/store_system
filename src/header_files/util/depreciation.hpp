@@ -3,49 +3,48 @@
 #define DEPRECIATION_HPP
 namespace util
 {
-    // namespace formula
     class DepreciationMethod
     {
     protected:
         double cost;
-        double residualValue;
-        int yearUsefulLife;
+        double residual_value;
+        int year_useful_life;
 
     public:
-        virtual double getAccumulatedDepreciationAtYear(int year) = 0;
+        virtual double get_accumulated_depreciation_at_year(int year) = 0;
 
-        virtual double getDepreciationExpenseAtYear(int year) = 0;
+        virtual double get_depreciation_expense_at_year(int year) = 0;
 
-        virtual void setCost(double cost);
+        virtual void set_cost(double cost);
 
-        DepreciationMethod(double cost, double residualValue, int yearUsefulLife);
+        DepreciationMethod(double cost, double residual_value, int year_useful_life);
     };
 
     class StraightLineDepreciation : public DepreciationMethod
     {
     public:
-        StraightLineDepreciation(double cost, double residualValue, int yearUsefulLife);
+        StraightLineDepreciation(double cost, double residual_value, int year_useful_life);
 
-        double getAccumulatedDepreciationAtYear(int year) override;
+        double get_accumulated_depreciation_at_year(int year) override;
 
-        double getDepreciationExpenseAtYear(int year) override;
+        double get_depreciation_expense_at_year(int year) override;
     };
 
     class DoubleDecliningDepreciation : public DepreciationMethod
     {
     private:
-        std::vector<double> accumulatedDepreciation;
+        std::vector<double> accumulated_depreciation;
 
-        void initiateAccumulatedDepreciation();
+        void initiate_accumulated_depreciation();
 
     public:
-        void setCost(double cost) override;
+        void set_cost(double cost) override;
 
-        DoubleDecliningDepreciation(double cost, int yearUsefulLife);
+        DoubleDecliningDepreciation(double cost, int year_useful_life);
 
-        double getAccumulatedDepreciationAtYear(int year) override;
+        double get_accumulated_depreciation_at_year(int year) override;
 
-        double getDepreciationExpenseAtYear(int year) override;
+        double get_depreciation_expense_at_year(int year) override;
     };
 
 };

@@ -10,40 +10,40 @@ namespace inventory
     {
     private:
         static InventorySystem *instance;
-        accounting::AccountingSystem *aSystem;
+        accounting::AccountingSystem *a_system;
         std::map<std::string, Inventory *> sellables;
         std::map<std::string, Asset *> assets; 
 
         InventorySystem();
 
-        void addExistingAsset(Asset *);
+        void add_existing_asset(Asset *);
 
-        void addExistingInventory(Inventory *);
+        void add_existing_inventory(Inventory *);
     public:
     
-        static InventorySystem *getInstance();
+        static InventorySystem *get_instance();
 
-        Asset *getProperty(std::string dbCode);
+        Asset *get_property(std::string db_code);
 
-        Inventory *getInventory(std::string dbCode);
+        Inventory *get_inventory(std::string db_code);
 
-        void setASystem(accounting::AccountingSystem *aSystem);
+        void set_a_system(accounting::AccountingSystem *a_system);
 
-        double sellSellables(Entry *newEntry); // return the COGS
+        double sell_sellables(Entry *new_entry); // return the COGS
 
-        void purchaseSellables(Entry *newEntry);
+        void purchase_sellables(Entry *new_entry);
 
-        double sellProperties(Entry *newEntry);
+        double sell_properties(Entry *new_entry);
 
-        void purchaseProperties(Entry *newEntry);
+        void purchase_properties(Entry *new_entry);
 
-        void addNewItem(Inventory *newSellable);
+        void add_new_item(Inventory *new_sellable);
 
-        void addNewProperty(Asset *newProperty);
+        void add_new_property(Asset *new_property);
 
-        void applyDepreciation(std::string assetDBCode);
+        void apply_depreciation(std::string asset_db_code);
 
-        void applyAllDepreciation();
+        void apply_all_depreciation();
 
         std::string to_string();
     };

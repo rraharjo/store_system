@@ -47,21 +47,21 @@ namespace util
             END
         };
 
-        TAccounts &operator++(TAccounts &tAccount);
+        TAccounts &operator++(TAccounts &t_account);
 
-        extern std::map<TAccounts, std::string> tAccountsNameMap;
+        extern std::map<TAccounts, std::string> t_accounts_name_map;
 
-        extern std::vector<TAccounts> assetsTAccounts;
+        extern std::vector<TAccounts> assets_t_accounts;
 
-        extern std::vector<TAccounts> liabilitiesTAccounts;
+        extern std::vector<TAccounts> liabilities_t_accounts;
 
-        extern std::vector<TAccounts> stockholdersTAccounts;
+        extern std::vector<TAccounts> stockholders_t_accounts;
 
-        std::string getName(util::enums::TAccounts);
+        std::string get_name(util::enums::TAccounts);
 
-        TAccounts getTAccountEnum(std::string);
+        TAccounts get_t_account_enum(std::string);
 
-        AccountTitles getAccountTitle(util::enums::TAccounts);
+        AccountTitles get_account_title(util::enums::TAccounts);
     };
 };
 

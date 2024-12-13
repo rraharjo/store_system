@@ -10,28 +10,28 @@ namespace util
         class HasTable
         {
         private:
-            std::string dbCode;
+            std::string db_code;
 
         protected:
 
             HasTable();
 
-            void setDBCode(std::string dbCode);
+            void set_db_code(std::string db_code);
 
-            virtual std::vector<std::string> getInsertParameter() = 0;
+            virtual std::vector<std::string> get_insert_parameter() = 0;
 
-            virtual std::vector<std::string> getUpdateParameter() = 0;
+            virtual std::vector<std::string> get_update_parameter() = 0;
 
-            void insertToDBWithTable(util::Table *table, bool setDBCode = true);
+            void insert_to_db_with_table(util::Table *table, bool set_db_code = true);
 
-            void updateToDBWithTable(util::Table *table);
+            void update_to_db_with_table(util::Table *table);
 
         public:
-            std::string getDBCode();
+            std::string get_db_code();
 
-            virtual void insertToDB() = 0;
+            virtual void insert_to_db() = 0;
 
-            virtual void updateToDB() = 0;
+            virtual void update_to_db() = 0;
         };
     };
 };

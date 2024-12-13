@@ -13,30 +13,30 @@ namespace accounting
     class Transaction : public util::baseclass::HasTable
     {
     private:
-        static util::Table *classTable;
-        std::vector<Entry *> debitEntries;
-        std::vector<Entry *> creditEntries;
+        static util::Table *class_table;
+        std::vector<Entry *> debit_entries;
+        std::vector<Entry *> credit_entries;
         std::string name;
-        util::Date *transactionDate;
-        std::string entityID;
+        util::Date *transaction_date;
+        std::string entity_id;
 
     protected:
-        std::vector<std::string> getInsertParameter() override;
+        std::vector<std::string> get_insert_parameter() override;
 
-        std::vector<std::string> getUpdateParameter() override;
+        std::vector<std::string> get_update_parameter() override;
 
     public:
-        static std::vector<Transaction *> generateFromDatabase();
+        static std::vector<Transaction *> generate_from_database();
 
-        void insertToDB() override;
+        void insert_to_db() override;
 
-        void updateToDB() override;
+        void update_to_db() override;
 
-        Transaction(std::string dbCode, std::string name, util::Date *transactionDate, std::string pid);
+        Transaction(std::string db_code, std::string name, util::Date *transaction_date, std::string pid);
 
-        Transaction(std::string name, util::Date *transactionDate, std::string pid);
+        Transaction(std::string name, util::Date *transaction_date, std::string pid);
 
-        Transaction(std::string name, util::Date *transactionDate);
+        Transaction(std::string name, util::Date *transaction_date);
 
         Transaction(std::string name, std::string pid);
 
@@ -44,19 +44,19 @@ namespace accounting
 
         ~Transaction();
 
-        std::vector<Entry *> &getDebitEntries();
+        std::vector<Entry *> &get_debit_entries();
 
-        std::vector<Entry *> &getCreditEntries();
+        std::vector<Entry *> &get_credit_entries();
 
-        double getDebitAmount();
+        double get_debit_amount();
 
-        double getCreditAmount();
+        double get_credit_amount();
 
-        void addEntry(Entry *entry);
+        void add_entry(Entry *entry);
 
-        bool isBalanced();
+        bool is_balanced();
 
-        std::string toString();
+        std::string to_string();
     };
 };
 #endif

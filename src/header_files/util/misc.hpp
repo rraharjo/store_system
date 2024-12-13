@@ -8,11 +8,11 @@
 #define MISCUTIL
 
 namespace util{
-    void printVec(std::vector<int>& v);
-    void printVec(std::vector<std::string>& v);
-    void printTable(std::vector<std::vector<std::string>>& t, bool truncated);
-    void printTable(std::vector<std::vector<std::string>>& t);
-    void printTableInt(std::vector<std::vector<int>>& t);
+    void print_vec(std::vector<int>& v);
+    void print_vec(std::vector<std::string>& v);
+    void print_table(std::vector<std::vector<std::string>>& t, bool truncated);
+    void print_table(std::vector<std::vector<std::string>>& t);
+    void print_table_int(std::vector<std::vector<int>>& t);
 };
 
 #endif

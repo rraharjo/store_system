@@ -4,16 +4,16 @@
 
 /*int main()
 {
-    accounting::AccountingSystem *aSystem = accounting::AccountingSystem::getInstance();
+    accounting::AccountingSystem *a_system = accounting::AccountingSystem::get_instance();
     accounting::Transaction *transaction1 = new accounting::Transaction("Transaction 1");
     accounting::Entry *entry1 = new accounting::Entry(true, 100, util::enums::AccountTitles::ASSETS, util::enums::TAccounts::CASH);
     accounting::Entry *entry2 = new accounting::Entry(false, 100, util::enums::AccountTitles::LIABILITIES, util::enums::TAccounts::UNEARNEDREV);
-    transaction1->addEntry(entry1);
-    transaction1->addEntry(entry2);
-    aSystem->addTransaction(transaction1);
+    transaction1->add_entry(entry1);
+    transaction1->add_entry(entry2);
+    a_system->add_transaction(transaction1);
     delete transaction1;
-    std::cout << aSystem->to_string() << std::endl;
-    delete aSystem;
+    std::cout << a_system->to_string() << std::endl;
+    delete a_system;
     return 0;
 }*/
 

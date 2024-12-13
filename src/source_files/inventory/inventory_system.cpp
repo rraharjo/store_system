@@ -3,22 +3,22 @@ using namespace inventory;
 
 InventorySystem *InventorySystem::instance = NULL;
 
-InventorySystem *InventorySystem::getInstance()
+InventorySystem *InventorySystem::get_instance()
 {
     if (InventorySystem::instance == NULL)
     {
         InventorySystem::instance = new InventorySystem();
-        std::vector<Inventory *> inventories = Inventory::generateFromDatabase();
+        std::vector<Inventory *> inventories = Inventory::generate_from_database();
         for (Inventory *inventory : inventories)
         {
-            InventorySystem::instance->sellables[inventory->getDBCode()] = inventory;
+            InventorySystem::instance->sellables[inventory->get_db_code()] = inventory;
         }
-        std::vector<Asset *> equipments = Equipment::generateFromDatabase();
+        std::vector<Asset *> equipments = Equipment::generate_from_database();
         for (Asset *equipment : equipments)
         {
-            InventorySystem::instance->assets[equipment->getDBCode()] = equipment;
+            InventorySystem::instance->assets[equipment->get_db_code()] = equipment;
         }
-        InventorySystem::instance->setASystem(accounting::AccountingSystem::getInstance());
+        InventorySystem::instance->set_a_system(accounting::AccountingSystem::get_instance());
     }
     return InventorySystem::instance;
 }
@@ -29,122 +29,122 @@ InventorySystem::InventorySystem()
     this->assets = {};
 }
 
-void InventorySystem::setASystem(accounting::AccountingSystem *aSystem)
+void InventorySystem::set_a_system(accounting::AccountingSystem *a_system)
 {
-    this->aSystem = aSystem;
+    this->a_system = a_system;
 }
 
-void InventorySystem::addExistingInventory(Inventory *inv)
+void InventorySystem::add_existing_inventory(Inventory *inv)
 {
-    this->addNewItem(inv);
+    this->add_new_item(inv);
 }
 
-void InventorySystem::addExistingAsset(Asset *asset)
+void InventorySystem::add_existing_asset(Asset *asset)
 {
-    this->addNewProperty(asset);
+    this->add_new_property(asset);
 }
 
-Asset *InventorySystem::getProperty(std::string dbCode)
+Asset *InventorySystem::get_property(std::string db_code)
 {
-    return this->assets[dbCode];
+    return this->assets[db_code];
 }
 
-Inventory *InventorySystem::getInventory(std::string dbCode)
+Inventory *InventorySystem::get_inventory(std::string db_code)
 {
-    return this->sellables[dbCode];
+    return this->sellables[db_code];
 }
 
-double InventorySystem::sellSellables(Entry *newEntry)
+double InventorySystem::sell_sellables(Entry *new_entry)
 {
-    if (!this->sellables[newEntry->getSellableDBCode()])
+    if (!this->sellables[new_entry->get_sellable_db_code()])
     {
         return -1;
     }
-    return this->sellables[newEntry->getSellableDBCode()]->sellItems((SellingEntry *)newEntry);
+    return this->sellables[new_entry->get_sellable_db_code()]->sell_items((SellingEntry *)new_entry);
 }
 
-void InventorySystem::purchaseSellables(Entry *newEntry)
+void InventorySystem::purchase_sellables(Entry *new_entry)
 {
-    if (!this->sellables[newEntry->getSellableDBCode()])
+    if (!this->sellables[new_entry->get_sellable_db_code()])
     {
         return;
     }
-    this->sellables[newEntry->getSellableDBCode()]->addPurchase((PurchaseEntry *)newEntry);
+    this->sellables[new_entry->get_sellable_db_code()]->add_purchase((PurchaseEntry *)new_entry);
 }
 
-double InventorySystem::sellProperties(Entry *newEntry)
+double InventorySystem::sell_properties(Entry *new_entry)
 {
-    if (!this->assets[newEntry->getPropertiesDBCode()])
+    if (!this->assets[new_entry->get_properties_db_code()])
     {
         return -1;
     }
-    return this->assets[newEntry->getPropertiesDBCode()]->sellItems((SellingEntry *)newEntry);
+    return this->assets[new_entry->get_properties_db_code()]->sell_items((SellingEntry *)new_entry);
 }
 
-void InventorySystem::purchaseProperties(Entry *newEntry)
+void InventorySystem::purchase_properties(Entry *new_entry)
 {
-    if (!this->assets[newEntry->getPropertiesDBCode()])
+    if (!this->assets[new_entry->get_properties_db_code()])
     {
         return;
     }
-    this->assets[newEntry->getPropertiesDBCode()]->addPurchase((PurchaseEntry *)newEntry);
+    this->assets[new_entry->get_properties_db_code()]->add_purchase((PurchaseEntry *)new_entry);
 }
 
-void InventorySystem::addNewItem(Inventory *newSellable)
+void InventorySystem::add_new_item(Inventory *new_sellable)
 {
-    if (this->sellables.find(newSellable->getDBCode()) == this->sellables.end())
+    if (this->sellables.find(new_sellable->get_db_code()) == this->sellables.end())
     {
-        this->sellables[newSellable->getDBCode()] = newSellable;
+        this->sellables[new_sellable->get_db_code()] = new_sellable;
     }
 }
 
-void InventorySystem::addNewProperty(Asset *newDepreciable)
+void InventorySystem::add_new_property(Asset *new_depreciable)
 {
-    if (this->assets.find(newDepreciable->getDBCode()) == this->assets.end())
+    if (this->assets.find(new_depreciable->get_db_code()) == this->assets.end())
     {
-        this->assets[newDepreciable->getDBCode()] = newDepreciable;
+        this->assets[new_depreciable->get_db_code()] = new_depreciable;
     }
 }
 
-void InventorySystem::applyDepreciation(std::string assetDBCode)
+void InventorySystem::apply_depreciation(std::string asset_db_code)
 {
-    Asset *asset = this->assets[assetDBCode];
+    Asset *asset = this->assets[asset_db_code];
     util::Date *now = new util::Date();
-    if ((!asset->getLastDepreciationDate() && now->diff_years_to(asset->getDateBought()) >= 0) ||
-        now->diff_years_to(asset->getLastDepreciationDate()) >= 0)
+    if ((!asset->get_last_depreciation_date() && now->diff_years_to(asset->get_date_bought()) >= 0) ||
+        now->diff_years_to(asset->get_last_depreciation_date()) >= 0)
     {
         delete now;
         return;
     }
-    double depreciationAmountThisYear = asset->getReducedValueCurrentYear();
-    util::Date *newDepreciationDate = new util::Date();
-    delete asset->getLastDepreciationDate();
-    asset->setLastDepreciationDate(newDepreciationDate);
-    std::string accountingTransactionTitle = "Incurred depreciation expense";
-    accounting::Transaction *newTransaction =
-        util::factory::ApplyDepreciationFactory(now, accountingTransactionTitle, assetDBCode, depreciationAmountThisYear)
-            .createTransaction();
-    this->aSystem->addTransaction(newTransaction);
+    double depreciation_amt_this_year = asset->get_reduced_value_current_year();
+    util::Date *new_depreciation_date = new util::Date();
+    delete asset->get_last_depreciation_date();
+    asset->set_last_depreciation_date(new_depreciation_date);
+    std::string acct_transaction_title = "Incurred depreciation expense";
+    accounting::Transaction *new_transaction =
+        util::factory::ApplyDepreciationFactory(now, acct_transaction_title, asset_db_code, depreciation_amt_this_year)
+            .create_transaction();
+    this->a_system->add_transaction(new_transaction);
 }
 
-void InventorySystem::applyAllDepreciation()
+void InventorySystem::apply_all_depreciation()
 {
     for (auto it = this->assets.begin(); it != this->assets.end(); it++)
     {
-        this->applyDepreciation(it->first);
+        this->apply_depreciation(it->first);
     }
 }
 
 std::string InventorySystem::to_string()
 {
-    std::string toRet = "";
+    std::string to_ret = "";
     for (auto it = this->sellables.begin(); it != this->sellables.end(); it++)
     {
-        toRet += it->second->to_string();
+        to_ret += it->second->to_string();
     }
     for (auto it = this->assets.begin(); it != this->assets.end(); it++)
     {
-        toRet += it->second->toString();
+        to_ret += it->second->to_string();
     }
-    return toRet;
+    return to_ret;
 }

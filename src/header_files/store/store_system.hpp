@@ -10,35 +10,35 @@ namespace store
     {
     private:
         static StoreSystem *instance;
-        std::vector<PurchaseTransaction *> purchaseTransactions;
-        std::vector<SellingTransaction *> sellingTransactions;
-        accounting::AccountingSystem *aSystem;
-        inventory::InventorySystem *iSystem;
+        std::vector<PurchaseTransaction *> purchase_transactions;
+        std::vector<SellingTransaction *> selling_transactions;
+        accounting::AccountingSystem *a_system;
+        inventory::InventorySystem *i_system;
 
         StoreSystem();
 
     public:
-        static StoreSystem *getInstance();
+        static StoreSystem *get_instance();
 
-        void sellItem(SellingTransaction *sellTransaction);
+        void sell_item(SellingTransaction *sell_transaction);
 
-        void buyItem(PurchaseTransaction *purchaseTransaction);
+        void buy_item(PurchaseTransaction *purchase_transaction);
 
-        void capitalizeAsset(PurchaseTransaction *purchaseTransaction);
+        void capitalize_asset(PurchaseTransaction *purchase_transaction);
 
-        void disposeAsset(SellingTransaction *sellTransaction);
+        void dispose_asset(SellingTransaction *sell_transaction);
 
-        void addItem(inventory::Inventory *newSellable);
+        void add_item(inventory::Inventory *new_sellable);
 
-        void addProperty(inventory::Equipment *newProperty);
+        void add_property(inventory::Equipment *new_property);
 
-        void endYearAdjustment();
+        void end_year_adjustment();
 
-        inventory::Inventory *getInventory(std::string dbCode);
+        inventory::Inventory *get_inventory(std::string db_code);
 
-        std::string toStringInv();
+        std::string to_string_inv();
 
-        std::string toString();
+        std::string to_string();
     };
 }
 #endif
