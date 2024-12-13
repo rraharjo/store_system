@@ -2,13 +2,15 @@
 
 auto handle_send_thread = [](SOCKET *client_sock, std::mutex *mtx, std::string command){
     int i_result;
-    char send_buff[SEND_BUFF] = "Done operation";
-    memset(send_buff, '\0', SEND_BUFF);
-    //TODO fix send - not working
+    char send_buff[SEND_BUFF] = "Done operation: ";
+    size_t cur_send_len = strlen(send_buff);
+    const size_t command_len = strlen(command.c_str());
+    memcpy(send_buff + cur_send_len, command.c_str(), strlen(command.c_str()));
+    send_buff[cur_send_len + command_len] = '\0';
     std::unique_lock<std::mutex> process_lock(*mtx);
     std::cout << command << " process successful!" << std::endl;
     process_lock.unlock();
-    i_result = send(*client_sock, send_buff, strlen(send_buff), 0);
+    i_result = send(*client_sock, send_buff, (int)strlen(send_buff), 0);
     if (i_result == SOCKET_ERROR){
         int error_code = WSAGetLastError();
         throw std::runtime_error("Error on send() with error code " + std::to_string(error_code) + "\n");

@@ -14,7 +14,7 @@
 #define LOOPBACK_ADDRESS "127.0.0.1"
 #define MAX_CLIENT 5
 #define RECV_BUFF 512
-#define SEND_BUFF 32
+#define SEND_BUFF 512
 namespace winnetwork
 {
 
