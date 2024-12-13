@@ -47,7 +47,13 @@ void winnetwork::WinTCPServer::init_socket()
         throw std::runtime_error("Error on bind() with error code " + std::to_string(error_code) + "\n");
     }
     freeaddrinfo(addrinfo_result);
+}
 
+void winnetwork::WinTCPServer::start_server(){
+    int i_result;
+
+    this->init_socket();
+    
     i_result = listen(this->listen_socket, SOMAXCONN);
     if (i_result == SOCKET_ERROR)
     {
@@ -56,9 +62,5 @@ void winnetwork::WinTCPServer::init_socket()
         throw std::runtime_error("Error on listen() with error code " + std::to_string(error_code) + "\n");
     }
     std::cout << "listening at port " << this->port_number << std::endl;
-}
-
-void winnetwork::WinTCPServer::start_server(){
-    this->init_socket();
     //TODO: Handle thread
 }
