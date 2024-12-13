@@ -13,7 +13,8 @@
 #define DEFAULT_PORT "20000"
 #define LOOPBACK_ADDRESS "127.0.0.1"
 #define MAX_CLIENT 5
-#define BUFF_SIZE 512
+#define RECV_BUFF 512
+#define SEND_BUFF 32
 namespace winnetwork
 {
 

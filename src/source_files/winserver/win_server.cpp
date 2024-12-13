@@ -1,17 +1,35 @@
 #include "winserver/win_server.hpp"
 
-auto handle_thread = [](SOCKET *client_sock, std::mutex *mtx, int *num_of_client)
+auto handle_send_thread = [](SOCKET *client_sock, std::mutex *mtx, std::string command){
+    int i_result;
+    char send_buff[SEND_BUFF] = "Done operation";
+    memset(send_buff, '\0', SEND_BUFF);
+    //TODO fix send - not working
+    std::unique_lock<std::mutex> process_lock(*mtx);
+    std::cout << command << " process successful!" << std::endl;
+    process_lock.unlock();
+    i_result = send(*client_sock, send_buff, strlen(send_buff), 0);
+    if (i_result == SOCKET_ERROR){
+        int error_code = WSAGetLastError();
+        throw std::runtime_error("Error on send() with error code " + std::to_string(error_code) + "\n");
+    }
+};
+
+auto handle_recv_thread = [](SOCKET *client_sock, std::mutex *mtx, int *num_of_client)
 {
     int i_result = 0;
-    char recv_buff[BUFF_SIZE];
+    char recv_buff[RECV_BUFF];
     do
     {
         memset(&recv_buff, '\0', i_result);
-        i_result = recv(*client_sock, recv_buff, BUFF_SIZE, 0);
+        i_result = recv(*client_sock, recv_buff, RECV_BUFF, 0);
         if (i_result > 0)
         {
             // std::cout << std::this_thread::get_id() << ">" << recv_buff << std::endl;
-            printf("%d>%s\n", std::this_thread::get_id(), recv_buff);
+            //printf("%d>%s\n", std::this_thread::get_id(), recv_buff);
+            std::string command = recv_buff;
+            std::thread send_thread = std::thread(handle_send_thread, client_sock, mtx, command);
+            send_thread.detach();
         }
         else if (i_result == 0)
         {
@@ -20,7 +38,7 @@ auto handle_thread = [](SOCKET *client_sock, std::mutex *mtx, int *num_of_client
         else
         {
             int error_code = WSAGetLastError();
-            throw std::system_error(error_code, std::generic_category(), "Error on recv()");
+            throw std::runtime_error("Error on recv() with error code " + std::to_string(error_code) + "\n");
         }
     } while (i_result > 0);
     closesocket(*client_sock);
@@ -118,7 +136,7 @@ void winnetwork::WinTCPServer::start_server()
 
         this->num_of_client++;
         my_lock.unlock();
-        std::thread new_thread = std::thread(handle_thread, client_sock, &this->my_mtx, &this->num_of_client);
+        std::thread new_thread = std::thread(handle_recv_thread, client_sock, &this->my_mtx, &this->num_of_client);
         new_thread.detach();
         std::cout << "A new client is connected" << std::endl;
     }
