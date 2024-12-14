@@ -1,6 +1,7 @@
 #include "winserver/win_server.hpp"
 
-auto handle_send_thread = [](SOCKET *client_sock, std::mutex *mtx, std::string command){
+auto handle_send_thread = [](SOCKET *client_sock, std::mutex *mtx, std::string command)
+{
     int i_result;
     char send_buff[SEND_BUFF] = "Done operation: ";
     size_t cur_send_len = strlen(send_buff);
@@ -11,7 +12,8 @@ auto handle_send_thread = [](SOCKET *client_sock, std::mutex *mtx, std::string c
     std::cout << command << " process successful!" << std::endl;
     process_lock.unlock();
     i_result = send(*client_sock, send_buff, (int)strlen(send_buff), 0);
-    if (i_result == SOCKET_ERROR){
+    if (i_result == SOCKET_ERROR)
+    {
         int error_code = WSAGetLastError();
         throw std::runtime_error("Error on send() with error code " + std::to_string(error_code) + "\n");
     }
@@ -27,8 +29,6 @@ auto handle_recv_thread = [](SOCKET *client_sock, std::mutex *mtx, int *num_of_c
         i_result = recv(*client_sock, recv_buff, RECV_BUFF, 0);
         if (i_result > 0)
         {
-            // std::cout << std::this_thread::get_id() << ">" << recv_buff << std::endl;
-            //printf("%d>%s\n", std::this_thread::get_id(), recv_buff);
             std::string command = recv_buff;
             std::thread send_thread = std::thread(handle_send_thread, client_sock, mtx, command);
             send_thread.detach();
@@ -116,8 +116,10 @@ void winnetwork::WinTCPServer::start_server()
     while (true)
     {
         SOCKET *client_sock = new SOCKET();
+        struct sockaddr_in client_addr;
+        int client_size = sizeof(client_addr);
         *client_sock = INVALID_SOCKET;
-        *client_sock = accept(this->listen_socket, NULL, NULL);
+        *client_sock = accept(this->listen_socket, (sockaddr *)&client_addr, &client_size);
         if (*client_sock == SOCKET_ERROR)
         {
             printf("Accept failed %d\n", WSAGetLastError());
@@ -134,6 +136,7 @@ void winnetwork::WinTCPServer::start_server()
             my_lock.unlock();
             closesocket(*client_sock);
             delete client_sock;
+            continue;
         }
 
         this->num_of_client++;
