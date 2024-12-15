@@ -13,6 +13,7 @@ namespace util{
     void print_table(std::vector<std::vector<std::string>>& t, bool truncated);
     void print_table(std::vector<std::vector<std::string>>& t);
     void print_table_int(std::vector<std::vector<int>>& t);
+    std::vector<std::string> tokenize(std::string&);
 };
 
 #endif

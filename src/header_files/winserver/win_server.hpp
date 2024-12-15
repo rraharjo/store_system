@@ -6,6 +6,7 @@
 #include <string>
 #include <iostream>
 #include <stdexcept>
+#include "store/store_system.hpp"
 
 #ifndef WIN_SERVER
 #define WIN_SERVER

@@ -30,6 +30,7 @@ auto handle_recv_thread = [](SOCKET *client_sock, std::mutex *mtx, int *num_of_c
         if (i_result > 0)
         {
             std::string command = recv_buff;
+            //Send receive buff to driver
             std::thread send_thread = std::thread(handle_send_thread, client_sock, mtx, command);
             send_thread.detach();
         }
@@ -50,6 +51,8 @@ auto handle_recv_thread = [](SOCKET *client_sock, std::mutex *mtx, int *num_of_c
     my_lock.unlock();
     std::cout << "a client disconnected..." << std::endl;
 };
+
+
 
 winnetwork::WinTCPServer::WinTCPServer(std::string ip_address, std::string port_number) : ip_address(ip_address), port_number(port_number)
 {

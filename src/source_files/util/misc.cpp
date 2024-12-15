@@ -78,3 +78,50 @@ void util::print_table_int(std::vector<std::vector<int>> &t)
         std::cout << std::endl;
     }
 }
+
+std::vector<std::string> util::tokenize(std::string &command)
+{
+    std::vector<std::string> to_ret;
+    std::string current_string;
+    bool inside_quote = false;
+    int size = command.size();
+    int cur_idx = 0;
+    while (cur_idx < size){
+        if (inside_quote){
+            if (command[cur_idx] == '\"'){
+                inside_quote = false;
+                if (current_string.length() > 0){
+                    to_ret.push_back(current_string);
+                }
+            }
+            else{
+                current_string.push_back(command[cur_idx]);
+            }
+        }
+        else{
+            if (command[cur_idx] == ' '){
+                if (current_string.length() > 0){
+                    to_ret.push_back(current_string);
+                    current_string.clear();
+                }
+            }
+            else if (command[cur_idx] == '\"'){
+                if (current_string.length() > 0){
+                    throw std::runtime_error(command + " has a misplaced \"\n");
+                }
+                inside_quote = true;
+            }
+            else{
+                current_string.push_back(command[cur_idx]);
+            }
+        }
+        cur_idx++;
+    }
+    if (inside_quote){
+        throw std::runtime_error(command + " has an unclosed \"\n");
+    }
+    if (current_string.length() > 0){
+        to_ret.push_back(current_string);
+    }
+    return to_ret;
+}
