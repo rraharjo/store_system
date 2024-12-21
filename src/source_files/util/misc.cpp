@@ -92,6 +92,7 @@ std::vector<std::string> util::tokenize(std::string &command)
                 inside_quote = false;
                 if (current_string.length() > 0){
                     to_ret.push_back(current_string);
+                    current_string.clear();
                 }
             }
             else{
@@ -107,7 +108,7 @@ std::vector<std::string> util::tokenize(std::string &command)
             }
             else if (command[cur_idx] == '\"'){
                 if (current_string.length() > 0){
-                    throw std::runtime_error(command + " has a misplaced \"\n");
+                    throw std::invalid_argument(command + " has a misplaced \"\n");
                 }
                 inside_quote = true;
             }
@@ -118,7 +119,7 @@ std::vector<std::string> util::tokenize(std::string &command)
         cur_idx++;
     }
     if (inside_quote){
-        throw std::runtime_error(command + " has an unclosed \"\n");
+        throw std::invalid_argument(command + " has an unclosed \"\n");
     }
     if (current_string.length() > 0){
         to_ret.push_back(current_string);

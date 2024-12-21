@@ -1,4 +1,5 @@
 #include <iostream>
+#include <io.h>
 #include "store/store_system.hpp"
 #include "util/misc.hpp"
 #ifndef STORE_DRIVER
@@ -11,7 +12,7 @@
 #define SELL_INV 5
 #define SELL_ASS 6
 #define EO_YEAR 7
-#define LIST_ITEM 8
+
 namespace storedriver
 {
     class Driver
@@ -22,23 +23,25 @@ namespace storedriver
     public:
         Driver();
 
-        virtual void start();
+        virtual void start() = 0;
 
-        void execute_command(std::string);
+        bool execute_command(std::string);
     };
 
     class StdDriver : public Driver
     {
     public:
+        StdDriver();
+
         void start() override;
     };
 
     class CustomDriver : public Driver
     {
     private:
-        std::istringstream input_stream;
-        std::ostringstream output_stream;
     public:
+        CustomDriver();
+
         void start() override;
     };
 }
