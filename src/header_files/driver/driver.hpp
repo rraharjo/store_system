@@ -1,5 +1,7 @@
 #include <iostream>
 #include <io.h>
+#include <fcntl.h>
+#include <exception>
 #include "store/store_system.hpp"
 #include "util/misc.hpp"
 #ifndef STORE_DRIVER
@@ -39,10 +41,20 @@ namespace storedriver
     class CustomDriver : public Driver
     {
     private:
+        int input_pipe[2];
+        int output_pipe[2];
+
+        std::string read_input();
+
+        void write_output(std::string);
     public:
         CustomDriver();
 
         void start() override;
+
+        void write_input(std::string);
+
+        std::string read_output();
     };
 }
 #endif

@@ -1,25 +1,39 @@
 #include "winserver/win_server.hpp"
 
-auto handle_send_thread = [](SOCKET *client_sock, std::mutex *mtx, std::string command)
+auto driver_exec_thread = [](storedriver::CustomDriver *driver)
+{
+    //TODO: test thread safety
+    driver->start();
+};
+
+auto handle_send_thread = [](storedriver::CustomDriver *driver, std::queue<SOCKET *> *clients, std::mutex *driver_mtx)
 {
     int i_result;
-    char send_buff[SEND_BUFF] = "Done operation: ";
-    size_t cur_send_len = strlen(send_buff);
-    const size_t command_len = strlen(command.c_str());
-    memcpy(send_buff + cur_send_len, command.c_str(), strlen(command.c_str()));
-    send_buff[cur_send_len + command_len] = '\0';
-    std::unique_lock<std::mutex> process_lock(*mtx);
-    std::cout << command << " process successful!" << std::endl;
-    process_lock.unlock();
-    i_result = send(*client_sock, send_buff, (int)strlen(send_buff), 0);
-    if (i_result == SOCKET_ERROR)
+    char send_buff[SEND_BUFF];
+    std::string res;
+    int res_length = 0;
+    SOCKET *client_sock;
+    while (true)
     {
-        int error_code = WSAGetLastError();
-        throw std::runtime_error("Error on send() with error code " + std::to_string(error_code) + "\n");
+        res.clear();
+        res = driver->read_output();
+        //std::cout << "server send thread: " << res << std::endl;
+        res_length = res.length();
+        std::unique_lock<std::mutex> driver_lock(*driver_mtx);
+        client_sock = clients->front();
+        clients->pop();
+        driver_lock.unlock();
+        strcpy(send_buff, res.c_str());
+        i_result = send(*client_sock, send_buff, res_length, 0);
+        if (i_result == SOCKET_ERROR)
+        {
+            int error_code = WSAGetLastError();
+            throw std::runtime_error("Error on send() with error code " + std::to_string(error_code) + "\n");
+        }
     }
 };
 
-auto handle_recv_thread = [](SOCKET *client_sock, std::mutex *mtx, int *num_of_client)
+auto recv_client_thread = [](storedriver::CustomDriver *driver, std::queue<SOCKET *> *clients, SOCKET *client_sock, std::mutex *client_mtx, std::mutex *driver_mtx, int *num_of_client)
 {
     int i_result = 0;
     char recv_buff[RECV_BUFF];
@@ -29,10 +43,11 @@ auto handle_recv_thread = [](SOCKET *client_sock, std::mutex *mtx, int *num_of_c
         i_result = recv(*client_sock, recv_buff, RECV_BUFF, 0);
         if (i_result > 0)
         {
-            std::string command = recv_buff;
-            //Send receive buff to driver
-            std::thread send_thread = std::thread(handle_send_thread, client_sock, mtx, command);
-            send_thread.detach();
+            std::string command(recv_buff);
+            std::unique_lock<std::mutex> driver_lock(*driver_mtx);
+            clients->push(client_sock);
+            driver->write_input(command);
+            driver_lock.unlock();
         }
         else if (i_result == 0)
         {
@@ -46,19 +61,18 @@ auto handle_recv_thread = [](SOCKET *client_sock, std::mutex *mtx, int *num_of_c
     } while (i_result > 0);
     closesocket(*client_sock);
     delete client_sock;
-    std::unique_lock<std::mutex> my_lock(*mtx);
+    std::unique_lock<std::mutex> my_lock(*client_mtx);
     *num_of_client -= 1;
     my_lock.unlock();
     std::cout << "a client disconnected..." << std::endl;
 };
-
-
 
 winnetwork::WinTCPServer::WinTCPServer(std::string ip_address, std::string port_number) : ip_address(ip_address), port_number(port_number)
 {
     this->network_fam = AF_INET;
     this->socket_type = SOCK_STREAM;
     this->protocol = IPPROTO_TCP;
+    this->driver = new storedriver::CustomDriver();
 }
 
 void winnetwork::WinTCPServer::init_socket()
@@ -106,6 +120,8 @@ void winnetwork::WinTCPServer::start_server()
     int i_result;
 
     this->init_socket();
+    std::thread driver_thread = std::thread(driver_exec_thread, this->driver);
+    std::thread send_thread = std::thread(handle_send_thread, this->driver, &this->client_commands, &this->driver_mtx);
 
     i_result = listen(this->listen_socket, SOMAXCONN);
     if (i_result == SOCKET_ERROR)
@@ -115,7 +131,7 @@ void winnetwork::WinTCPServer::start_server()
         throw std::runtime_error("Error on listen() with error code " + std::to_string(error_code) + "\n");
     }
     std::cout << "listening at port " << this->port_number << std::endl;
-    // TODO: Handle thread
+
     while (true)
     {
         SOCKET *client_sock = new SOCKET();
@@ -131,7 +147,7 @@ void winnetwork::WinTCPServer::start_server()
             break;
         }
 
-        std::unique_lock<std::mutex> my_lock(this->my_mtx);
+        std::unique_lock<std::mutex> my_lock(this->client_mtx);
         if (this->num_of_client >= this->max_client)
         {
             char max_client_msg[32] = "max client reached...";
@@ -144,8 +160,11 @@ void winnetwork::WinTCPServer::start_server()
 
         this->num_of_client++;
         my_lock.unlock();
-        std::thread new_thread = std::thread(handle_recv_thread, client_sock, &this->my_mtx, &this->num_of_client);
+
+        std::thread new_thread = std::thread(recv_client_thread, this->driver, &this->client_commands, client_sock, &this->client_mtx, &this->driver_mtx, &this->num_of_client);
         new_thread.detach();
         std::cout << "A new client is connected" << std::endl;
     }
+    driver_thread.join();
+    send_thread.join();
 }

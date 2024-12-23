@@ -92,7 +92,7 @@ void capitalize_assets(store::StoreSystem *s_system, std::vector<std::string> &t
 
 void sell_inventory(store::StoreSystem *s_system, std::vector<std::string> &tokenized_command)
 {
-    // format: 5 date db_code qty
+    // format: 5 date db_code qty paid_cash
     int args_size = tokenized_command.size();
     util::Date *date = get_date(tokenized_command[1]);
     std::string item_code = tokenized_command[2];
@@ -151,7 +151,6 @@ bool storedriver::Driver::execute_command(std::string command)
 {
     std::vector<std::string> tokenized_command = util::tokenize(command);
     int main_command = std::stoi(tokenized_command[0]);
-    // TODO test the new driver
     switch (main_command)
     {
     case 0:
@@ -206,22 +205,96 @@ void storedriver::StdDriver::start()
         {
             ongoing = this->execute_command(buff);
         }
-        catch (std::runtime_error &e)
+        catch (std::exception &e)
         {
-            std::cout << e.what() << std::endl;
-        }
-        catch (std::invalid_argument &e)
-        {
-            std::cout << e.what() << std::endl;
+            std::cout << "Error: " << e.what() << std::endl;
         }
     }
 }
 
 storedriver::CustomDriver::CustomDriver() : storedriver::Driver()
 {
+    if (_pipe(this->input_pipe, 2 * STREAM_SIZE, O_TEXT) == -1)
+    {
+        throw std::runtime_error("error on input _pipe()");
+    }
+    if (_pipe(this->output_pipe, 2 * STREAM_SIZE, O_TEXT) == -1){
+        throw std::runtime_error("error on output _pipe()");
+    }
 }
 
-// TODO fix custom stream use _read _pipe for blocking behavior
+std::string storedriver::CustomDriver::read_input()
+{
+    char read_buff[STREAM_SIZE];
+    int bytes_read = 0;
+    if (bytes_read = _read(this->input_pipe[0], read_buff, STREAM_SIZE) == -1)
+    {
+        throw std::runtime_error("error on input _read()");
+    }
+    std::string to_ret(read_buff);
+    return to_ret;
+}
+
+void storedriver::CustomDriver::write_input(std::string input)
+{
+    int input_length = input.length();
+    if (input_length > STREAM_SIZE - 1)
+    {
+        throw std::invalid_argument("error on write_input - input is too long");
+    }
+    char write_buff[STREAM_SIZE];
+    strcpy(write_buff, input.c_str());
+    if (_write(this->input_pipe[1], write_buff, input_length + 1) == -1)
+    {
+        throw std::runtime_error("error on input _write()");
+    }
+}
+
+std::string storedriver::CustomDriver::read_output()
+{
+    char read_buff[STREAM_SIZE];
+    int bytes_read = 0;
+    std::string to_ret;
+    if (bytes_read = _read(this->output_pipe[0], read_buff, STREAM_SIZE) == -1)
+    {
+        throw std::runtime_error("error on output _read()");
+    }
+    to_ret = std::string(read_buff);
+    return to_ret;
+}
+
+void storedriver::CustomDriver::write_output(std::string input)
+{
+    int input_length = input.length();
+    if (input_length > STREAM_SIZE - 1)
+    {
+        throw std::invalid_argument("error on write_output - input is too long");
+    }
+    char write_buff[STREAM_SIZE];
+    strcpy(write_buff, input.c_str());
+    if (_write(this->output_pipe[1], write_buff, input_length + 1) == -1)
+    {
+        throw std::runtime_error("error on output _write()");
+    }
+}
+
 void storedriver::CustomDriver::start()
 {
+    int read_bytes = 0;
+    std::string input = "";
+    while (true)
+    {
+        input.clear();
+        input = this->read_input();
+        try
+        {
+            this->execute_command(input);
+            this->write_output("success");
+        }
+        catch (std::exception &e)
+        {
+            std::cout << "Error: " << e.what() << std::endl;
+            this->write_output("failed");
+        }
+    }
 }

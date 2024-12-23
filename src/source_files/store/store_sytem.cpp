@@ -1,6 +1,5 @@
 #include "store/store_system.hpp"
 using namespace store;
-//TO DO: provide end-year procedure
 
 void check_transaction(Transaction *transaction)
 {

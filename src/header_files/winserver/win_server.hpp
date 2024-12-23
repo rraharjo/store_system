@@ -1,17 +1,18 @@
 #include <winsock2.h>
 #include <ws2tcpip.h>
+#include <queue>
 #include <stdio.h>
 #include <thread>
 #include <mutex>
 #include <string>
 #include <iostream>
 #include <stdexcept>
-#include "store/store_system.hpp"
+#include "driver/driver.hpp"
 
 #ifndef WIN_SERVER
 #define WIN_SERVER
 
-#define DEFAULT_PORT "20000"
+#define DEFAULT_PORT "80000"
 #define LOOPBACK_ADDRESS "127.0.0.1"
 #define MAX_CLIENT 3
 #define RECV_BUFF 512
@@ -24,20 +25,21 @@ namespace winnetwork
     private:
         const int max_client = MAX_CLIENT;
 
+        // Server component
+        WSAData wsa_data;
+        SOCKET listen_socket;
         std::string port_number;
         std::string ip_address;
         int network_fam;
         int socket_type;
         int protocol;
 
-        WSAData wsa_data;
-        SOCKET listen_socket;
-
-        std::mutex my_mtx;
-
         // shared resources
+        std::mutex client_mtx, driver_mtx;
         int num_of_client = 0;
-
+        storedriver::CustomDriver *driver;
+        std::queue<SOCKET*> client_commands;
+        
     private:
         void init_socket();
 
