@@ -6,6 +6,7 @@
 #include "util/misc.hpp"
 #ifndef STORE_DRIVER
 #define STORE_DRIVER
+#define ENDCMD "ENDCMD"
 #define STREAM_SIZE 512
 #define ADD_INV 1
 #define PURC_INV 2
@@ -27,7 +28,9 @@ namespace storedriver
 
         virtual void start() = 0;
 
-        bool execute_command(std::string);
+        int execute_command(std::string);
+
+        virtual int execute_commands(std::string);
     };
 
     class StdIODriver : public Driver
@@ -51,6 +54,8 @@ namespace storedriver
         PipeIODriver();
 
         void start() override;
+
+        int execute_commands(std::string) override;
 
         void write_input(std::string);
 

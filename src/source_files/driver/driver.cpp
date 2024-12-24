@@ -9,7 +9,11 @@ util::Date *get_date(std::string format)
 
 void add_new_inventory(store::StoreSystem *s_system, std::vector<std::string> &tokenized_command)
 {
-    // format: 1 "Product name" "item code" selling_price
+    int args_size = tokenized_command.size();
+    if (tokenized_command[args_size - 1] != ENDCMD)
+    {
+        throw std::runtime_error("missing end command token");
+    }
     std::string name = tokenized_command[1];
     std::string item_code = tokenized_command[2];
     double price = std::stod(tokenized_command[3]);
@@ -31,16 +35,20 @@ void add_purchase_entry(store::PurchaseTransaction *p, std::string item_db, doub
 
 void purchase_inventory(store::StoreSystem *s_system, std::vector<std::string> &tokenized_command)
 {
-    // format: 2 date "Seller_name" item_db price_each qty [...item_db price_each qty] paid_cash
-    int total_args = tokenized_command.size();
+    int args_size = tokenized_command.size();
+    if (tokenized_command[args_size - 1] != ENDCMD)
+    {
+        throw std::runtime_error("missing end command token");
+    }
     util::Date *trans_date = get_date(tokenized_command[1]);
     std::string seller = tokenized_command[2];
     store::PurchaseTransaction *new_transaction = new store::PurchaseTransaction(seller, trans_date);
     add_purchase_entry(new_transaction, tokenized_command[3], std::stod(tokenized_command[4]), std::stoi(tokenized_command[5]));
     int cur_idx = 6;
-    while (cur_idx < total_args - 1)
+    while (cur_idx < args_size - 2)
     {
-        add_purchase_entry(new_transaction, tokenized_command[cur_idx++], std::stod(tokenized_command[cur_idx++]), std::stoi(tokenized_command[cur_idx++]));
+        add_purchase_entry(new_transaction, tokenized_command[cur_idx], std::stod(tokenized_command[cur_idx + 1]), std::stoi(tokenized_command[cur_idx + 2]));
+        cur_idx += 3;
     }
     double paid_cash = std::stod(tokenized_command[cur_idx]);
     new_transaction->set_paid_cash(paid_cash);
@@ -52,7 +60,11 @@ void purchase_inventory(store::StoreSystem *s_system, std::vector<std::string> &
 
 void purchase_asset(store::StoreSystem *s_system, std::vector<std::string> &tokenized_command)
 {
-    // format: 3 date "eq_name" "item_code" cost residual yr_useful paid_cash
+    int args_size = tokenized_command.size();
+    if (tokenized_command[args_size - 1] != ENDCMD)
+    {
+        throw std::runtime_error("missing end command token");
+    }
     util::Date *date_purchased = get_date(tokenized_command[1]);
     std::string name = tokenized_command[2];
     std::string item_code = tokenized_command[3];
@@ -75,7 +87,11 @@ void purchase_asset(store::StoreSystem *s_system, std::vector<std::string> &toke
 
 void capitalize_assets(store::StoreSystem *s_system, std::vector<std::string> &tokenized_command)
 {
-    // format: 4 date "db_code" capt_amt  paid_cash
+    int args_size = tokenized_command.size();
+    if (tokenized_command[args_size - 1] != ENDCMD)
+    {
+        throw std::runtime_error("missing end command token");
+    }
     util::Date *trans_date = get_date(tokenized_command[1]);
     std::string item_db_code = tokenized_command[2];
     double capitalized_amt = std::stod(tokenized_command[3]);
@@ -92,8 +108,11 @@ void capitalize_assets(store::StoreSystem *s_system, std::vector<std::string> &t
 
 void sell_inventory(store::StoreSystem *s_system, std::vector<std::string> &tokenized_command)
 {
-    // format: 5 date db_code qty paid_cash
     int args_size = tokenized_command.size();
+    if (tokenized_command[args_size - 1] != ENDCMD)
+    {
+        throw std::runtime_error("missing end command token");
+    }
     util::Date *date = get_date(tokenized_command[1]);
     std::string item_code = tokenized_command[2];
     int qty = std::stoi(tokenized_command[3]);
@@ -103,7 +122,7 @@ void sell_inventory(store::StoreSystem *s_system, std::vector<std::string> &toke
     inventory::SellingEntry *new_entry = new inventory::SellingEntry(item_code, new_transaction->get_db_code(), price, qty);
     new_transaction->add_entry(new_entry);
     int cur_idx = 4;
-    while (cur_idx < args_size - 1)
+    while (cur_idx < args_size - 2)
     {
         item_code = tokenized_command[cur_idx++];
         qty = std::stoi(tokenized_command[cur_idx++]);
@@ -120,7 +139,11 @@ void sell_inventory(store::StoreSystem *s_system, std::vector<std::string> &toke
 
 void sell_assets(store::StoreSystem *s_system, std::vector<std::string> &tokenized_command)
 {
-    // format: 6 date db_code price paid_cash
+    int args_size = tokenized_command.size();
+    if (tokenized_command[args_size - 1] != ENDCMD)
+    {
+        throw std::runtime_error("missing end command token");
+    }
     util::Date *date = get_date(tokenized_command[1]);
     std::string item_code = tokenized_command[2];
     double price = std::stod(tokenized_command[3]);
@@ -135,8 +158,13 @@ void sell_assets(store::StoreSystem *s_system, std::vector<std::string> &tokeniz
     s_system->dispose_asset(new_transaction);
 }
 
-void end_of_year(store::StoreSystem *s_system)
+void end_of_year(store::StoreSystem *s_system, std::vector<std::string> &tokenized_command)
 {
+    int args_size = tokenized_command.size();
+    if (tokenized_command[args_size - 1] != ENDCMD)
+    {
+        throw std::runtime_error("missing end command token");
+    }
     s_system->end_year_adjustment();
 }
 
@@ -147,38 +175,78 @@ storedriver::Driver::Driver()
     this->s_system = store::StoreSystem::get_instance();
 };
 
-bool storedriver::Driver::execute_command(std::string command)
+int storedriver::Driver::execute_command(std::string command)
 {
-    std::vector<std::string> tokenized_command = util::tokenize(command);
-    int main_command = std::stoi(tokenized_command[0]);
-    switch (main_command)
+    try
     {
-    case 0:
-        return false;
-    case ADD_INV:
-        add_new_inventory(this->s_system, tokenized_command);
-        return true;
-    case PURC_INV:
-        purchase_inventory(this->s_system, tokenized_command);
-        return true;
-    case PURC_ASS:
-        purchase_asset(this->s_system, tokenized_command);
-        return true;
-    case CAPT_ASS:
-        capitalize_assets(this->s_system, tokenized_command);
-        return true;
-    case SELL_INV:
-        sell_inventory(this->s_system, tokenized_command);
-        return true;
-    case SELL_ASS:
-        sell_assets(this->s_system, tokenized_command);
-        return true;
-    case EO_YEAR:
-        end_of_year(this->s_system);
-        return true;
-    default:
-        throw std::invalid_argument("unknown command " + std::to_string(main_command));
+        std::vector<std::string> tokenized_command = util::tokenize(command);
+        int main_command = std::stoi(tokenized_command[0]);
+        switch (main_command)
+        {
+        case 0:
+            return 1;
+        case ADD_INV:
+            add_new_inventory(this->s_system, tokenized_command);
+            return 1;
+        case PURC_INV:
+            purchase_inventory(this->s_system, tokenized_command);
+            return 1;
+        case PURC_ASS:
+            purchase_asset(this->s_system, tokenized_command);
+            return 1;
+        case CAPT_ASS:
+            capitalize_assets(this->s_system, tokenized_command);
+            return 1;
+        case SELL_INV:
+            sell_inventory(this->s_system, tokenized_command);
+            return 1;
+        case SELL_ASS:
+            sell_assets(this->s_system, tokenized_command);
+            return 1;
+        case EO_YEAR:
+            end_of_year(this->s_system, tokenized_command);
+            return 1;
+        default:
+            throw std::invalid_argument("Unknown command " + std::to_string(main_command));
+        }
     }
+    catch (std::exception &e)
+    {
+        std::cout << e.what() << std::endl;
+        return 0;
+    }
+}
+
+int storedriver::Driver::execute_commands(std::string commands)
+{
+    std::vector<std::string> multiple_commands;
+    std::string delimiter = ENDCMD;
+    std::string temp;
+    int commands_length = commands.length(), delimiter_length = delimiter.length();
+    int j = 0;
+    for (int i = 0; i < commands_length; i++)
+    {
+        if (commands[i] == delimiter[j])
+        {
+            j++;
+        }
+        else
+        {
+            j = 0;
+        }
+        temp.push_back(commands[i]);
+        if (j == delimiter_length)
+        {
+            multiple_commands.push_back(temp);
+            temp.clear();
+        }
+    }
+    int to_ret = 0;
+    for (std::string command : multiple_commands)
+    {
+        to_ret += this->execute_command(command);
+    }
+    return to_ret;
 }
 
 storedriver::StdIODriver::StdIODriver() : storedriver::Driver()
@@ -201,15 +269,48 @@ void storedriver::StdIODriver::start()
         {
             break;
         }
-        try
+        ongoing = this->execute_commands(buff);
+    }
+}
+
+int storedriver::PipeIODriver::execute_commands(std::string commands)
+{
+    std::vector<std::string> multiple_commands;
+    std::string delimiter = ENDCMD;
+    std::string temp;
+    int commands_length = commands.length(), delimiter_length = delimiter.length();
+    int j = 0;
+    for (int i = 0; i < commands_length; i++)
+    {
+        if (commands[i] == delimiter[j])
         {
-            ongoing = this->execute_command(buff);
+            j++;
         }
-        catch (std::exception &e)
+        else
         {
-            std::cout << "Error: " << e.what() << std::endl;
+            j = 0;
+        }
+        temp.push_back(commands[i]);
+        if (j == delimiter_length)
+        {
+            multiple_commands.push_back(temp);
+            temp.clear();
         }
     }
+    int to_ret = 0;
+    for (std::string command : multiple_commands)
+    {
+        if (this->execute_command(command))
+        {
+            to_ret++;
+            this->write_output("success");
+        }
+        else
+        {
+            this->write_output("failed");
+        }
+    }
+    return to_ret;
 }
 
 storedriver::PipeIODriver::PipeIODriver() : storedriver::Driver()
@@ -218,7 +319,8 @@ storedriver::PipeIODriver::PipeIODriver() : storedriver::Driver()
     {
         throw std::runtime_error("error on input _pipe()");
     }
-    if (_pipe(this->output_pipe, 2 * STREAM_SIZE, O_TEXT) == -1){
+    if (_pipe(this->output_pipe, 2 * STREAM_SIZE, O_TEXT) == -1)
+    {
         throw std::runtime_error("error on output _pipe()");
     }
 }
@@ -229,7 +331,7 @@ std::string storedriver::PipeIODriver::read_input()
     int bytes_read = 0;
     if (bytes_read = _read(this->input_pipe[0], read_buff, STREAM_SIZE) == -1)
     {
-        throw std::runtime_error("error on input _read()");
+        throw std::runtime_error("error on read_input _read()");
     }
     std::string to_ret(read_buff);
     return to_ret;
@@ -246,7 +348,7 @@ void storedriver::PipeIODriver::write_input(std::string input)
     strcpy(write_buff, input.c_str());
     if (_write(this->input_pipe[1], write_buff, input_length + 1) == -1)
     {
-        throw std::runtime_error("error on input _write()");
+        throw std::runtime_error("error on write_input _write()");
     }
 }
 
@@ -257,7 +359,7 @@ std::string storedriver::PipeIODriver::read_output()
     std::string to_ret;
     if (bytes_read = _read(this->output_pipe[0], read_buff, STREAM_SIZE) == -1)
     {
-        throw std::runtime_error("error on output _read()");
+        throw std::runtime_error("error on read_output _read()");
     }
     to_ret = std::string(read_buff);
     return to_ret;
@@ -274,7 +376,7 @@ void storedriver::PipeIODriver::write_output(std::string input)
     strcpy(write_buff, input.c_str());
     if (_write(this->output_pipe[1], write_buff, input_length + 1) == -1)
     {
-        throw std::runtime_error("error on output _write()");
+        throw std::runtime_error("error on write_output _write()");
     }
 }
 
@@ -286,15 +388,6 @@ void storedriver::PipeIODriver::start()
     {
         input.clear();
         input = this->read_input();
-        try
-        {
-            this->execute_command(input);
-            this->write_output("success");
-        }
-        catch (std::exception &e)
-        {
-            std::cout << "Error: " << e.what() << std::endl;
-            this->write_output("failed");
-        }
+        this->execute_commands(input);
     }
 }
