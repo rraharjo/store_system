@@ -1,23 +1,22 @@
 #include "store/store_system.hpp"
 using namespace store;
-//TO DO: provide end-year procedure
 
-void checkTransaction(Transaction *transaction)
+void check_transaction(Transaction *transaction)
 {
-    double totalAmount = 0;
-    for (inventory::Entry *entry : transaction->getAllEntries())
+    double total_amt = 0;
+    for (inventory::Entry *entry : transaction->get_all_entries())
     {
-        totalAmount += entry->getPrice() * entry->getQty();
+        total_amt += entry->get_price() * entry->get_qty();
     }
-    if (totalAmount != transaction->getPaidCash() + transaction->getPaidCredit())
+    if (total_amt != transaction->get_paid_cash() + transaction->get_paid_credit())
     {
-        throw std::invalid_argument("Amount paid does not equal to the purchase price; paid credit: " + std::to_string(transaction->getPaidCredit()) + " paid cash: " + std::to_string(transaction->getPaidCash()) + " purchase amount: " + std::to_string(totalAmount));
+        throw std::invalid_argument("Amount paid does not equal to the purchase price; paid credit: " + std::to_string(transaction->get_paid_credit()) + " paid cash: " + std::to_string(transaction->get_paid_cash()) + " purchase amount: " + std::to_string(total_amt));
     }
 }
 
 StoreSystem *StoreSystem::instance = NULL;
 
-StoreSystem *StoreSystem::getInstance()
+StoreSystem *StoreSystem::get_instance()
 {
     if (StoreSystem::instance == NULL)
     {
@@ -28,124 +27,124 @@ StoreSystem *StoreSystem::getInstance()
 
 StoreSystem::StoreSystem()
 {
-    this->aSystem = accounting::AccountingSystem::getInstance();
-    this->iSystem = inventory::InventorySystem::getInstance();
-    this->purchaseTransactions = {};
-    this->sellingTransactions = {};
+    this->a_system = accounting::AccountingSystem::get_instance();
+    this->i_system = inventory::InventorySystem::get_instance();
+    this->purchase_transactions = {};
+    this->selling_transactions = {};
 }
 
-void StoreSystem::sellItem(SellingTransaction *sellingTransaction)
+void StoreSystem::sell_item(SellingTransaction *selling_transaction)
 {
-    checkTransaction(sellingTransaction);
+    check_transaction(selling_transaction);
     double cogs = 0;
-    double sellAmount = 0;
-    for (inventory::Entry *entry : sellingTransaction->getAllEntries())
+    double sell_amount = 0;
+    for (inventory::Entry *entry : selling_transaction->get_all_entries())
     {
-        sellAmount += entry->getPrice() * entry->getQty();
-        cogs += this->iSystem->sellSellables(entry);
+        sell_amount += entry->get_price() * entry->get_qty();
+        cogs += this->i_system->sell_sellables(entry);
     }
-    util::Date *transactionDate = new util::Date();
-    std::string incRevDesc = "Selling inventory";
-    std::string incCOGSDesc = "Increase cost of goods sold";
-    accounting::Transaction *accountingTransaction =
-        util::factory::GoodsSellingFactory(transactionDate, incRevDesc, sellingTransaction->getDBCode(), sellAmount,
-                                           sellingTransaction->getPaidCash(), sellingTransaction->getPaidCredit())
-            .createTransaction();
-    accounting::Transaction *accountingTransaction2 =
-        util::factory::GoodsSoldCOGSFactory(transactionDate, incCOGSDesc, sellingTransaction->getDBCode(), cogs)
-            .createTransaction();
-    this->aSystem->addTransaction(accountingTransaction);
-    this->aSystem->addTransaction(accountingTransaction2);
+    util::Date *transaction_date = new util::Date();
+    std::string inc_rev_desc = "Selling inventory";
+    std::string inc_cogs_desc = "Increase cost of goods sold";
+    accounting::Transaction *acct_transaction =
+        util::factory::GoodsSellingFactory(transaction_date, inc_rev_desc, selling_transaction->get_db_code(), sell_amount,
+                                           selling_transaction->get_paid_cash(), selling_transaction->get_paid_credit())
+            .create_transaction();
+    accounting::Transaction *acct_transaction_2 =
+        util::factory::GoodsSoldCOGSFactory(transaction_date, inc_cogs_desc, selling_transaction->get_db_code(), cogs)
+            .create_transaction();
+    this->a_system->add_transaction(acct_transaction);
+    this->a_system->add_transaction(acct_transaction_2);
 }
 
-void StoreSystem::buyItem(PurchaseTransaction *purchaseTransaction)
+void StoreSystem::buy_item(PurchaseTransaction *purchase_transaction)
 {
-    checkTransaction(purchaseTransaction);
-    double purchaseAmount = 0;
-    for (inventory::Entry *entry : purchaseTransaction->getAllEntries())
+    check_transaction(purchase_transaction);
+    double purchase_amount = 0;
+    for (inventory::Entry *entry : purchase_transaction->get_all_entries())
     {
-        purchaseAmount += entry->getPrice() * entry->getQty();
-        this->iSystem->purchaseSellables(entry);
+        purchase_amount += entry->get_price() * entry->get_qty();
+        this->i_system->purchase_sellables(entry);
     }
-    util::Date *transactionDate = new util::Date();
+    util::Date *transaction_date = new util::Date();
     std::string description = "Purchase inventory";
-    accounting::Transaction *accountingTransaction =
-        util::factory::GoodsPurchaseFactory(transactionDate, description, purchaseTransaction->getDBCode(),
-                                            purchaseAmount, purchaseTransaction->getPaidCash(), purchaseTransaction->getPaidCredit())
-            .createTransaction();
-    this->aSystem->addTransaction(accountingTransaction);
+    accounting::Transaction *acct_transaction =
+        util::factory::GoodsPurchaseFactory(transaction_date, description, purchase_transaction->get_db_code(),
+                                            purchase_amount, purchase_transaction->get_paid_cash(), purchase_transaction->get_paid_credit())
+            .create_transaction();
+    this->a_system->add_transaction(acct_transaction);
 }
 
-void StoreSystem::capitalizeAsset(PurchaseTransaction *purchaseTransaction)
+void StoreSystem::capitalize_asset(PurchaseTransaction *purchase_transaction)
 {
-    checkTransaction(purchaseTransaction);
+    check_transaction(purchase_transaction);
     double amount = 0.0;
-    for (inventory::Entry *entry : purchaseTransaction->getAllEntries())
+    for (inventory::Entry *entry : purchase_transaction->get_all_entries())
     {
-        this->iSystem->purchaseProperties(entry);
-        amount += entry->getPrice();
+        this->i_system->purchase_properties(entry);
+        amount += entry->get_price();
     }
-    util::Date *transactionDate = new util::Date();
+    util::Date *transaction_date = new util::Date();
     std::string description = "Purchase asset";
-    accounting::Transaction *accountingTransaction =
-        util::factory::BuyEquipmentFactory(transactionDate, description, purchaseTransaction->getDBCode(),
-                                           amount, purchaseTransaction->getPaidCash(), purchaseTransaction->getPaidCredit())
-            .createTransaction();
-    this->aSystem->addTransaction(accountingTransaction);
+    accounting::Transaction *acct_transaction =
+        util::factory::BuyEquipmentFactory(transaction_date, description, purchase_transaction->get_db_code(),
+                                           amount, purchase_transaction->get_paid_cash(), purchase_transaction->get_paid_credit())
+            .create_transaction();
+    this->a_system->add_transaction(acct_transaction);
 }
 
-void StoreSystem::disposeAsset(SellingTransaction *sellingTransaction)
+void StoreSystem::dispose_asset(SellingTransaction *selling_transaction)
 { // one transaction one property
-    checkTransaction(sellingTransaction);
-    inventory::Equipment *toDispose = NULL;
-    double sellAmount = 0.0;
-    double propertyValuation = 0.0;
-    for (inventory::Entry *entry : sellingTransaction->getAllEntries())
+    check_transaction(selling_transaction);
+    inventory::Equipment *to_dispose = NULL;
+    double sell_amount = 0.0;
+    double prop_valuation = 0.0;
+    for (inventory::Entry *entry : selling_transaction->get_all_entries())
     {
-        sellAmount += entry->getPrice();
-        entry->setTransactionDate(sellingTransaction->getDate());
-        propertyValuation += this->iSystem->sellProperties(entry);
-        toDispose = (inventory::Equipment *)this->iSystem->getProperty(entry->getPropertiesDBCode());
+        sell_amount += entry->get_price();
+        entry->set_transaction_date(selling_transaction->get_date());
+        prop_valuation += this->i_system->sell_properties(entry);
+        to_dispose = (inventory::Equipment *)this->i_system->get_property(entry->get_properties_db_code());
     }
-    util::Date *transactionDate = new util::Date();
+    util::Date *transaction_date = new util::Date();
     std::string description = "Asset disposal";
-    accounting::Transaction *accountingTransaction =
-        util::factory::SellEquipmentFactory(transactionDate, description, sellingTransaction->getDBCode(),
-                                            toDispose->getCurrentAccumulatedDepreciation(), propertyValuation,
-                                            sellingTransaction->getPaidCash(), sellingTransaction->getPaidCredit())
-            .createTransaction();
-    this->aSystem->addTransaction(accountingTransaction);
+    accounting::Transaction *acct_transaction =
+        util::factory::SellEquipmentFactory(transaction_date, description, selling_transaction->get_db_code(),
+                                            to_dispose->get_current_accumulated_depreciation(), prop_valuation,
+                                            selling_transaction->get_paid_cash(), selling_transaction->get_paid_credit())
+            .create_transaction();
+    this->a_system->add_transaction(acct_transaction);
 }
 
-void StoreSystem::addItem(inventory::Inventory *newSellable)
+void StoreSystem::add_item(inventory::Inventory *new_sellable)
 {
-    this->iSystem->addNewItem(newSellable);
+    this->i_system->add_new_item(new_sellable);
 }
 
-void StoreSystem::addProperty(inventory::Equipment *newProperty)
+void StoreSystem::add_property(inventory::Equipment *new_prop)
 {
-    this->iSystem->addNewProperty(newProperty);
+    this->i_system->add_new_property(new_prop);
 }
 
-void StoreSystem::endYearAdjustment(){
-    this->iSystem->applyAllDepreciation();
-    this->aSystem->endYearAdjustment();
+void StoreSystem::end_year_adjustment(){
+    this->i_system->apply_all_depreciation();
+    this->a_system->end_year_adjustment();
 }
 
-inventory::Inventory *StoreSystem::getInventory(std::string dbCode)
+inventory::Inventory *StoreSystem::get_inventory(std::string db_code)
 {
-    return this->iSystem->getInventory(dbCode);
+    return this->i_system->get_inventory(db_code);
 }
 
-std::string StoreSystem::toStringInv()
+std::string StoreSystem::to_string_inv()
 {
-    return this->iSystem->to_string();
+    return this->i_system->to_string();
 }
 
-std::string StoreSystem::toString()
+std::string StoreSystem::to_string()
 {
-    std::string toRet = "";
-    toRet += this->iSystem->to_string();
-    toRet += this->aSystem->to_string();
-    return toRet;
+    std::string to_ret = "";
+    to_ret += this->i_system->to_string();
+    to_ret += this->a_system->to_string();
+    return to_ret;
 }

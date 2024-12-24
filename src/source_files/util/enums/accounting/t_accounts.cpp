@@ -2,7 +2,7 @@
 
 using namespace util::enums;
 
-std::map<TAccounts, std::string> util::enums::tAccountsNameMap = {
+std::map<TAccounts, std::string> util::enums::t_accounts_name_map = {
     // assets
     {TAccounts::CASH, "Cash"},
     {TAccounts::EQUIPMENT, "Equipment"},
@@ -28,17 +28,17 @@ std::map<TAccounts, std::string> util::enums::tAccountsNameMap = {
     {TAccounts::RETAINEDEARNINGS, "Retained Earnings"},
     {TAccounts::END, "HOLD"}};
 
-TAccounts &util::enums::operator++(TAccounts &tAccount)
+TAccounts &util::enums::operator++(TAccounts &t_account)
 {
-    if (tAccount == LAST_TACCOUNT){
+    if (t_account == LAST_TACCOUNT){
         throw std::invalid_argument("Maximum value reached");
     }
-    int intEqui = static_cast<int>(tAccount) + 1;
-    tAccount = static_cast<TAccounts>(intEqui);
-    return tAccount;
+    int int_equivalent = static_cast<int>(t_account) + 1;
+    t_account = static_cast<TAccounts>(int_equivalent);
+    return t_account;
 }
 
-std::vector<TAccounts> util::enums::assetsTAccounts = {
+std::vector<TAccounts> util::enums::assets_t_accounts = {
     TAccounts::CASH,
     TAccounts::EQUIPMENT,
     TAccounts::ACCTRCV,
@@ -47,12 +47,12 @@ std::vector<TAccounts> util::enums::assetsTAccounts = {
     TAccounts::ACCUMDEPRECIATION,
     TAccounts::INVENTORY};
 
-std::vector<TAccounts> util::enums::liabilitiesTAccounts = {
+std::vector<TAccounts> util::enums::liabilities_t_accounts = {
     TAccounts::ACCPAYABLE,
     TAccounts::NOTEPAYABLE,
     TAccounts::UNEARNEDREV};
 
-std::vector<TAccounts> util::enums::stockholdersTAccounts = {
+std::vector<TAccounts> util::enums::stockholders_t_accounts = {
     TAccounts::COMMONSTOCK,
     TAccounts::ADDTLCPT,
     TAccounts::REV,
@@ -64,14 +64,14 @@ std::vector<TAccounts> util::enums::stockholdersTAccounts = {
     TAccounts::WAGEEXP,
     TAccounts::RETAINEDEARNINGS};
 
-std::string util::enums::getName(TAccounts tAccount)
+std::string util::enums::get_name(TAccounts t_account)
 {
-    return tAccountsNameMap[tAccount];
+    return t_accounts_name_map[t_account];
 }
 
-TAccounts util::enums::getTAccountEnum(std::string name)
+TAccounts util::enums::get_t_account_enum(std::string name)
 {
-    for (auto it = tAccountsNameMap.begin(); it != tAccountsNameMap.end(); it++)
+    for (auto it = t_accounts_name_map.begin(); it != t_accounts_name_map.end(); it++)
     {
         if (it->second == name)
         {
@@ -81,17 +81,17 @@ TAccounts util::enums::getTAccountEnum(std::string name)
     throw std::invalid_argument(name + " does not match any T-account");
 }
 
-AccountTitles util::enums::getAccountTitle(TAccounts tAccountName)
+AccountTitles util::enums::get_account_title(TAccounts t_account_name)
 {
-    if (tAccountName < MAX_ASSET)
+    if (t_account_name < MAX_ASSET)
     {
         return AccountTitles::ASSETS;
     }
-    if (tAccountName < MAX_LIABILITY)
+    if (t_account_name < MAX_LIABILITY)
     {
         return AccountTitles::LIABILITIES;
     }
-    if (tAccountName < MAX_STOCKHOLDER){
+    if (t_account_name < MAX_STOCKHOLDER){
         return AccountTitles::STOCKHOLDERSEQUITY;
     }
     throw std::invalid_argument("T-Account doesn't exist");

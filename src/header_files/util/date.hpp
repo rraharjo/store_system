@@ -10,23 +10,23 @@ namespace util
     {
     private:
         std::chrono::system_clock::time_point tp;
-        std::chrono::system_clock::time_point parseStringDate(std::string dateString, std::string format);
-        std::chrono::system_clock::time_point parseStringDateddMMYYYYseparetedBySlash(std::string dateString);
+        std::chrono::system_clock::time_point parse_string_date(std::string date_string, std::string format);
+        std::chrono::system_clock::time_point parse_string_date_dd_MM_YYYY_separeted_by_slash(std::string date_string);
 
     public:
         Date();
-        Date(std::string dateString);
-        Date(std::string dateString, std::string format);
+        Date(std::string date_string);
+        Date(std::string date_string, std::string format);
         std::string to_string();
-        std::string toDBFormat();
-        bool isLeapYear();
-        int getYDay();
-        int getMDay();
-        int getMonth();
-        int getYear();
-        bool isAfter(util::Date *other);
-        int diffDaysTo(util::Date *other);
-        int diffYearsTo(util::Date *other);
+        std::string to_db_format();
+        bool is_leap_year();
+        int get_y_day();
+        int get_m_day();
+        int get_month();
+        int get_year();
+        bool is_after(util::Date *other);
+        int diff_days_to(util::Date *other);
+        int diff_years_to(util::Date *other);
         bool operator==(const Date *other);
         bool operator!=(const Date *other);
         bool operator<(const Date *other);
@@ -34,7 +34,7 @@ namespace util
         bool operator<=(const Date *other);
         bool operator>=(const Date *other);
 
-        static time_t getUniqueTimestamp();
+        static time_t get_unique_timestamp();
     };
 };
 #endif

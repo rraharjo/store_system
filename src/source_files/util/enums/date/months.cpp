@@ -2,7 +2,7 @@
 
 using namespace util;
 
-std::map<enums::Month, std::string> enums::monthsMap = {
+std::map<enums::Month, std::string> enums::months_map = {
             {enums::JANUARY, "January"},
             {enums::FEBRUARY, "February"},
             {enums::MARCH, "March"},
@@ -17,7 +17,7 @@ std::map<enums::Month, std::string> enums::monthsMap = {
             {enums::DECEMBER, "December"}};
 
         
-enums::Month enums::allMonths[] = {
+enums::Month enums::all_months[] = {
     enums::JANUARY, 
     enums::FEBRUARY, 
     enums::MARCH, 
@@ -31,19 +31,19 @@ enums::Month enums::allMonths[] = {
     enums::NOVEMBER, 
     enums::DECEMBER};
 
-int util::asInt(enums::Month month) { return static_cast<int>(month); }
+int util::as_int(enums::Month month) { return static_cast<int>(month); }
 
-enums::Month util::toMonth(int month)
+enums::Month util::to_month(int month)
 {
     return static_cast<enums::Month>(month);
 }
 
-std::string util::getMonthName(enums::Month month)
+std::string util::get_month_name(enums::Month month)
 {
-    return enums::monthsMap[month];
+    return enums::months_map[month];
 }
 
-std::string util::getMonthName(int month)
+std::string util::get_month_name(int month)
 {
-    return getMonthName(toMonth(month));
+    return get_month_name(to_month(month));
 }

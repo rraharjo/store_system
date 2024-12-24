@@ -15,13 +15,13 @@ namespace util
             STOCKHOLDERSEQUITY = 2
         };
 
-        extern std::map<AccountTitles, std::string> accountTitlesMap;
+        extern std::map<AccountTitles, std::string> account_titles_map;
         
-        extern AccountTitles allAccountTitles[3];
+        extern AccountTitles all_account_titles[3];
 
-        std::string getName(util::enums::AccountTitles);
+        std::string get_name(util::enums::AccountTitles);
 
-        AccountTitles getAccountEnum(std::string);
+        AccountTitles get_account_enum(std::string);
     };
 };
 

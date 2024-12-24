@@ -1,73 +1,73 @@
 #include "accounting/accounts/t_account.hpp"
 using namespace accounting;
 
-util::Table *TAccount::classTable = util::TAccountTable::getInstance();
+util::Table *TAccount::class_table = util::TAccountTable::get_instance();
 
-void TAccount::initiateTAccountOnDB()
+void TAccount::initiate_t_account_on_db()
 {
-    std::vector<TAccount *> tAccountCollections;
+    std::vector<TAccount *> t_account_collections;
     for (util::enums::TAccounts current = FIRST_TACCOUNT; current != LAST_TACCOUNT; ++current)
     {
-        TAccount *newTAccount = new TAccount(current);
-        newTAccount->insertToDB();
-        tAccountCollections.push_back(newTAccount);
+        TAccount *new_t_account = new TAccount(current);
+        new_t_account->insert_to_db();
+        t_account_collections.push_back(new_t_account);
     }
-    for (TAccount *tAccount : tAccountCollections)
+    for (TAccount *t_account : t_account_collections)
     {
-        delete tAccount;
+        delete t_account;
     }
 }
 
-TAccount *TAccount::generateFromDatabase(util::enums::TAccounts tAccount)
+TAccount *TAccount::generate_from_database(util::enums::TAccounts t_account)
 {
     std::vector<util::TableCondition> conditions;
     std::vector<std::vector<std::string>> records;
-    util::TableCondition matchingTitle = util::TableCondition();
-    matchingTitle.col = util::enums::tAccountTableColumns[util::enums::TAccountTable::TITLE];
-    matchingTitle.comparator = util::TableComparator::EQUAL;
-    matchingTitle.value = util::enums::tAccountsNameMap[tAccount];
-    conditions.push_back(matchingTitle);
-    records = TAccount::classTable->getRecords(conditions);
-    return new TAccount(tAccount, std::stod(records[0][1]), std::stod(records[0][2]));
+    util::TableCondition matching_title = util::TableCondition();
+    matching_title.col = util::enums::t_account_table_columns[util::enums::TAccountTable::TITLE];
+    matching_title.comparator = util::TableComparator::EQUAL;
+    matching_title.value = util::enums::t_accounts_name_map[t_account];
+    conditions.push_back(matching_title);
+    records = TAccount::class_table->get_records(conditions);
+    return new TAccount(t_account, std::stod(records[0][1]), std::stod(records[0][2]));
 }
 
-std::vector<std::string> TAccount::getInsertParameter()
+std::vector<std::string> TAccount::get_insert_parameter()
 {
-    std::vector<std::string> toRet;
-    toRet.push_back(util::enums::tAccountsNameMap[this->title]);
-    toRet.push_back(std::to_string(this->debitAmount));
-    toRet.push_back(std::to_string(this->creditAmount));
-    return toRet;
+    std::vector<std::string> to_ret;
+    to_ret.push_back(util::enums::t_accounts_name_map[this->title]);
+    to_ret.push_back(std::to_string(this->debit_amount));
+    to_ret.push_back(std::to_string(this->credit_amount));
+    return to_ret;
 }
 
-std::vector<std::string> TAccount::getUpdateParameter()
+std::vector<std::string> TAccount::get_update_parameter()
 {
-    std::vector<std::string> toRet;
-    toRet.push_back(this->getDBCode());
-    toRet.push_back(std::to_string(this->debitAmount));
-    toRet.push_back(std::to_string(this->creditAmount));
-    return toRet;
+    std::vector<std::string> to_ret;
+    to_ret.push_back(this->get_db_code());
+    to_ret.push_back(std::to_string(this->debit_amount));
+    to_ret.push_back(std::to_string(this->credit_amount));
+    return to_ret;
 }
 
-void TAccount::insertToDB()
+void TAccount::insert_to_db()
 {
-    this->insertToDBWithTable(TAccount::classTable, false);
+    this->insert_to_db_with_table(TAccount::class_table, false);
 };
 
-void TAccount::updateToDB()
+void TAccount::update_to_db()
 {
-    this->updateToDBWithTable(TAccount::classTable);
+    this->update_to_db_with_table(TAccount::class_table);
 };
 
 TAccount::TAccount(util::enums::TAccounts title, double debit, double credit)
     : util::baseclass::HasTable()
 {
     this->title = title;
-    this->debitAmount = debit;
-    this->creditAmount = credit;
-    this->setDBCode(util::enums::tAccountsNameMap[this->title]);
-    this->debitEntries = std::vector<Entry *>();
-    this->creditEntries = std::vector<Entry *>();
+    this->debit_amount = debit;
+    this->credit_amount = credit;
+    this->set_db_code(util::enums::t_accounts_name_map[this->title]);
+    this->debit_entries = std::vector<Entry *>();
+    this->credit_entries = std::vector<Entry *>();
 }
 
 TAccount::TAccount(util::enums::TAccounts title)
@@ -77,76 +77,76 @@ TAccount::TAccount(util::enums::TAccounts title)
 
 TAccount::~TAccount()
 {
-    for (Entry *e : this->debitEntries)
+    for (Entry *e : this->debit_entries)
     {
         delete e;
     }
-    for (Entry *e : this->creditEntries)
+    for (Entry *e : this->credit_entries)
     {
         delete e;
     }
 }
 
-util::enums::TAccounts TAccount::getTitle()
+util::enums::TAccounts TAccount::get_title()
 {
     return this->title;
 }
 
-std::string TAccount::getTitleName()
+std::string TAccount::get_title_name()
 {
-    return util::enums::tAccountsNameMap[this->title];
+    return util::enums::t_accounts_name_map[this->title];
 }
 
-void TAccount::addEntry(Entry *entry)
+void TAccount::add_entry(Entry *entry)
 {
-    if (entry->isDebit())
+    if (entry->is_debit())
     {
-        this->debitEntries.push_back(entry);
-        this->debitAmount += entry->getAmount();
+        this->debit_entries.push_back(entry);
+        this->debit_amount += entry->get_amount();
     }
     else
     {
-        this->creditEntries.push_back(entry);
-        this->creditAmount += entry->getAmount();
+        this->credit_entries.push_back(entry);
+        this->credit_amount += entry->get_amount();
     }
-    this->updateToDB();
+    this->update_to_db();
 }
 
-double TAccount::getDebitAmount()
+double TAccount::get_debit_amount()
 {
     double total = 0;
-    for (Entry *event : this->debitEntries)
+    for (Entry *event : this->debit_entries)
     {
-        total += event->getAmount();
+        total += event->get_amount();
     }
     return total;
 }
 
-double TAccount::getCreditAmount()
+double TAccount::get_credit_amount()
 {
     double total = 0;
-    for (Entry *event : this->creditEntries)
+    for (Entry *event : this->credit_entries)
     {
-        total += event->getAmount();
+        total += event->get_amount();
     }
     return total;
 }
 
-double TAccount::getTotalAmount()
+double TAccount::get_total_amount()
 {
-    return this->getDebitAmount() - this->getCreditAmount();
+    return this->get_debit_amount() - this->get_credit_amount();
 }
 
 std::string TAccount::to_string()
 {
-    std::string toRet = this->getTitleName() + "\n";
-    for (Entry *entry : this->debitEntries)
+    std::string to_ret = this->get_title_name() + "\n";
+    for (Entry *entry : this->debit_entries)
     {
-        toRet += entry->to_string();
+        to_ret += entry->to_string();
     }
-    for (Entry *entry : this->creditEntries)
+    for (Entry *entry : this->credit_entries)
     {
-        toRet += entry->to_string();
+        to_ret += entry->to_string();
     }
-    return toRet;
+    return to_ret;
 }

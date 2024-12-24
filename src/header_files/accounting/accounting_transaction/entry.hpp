@@ -12,51 +12,51 @@ namespace accounting
     {
 
     private:
-        static util::Table *classTable;
+        static util::Table *class_table;
 
-        static std::vector<Entry *> generateFromDB(std::string);
+        static std::vector<Entry *> generate_from_db(std::string);
 
         bool debit;
         double amount;
-        std::string transactionTitle;
-        util::enums::TAccounts tAccount;
+        std::string transaction_title;
+        util::enums::TAccounts t_account;
         util::enums::AccountTitles account;
-        std::string transactionDB;
+        std::string transaction_db;
 
     protected:
-        std::vector<std::string> getInsertParameter() override;
+        std::vector<std::string> get_insert_parameter() override;
 
-        std::vector<std::string> getUpdateParameter() override;
+        std::vector<std::string> get_update_parameter() override;
 
     public:
-        void insertToDB() override;
+        void insert_to_db() override;
 
-        void updateToDB() override;
+        void update_to_db() override;
 
-        Entry(std::string transactionDBCode, bool debit, double amount, util::enums::TAccounts tAccount);
+        Entry(std::string transaction_db_code, bool debit, double amount, util::enums::TAccounts t_account);
 
-        Entry(std::string dbCode, std::string transactionDBCode, bool debit, double amount,
-              util::enums::TAccounts tAccount);
+        Entry(std::string db_code, std::string transaction_db_code, bool debit, double amount,
+              util::enums::TAccounts t_account);
 
-        bool isDebit();
+        bool is_debit();
 
-        double getAmount();
+        double get_amount();
 
-        std::string getTransactionDB();
+        std::string get_transaction_db();
 
-        std::string getTransactionTitle();
+        std::string get_transaction_title();
 
-        util::enums::TAccounts getTAccount();
+        util::enums::TAccounts get_t_account();
 
-        util::enums::AccountTitles getAccountTitle();
+        util::enums::AccountTitles get_account_title();
 
-        std::string getTAccountName();
+        std::string get_t_account_name();
 
-        std::string getAccountTitleName();
+        std::string get_account_title_name();
 
-        void setTransactionDB(std::string transactionDB);
+        void set_transaction_db(std::string transaction_db);
 
-        void setTransactionTitle(std::string title);
+        void set_transaction_title(std::string title);
 
         std::string to_string();
 

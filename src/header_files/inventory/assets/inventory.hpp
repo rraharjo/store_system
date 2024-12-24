@@ -12,36 +12,36 @@ namespace inventory
     class Inventory : public Item
     {
     private:
-        static util::Table *classTable;
+        static util::Table *class_table;
 
-        double sellingPrice;
+        double selling_price;
         // tax
 
-        void addExistingPurchaseEntry(PurchaseEntry *) override;
+        void add_existing_purchase_entry(PurchaseEntry *) override;
 
     protected:
-        std::vector<std::string> getInsertParameter() override;
+        std::vector<std::string> get_insert_parameter() override;
 
-        std::vector<std::string> getUpdateParameter() override;
+        std::vector<std::string> get_update_parameter() override;
 
     public:
-        static std::vector<Inventory *> generateFromDatabase();
+        static std::vector<Inventory *> generate_from_database();
 
-        void insertToDB() override;
+        void insert_to_db() override;
 
-        void updateToDB() override;
+        void update_to_db() override;
 
         Inventory(std::string, std::string, std::string, double);
 
-        Inventory(std::string itemCode, std::string name, double sellingPrice);
+        Inventory(std::string item_code, std::string name, double selling_price);
 
-        double sellItems(SellingEntry *entry) override;
+        double sell_items(SellingEntry *entry) override;
 
-        void addPurchase(PurchaseEntry *entry) override;
+        void add_purchase(PurchaseEntry *entry) override;
 
-        double getSellingPrice();
+        double get_selling_price();
 
-        void setSellingPrice(double newPrice);
+        void set_selling_price(double new_price);
 
         std::string to_string();
     };

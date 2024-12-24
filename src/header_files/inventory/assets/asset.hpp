@@ -8,57 +8,57 @@ namespace inventory
     class Asset : public Item
     {
     protected:
-        static util::Table *classTable;
+        static util::Table *class_table;
         std::string name;
         double value = 0;
-        double residualValue;
-        int yearUsefulLife;
-        util::Date *expiryDate;
-        util::Date *lastDepreciationDate;
-        util::Date *dateBought;
+        double residual_value;
+        int year_useful_life;
+        util::Date *expiry_date;
+        util::Date *last_depreciation_date;
+        util::Date *date_bought;
 
-        void addExistingPurchaseEntry(PurchaseEntry *entry) override;
+        void add_existing_purchase_entry(PurchaseEntry *entry) override;
 
-        std::vector<std::string> getUpdateParameter() override;
+        std::vector<std::string> get_update_parameter() override;
 
-        Asset(std::string dbCode, std::string name, std::string itemCode,
-              double totalValue, double residualValue, int yearUsefulLife,
-              util::Date *dateBought, util::Date *lastDepreciationDate, util::Date *dateSold);
+        Asset(std::string db_code, std::string name, std::string item_code,
+              double total_value, double residual_value, int year_useful_life,
+              util::Date *date_bought, util::Date *last_depreciation_date, util::Date *date_sold);
 
-        Asset(std::string name, std::string itemCode, double residualValue, int yearUsefulLife, util::Date *dateBought);
+        Asset(std::string name, std::string item_code, double residual_value, int year_useful_life, util::Date *date_bought);
 
     public:
-        void insertToDB() override;
+        void insert_to_db() override;
 
-        void updateToDB() override;
+        void update_to_db() override;
 
-        void addPurchase(PurchaseEntry *entry) override;
+        void add_purchase(PurchaseEntry *entry) override;
 
-        double sellItems(SellingEntry *entry) override;
+        double sell_items(SellingEntry *entry) override;
 
-        virtual double getReducedValueAtYear(int year) = 0;
+        virtual double get_reduced_value_at_year(int year) = 0;
 
-        virtual double getReducedValueCurrentYear() = 0;
+        virtual double get_reduced_value_current_year() = 0;
 
-        double getResidualValue();
+        double get_residual_value();
 
-        int getYearUsefulLife();
+        int get_year_useful_life();
 
-        util::Date *getDateBought();
+        util::Date *get_date_bought();
 
-        util::Date *getLastDepreciationDate();
+        util::Date *get_last_depreciation_date();
 
-        util::Date *getExpiryDate();
+        util::Date *get_expiry_date();
 
-        double getTotalValue();
+        double get_total_value();
 
-        double getCurrentValue();
+        double get_current_value();
 
-        virtual void setTotalValue(double newValue);
+        virtual void set_total_value(double new_value);
 
-        void setLastDepreciationDate(util::Date *);
+        void set_last_depreciation_date(util::Date *);
 
-        std::string toString();
+        std::string to_string();
 
         friend class Equipment;
     };

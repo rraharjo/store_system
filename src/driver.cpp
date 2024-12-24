@@ -4,53 +4,53 @@
 
 #define OPT_SIZE 9
 std::string menu();
-int getInt(std::string, int, int);
-double getDouble(std::string, double, double);
-std::string getString(std::string);
-util::Date *getDate(std::string);
-void addNewInventory(store::StoreSystem *);
-void purchaseInventory(store::StoreSystem *);
-void addPurchaseEntry(store::PurchaseTransaction *);
-void purchaseAsset(store::StoreSystem *);
-void capitalizeAssets(store::StoreSystem *);
-void sellInventory(store::StoreSystem *);
-void sellAssets(store::StoreSystem *);
-void endOfYear(store::StoreSystem *);
-void listOfItems(store::StoreSystem *);
+int get_int(std::string, int, int);
+double get_double(std::string, double, double);
+std::string get_string(std::string);
+util::Date *get_date(std::string);
+void add_new_inventory(store::StoreSystem *);
+void purchase_inventory(store::StoreSystem *);
+void add_purchase_entry(store::PurchaseTransaction *);
+void purchase_asset(store::StoreSystem *);
+void capitalize_assets(store::StoreSystem *);
+void sell_inventory(store::StoreSystem *);
+void sell_assets(store::StoreSystem *);
+void end_of_year(store::StoreSystem *);
+void list_of_items(store::StoreSystem *);
 
 int main(int argc, char *argv[])
 {
-    store::StoreSystem *mySystem = store::StoreSystem::getInstance();
+    store::StoreSystem *my_system = store::StoreSystem::get_instance();
     int option = -1;
     while (option)
     {
         std::cout << menu();
-        option = getInt("Enter your choice:", 0, OPT_SIZE - 1);
+        option = get_int("Enter your choice:", 0, OPT_SIZE - 1);
         switch (option)
         {
         case 1:
-            addNewInventory(mySystem);
+            add_new_inventory(my_system);
             break;
         case 2:
-            purchaseInventory(mySystem);
+            purchase_inventory(my_system);
             break;
         case 3:
-            purchaseAsset(mySystem);
+            purchase_asset(my_system);
             break;
         case 4:
-            capitalizeAssets(mySystem);
+            capitalize_assets(my_system);
             break;
         case 5:
-            sellInventory(mySystem);
+            sell_inventory(my_system);
             break;
         case 6:
-            sellAssets(mySystem);
+            sell_assets(my_system);
             break;
         case 7:
-            endOfYear(mySystem);
+            end_of_year(my_system);
             break;
         case 8:
-            listOfItems(mySystem);
+            list_of_items(my_system);
             break;
         default:
             break;
@@ -60,27 +60,27 @@ int main(int argc, char *argv[])
 
 std::string menu()
 {
-    std::string toRet = "0. exit\n";
-    toRet += "1. Add new inventory\n";
-    toRet += "2. Purchase inventory\n";
-    toRet += "3. Purchase asset\n";
-    toRet += "4. Capitalize asset\n";
-    toRet += "5. Sell inventory\n";
-    toRet += "6. Sell Asset\n";
-    toRet += "7. End of the year\n";
-    toRet += "8. Get a list of item\n";
-    return toRet;
+    std::string to_ret = "0. exit\n";
+    to_ret += "1. Add new inventory\n";
+    to_ret += "2. Purchase inventory\n";
+    to_ret += "3. Purchase asset\n";
+    to_ret += "4. Capitalize asset\n";
+    to_ret += "5. Sell inventory\n";
+    to_ret += "6. Sell Asset\n";
+    to_ret += "7. End of the year\n";
+    to_ret += "8. Get a list of item\n";
+    return to_ret;
 }
 
-int getInt(std::string message, int intMin, int intMax)
+int get_int(std::string message, int int_min, int int_max)
 {
     int option = -1;
     std::cout << message << '\n';
-    std::cout << "Enter option between " << intMin << " and " << intMax << '\n';
+    std::cout << "Enter option between " << int_min << " and " << int_max << '\n';
     while (1)
     {
         std::cin >> option;
-        if (option >= intMin && option <= intMax)
+        if (option >= int_min && option <= int_max)
         {
             break;
         }
@@ -89,15 +89,15 @@ int getInt(std::string message, int intMin, int intMax)
     return option;
 }
 
-double getDouble(std::string message, double dMin, double dMax)
+double get_double(std::string message, double d_min, double d_max)
 {
     double option;
     std::cout << message << '\n';
-    std::cout << "Enter double between " << dMin << " and " << dMax << '\n';
+    std::cout << "Enter double between " << d_min << " and " << d_max << '\n';
     while (1)
     {
         std::cin >> option;
-        if (option >= dMin && option <= dMax)
+        if (option >= d_min && option <= d_max)
         {
             break;
         }
@@ -106,145 +106,145 @@ double getDouble(std::string message, double dMin, double dMax)
     return option;
 }
 
-std::string getString(std::string message)
+std::string get_string(std::string message)
 {
-    std::string toRet = "";
+    std::string to_ret = "";
     std::cout << message << '\n';
-    std::cin >> toRet;
-    return toRet;
+    std::cin >> to_ret;
+    return to_ret;
 }
 
-util::Date *getDate(std::string message)
+util::Date *get_date(std::string message)
 {
     std::cout << "format: dd/MM/yyyy\n";
-    std::string format = getString(message);
-    util::Date *toRet = new util::Date(format);
-    return toRet;
+    std::string format = get_string(message);
+    util::Date *to_ret = new util::Date(format);
+    return to_ret;
 }
 
-void addNewInventory(store::StoreSystem *sSystem)
+void add_new_inventory(store::StoreSystem *s_system)
 {
-    std::string name = getString("Enter product name:");
-    std::string itemCode = getString("Enter item code:");
-    double price = getDouble("Enter price:", 0.0, std::numeric_limits<double>::max());
-    inventory::Inventory *newInventory = new inventory::Inventory(itemCode, name, price);
-    newInventory->insertToDB();
-    sSystem->addItem(newInventory);
+    std::string name = get_string("Enter product name:");
+    std::string item_code = get_string("Enter item code:");
+    double price = get_double("Enter price:", 0.0, std::numeric_limits<double>::max());
+    inventory::Inventory *new_inventory = new inventory::Inventory(item_code, name, price);
+    new_inventory->insert_to_db();
+    s_system->add_item(new_inventory);
     std::cout << "new inventory added" << '\n';
 }
 
-void purchaseInventory(store::StoreSystem *sSystem)
+void purchase_inventory(store::StoreSystem *s_system)
 {
-    std::string seller = getString("Enter transaction seller:");
-    util::Date *transDate = getDate("Enter date: ");
-    store::PurchaseTransaction *newTransaction = new store::PurchaseTransaction(seller, transDate);
-    addPurchaseEntry(newTransaction);
-    int more = getInt("more?", 0, 1);
+    std::string seller = get_string("Enter transaction seller:");
+    util::Date *trans_date = get_date("Enter date: ");
+    store::PurchaseTransaction *new_transaction = new store::PurchaseTransaction(seller, trans_date);
+    add_purchase_entry(new_transaction);
+    int more = get_int("more?", 0, 1);
     while (more)
     {
-        addPurchaseEntry(newTransaction);
-        more = getInt("more?", 0, 1);
+        add_purchase_entry(new_transaction);
+        more = get_int("more?", 0, 1);
     }
-    double paidCash = getDouble("How much cash paid? ", 0, newTransaction->getTransactionAmount());
-    newTransaction->setPaidCash(paidCash);
-    newTransaction->setPaidCredit(newTransaction->getTransactionAmount() - paidCash);
-    newTransaction->insertToDB();
-    sSystem->buyItem(newTransaction);
+    double paid_cash = get_double("How much cash paid? ", 0, new_transaction->get_transaction_amount());
+    new_transaction->set_paid_cash(paid_cash);
+    new_transaction->set_paid_credit(new_transaction->get_transaction_amount() - paid_cash);
+    new_transaction->insert_to_db();
+    s_system->buy_item(new_transaction);
     return;
 }
 
-void addPurchaseEntry(store::PurchaseTransaction *p)
+void add_purchase_entry(store::PurchaseTransaction *p)
 {
-    std::string itemCode = getString("Enter item DB Code:");
-    double price = getDouble("Enter each item price", 0.0, std::numeric_limits<double>::max());
-    int qty = getInt("Enter qty purchased: ", 0, std::numeric_limits<int>::max());
-    inventory::PurchaseEntry *newEntry = new inventory::PurchaseEntry(itemCode, p->getDBCode(), price, qty);
-    p->addEntry(newEntry);
+    std::string item_code = get_string("Enter item DB Code:");
+    double price = get_double("Enter each item price", 0.0, std::numeric_limits<double>::max());
+    int qty = get_int("Enter qty purchased: ", 0, std::numeric_limits<int>::max());
+    inventory::PurchaseEntry *new_entry = new inventory::PurchaseEntry(item_code, p->get_db_code(), price, qty);
+    p->add_entry(new_entry);
 }
 
-void purchaseAsset(store::StoreSystem *sSystem)
+void purchase_asset(store::StoreSystem *s_system)
 {
-    std::string name = getString("Name: ");
-    std::string itemCode = getString("item code: ");
-    double purchaseCost = getDouble("Purchase cost: ", 0.0, std::numeric_limits<double>::max());
-    double residualValue = getDouble("Residual value: ", 0.0, std::numeric_limits<double>::max());
-    int usefulLife = getInt("Year useful life: ", 1, 99);
-    util::Date *datePurchased = getDate("date purchased ");
-    inventory::Equipment *newEqp = new inventory::Equipment(name, itemCode, residualValue, usefulLife, datePurchased);
-    newEqp->insertToDB();
-    store::PurchaseTransaction *newTransaction = new store::PurchaseTransaction("", datePurchased);
-    inventory::PurchaseEntry *newEntry = new inventory::PurchaseEntry(newEqp->getDBCode(), "", purchaseCost, 1);
-    newTransaction->addEntry(newEntry);
-    double paidCash = getDouble("How much cash paid? ", 0, newTransaction->getTransactionAmount());
-    newTransaction->setPaidCash(paidCash);
-    newTransaction->setPaidCredit(newTransaction->getTransactionAmount() - paidCash);
-    newTransaction->insertToDB();
-    sSystem->addProperty(newEqp);
-    sSystem->capitalizeAsset(newTransaction);
+    std::string name = get_string("Name: ");
+    std::string item_code = get_string("item code: ");
+    double purchase_cost = get_double("Purchase cost: ", 0.0, std::numeric_limits<double>::max());
+    double residual_value = get_double("Residual value: ", 0.0, std::numeric_limits<double>::max());
+    int useful_life = get_int("Year useful life: ", 1, 99);
+    util::Date *date_purchased = get_date("date purchased ");
+    inventory::Equipment *new_eqp = new inventory::Equipment(name, item_code, residual_value, useful_life, date_purchased);
+    new_eqp->insert_to_db();
+    store::PurchaseTransaction *new_transaction = new store::PurchaseTransaction("", date_purchased);
+    inventory::PurchaseEntry *new_entry = new inventory::PurchaseEntry(new_eqp->get_db_code(), "", purchase_cost, 1);
+    new_transaction->add_entry(new_entry);
+    double paid_cash = get_double("How much cash paid? ", 0, new_transaction->get_transaction_amount());
+    new_transaction->set_paid_cash(paid_cash);
+    new_transaction->set_paid_credit(new_transaction->get_transaction_amount() - paid_cash);
+    new_transaction->insert_to_db();
+    s_system->add_property(new_eqp);
+    s_system->capitalize_asset(new_transaction);
 }
 
-void capitalizeAssets(store::StoreSystem *sSystem)
+void capitalize_assets(store::StoreSystem *s_system)
 {
-    std::string itemCode = getString("item code: ");
-    double capitalizedAmt = getDouble("Capitalized amount: ", 0.0, std::numeric_limits<double>::max());
-    util::Date *transDate = getDate("transaction date: ");
-    store::PurchaseTransaction *newTransaction = new store::PurchaseTransaction("", transDate);
-    inventory::PurchaseEntry *newEntry = new inventory::PurchaseEntry(itemCode, newTransaction->getDBCode(), capitalizedAmt, 1);
-    newTransaction->addEntry(newEntry);
-    double paidCash = getDouble("How much cash paid? ", 0, newTransaction->getTransactionAmount());
-    newTransaction->setPaidCash(paidCash);
-    newTransaction->setPaidCredit(newTransaction->getTransactionAmount() - paidCash);
-    newTransaction->insertToDB();
-    sSystem->capitalizeAsset(newTransaction);
+    std::string item_code = get_string("item code: ");
+    double capitalized_amt = get_double("Capitalized amount: ", 0.0, std::numeric_limits<double>::max());
+    util::Date *trans_date = get_date("transaction date: ");
+    store::PurchaseTransaction *new_transaction = new store::PurchaseTransaction("", trans_date);
+    inventory::PurchaseEntry *new_entry = new inventory::PurchaseEntry(item_code, new_transaction->get_db_code(), capitalized_amt, 1);
+    new_transaction->add_entry(new_entry);
+    double paid_cash = get_double("How much cash paid? ", 0, new_transaction->get_transaction_amount());
+    new_transaction->set_paid_cash(paid_cash);
+    new_transaction->set_paid_credit(new_transaction->get_transaction_amount() - paid_cash);
+    new_transaction->insert_to_db();
+    s_system->capitalize_asset(new_transaction);
 }
 
-void sellInventory(store::StoreSystem *sSystem)
+void sell_inventory(store::StoreSystem *s_system)
 {
-    std::string itemCode = getString("inventory item code: ");
-    int qty = getInt("qty: ", 1, std::numeric_limits<int>::max());
-    double price = sSystem->getInventory(itemCode)->getSellingPrice();
-    util::Date *date = getDate("enter date: ");
-    store::SellingTransaction *newTransaction = new store::SellingTransaction(date);
-    inventory::SellingEntry *newEntry = new inventory::SellingEntry(itemCode, newTransaction->getDBCode(), price, qty);
-    newTransaction->addEntry(newEntry);
-    int more = getInt("more?", 0, 1);
+    std::string item_code = get_string("inventory item code: ");
+    int qty = get_int("qty: ", 1, std::numeric_limits<int>::max());
+    double price = s_system->get_inventory(item_code)->get_selling_price();
+    util::Date *date = get_date("enter date: ");
+    store::SellingTransaction *new_transaction = new store::SellingTransaction(date);
+    inventory::SellingEntry *new_entry = new inventory::SellingEntry(item_code, new_transaction->get_db_code(), price, qty);
+    new_transaction->add_entry(new_entry);
+    int more = get_int("more?", 0, 1);
     while (more)
     {
-        itemCode = getString("inventory item code: ");
-        qty = getInt("qty: ", 1, std::numeric_limits<int>::max());
-        price = sSystem->getInventory(itemCode)->getSellingPrice();
-        newEntry = new inventory::SellingEntry(itemCode, newTransaction->getDBCode(), price, qty);
-        newTransaction->addEntry(newEntry);
-        more = getInt("more?", 0, 1);
+        item_code = get_string("inventory item code: ");
+        qty = get_int("qty: ", 1, std::numeric_limits<int>::max());
+        price = s_system->get_inventory(item_code)->get_selling_price();
+        new_entry = new inventory::SellingEntry(item_code, new_transaction->get_db_code(), price, qty);
+        new_transaction->add_entry(new_entry);
+        more = get_int("more?", 0, 1);
     }
-    double paidCash = getDouble("How much cash paid?", 0, newTransaction->getTransactionAmount());
-    newTransaction->setPaidCash(paidCash);
-    newTransaction->setPaidCredit(newTransaction->getTransactionAmount() - paidCash);
-    newTransaction->insertToDB();
-    sSystem->sellItem(newTransaction);
+    double paid_cash = get_double("How much cash paid?", 0, new_transaction->get_transaction_amount());
+    new_transaction->set_paid_cash(paid_cash);
+    new_transaction->set_paid_credit(new_transaction->get_transaction_amount() - paid_cash);
+    new_transaction->insert_to_db();
+    s_system->sell_item(new_transaction);
 }
 
-void sellAssets(store::StoreSystem *sSystem)
+void sell_assets(store::StoreSystem *s_system)
 {
-    std::string itemCode = getString("asset item code: ");
-    double price = getDouble("selling price", 0, std::numeric_limits<double>::max());
-    util::Date *date = getDate("enter date: ");
-    store::SellingTransaction *newTransaction = new store::SellingTransaction(date);
+    std::string item_code = get_string("asset item code: ");
+    double price = get_double("selling price", 0, std::numeric_limits<double>::max());
+    util::Date *date = get_date("enter date: ");
+    store::SellingTransaction *new_transaction = new store::SellingTransaction(date);
     
-    inventory::SellingEntry *newEntry = new inventory::SellingEntry(itemCode, newTransaction->getDBCode(), price, 1);
-    newTransaction->addEntry(newEntry);
-    double paidCash = getDouble("How much cash paid?", 0, newTransaction->getTransactionAmount());
-    newTransaction->setPaidCash(paidCash);
-    newTransaction->setPaidCredit(newTransaction->getTransactionAmount() - paidCash);
-    newTransaction->insertToDB();
-    sSystem->disposeAsset(newTransaction);
+    inventory::SellingEntry *new_entry = new inventory::SellingEntry(item_code, new_transaction->get_db_code(), price, 1);
+    new_transaction->add_entry(new_entry);
+    double paid_cash = get_double("How much cash paid?", 0, new_transaction->get_transaction_amount());
+    new_transaction->set_paid_cash(paid_cash);
+    new_transaction->set_paid_credit(new_transaction->get_transaction_amount() - paid_cash);
+    new_transaction->insert_to_db();
+    s_system->dispose_asset(new_transaction);
 }
 
-void endOfYear(store::StoreSystem *sSystem){
-    sSystem->endYearAdjustment();
+void end_of_year(store::StoreSystem *s_system){
+    s_system->end_year_adjustment();
 }
 
-void listOfItems(store::StoreSystem *sSystem)
+void list_of_items(store::StoreSystem *s_system)
 {
-    std::cout << sSystem->toStringInv() << std::endl;
+    std::cout << s_system->to_string_inv() << std::endl;
 }

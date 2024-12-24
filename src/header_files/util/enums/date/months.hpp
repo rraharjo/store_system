@@ -23,17 +23,17 @@ namespace util
             DECEMBER = 12
         };
 
-        extern std::map<Month, std::string> monthsMap;
+        extern std::map<Month, std::string> months_map;
 
-        extern Month allMonths[12];
+        extern Month all_months[12];
     };
-    int asInt(enums::Month month);
+    int as_int(enums::Month month);
 
-    enums::Month toMonth(int month);
+    enums::Month to_month(int month);
 
-    std::string getMonthName(enums::Month month);
+    std::string get_month_name(enums::Month month);
 
-    std::string getMonthName(int month);
+    std::string get_month_name(int month);
 };
 
 #endif

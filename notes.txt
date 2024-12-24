@@ -3,9 +3,12 @@ general:
 -I -> this flag means all the folders that has the header files
 all source code (.cpp) file has to be included when compiling
 
-with postgres, include this line:
+with postgres, include this line. Sample:
 -I "C:/Program Files/PostgreSQL/16/include" "C:/Program Files/PostgreSQL/16/lib/libpq.lib"
 "C:/Program Files/PostgreSQL/16/lib/libpq.lib" is the source file
+
+Microsoft's WinSock2 SDK (required for server). Sample:
+C:/Program Files/SDK/Windows Kits/10/Lib/10.0.20348.0/um/x64/WS2_32.Lib
 
 compile inventory_test:
 g++ ./src/inventory_test.cpp -I ./src/header_files ./src/source_files/inventory/*.cpp ./src/source_files/inventory/assets/*.cpp ./src/source_files/inventory/transaction/*.cpp ./src/source_files/util/database/*.cpp ./src/source_files/util/enums/date/*.cpp ./src/source_files/util/*.cpp ./src/source_files/util/enums/database/*.cpp ./src/source_files/util/class/*.cpp -I "C:/Program Files/PostgreSQL/16/include" "C:/Program Files/PostgreSQL/16/lib/libpq.lib"

@@ -27,31 +27,31 @@ namespace util
     class Table
     {
     private:
-        std::string tableName;
+        std::string table_name;
 
     protected:
-        std::string sequenceName;
+        std::string sequence_name;
 
         std::vector<ColumnSchema> schema;
 
-        Table(std::string tableName, std::string sequenceName);
+        Table(std::string table_name, std::string sequence_name);
 
     public:
-        virtual std::vector<std::vector<std::string>> getRecords(std::vector<std::string>, std::vector<TableCondition>);
+        virtual std::vector<std::vector<std::string>> get_records(std::vector<std::string>, std::vector<TableCondition>);
 
-        virtual std::vector<std::vector<std::string>> getRecords(std::vector<TableCondition>);
+        virtual std::vector<std::vector<std::string>> get_records(std::vector<TableCondition>);
 
-        std::vector<std::vector<std::string>> getRecords();
+        std::vector<std::vector<std::string>> get_records();
 
-        virtual std::vector<std::string> insertRow(std::vector<std::string> &values);
+        virtual std::vector<std::string> insert_row(std::vector<std::string> &values);
 
-        std::vector<std::string> updateRow(std::string id, std::vector<std::string> &values);
+        std::vector<std::string> update_row(std::string id, std::vector<std::string> &values);
 
-        std::vector<ColumnSchema> &getSchema();
+        std::vector<ColumnSchema> &get_schema();
 
-        std::string getTableName();
+        std::string get_table_name();
 
-        ColumnSchema getColumn(std::string);
+        ColumnSchema get_column(std::string);
     };
 
     class InventoryTable : public Table
@@ -60,10 +60,10 @@ namespace util
         static InventoryTable *instance;
 
     protected:
-        InventoryTable(std::string tableName, std::string sequenceName);
+        InventoryTable(std::string table_name, std::string sequence_name);
 
     public:
-        static InventoryTable *getInstance();
+        static InventoryTable *get_instance();
 
         ~InventoryTable();
     };
@@ -74,10 +74,10 @@ namespace util
         static PurchaseTransactionTable *instance;
 
     protected:
-        PurchaseTransactionTable(std::string tableName, std::string sequenceName);
+        PurchaseTransactionTable(std::string table_name, std::string sequence_name);
 
     public:
-        static PurchaseTransactionTable *getInstance();
+        static PurchaseTransactionTable *get_instance();
 
         ~PurchaseTransactionTable();
     };
@@ -88,12 +88,12 @@ namespace util
         static PurchaseEntryTable *instance;
 
     protected:
-        PurchaseEntryTable(std::string tableName, std::string sequenceName);
+        PurchaseEntryTable(std::string table_name, std::string sequence_name);
 
     public:
-        static PurchaseEntryTable *getInstance();
+        static PurchaseEntryTable *get_instance();
 
-        std::vector<std::vector<std::string>> getRecords(std::vector<std::string>, std::vector<TableCondition>) override;
+        std::vector<std::vector<std::string>> get_records(std::vector<std::string>, std::vector<TableCondition>) override;
 
         ~PurchaseEntryTable();
     };
@@ -104,10 +104,10 @@ namespace util
         static SellingEntryTable *instance;
 
     protected:
-        SellingEntryTable(std::string tableName, std::string sequenceName);
+        SellingEntryTable(std::string table_name, std::string sequence_name);
 
     public:
-        static SellingEntryTable *getInstance();
+        static SellingEntryTable *get_instance();
 
         ~SellingEntryTable();
     };
@@ -118,10 +118,10 @@ namespace util
         static SellingTransactionTable *instance;
 
     protected:
-        SellingTransactionTable(std::string tableName, std::string sequenceName);
+        SellingTransactionTable(std::string table_name, std::string sequence_name);
 
     public:
-        static SellingTransactionTable *getInstance();
+        static SellingTransactionTable *get_instance();
 
         ~SellingTransactionTable();
     };
@@ -132,10 +132,10 @@ namespace util
         static AssetsTable *instance;
 
     protected:
-        AssetsTable(std::string tableName, std::string sequenceName);
+        AssetsTable(std::string table_name, std::string sequence_name);
 
     public:
-        static AssetsTable *getInstance();
+        static AssetsTable *get_instance();
 
         ~AssetsTable();
     };
@@ -146,10 +146,10 @@ namespace util
         static AccountingTransactionTable *instance;
 
     protected:
-        AccountingTransactionTable(std::string tableName, std::string sequenceName);
+        AccountingTransactionTable(std::string table_name, std::string sequence_name);
 
     public:
-        static AccountingTransactionTable *getInstance();
+        static AccountingTransactionTable *get_instance();
 
         ~AccountingTransactionTable();
     };
@@ -160,10 +160,10 @@ namespace util
         static AccountingEntryTable *instance;
 
     protected:
-        AccountingEntryTable(std::string tableName, std::string sequenceName);
+        AccountingEntryTable(std::string table_name, std::string sequence_name);
 
     public:
-        static AccountingEntryTable *getInstance();
+        static AccountingEntryTable *get_instance();
 
         ~AccountingEntryTable();
     };
@@ -174,12 +174,12 @@ namespace util
         static TAccountTable *instance;
 
     protected:
-        TAccountTable(std::string tableName);
+        TAccountTable(std::string table_name);
 
     public:
-        static TAccountTable *getInstance();
+        static TAccountTable *get_instance();
 
-        std::vector<std::string> insertRow(std::vector<std::string> &values) override;
+        std::vector<std::string> insert_row(std::vector<std::string> &values) override;
 
         ~TAccountTable();
     };

@@ -11,34 +11,34 @@ namespace store
     class Transaction : public util::baseclass::HasTable
     {
     private:
-        util::Date *transactionDate;
-        double paidCash;
-        double paidCredit;
+        util::Date *transaction_date;
+        double paid_cash;
+        double paid_credit;
         std::vector<inventory::Entry *> entries;
 
     protected:
-        bool isFinished;
+        bool is_finished;
 
-        Transaction(util::Date *transactionDate, double paidCash, double paidCredit);
+        Transaction(util::Date *transaction_date, double paid_cash, double paid_credit);
 
-        Transaction(util::Date *transactionDate);
+        Transaction(util::Date *transaction_date);
 
     public:
-        util::Date *getDate();
+        util::Date *get_date();
 
-        double getPaidCash();
+        double get_paid_cash();
 
-        double getPaidCredit();
+        double get_paid_credit();
 
-        double getTransactionAmount();
+        double get_transaction_amount();
 
-        void addEntry(inventory::Entry *entry);
+        void add_entry(inventory::Entry *entry);
 
-        void setPaidCash(double amount);
+        void set_paid_cash(double amount);
 
-        void setPaidCredit(double amount);
+        void set_paid_credit(double amount);
 
-        std::vector<inventory::Entry *> getAllEntries();
+        std::vector<inventory::Entry *> get_all_entries();
     };
 
     /*****************************************PURCHASETRANSACTION*****************************************/
@@ -46,22 +46,22 @@ namespace store
     class PurchaseTransaction : public Transaction
     {
     private:
-        static util::Table *classTable;
+        static util::Table *class_table;
         std::string seller;
 
     protected:
-        std::vector<std::string> getInsertParameter() override;
+        std::vector<std::string> get_insert_parameter() override;
 
-        std::vector<std::string> getUpdateParameter() override;
+        std::vector<std::string> get_update_parameter() override;
 
     public:
-        void insertToDB() override;
+        void insert_to_db() override;
 
-        void updateToDB() override;
+        void update_to_db() override;
 
-        PurchaseTransaction(std::string seller, util::Date *purchaseDate);
+        PurchaseTransaction(std::string seller, util::Date *purchase_date);
 
-        std::string getSeller();
+        std::string get_seller();
     };
 
     /*****************************************SELLINGTRANSACTION*****************************************/
@@ -70,19 +70,19 @@ namespace store
     {
 
     private:
-        static util::Table *classTable;
+        static util::Table *class_table;
 
     public:
-        void insertToDB() override;
+        void insert_to_db() override;
 
-        void updateToDB() override;
+        void update_to_db() override;
 
-        SellingTransaction(util::Date *transactionDate);
+        SellingTransaction(util::Date *transaction_date);
 
     protected:
-        std::vector<std::string> getInsertParameter() override;
+        std::vector<std::string> get_insert_parameter() override;
 
-        std::vector<std::string> getUpdateParameter() override;
+        std::vector<std::string> get_update_parameter() override;
     };
 };
 #endif

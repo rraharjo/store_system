@@ -1,140 +1,140 @@
 #include "accounting/accounting_transaction/entry.hpp"
 using namespace accounting;
 
-util::Table *Entry::classTable = util::AccountingEntryTable::getInstance();
+util::Table *Entry::class_table = util::AccountingEntryTable::get_instance();
 
-std::vector<Entry *> Entry::generateFromDB(std::string transactionCode)
+std::vector<Entry *> Entry::generate_from_db(std::string transaction_code)
 {
-    std::vector<Entry *> toRet;
+    std::vector<Entry *> to_ret;
     std::vector<util::TableCondition> conditions;
     util::TableCondition cond1 = util::TableCondition();
-    cond1.col = util::enums::accountingEntryTableColumns[util::enums::AccountingEntryTable::ATDBCODE];
+    cond1.col = util::enums::accounting_entry_table_columns[util::enums::AccountingEntryTable::ATDBCODE];
     cond1.comparator = util::TableComparator::EQUAL;
-    cond1.value = transactionCode;
+    cond1.value = transaction_code;
     conditions.push_back(cond1);
-    std::vector<std::vector<std::string>> records = classTable->getRecords(conditions);
+    std::vector<std::vector<std::string>> records = class_table->get_records(conditions);
     for (std::vector<std::string> &record : records)
     {
-        Entry *newEntry = new Entry(record[0], record[1], record[2] == "t" ? true : false, std::stod(record[3]),
-                                    util::enums::getTAccountEnum(record[4]));
-        toRet.push_back(newEntry);
+        Entry *new_entry = new Entry(record[0], record[1], record[2] == "t" ? true : false, std::stod(record[3]),
+                                    util::enums::get_t_account_enum(record[4]));
+        to_ret.push_back(new_entry);
     }
-    return toRet;
+    return to_ret;
 }
 
-void Entry::insertToDB()
+void Entry::insert_to_db()
 {
-    this->insertToDBWithTable(Entry::classTable);
+    this->insert_to_db_with_table(Entry::class_table);
 };
 
-void Entry::updateToDB()
+void Entry::update_to_db()
 {
-    this->updateToDBWithTable(Entry::classTable);
+    this->update_to_db_with_table(Entry::class_table);
 };
 
-std::vector<std::string> Entry::getInsertParameter()
+std::vector<std::string> Entry::get_insert_parameter()
 {
-    std::vector<std::string> toRet;
-    toRet.push_back(util::enums::primaryKeyCodesMap[util::enums::PrimaryKeyCodes::ACCOUNTINGENTRY]);
-    toRet.push_back(this->transactionDB);
-    toRet.push_back(this->debit ? "true" : "false");
-    toRet.push_back(std::to_string(this->amount));
-    toRet.push_back(util::enums::tAccountsNameMap[this->tAccount]);
-    toRet.push_back(util::enums::accountTitlesMap[this->account]);
-    return toRet;
+    std::vector<std::string> to_ret;
+    to_ret.push_back(util::enums::primary_key_codes_map[util::enums::PrimaryKeyCodes::ACCOUNTINGENTRY]);
+    to_ret.push_back(this->transaction_db);
+    to_ret.push_back(this->debit ? "true" : "false");
+    to_ret.push_back(std::to_string(this->amount));
+    to_ret.push_back(util::enums::t_accounts_name_map[this->t_account]);
+    to_ret.push_back(util::enums::account_titles_map[this->account]);
+    return to_ret;
 }
 
-std::vector<std::string> Entry::getUpdateParameter()
+std::vector<std::string> Entry::get_update_parameter()
 {
-    std::vector<std::string> toRet;
-    toRet.push_back(this->transactionDB);
-    toRet.push_back(this->debit ? "true" : "false");
-    toRet.push_back(std::to_string(this->amount));
-    toRet.push_back(util::enums::tAccountsNameMap[this->tAccount]);
-    toRet.push_back(util::enums::accountTitlesMap[this->account]);
-    return toRet;
+    std::vector<std::string> to_ret;
+    to_ret.push_back(this->transaction_db);
+    to_ret.push_back(this->debit ? "true" : "false");
+    to_ret.push_back(std::to_string(this->amount));
+    to_ret.push_back(util::enums::t_accounts_name_map[this->t_account]);
+    to_ret.push_back(util::enums::account_titles_map[this->account]);
+    return to_ret;
 }
 
-Entry::Entry(std::string dbCode, std::string transactionDBCode, bool debit, double amount,
-             util::enums::TAccounts tAccount)
+Entry::Entry(std::string db_code, std::string transaction_db_code, bool debit, double amount,
+             util::enums::TAccounts t_account)
     : util::baseclass::HasTable()
 {
-    this->setDBCode(dbCode);
+    this->set_db_code(db_code);
     this->debit = debit;
     this->amount = amount;
-    this->tAccount = tAccount;
-    this->account = util::enums::getAccountTitle(this->tAccount);
-    this->transactionTitle = "";
-    this->transactionDB = transactionDBCode;
+    this->t_account = t_account;
+    this->account = util::enums::get_account_title(this->t_account);
+    this->transaction_title = "";
+    this->transaction_db = transaction_db_code;
 }
 
-Entry::Entry(std::string transactionDBCode, bool debit, double amount,
-             util::enums::TAccounts tAccount)
-    : Entry::Entry("", transactionDBCode, debit, amount, tAccount)
+Entry::Entry(std::string transaction_db_code, bool debit, double amount,
+             util::enums::TAccounts t_account)
+    : Entry::Entry("", transaction_db_code, debit, amount, t_account)
 {
 }
 
-bool Entry::isDebit()
+bool Entry::is_debit()
 {
     return this->debit;
 }
 
-double Entry::getAmount()
+double Entry::get_amount()
 {
     return this->amount;
 }
 
-std::string Entry::getTransactionDB()
+std::string Entry::get_transaction_db()
 {
-    return this->transactionDB;
+    return this->transaction_db;
 }
 
-std::string Entry::getTransactionTitle()
+std::string Entry::get_transaction_title()
 {
-    return this->transactionTitle;
+    return this->transaction_title;
 }
 
-util::enums::TAccounts Entry::getTAccount()
+util::enums::TAccounts Entry::get_t_account()
 {
-    return this->tAccount;
+    return this->t_account;
 }
 
-util::enums::AccountTitles Entry::getAccountTitle()
+util::enums::AccountTitles Entry::get_account_title()
 {
     return this->account;
 }
 
-std::string Entry::getTAccountName()
+std::string Entry::get_t_account_name()
 {
-    return util::enums::getName(this->tAccount);
+    return util::enums::get_name(this->t_account);
 }
 
-std::string Entry::getAccountTitleName()
+std::string Entry::get_account_title_name()
 {
-    return util::enums::getName(this->account);
+    return util::enums::get_name(this->account);
 }
 
-void Entry::setTransactionDB(std::string transactionDB)
+void Entry::set_transaction_db(std::string transaction_db)
 {
-    this->transactionDB = transactionDB;
+    this->transaction_db = transaction_db;
 }
 
-void Entry::setTransactionTitle(std::string title)
+void Entry::set_transaction_title(std::string title)
 {
-    this->transactionTitle = title;
+    this->transaction_title = title;
 }
 
 std::string Entry::to_string()
 {
-    std::string toRet = "";
-    if (this->isDebit())
+    std::string to_ret = "";
+    if (this->is_debit())
     {
-        toRet += this->getDBCode() + " D \"" + this->getTransactionTitle() + "\" " + std::to_string(this->amount);
+        to_ret += this->get_db_code() + " D \"" + this->get_transaction_title() + "\" " + std::to_string(this->amount);
     }
     else
     {
-        toRet += this->getDBCode() + " C \"" + this->getTransactionTitle() + "\" " + std::to_string(this->amount);
+        to_ret += this->get_db_code() + " C \"" + this->get_transaction_title() + "\" " + std::to_string(this->amount);
     }
-    toRet += "\n";
-    return toRet;
+    to_ret += "\n";
+    return to_ret;
 }

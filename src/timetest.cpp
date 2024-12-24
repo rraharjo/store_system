@@ -9,15 +9,15 @@ int main(){
     util::Date *mar012022 = new util::Date("01/03/2022");
 
     std::cout << feb292020->to_string() << std::endl;
-    std::cout << feb292020->diffDaysTo(jan302021) << std::endl;
-    std::cout << feb292020->diffYearsTo(jan302021) << std::endl;
-    std::cout << feb292020->diffDaysTo(mar012021) << std::endl;
-    std::cout << feb292020->diffYearsTo(mar012021) << std::endl;
-    std::cout << feb292020->diffDaysTo(feb282021) << std::endl;
-    std::cout << feb292020->diffYearsTo(feb282021) << std::endl;
-    std::cout << mar012020->diffDaysTo(mar012021) << std::endl;
-    std::cout << mar012020->diffYearsTo(mar012021) << std::endl;
-    std::cout << mar012021->diffDaysTo(mar012022) << std::endl;
-    std::cout << mar012021->diffYearsTo(mar012022) << std::endl;
+    std::cout << feb292020->diff_days_to(jan302021) << std::endl;
+    std::cout << feb292020->diff_years_to(jan302021) << std::endl;
+    std::cout << feb292020->diff_days_to(mar012021) << std::endl;
+    std::cout << feb292020->diff_years_to(mar012021) << std::endl;
+    std::cout << feb292020->diff_days_to(feb282021) << std::endl;
+    std::cout << feb292020->diff_years_to(feb282021) << std::endl;
+    std::cout << mar012020->diff_days_to(mar012021) << std::endl;
+    std::cout << mar012020->diff_years_to(mar012021) << std::endl;
+    std::cout << mar012021->diff_days_to(mar012022) << std::endl;
+    std::cout << mar012021->diff_years_to(mar012022) << std::endl;
     return 0;
 }

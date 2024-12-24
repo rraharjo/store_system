@@ -1,119 +1,119 @@
 #include "accounting/accounts/account.hpp"
 using namespace accounting;
 
-void Account::addTAccount(util::enums::TAccounts tAccount)
+void Account::add_t_account(util::enums::TAccounts t_account)
 {
-    this->tAccounts[tAccount] = TAccount::generateFromDatabase(tAccount);
+    this->t_accounts[t_account] = TAccount::generate_from_database(t_account);
 }
 
 Account::Account(bool debit, util::enums::AccountTitles title)
 {
     this->debit = debit;
     this->title = title;
-    this->tAccounts = {};
+    this->t_accounts = {};
 }
 
 Account::~Account()
 {
-    for (auto it = this->tAccounts.begin(); it != this->tAccounts.end(); it++)
+    for (auto it = this->t_accounts.begin(); it != this->t_accounts.end(); it++)
     {
         delete it->second;
     }
 }
 
-util::enums::AccountTitles Account::getTitle()
+util::enums::AccountTitles Account::get_title()
 {
     return this->title;
 }
 
-std::string Account::getTitleName()
+std::string Account::get_title_name()
 {
-    return util::enums::getName(this->title);
+    return util::enums::get_name(this->title);
 }
 
-double Account::getTotalCredit()
+double Account::get_total_credit()
 {
-    double toRet = 0.0;
-    for (auto it = this->tAccounts.begin(); it != this->tAccounts.end(); it++)
+    double to_ret = 0.0;
+    for (auto it = this->t_accounts.begin(); it != this->t_accounts.end(); it++)
     {
-        toRet += it->second->getCreditAmount();
+        to_ret += it->second->get_credit_amount();
     }
-    return toRet;
+    return to_ret;
 }
 
-double Account::getTotalDebit()
+double Account::get_total_debit()
 {
-    double toRet = 0.0;
-    for (auto it = this->tAccounts.begin(); it != this->tAccounts.end(); it++)
+    double to_ret = 0.0;
+    for (auto it = this->t_accounts.begin(); it != this->t_accounts.end(); it++)
     {
-        toRet += it->second->getDebitAmount();
+        to_ret += it->second->get_debit_amount();
     }
-    return toRet;
+    return to_ret;
 }
 
-void Account::addEntry(Entry *entry)
+void Account::add_entry(Entry *entry)
 {
-    this->tAccounts[entry->getTAccount()]->addEntry(entry);
+    this->t_accounts[entry->get_t_account()]->add_entry(entry);
 }
 
 std::string Account::to_string()
 {
-    std::string toRet = this->getTitleName();
-    toRet += "\n";
+    std::string to_ret = this->get_title_name();
+    to_ret += "\n";
     int num = 1;
-    for (auto it = this->tAccounts.begin(); it != this->tAccounts.end(); it++)
+    for (auto it = this->t_accounts.begin(); it != this->t_accounts.end(); it++)
     {
-        toRet += std::to_string(num++) + ". " + it->second->to_string();
+        to_ret += std::to_string(num++) + ". " + it->second->to_string();
     }
-    return toRet;
+    return to_ret;
 }
 
 Assets::Assets() : Account(true, util::enums::AccountTitles::ASSETS)
 {
-    this->initiateTAccount();
+    this->initiate_t_account();
 }
 
-void Assets::initiateTAccount()
+void Assets::initiate_t_account()
 {
-    for (util::enums::TAccounts tAccount : util::enums::assetsTAccounts)
+    for (util::enums::TAccounts t_account : util::enums::assets_t_accounts)
     {
-        this->addTAccount(tAccount);
+        this->add_t_account(t_account);
     }
 }
 
 Liabilities::Liabilities() : Account(false, util::enums::AccountTitles::LIABILITIES)
 {
-    this->initiateTAccount();
+    this->initiate_t_account();
 }
 
-void Liabilities::initiateTAccount()
+void Liabilities::initiate_t_account()
 {
-    for (util::enums::TAccounts tAccount : util::enums::liabilitiesTAccounts)
+    for (util::enums::TAccounts t_account : util::enums::liabilities_t_accounts)
     {
-        this->addTAccount(tAccount);
+        this->add_t_account(t_account);
     }
 }
 
 StockholdersEquityAccount::StockholdersEquityAccount() : Account(false, util::enums::AccountTitles::STOCKHOLDERSEQUITY)
 {
-    this->initiateTAccount();
+    this->initiate_t_account();
 }
 
-void StockholdersEquityAccount::initiateTAccount()
+void StockholdersEquityAccount::initiate_t_account()
 {
-    for (util::enums::TAccounts tAccount : util::enums::stockholdersTAccounts)
+    for (util::enums::TAccounts t_account : util::enums::stockholders_t_accounts)
     {
-        this->addTAccount(tAccount);
+        this->add_t_account(t_account);
     }
 }
 
-std::vector<TAccount *> StockholdersEquityAccount::getTemporaryAccounts()
+std::vector<TAccount *> StockholdersEquityAccount::get_temporary_accounts()
 {
-    std::vector<TAccount *> tAccounts;
-    for (util::enums::TAccounts currentAccount = MIN_TEMPORARY_ACCOUNT;
-         currentAccount < MAX_TEMPORARY_ACCOUNT; ++currentAccount)
+    std::vector<TAccount *> t_accounts;
+    for (util::enums::TAccounts current_account = MIN_TEMPORARY_ACCOUNT;
+         current_account < MAX_TEMPORARY_ACCOUNT; ++current_account)
     {
-        tAccounts.push_back(this->tAccounts[currentAccount]);
+        t_accounts.push_back(this->t_accounts[current_account]);
     }
-    return tAccounts;
+    return t_accounts;
 }

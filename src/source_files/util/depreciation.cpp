@@ -1,72 +1,72 @@
 #include "util/depreciation.hpp"
 using namespace util;
 
-DepreciationMethod::DepreciationMethod(double cost, double residualValue, int yearUsefulLife)
+DepreciationMethod::DepreciationMethod(double cost, double residual_value, int year_useful_life)
 {
     this->cost = cost;
-    this->residualValue = residualValue;
-    this->yearUsefulLife = yearUsefulLife;
+    this->residual_value = residual_value;
+    this->year_useful_life = year_useful_life;
 }
 
-void DepreciationMethod::setCost(double cost)
+void DepreciationMethod::set_cost(double cost)
 {
     this->cost = cost;
 }
 
 // Straight line depreciation
-StraightLineDepreciation::StraightLineDepreciation(double cost, double residualValue, int yearUsefulLife) : DepreciationMethod::DepreciationMethod(cost, residualValue, yearUsefulLife) {}
+StraightLineDepreciation::StraightLineDepreciation(double cost, double residual_value, int year_useful_life) : DepreciationMethod::DepreciationMethod(cost, residual_value, year_useful_life) {}
 
-double StraightLineDepreciation::getAccumulatedDepreciationAtYear(int year)
+double StraightLineDepreciation::get_accumulated_depreciation_at_year(int year)
 {
-    if (year < 0 || year > this->yearUsefulLife)
+    if (year < 0 || year > this->year_useful_life)
     {
         return -1;
     }
-    return StraightLineDepreciation::getAccumulatedDepreciationAtYear(year) * year;
+    return StraightLineDepreciation::get_accumulated_depreciation_at_year(year) * year;
 }
 
-double StraightLineDepreciation::getDepreciationExpenseAtYear(int year)
+double StraightLineDepreciation::get_depreciation_expense_at_year(int year)
 {
-    if (year < 0 || year > this->yearUsefulLife)
+    if (year < 0 || year > this->year_useful_life)
     {
         return -1;
     }
-    return (this->cost - this->residualValue) / this->yearUsefulLife;
+    return (this->cost - this->residual_value) / this->year_useful_life;
 }
 
 // Double declining depreciation
-void DoubleDecliningDepreciation::setCost(double cost)
+void DoubleDecliningDepreciation::set_cost(double cost)
 {
-    DepreciationMethod::setCost(cost);
-    DoubleDecliningDepreciation::initiateAccumulatedDepreciation();
+    DepreciationMethod::set_cost(cost);
+    DoubleDecliningDepreciation::initiate_accumulated_depreciation();
 }
 
-DoubleDecliningDepreciation::DoubleDecliningDepreciation(double cost, int yearUsefulLife) : DepreciationMethod::DepreciationMethod(cost, 0, yearUsefulLife)
+DoubleDecliningDepreciation::DoubleDecliningDepreciation(double cost, int year_useful_life) : DepreciationMethod::DepreciationMethod(cost, 0, year_useful_life)
 {
-    DoubleDecliningDepreciation::initiateAccumulatedDepreciation();
+    DoubleDecliningDepreciation::initiate_accumulated_depreciation();
 }
 
-void DoubleDecliningDepreciation::initiateAccumulatedDepreciation()
+void DoubleDecliningDepreciation::initiate_accumulated_depreciation()
 {
-    this->accumulatedDepreciation = {0};
-    for (int i = 1; i <= this->yearUsefulLife; i++)
+    this->accumulated_depreciation = {0};
+    for (int i = 1; i <= this->year_useful_life; i++)
     {
-        this->accumulatedDepreciation.push_back(this->accumulatedDepreciation[i - 1] + getDepreciationExpenseAtYear(i));
+        this->accumulated_depreciation.push_back(this->accumulated_depreciation[i - 1] + get_depreciation_expense_at_year(i));
     }
 }
 
-double DoubleDecliningDepreciation::getAccumulatedDepreciationAtYear(int year)
+double DoubleDecliningDepreciation::get_accumulated_depreciation_at_year(int year)
 {
-    if (year > this->yearUsefulLife || year < 0)
+    if (year > this->year_useful_life || year < 0)
     {
         return -1;
     }
-    return this->accumulatedDepreciation[year];
+    return this->accumulated_depreciation[year];
 }
 
-double DoubleDecliningDepreciation::getDepreciationExpenseAtYear(int year)
+double DoubleDecliningDepreciation::get_depreciation_expense_at_year(int year)
 {
-    if (year > this->yearUsefulLife || year < 0)
+    if (year > this->year_useful_life || year < 0)
     {
         return -1;
     }
@@ -74,5 +74,5 @@ double DoubleDecliningDepreciation::getDepreciationExpenseAtYear(int year)
     {
         return 0;
     }
-    return (this->cost - this->accumulatedDepreciation[year - 1]) * 2 / this->yearUsefulLife;
+    return (this->cost - this->accumulated_depreciation[year - 1]) * 2 / this->year_useful_life;
 }

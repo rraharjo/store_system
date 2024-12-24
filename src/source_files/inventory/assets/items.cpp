@@ -2,35 +2,35 @@
 
 using namespace inventory;
 
-Item::Item(std::string name = "", std::string itemCode = "")
+Item::Item(std::string name = "", std::string item_code = "")
 {
     this->name = name;
-    this->itemCode = itemCode;
-    this->purchaseHistory = new PurchaseHistory();
-    this->sellingHistory = new SellingHistory();
+    this->item_code = item_code;
+    this->purchase_history = new PurchaseHistory();
+    this->selling_history = new SellingHistory();
 }
 
-void Item::addExistingPurchaseEntry(PurchaseEntry *entry)
+void Item::add_existing_purchase_entry(PurchaseEntry *entry)
 {
-    this->purchaseHistory->addEntry(entry);
+    this->purchase_history->add_entry(entry);
 }
 
-void Item::addExistingSellingEntry(SellingEntry *entry)
+void Item::add_existing_selling_entry(SellingEntry *entry)
 {
-    this->sellingHistory->addEntry(entry);
+    this->selling_history->add_entry(entry);
 }
 
-std::string Item::getName()
+std::string Item::get_name()
 {
     return this->name;
 }
 
-std::string Item::getItemCode()
+std::string Item::get_item_code()
 {
-    return this->itemCode;
+    return this->item_code;
 }
 
-int Item::getQty()
+int Item::get_qty()
 {
     return this->qty;
 }

@@ -11,12 +11,12 @@ TransactionHistory::TransactionHistory()
     this->entries = {};
 }
 
-void TransactionHistory::addEntry(Entry *entry)
+void TransactionHistory::add_entry(Entry *entry)
 {
     this->entries.push_back(entry);
-    //entry->insertToDB();
+    //entry->insert_to_db();
     /*auto end = this->entries.end() - 1;
-    while (end != this->entries.begin() && (*end)->getTransactionDate() < (*(end - 1))->getTransactionDate())
+    while (end != this->entries.begin() && (*end)->get_transaction_date() < (*(end - 1))->get_transaction_date())
     {
         std::iter_swap(end - 1, end);
         end -= 1;
@@ -28,42 +28,42 @@ PurchaseHistory::PurchaseHistory() : TransactionHistory()
 {
 }
 
-double PurchaseHistory::sellItemFirstIn(int qty)
+double PurchaseHistory::sell_item_first_in(int qty)
 {
-    double toRet = 0.0;
+    double to_ret = 0.0;
     while (qty > 0)
     {
         PurchaseEntry *earliest = (PurchaseEntry*) this->entries.front();
-        int toSubtract = std::min(qty, earliest->getAvailableQty());
-        qty -= toSubtract;
-        earliest->setAvailableQty(earliest->getAvailableQty() - toSubtract);
-        toRet += toSubtract * (earliest->getPrice());
-        earliest->updateToDB();
-        if (!earliest->getAvailableQty())
+        int to_subtract = std::min(qty, earliest->get_available_qty());
+        qty -= to_subtract;
+        earliest->set_available_qty(earliest->get_available_qty() - to_subtract);
+        to_ret += to_subtract * (earliest->get_price());
+        earliest->update_to_db();
+        if (!earliest->get_available_qty())
         {
             this->entries.pop_front();
         }
     }
-    return toRet;
+    return to_ret;
 }
 
-double PurchaseHistory::sellItemLastIn(int qty)
+double PurchaseHistory::sell_item_last_in(int qty)
 {
-    double toRet = 0.0;
+    double to_ret = 0.0;
     while (qty > 0)
     {
         PurchaseEntry *earliest = (PurchaseEntry*) this->entries.back();
-        int toSubtract = std::min(qty, earliest->getQty());
-        qty -= toSubtract;
-        earliest->setAvailableQty(earliest->getQty() - toSubtract);
-        toRet += toSubtract * (earliest->getPrice());
-        earliest->updateToDB();
-        if (!earliest->getAvailableQty())
+        int to_subtract = std::min(qty, earliest->get_qty());
+        qty -= to_subtract;
+        earliest->set_available_qty(earliest->get_qty() - to_subtract);
+        to_ret += to_subtract * (earliest->get_price());
+        earliest->update_to_db();
+        if (!earliest->get_available_qty())
         {
             this->entries.pop_back();
         }
     }
-    return toRet;
+    return to_ret;
 }
 /*************************************Selling History*************************************/
 SellingHistory::SellingHistory() : TransactionHistory()

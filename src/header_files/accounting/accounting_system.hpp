@@ -15,21 +15,21 @@ namespace accounting
 
         AccountingSystem();
 
-        void addEntry(Entry *entry);
+        void add_entry(Entry *entry);
 
-        void addExistingTransaction(Transaction *transaction);
+        void add_existing_transaction(Transaction *transaction);
 
     public:
         Assets *assets;
         Liabilities *liabilities;
-        StockholdersEquityAccount *stockholdersEquity;
-        static AccountingSystem *getInstance();
+        StockholdersEquityAccount *stockholders_equity;
+        static AccountingSystem *get_instance();
 
         ~AccountingSystem();
 
-        void addTransaction(Transaction *transaction);
+        void add_transaction(Transaction *transaction);
 
-        void endYearAdjustment();
+        void end_year_adjustment();
 
         std::string to_string();
     };

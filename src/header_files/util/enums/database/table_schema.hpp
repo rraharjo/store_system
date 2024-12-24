@@ -19,7 +19,7 @@ namespace util
     }
     struct ColumnSchema
     {
-        std::string columnName;
+        std::string column_name;
         util::enums::ColumnTypes type;
     };
     namespace enums
@@ -36,7 +36,7 @@ namespace util
             ACCOUNTINGENTRY
         };
 
-        extern std::map<PrimaryKeyCodes, std::string> primaryKeyCodesMap;
+        extern std::map<PrimaryKeyCodes, std::string> primary_key_codes_map;
 
         enum class SequenceNames
         {
@@ -50,7 +50,7 @@ namespace util
             ACCOUNTINGENTRY
         };
 
-        extern std::map<SequenceNames, std::string> sequenceNamesMap;
+        extern std::map<SequenceNames, std::string> sequence_names_map;
 
         enum class TableNames
         {
@@ -65,7 +65,7 @@ namespace util
             TACCOUNTS
         };
 
-        extern std::map<TableNames, std::string> tableNamesMap;
+        extern std::map<TableNames, std::string> table_names_map;
 
         enum class InventoryTable
         {
@@ -75,7 +75,7 @@ namespace util
             SELLINGPRICE
         };
 
-        extern std::map<InventoryTable, ColumnSchema> inventoryTableColumns;
+        extern std::map<InventoryTable, ColumnSchema> inventory_table_columns;
 
         enum class PurchaseEntryTable
         {
@@ -88,7 +88,7 @@ namespace util
             AVAILABLEQTY
         };
 
-        extern std::map<PurchaseEntryTable, ColumnSchema> purchaseEntryTableColumns;
+        extern std::map<PurchaseEntryTable, ColumnSchema> purchase_entry_table_columns;
 
         enum class PurchaseTransactionTable
         {
@@ -100,7 +100,7 @@ namespace util
             ISFINISHED
         };
 
-        extern std::map<PurchaseTransactionTable, ColumnSchema> purchaseTransactionTableColumns;
+        extern std::map<PurchaseTransactionTable, ColumnSchema> purchase_transaction_table_columns;
 
         enum class SellingEntryTable
         {
@@ -112,7 +112,7 @@ namespace util
             QTY
         };
 
-        extern std::map<SellingEntryTable, ColumnSchema> sellingEntryTableColumns;
+        extern std::map<SellingEntryTable, ColumnSchema> selling_entry_table_columns;
 
         enum class SellingTransactionTable
         {
@@ -123,7 +123,7 @@ namespace util
             ISFINISHED
         };
 
-        extern std::map<SellingTransactionTable, ColumnSchema> sellingTransactionTableColumns;
+        extern std::map<SellingTransactionTable, ColumnSchema> selling_transaction_table_columns;
 
         enum class AssetsTable
         {
@@ -137,7 +137,7 @@ namespace util
             DATESOLD
         };
 
-        extern std::map<AssetsTable, ColumnSchema> assetsTableColumns;
+        extern std::map<AssetsTable, ColumnSchema> assets_table_columns;
 
         enum class AccountingTransactionTable
         {
@@ -147,7 +147,7 @@ namespace util
             ENTITYID
         };
 
-        extern std::map<AccountingTransactionTable, ColumnSchema> accountingTransactionTableColumns;
+        extern std::map<AccountingTransactionTable, ColumnSchema> accounting_transaction_table_columns;
 
         enum class AccountingEntryTable
         {
@@ -158,7 +158,7 @@ namespace util
             TACCOUNTNUM
         };
 
-        extern std::map<AccountingEntryTable, ColumnSchema> accountingEntryTableColumns;
+        extern std::map<AccountingEntryTable, ColumnSchema> accounting_entry_table_columns;
 
         enum class TAccountTable{
             TITLE = 0,
@@ -166,7 +166,7 @@ namespace util
             CREDITAMOUNT
         };
 
-        extern std::map<TAccountTable, ColumnSchema> tAccountTableColumns;
+        extern std::map<TAccountTable, ColumnSchema> t_account_table_columns;
     }
 
 }
