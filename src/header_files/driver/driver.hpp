@@ -30,15 +30,15 @@ namespace storedriver
         bool execute_command(std::string);
     };
 
-    class StdDriver : public Driver
+    class StdIODriver : public Driver
     {
     public:
-        StdDriver();
+        StdIODriver();
 
         void start() override;
     };
 
-    class CustomDriver : public Driver
+    class PipeIODriver : public Driver
     {
     private:
         int input_pipe[2];
@@ -48,7 +48,7 @@ namespace storedriver
 
         void write_output(std::string);
     public:
-        CustomDriver();
+        PipeIODriver();
 
         void start() override;
 

@@ -12,7 +12,7 @@ int main(int argc, char **argv)
     }
     if (strcmp(argv[1], "local") == 0)
     {
-        storedriver::StdDriver my_driver = storedriver::StdDriver();
+        storedriver::StdIODriver my_driver = storedriver::StdIODriver();
         my_driver.start();
     }
     else if (strcmp(argv[1], "server") == 0)

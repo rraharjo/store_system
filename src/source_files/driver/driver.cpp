@@ -181,11 +181,11 @@ bool storedriver::Driver::execute_command(std::string command)
     }
 }
 
-storedriver::StdDriver::StdDriver() : storedriver::Driver()
+storedriver::StdIODriver::StdIODriver() : storedriver::Driver()
 {
 }
 
-void storedriver::StdDriver::start()
+void storedriver::StdIODriver::start()
 {
     char buff[BUFSIZ];
     int buff_size;
@@ -212,7 +212,7 @@ void storedriver::StdDriver::start()
     }
 }
 
-storedriver::CustomDriver::CustomDriver() : storedriver::Driver()
+storedriver::PipeIODriver::PipeIODriver() : storedriver::Driver()
 {
     if (_pipe(this->input_pipe, 2 * STREAM_SIZE, O_TEXT) == -1)
     {
@@ -223,7 +223,7 @@ storedriver::CustomDriver::CustomDriver() : storedriver::Driver()
     }
 }
 
-std::string storedriver::CustomDriver::read_input()
+std::string storedriver::PipeIODriver::read_input()
 {
     char read_buff[STREAM_SIZE];
     int bytes_read = 0;
@@ -235,7 +235,7 @@ std::string storedriver::CustomDriver::read_input()
     return to_ret;
 }
 
-void storedriver::CustomDriver::write_input(std::string input)
+void storedriver::PipeIODriver::write_input(std::string input)
 {
     int input_length = input.length();
     if (input_length > STREAM_SIZE - 1)
@@ -250,7 +250,7 @@ void storedriver::CustomDriver::write_input(std::string input)
     }
 }
 
-std::string storedriver::CustomDriver::read_output()
+std::string storedriver::PipeIODriver::read_output()
 {
     char read_buff[STREAM_SIZE];
     int bytes_read = 0;
@@ -263,7 +263,7 @@ std::string storedriver::CustomDriver::read_output()
     return to_ret;
 }
 
-void storedriver::CustomDriver::write_output(std::string input)
+void storedriver::PipeIODriver::write_output(std::string input)
 {
     int input_length = input.length();
     if (input_length > STREAM_SIZE - 1)
@@ -278,7 +278,7 @@ void storedriver::CustomDriver::write_output(std::string input)
     }
 }
 
-void storedriver::CustomDriver::start()
+void storedriver::PipeIODriver::start()
 {
     int read_bytes = 0;
     std::string input = "";

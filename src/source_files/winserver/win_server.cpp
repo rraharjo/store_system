@@ -1,12 +1,12 @@
 #include "winserver/win_server.hpp"
 
-auto driver_exec_thread = [](storedriver::CustomDriver *driver)
+auto driver_exec_thread = [](storedriver::PipeIODriver *driver)
 {
     //TODO: test thread safety
     driver->start();
 };
 
-auto handle_send_thread = [](storedriver::CustomDriver *driver, std::queue<SOCKET *> *clients, std::mutex *driver_mtx)
+auto handle_send_thread = [](storedriver::PipeIODriver *driver, std::queue<SOCKET *> *clients, std::mutex *driver_mtx)
 {
     int i_result;
     char send_buff[SEND_BUFF];
@@ -17,7 +17,6 @@ auto handle_send_thread = [](storedriver::CustomDriver *driver, std::queue<SOCKE
     {
         res.clear();
         res = driver->read_output();
-        //std::cout << "server send thread: " << res << std::endl;
         res_length = res.length();
         std::unique_lock<std::mutex> driver_lock(*driver_mtx);
         client_sock = clients->front();
@@ -33,7 +32,7 @@ auto handle_send_thread = [](storedriver::CustomDriver *driver, std::queue<SOCKE
     }
 };
 
-auto recv_client_thread = [](storedriver::CustomDriver *driver, std::queue<SOCKET *> *clients, SOCKET *client_sock, std::mutex *client_mtx, std::mutex *driver_mtx, int *num_of_client)
+auto recv_client_thread = [](storedriver::PipeIODriver *driver, std::queue<SOCKET *> *clients, SOCKET *client_sock, std::mutex *client_mtx, std::mutex *driver_mtx, int *num_of_client)
 {
     int i_result = 0;
     char recv_buff[RECV_BUFF];
@@ -72,7 +71,7 @@ winnetwork::WinTCPServer::WinTCPServer(std::string ip_address, std::string port_
     this->network_fam = AF_INET;
     this->socket_type = SOCK_STREAM;
     this->protocol = IPPROTO_TCP;
-    this->driver = new storedriver::CustomDriver();
+    this->driver = new storedriver::PipeIODriver();
 }
 
 void winnetwork::WinTCPServer::init_socket()

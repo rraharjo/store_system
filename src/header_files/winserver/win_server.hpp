@@ -23,13 +23,12 @@ namespace winnetwork
     class WinTCPServer
     {
     private:
-        const int max_client = MAX_CLIENT;
-
         // Server component
         WSAData wsa_data;
         SOCKET listen_socket;
         std::string port_number;
         std::string ip_address;
+        const int max_client = MAX_CLIENT;
         int network_fam;
         int socket_type;
         int protocol;
@@ -37,9 +36,9 @@ namespace winnetwork
         // shared resources
         std::mutex client_mtx, driver_mtx;
         int num_of_client = 0;
-        storedriver::CustomDriver *driver;
-        std::queue<SOCKET*> client_commands;
-        
+        storedriver::PipeIODriver *driver;
+        std::queue<SOCKET *> client_commands;
+
     private:
         void init_socket();
 
