@@ -2,7 +2,6 @@
 
 auto driver_exec_thread = [](storedriver::PipeIODriver *driver)
 {
-    // TODO: test thread safety
     driver->start();
 };
 
@@ -66,7 +65,7 @@ auto recv_client_thread = [](storedriver::PipeIODriver *driver, std::queue<SOCKE
             std::unique_lock<std::mutex> driver_lock(*driver_mtx);
             for (int i = 0; i < num_of_commands; i++)
             {
-                clients->push(client_sock); // TODO: segv for multiple commands at once
+                clients->push(client_sock);
             }
             driver->write_input(command);
             driver_lock.unlock();

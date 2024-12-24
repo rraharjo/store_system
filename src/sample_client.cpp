@@ -4,23 +4,24 @@
 #include <string>
 #include <iostream>
 #include <thread>
-#define MY_PORT "20000"
+#define MY_PORT "80000"
 #define LOCAL_IP "127.0.0.1"
 #define BUFF_SIZE 512
 
 auto handle_rcv = [](SOCKET *connect_sock)
 {
     char recv_buff[BUFF_SIZE];
-    int i_result;
-    memset(recv_buff, '\0', BUFF_SIZE);
-    while (i_result = recv(*connect_sock, recv_buff, BUFF_SIZE, 0) > 0)
+    int i_result = 0;
+
+    while ((i_result = recv(*connect_sock, recv_buff, BUFF_SIZE, 0)) > 0)
     {
+        recv_buff[i_result] = '\0';
         printf("Server>%s\n", recv_buff);
-        memset(recv_buff, '\0', i_result);
     }
     if (i_result < 0){
         printf("recv() error with error code %d\n", WSAGetLastError());
     }
+    closesocket(*connect_sock);
 };
 
 int main()
@@ -67,10 +68,11 @@ int main()
 
     if (connect_socket == INVALID_SOCKET)
     {
-        printf("connect failed%d\n", WSAGetLastError());
+        printf("connect failed %d\n", WSAGetLastError());
         WSACleanup();
     }
 
+    char rcv_buff[BUFF_SIZE];
     std::string send_buff;
     char *buff;
     std::thread rcv_thread = std::thread(handle_rcv, &connect_socket);
