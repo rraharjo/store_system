@@ -8,14 +8,15 @@
 #include <iostream>
 #include <stdexcept>
 #include "driver/driver.hpp"
+#include "nlohmann/json.hpp"
 
 #ifndef WIN_SERVER
 #define WIN_SERVER
 
-#define DEFAULT_PORT "80000"
+#define DEFAULT_PORT "8000"
 #define LOOPBACK_ADDRESS "127.0.0.1"
 #define MAX_CLIENT 3
-#define RECV_BUFF 512
+#define RECV_BUFF 1024
 #define SEND_BUFF 512
 namespace winnetwork
 {
