@@ -17,6 +17,10 @@ Date::Date(std::string date_string, std::string format)
 
 Date::Date(std::string date_string)
 {
+    const std::regex regex_format("[0-3][0-9]/[0-1][0-9]/[0-9][0-9][0-9][0-9]");
+    if (!std::regex_match(date_string, regex_format)){
+        throw std::invalid_argument(date_string + " is not in dd/MM/YYYY format");
+    }
     this->tp = this->parse_string_date_dd_MM_YYYY_separeted_by_slash(date_string);
 }
 

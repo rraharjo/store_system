@@ -5,6 +5,7 @@ auto driver_exec_thread = [](storedriver::PipeIODriver *driver)
     driver->start();
 };
 
+//TODO: server is not sending response
 auto handle_send_thread = [](storedriver::PipeIODriver *driver, std::queue<SOCKET *> *clients, std::mutex *driver_mtx)
 {
     int i_result;
@@ -93,7 +94,7 @@ winnetwork::WinTCPServer::WinTCPServer(std::string ip_address, std::string port_
     this->network_fam = AF_INET;
     this->socket_type = SOCK_STREAM;
     this->protocol = IPPROTO_TCP;
-    this->driver = new storedriver::PipeIODriver();
+    this->driver = new storedriver::PipeIODriver(true);
 }
 
 void winnetwork::WinTCPServer::init_socket()

@@ -86,7 +86,6 @@ int main()
             break;
         }
         send_buff.push_back('\0');
-        std::cout << send_buff << std::endl;
         iResult = send(connect_socket, send_buff.c_str(), (int)strlen(send_buff.c_str()), 0);
         if (iResult == SOCKET_ERROR)
         {

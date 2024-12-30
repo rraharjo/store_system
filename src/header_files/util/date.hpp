@@ -1,5 +1,6 @@
 #include <chrono>
 #include <string>
+#include <regex>
 
 #ifndef DATEUTIL
 #define DATEUTIL
