@@ -141,15 +141,7 @@ storedriver::Executor::Executor(nlohmann::json json_command)
     this->request = json_command;
 }
 
-/*************************
-json:
-{
-  "main_command": 1,
-  "product_name": string,
-  "item_code": string,
-  "price": double
-}
- ****************************/
+
 
 storedriver::AddInventoryExecutor::AddInventoryExecutor(nlohmann::json json_command) : Executor(json_command) {}
 
@@ -164,22 +156,7 @@ nlohmann::json storedriver::AddInventoryExecutor::execute(store::StoreSystem *s_
     return nlohmann::json(R"({})"_json);
 }
 
-/*
-json:
-{
-  "main_command": 2,
-  "date": string,
-  "seller": string,
-  "items":[
-    {
-      "dbcode": string,
-      "price": double,
-      "qty": int
-    },
-  ],
-  "paid_cash": double
-}
-*/
+
 
 storedriver::PurchaseInventoryExecutor::PurchaseInventoryExecutor(nlohmann::json json_command) : Executor(json_command) {}
 
@@ -211,19 +188,7 @@ nlohmann::json storedriver::PurchaseInventoryExecutor::execute(store::StoreSyste
     return nlohmann::json(R"({})"_json);
 }
 
-/*
-json:
-{
-  "main_command": 3,
-  "date": string,
-  "name": string,
-  "item_code": string,
-  "cost": double,
-  "residual_value": double
-  "useful_life": int,
-  "paid_cash": double
-}
-*/
+
 
 storedriver::PurchaseAssetsExecutor::PurchaseAssetsExecutor(nlohmann::json json_command) : Executor(json_command) {}
 nlohmann::json storedriver::PurchaseAssetsExecutor::execute(store::StoreSystem *s_system)
@@ -249,16 +214,7 @@ nlohmann::json storedriver::PurchaseAssetsExecutor::execute(store::StoreSystem *
     return nlohmann::json(R"({})"_json);
 }
 
-/*
-json:
-{
-  "main_command": 4,
-  "date": string,
-  "dbcode": string
-  "cost": double,
-  "paid_cash": double
-}
-*/
+
 
 storedriver::CapitalizeAssetExecutor::CapitalizeAssetExecutor(nlohmann::json json_command) : Executor(json_command) {}
 nlohmann::json storedriver::CapitalizeAssetExecutor::execute(store::StoreSystem *s_system)
@@ -278,22 +234,7 @@ nlohmann::json storedriver::CapitalizeAssetExecutor::execute(store::StoreSystem 
     return nlohmann::json(R"({})"_json);
 }
 
-/*
-json:
-{
-  "main_command": 5,
-  "date": string,
-  "items":
-  [
-    {
-      "dbcode": string,
-      "qty": int
-    },
 
-  ],
-  "paid_cash": double
-}
-*/
 
 storedriver::SellInventoryExecutor::SellInventoryExecutor(nlohmann::json json_command) : Executor(json_command) {}
 nlohmann::json storedriver::SellInventoryExecutor::execute(store::StoreSystem *s_system)
@@ -317,16 +258,7 @@ nlohmann::json storedriver::SellInventoryExecutor::execute(store::StoreSystem *s
     return nlohmann::json(R"({})"_json);
 }
 
-/*
-json:
-{
-  "main_command": 6,
-  "date": string,
-  "dbcode": string,
-  "price": double,
-  "paid_cash": double,
-}
-*/
+
 
 storedriver::SellAssetExecutor::SellAssetExecutor(nlohmann::json json_command) : Executor(json_command) {}
 nlohmann::json storedriver::SellAssetExecutor::execute(store::StoreSystem *s_system)
@@ -346,12 +278,7 @@ nlohmann::json storedriver::SellAssetExecutor::execute(store::StoreSystem *s_sys
     return nlohmann::json(R"({})"_json);
 }
 
-/*
-json:
-{
-  "main_command": 7
-}
-*/
+
 
 storedriver::EndOfYearExecutor::EndOfYearExecutor(nlohmann::json json_command) : Executor(json_command) {}
 nlohmann::json storedriver::EndOfYearExecutor::execute(store::StoreSystem *s_system)
