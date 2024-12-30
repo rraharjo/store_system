@@ -21,10 +21,10 @@ namespace storedriver
     protected:
         nlohmann::json request;
 
-        virtual void execute(store::StoreSystem *) = 0;
+        virtual nlohmann::json execute(store::StoreSystem *) = 0;
 
     public:
-        static void execute(store::StoreSystem *, std::string, bool);
+        static nlohmann::json execute(store::StoreSystem *, std::string, bool);
 
         Executor(nlohmann::json);
     };
@@ -33,7 +33,7 @@ namespace storedriver
     {
     protected:
     public:
-        void execute(store::StoreSystem *) override;
+        nlohmann::json execute(store::StoreSystem *) override;
         AddInventoryExecutor(nlohmann::json);
     };
     class PurchaseInventoryExecutor : public Executor
@@ -42,7 +42,7 @@ namespace storedriver
         void add_purchase_entry(store::PurchaseTransaction *p, std::string item_db, double price_per_item, int item_qty);
 
     public:
-        void execute(store::StoreSystem *) override;
+        nlohmann::json execute(store::StoreSystem *) override;
         PurchaseInventoryExecutor(nlohmann::json);
     };
 
@@ -50,7 +50,7 @@ namespace storedriver
     {
 
     public:
-        void execute(store::StoreSystem *) override;
+        nlohmann::json execute(store::StoreSystem *) override;
         PurchaseAssetsExecutor(nlohmann::json);
     };
 
@@ -58,28 +58,28 @@ namespace storedriver
     {
 
     public:
-        void execute(store::StoreSystem *) override;
+        nlohmann::json execute(store::StoreSystem *) override;
         CapitalizeAssetExecutor(nlohmann::json);
     };
     class SellInventoryExecutor : public Executor
     {
 
     public:
-        void execute(store::StoreSystem *) override;
+        nlohmann::json execute(store::StoreSystem *) override;
         SellInventoryExecutor(nlohmann::json);
     };
     class SellAssetExecutor : public Executor
     {
 
     public:
-        void execute(store::StoreSystem *) override;
+        nlohmann::json execute(store::StoreSystem *) override;
         SellAssetExecutor(nlohmann::json);
     };
     class EndOfYearExecutor : public Executor
     {
 
     public:
-        void execute(store::StoreSystem *) override;
+        nlohmann::json execute(store::StoreSystem *) override;
         EndOfYearExecutor(nlohmann::json);
     };
 }

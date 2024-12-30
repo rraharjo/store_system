@@ -8,56 +8,23 @@ storedriver::Driver::Driver(bool json_input) : json_input(json_input)
     this->s_system = store::StoreSystem::get_instance();
 };
 
-int storedriver::Driver::execute_command(std::string command)
+nlohmann::json storedriver::Driver::execute_command(std::string command)
 {
+    nlohmann::json response;
     try
     {
-        storedriver::Executor::execute(this->s_system, command, this->json_input);
-        return 1;
-    }
-    catch (nlohmann::json_abi_v3_11_3::detail::out_of_range& e){
-        std::cerr << e.what() << std::endl;
-        return 0;
+        nlohmann::json body = storedriver::Executor::execute(this->s_system, command, this->json_input);
+        response["status"] = true;
+        response["body"] = body;
     }
     catch (std::exception& e)
     {
-        std::cerr << e.what() << std::endl;
-        return 0;
+        nlohmann::json body;
+        body["message"] = e.what();
+        response["status"] = false;
+        response["body"] = body;
     }
-}
-
-
-//Don't use this
-int storedriver::Driver::execute_commands(std::string commands)
-{
-    std::vector<std::string> multiple_commands;
-    std::string delimiter = ENDCMD;
-    std::string temp;
-    int commands_length = commands.length(), delimiter_length = delimiter.length();
-    int j = 0;
-    for (int i = 0; i < commands_length; i++)
-    {
-        if (commands[i] == delimiter[j])
-        {
-            j++;
-        }
-        else
-        {
-            j = 0;
-        }
-        temp.push_back(commands[i]);
-        if (j == delimiter_length)
-        {
-            multiple_commands.push_back(temp);
-            temp.clear();
-        }
-    }
-    int to_ret = 0;
-    for (std::string command : multiple_commands)
-    {
-        to_ret += this->execute_command(command);
-    }
-    return to_ret;
+    return response;
 }
 
 storedriver::StdIODriver::StdIODriver(bool json_input) : storedriver::Driver(json_input)
@@ -80,50 +47,8 @@ void storedriver::StdIODriver::start()
         {
             break;
         }
-        this->execute_command(buff);
+        std::cout << this->execute_command(buff).dump() << std::endl;;
     }
-}
-
-
-//Don't use this
-int storedriver::PipeIODriver::execute_commands(std::string commands)
-{
-    std::vector<std::string> multiple_commands;
-    std::string delimiter = ENDCMD;
-    std::string temp;
-    int commands_length = commands.length(), delimiter_length = delimiter.length();
-    int j = 0;
-    for (int i = 0; i < commands_length; i++)
-    {
-        if (commands[i] == delimiter[j])
-        {
-            j++;
-        }
-        else
-        {
-            j = 0;
-        }
-        temp.push_back(commands[i]);
-        if (j == delimiter_length)
-        {
-            multiple_commands.push_back(temp);
-            temp.clear();
-        }
-    }
-    int to_ret = 0;
-    for (std::string command : multiple_commands)
-    {
-        if (this->execute_command(command))
-        {
-            to_ret++;
-            this->write_output("success");
-        }
-        else
-        {
-            this->write_output("failed");
-        }
-    }
-    return to_ret;
 }
 
 storedriver::PipeIODriver::PipeIODriver(bool json_input) : storedriver::Driver(json_input)
@@ -201,6 +126,7 @@ void storedriver::PipeIODriver::start()
     {
         input.clear();
         input = this->read_input();
-        this->execute_command(input);
+        nlohmann::json output = this->execute_command(input);
+        this->write_output(output.dump());
     }
 }

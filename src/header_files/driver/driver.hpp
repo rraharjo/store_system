@@ -25,9 +25,7 @@ namespace storedriver
 
         virtual void start() = 0;
 
-        int execute_command(std::string);
-
-        virtual int execute_commands(std::string);
+        nlohmann::json execute_command(std::string);
     };
 
     class StdIODriver : public Driver
@@ -51,8 +49,6 @@ namespace storedriver
         PipeIODriver(bool);
 
         void start() override;
-
-        int execute_commands(std::string) override;
 
         void write_input(std::string);
 

@@ -5,7 +5,7 @@ auto driver_exec_thread = [](storedriver::PipeIODriver *driver)
     driver->start();
 };
 
-//TODO: server is not sending response
+// TODO: server is not sending response
 auto handle_send_thread = [](storedriver::PipeIODriver *driver, std::queue<SOCKET *> *clients, std::mutex *driver_mtx)
 {
     int i_result;
@@ -43,31 +43,8 @@ auto recv_client_thread = [](storedriver::PipeIODriver *driver, std::queue<SOCKE
         if (i_result > 0)
         {
             std::string command(recv_buff);
-            std::string limit = ENDCMD;
-            int command_length = command.length(), limit_length = limit.length();
-            int j = 0, num_of_commands = 0;
-            ;
-            for (int i = 0; i < command_length; i++)
-            {
-                if (command[i] == limit[j])
-                {
-                    j++;
-                }
-                else
-                {
-                    j = 0;
-                }
-                if (j == limit_length)
-                {
-                    num_of_commands++;
-                    j = 0;
-                }
-            }
             std::unique_lock<std::mutex> driver_lock(*driver_mtx);
-            for (int i = 0; i < num_of_commands; i++)
-            {
-                clients->push(client_sock);
-            }
+            clients->push(client_sock);
             driver->write_input(command);
             driver_lock.unlock();
         }
@@ -80,7 +57,7 @@ auto recv_client_thread = [](storedriver::PipeIODriver *driver, std::queue<SOCKE
             int error_code = WSAGetLastError();
             throw std::runtime_error("Error on recv() with error code " + std::to_string(error_code) + "\n");
         }
-    } while (i_result > 0);
+    } while (true);
     closesocket(*client_sock);
     delete client_sock;
     std::unique_lock<std::mutex> my_lock(*client_mtx);
