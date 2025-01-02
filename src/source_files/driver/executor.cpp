@@ -16,14 +16,14 @@ nlohmann::json build_json_from_untokenized_command(const std::string &raw_comman
     switch (main_command)
     {
     case ADD_INV:
-        //format 1 product_name item_code price
+        // format 1 product_name item_code price
         to_ret["product_name"] = tokenized_command[1];
         to_ret["item_code"] = tokenized_command[2];
         to_ret["price"] = std::stod(tokenized_command[3]);
         break;
     case PURC_INV:
     {
-        //format: 2 date seller_name [item_db price_each qty]+ paid_cash ENDCMD
+        // format: 2 date seller_name [item_db price_each qty]+ paid_cash ENDCMD
         to_ret["date"] = tokenized_command[1];
         to_ret["seller"] = tokenized_command[2];
         int cur_idx = 3;
@@ -41,7 +41,7 @@ nlohmann::json build_json_from_untokenized_command(const std::string &raw_comman
         break;
     }
     case PURC_ASS:
-        //format: 3 date eq_name item_code cost residual yr_useful paid_cash ENDCMD
+        // format: 3 date eq_name item_code cost residual yr_useful paid_cash ENDCMD
         to_ret["date"] = tokenized_command[1];
         to_ret["name"] = tokenized_command[2];
         to_ret["item_code"] = tokenized_command[3];
@@ -83,8 +83,11 @@ nlohmann::json build_json_from_untokenized_command(const std::string &raw_comman
     case EO_YEAR:
         //-format: 7 ENDCMD
         break;
+    case INV_INFO:
+        //-format: 8 ENDCMD
+        break;
     default:
-        throw std::invalid_argument("unknown command " + raw_command);
+        throw std::invalid_argument("Unknown command " + raw_command);
         break;
     }
     return to_ret;
@@ -127,6 +130,9 @@ nlohmann::json storedriver::Executor::execute(store::StoreSystem *s_system, std:
     case EO_YEAR:
         e = new EndOfYearExecutor(exec);
         break;
+    case INV_INFO:
+        e = new InventoriesInfoExecutor(exec);
+        break;
     default:
         throw std::invalid_argument("Unknown command: " + raw_command);
         break;
@@ -141,8 +147,6 @@ storedriver::Executor::Executor(nlohmann::json json_command)
     this->request = json_command;
 }
 
-
-
 storedriver::AddInventoryExecutor::AddInventoryExecutor(nlohmann::json json_command) : Executor(json_command) {}
 
 nlohmann::json storedriver::AddInventoryExecutor::execute(store::StoreSystem *s_system)
@@ -155,8 +159,6 @@ nlohmann::json storedriver::AddInventoryExecutor::execute(store::StoreSystem *s_
     s_system->add_item(new_inventory);
     return nlohmann::json(R"({})"_json);
 }
-
-
 
 storedriver::PurchaseInventoryExecutor::PurchaseInventoryExecutor(nlohmann::json json_command) : Executor(json_command) {}
 
@@ -188,8 +190,6 @@ nlohmann::json storedriver::PurchaseInventoryExecutor::execute(store::StoreSyste
     return nlohmann::json(R"({})"_json);
 }
 
-
-
 storedriver::PurchaseAssetsExecutor::PurchaseAssetsExecutor(nlohmann::json json_command) : Executor(json_command) {}
 nlohmann::json storedriver::PurchaseAssetsExecutor::execute(store::StoreSystem *s_system)
 {
@@ -214,8 +214,6 @@ nlohmann::json storedriver::PurchaseAssetsExecutor::execute(store::StoreSystem *
     return nlohmann::json(R"({})"_json);
 }
 
-
-
 storedriver::CapitalizeAssetExecutor::CapitalizeAssetExecutor(nlohmann::json json_command) : Executor(json_command) {}
 nlohmann::json storedriver::CapitalizeAssetExecutor::execute(store::StoreSystem *s_system)
 {
@@ -234,8 +232,6 @@ nlohmann::json storedriver::CapitalizeAssetExecutor::execute(store::StoreSystem 
     return nlohmann::json(R"({})"_json);
 }
 
-
-
 storedriver::SellInventoryExecutor::SellInventoryExecutor(nlohmann::json json_command) : Executor(json_command) {}
 nlohmann::json storedriver::SellInventoryExecutor::execute(store::StoreSystem *s_system)
 {
@@ -250,7 +246,7 @@ nlohmann::json storedriver::SellInventoryExecutor::execute(store::StoreSystem *s
         inventory::SellingEntry *new_entry = new inventory::SellingEntry(item_code, new_transaction->get_db_code(), price, qty);
         new_transaction->add_entry(new_entry);
     }
-    double paid_cash = (double) this->request.at("paid_cash");
+    double paid_cash = (double)this->request.at("paid_cash");
     new_transaction->set_paid_cash(paid_cash);
     new_transaction->set_paid_credit(new_transaction->get_transaction_amount() - paid_cash);
     new_transaction->insert_to_db();
@@ -258,19 +254,17 @@ nlohmann::json storedriver::SellInventoryExecutor::execute(store::StoreSystem *s
     return nlohmann::json(R"({})"_json);
 }
 
-
-
 storedriver::SellAssetExecutor::SellAssetExecutor(nlohmann::json json_command) : Executor(json_command) {}
 nlohmann::json storedriver::SellAssetExecutor::execute(store::StoreSystem *s_system)
 {
     util::Date *date = new util::Date(this->request.at("date"));
     std::string item_code = this->request.at("dbcode");
-    double price = (double) this->request.at("price");
+    double price = (double)this->request.at("price");
 
     store::SellingTransaction *new_transaction = new store::SellingTransaction(date);
     inventory::SellingEntry *new_entry = new inventory::SellingEntry(item_code, new_transaction->get_db_code(), price, 1);
     new_transaction->add_entry(new_entry);
-    double paid_cash = (double) this->request.at("paid_cash");
+    double paid_cash = (double)this->request.at("paid_cash");
     new_transaction->set_paid_cash(paid_cash);
     new_transaction->set_paid_credit(new_transaction->get_transaction_amount() - paid_cash);
     new_transaction->insert_to_db();
@@ -278,11 +272,28 @@ nlohmann::json storedriver::SellAssetExecutor::execute(store::StoreSystem *s_sys
     return nlohmann::json(R"({})"_json);
 }
 
-
-
 storedriver::EndOfYearExecutor::EndOfYearExecutor(nlohmann::json json_command) : Executor(json_command) {}
 nlohmann::json storedriver::EndOfYearExecutor::execute(store::StoreSystem *s_system)
 {
     s_system->end_year_adjustment();
     return nlohmann::json(R"({})"_json);
+}
+
+storedriver::InventoriesInfoExecutor::InventoriesInfoExecutor(nlohmann::json json_command) : Executor(json_command) {}
+nlohmann::json storedriver::InventoriesInfoExecutor::execute(store::StoreSystem *s_system)
+{
+    nlohmann::json to_ret;
+    std::vector<nlohmann::json> data;
+    std::vector<inventory::Inventory *> inventories = s_system->get_inventory();
+    for (inventory::Inventory *item : inventories)
+    {
+        nlohmann::json item_json;
+        item_json["dbcode"] = item->get_db_code();
+        item_json["item_code"] = item->get_item_code();
+        item_json["name"] = item->get_name();
+        item_json["price"] = item->get_selling_price();
+        data.push_back(item_json);
+    }
+    to_ret["data"] = data;
+    return to_ret;
 }

@@ -34,6 +34,8 @@ namespace store
 
         void end_year_adjustment();
 
+        std::vector<inventory::Inventory *> get_inventory();
+
         inventory::Inventory *get_inventory(std::string db_code);
 
         std::string to_string_inv();

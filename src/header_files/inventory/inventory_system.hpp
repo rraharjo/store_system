@@ -27,6 +27,8 @@ namespace inventory
 
         Inventory *get_inventory(std::string db_code);
 
+        std::vector<Inventory *> get_inventory();
+
         void set_a_system(accounting::AccountingSystem *a_system);
 
         double sell_sellables(Entry *new_entry); // return the COGS
