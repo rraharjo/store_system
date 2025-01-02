@@ -98,5 +98,13 @@ namespace storedriver
         nlohmann::json execute(store::StoreSystem *) override;
         InventoriesInfoExecutor(nlohmann::json);
     };
+
+    class AssetsInfoExecutor : public Executor
+    {
+
+    public:
+        nlohmann::json execute(store::StoreSystem *) override;
+        AssetsInfoExecutor(nlohmann::json);
+    }; 
 }
 #endif

@@ -18,7 +18,8 @@ Date::Date(std::string date_string, std::string format)
 Date::Date(std::string date_string)
 {
     const std::regex regex_format("[0-3][0-9]/[0-1][0-9]/[0-9][0-9][0-9][0-9]");
-    if (!std::regex_match(date_string, regex_format)){
+    if (!std::regex_match(date_string, regex_format))
+    {
         throw std::invalid_argument(date_string + " is not in dd/MM/YYYY format");
     }
     this->tp = this->parse_string_date_dd_MM_YYYY_separeted_by_slash(date_string);
@@ -80,13 +81,28 @@ std::string Date::to_string()
     int year = this->get_year();
     int month = this->get_month();
     int month_day = this->get_m_day();
-    to_ret += std::to_string(month_day) + "-";
-    to_ret += util::get_month_name(month) + "-";
+    if (month_day < 10)
+    {
+        to_ret += "0" + std::to_string(month_day) + "/";
+    }
+    else
+    {
+        to_ret += std::to_string(month_day) + "/";
+    }
+    if (month < 10)
+    {
+        to_ret += "0" + std::to_string(month) + "/";
+    }
+    else
+    {
+        to_ret += std::to_string(month) + "/";
+    }
     to_ret += std::to_string(year);
     return to_ret;
 }
 
-std::string Date::to_db_format(){
+std::string Date::to_db_format()
+{
     std::string to_ret = "";
     int year = this->get_year();
     int month = this->get_month();

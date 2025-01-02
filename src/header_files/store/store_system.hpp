@@ -38,6 +38,8 @@ namespace store
 
         inventory::Inventory *get_inventory(std::string db_code);
 
+        std::vector<inventory::Asset *> get_assets();
+
         std::string to_string_inv();
 
         std::string to_string();

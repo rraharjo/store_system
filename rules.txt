@@ -152,10 +152,37 @@ commands list:
         {
           "dbcode": string,
           "item_code": string,
-          "item_name": string,
+          "name": string,
           "price": double,
         },
-        
+
+      ]
+    }
+  }
+
+9. Assets information:
+  -format: 9 ENDCMD
+  -json:
+  {
+    "main_command": 9
+  }
+  -response:
+  {
+    "status": bool,
+    "body":
+    {
+      "data":
+      [
+        {
+          "dbcode": string,
+          "name": string,
+          "cost": double,
+          "residual_value": double,
+          "useful_life": int,
+          "date_purchase": dd/MM/yyyy,
+          "last_depreciation_date": dd/MM/yyyy
+        },
+
       ]
     }
   }

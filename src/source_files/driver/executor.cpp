@@ -86,6 +86,9 @@ nlohmann::json build_json_from_untokenized_command(const std::string &raw_comman
     case INV_INFO:
         //-format: 8 ENDCMD
         break;
+    case ASSETS_INFO:
+        //-format: 9 ENDCMD
+        break;
     default:
         throw std::invalid_argument("Unknown command " + raw_command);
         break;
@@ -132,6 +135,9 @@ nlohmann::json storedriver::Executor::execute(store::StoreSystem *s_system, std:
         break;
     case INV_INFO:
         e = new InventoriesInfoExecutor(exec);
+        break;
+    case ASSETS_INFO:
+        e = new AssetsInfoExecutor(exec);
         break;
     default:
         throw std::invalid_argument("Unknown command: " + raw_command);
@@ -292,6 +298,28 @@ nlohmann::json storedriver::InventoriesInfoExecutor::execute(store::StoreSystem 
         item_json["item_code"] = item->get_item_code();
         item_json["name"] = item->get_name();
         item_json["price"] = item->get_selling_price();
+        data.push_back(item_json);
+    }
+    to_ret["data"] = data;
+    return to_ret;
+}
+
+storedriver::AssetsInfoExecutor::AssetsInfoExecutor(nlohmann::json json_command) : Executor(json_command) {}
+nlohmann::json storedriver::AssetsInfoExecutor::execute(store::StoreSystem *s_system)
+{
+    nlohmann::json to_ret;
+    std::vector<nlohmann::json> data;
+    std::vector<inventory::Asset *> inventories = s_system->get_assets();
+    for (inventory::Asset *item : inventories)
+    {
+        nlohmann::json item_json;
+        item_json["dbcode"] = item->get_db_code();
+        item_json["name"] = item->get_name();
+        item_json["cost"] = item->get_total_value();
+        item_json["residual_value"] = item->get_residual_value();
+        item_json["useful_life"] = item->get_year_useful_life();
+        item_json["date_purchased"] = item->get_date_bought()->to_string();
+        item_json["last_depreciation_date"] = item->get_last_depreciation_date()->to_string();
         data.push_back(item_json);
     }
     to_ret["data"] = data;

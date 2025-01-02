@@ -140,6 +140,10 @@ std::vector<inventory::Inventory *> StoreSystem::get_inventory(){
     return this->i_system->get_inventory();
 }
 
+std::vector<inventory::Asset *> StoreSystem::get_assets(){
+    return this->i_system->get_assets();
+}
+
 std::string StoreSystem::to_string_inv()
 {
     return this->i_system->to_string();

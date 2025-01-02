@@ -64,6 +64,14 @@ std::vector<Inventory *> InventorySystem::get_inventory()
     return to_ret;
 }
 
+std::vector<Asset *> InventorySystem::get_assets(){
+    std::vector<Asset *> to_ret;
+    for (std::map<std::string, Asset *>::iterator it = this->assets.begin(); it != this->assets.end(); it++){
+        to_ret.push_back(it->second);
+    }
+    return to_ret;
+}
+
 double InventorySystem::sell_sellables(Entry *new_entry)
 {
     if (!this->sellables[new_entry->get_sellable_db_code()])
