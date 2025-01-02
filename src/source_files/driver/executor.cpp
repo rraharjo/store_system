@@ -284,5 +284,5 @@ storedriver::EndOfYearExecutor::EndOfYearExecutor(nlohmann::json json_command) :
 nlohmann::json storedriver::EndOfYearExecutor::execute(store::StoreSystem *s_system)
 {
     s_system->end_year_adjustment();
-    return nlohmann::json();
+    return nlohmann::json(R"({})"_json);
 }

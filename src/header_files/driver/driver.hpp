@@ -7,7 +7,7 @@
 #include "driver/executor.hpp"
 #ifndef STORE_DRIVER
 #define STORE_DRIVER
-#define STREAM_SIZE 512
+#define STREAM_SIZE 1024 * 1024
 
 
 namespace storedriver

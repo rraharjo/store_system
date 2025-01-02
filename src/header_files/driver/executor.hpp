@@ -13,6 +13,14 @@
 #define SELL_INV 5
 #define SELL_ASS 6
 #define EO_YEAR 7
+//Below are not implemented yet
+//TODO: Implement the following command
+#define INV_INFO 8
+#define ASSETS_INFO 9
+#define INV_PURC_HIST 10
+#define INV_SELL_HIST 11
+#define ASSETS_PURC_HIST 12
+#define ASSETS_SELL_HIST 13
 
 namespace storedriver
 {

@@ -5,7 +5,6 @@ auto driver_exec_thread = [](storedriver::PipeIODriver *driver)
     driver->start();
 };
 
-// TODO: server is not sending response
 auto handle_send_thread = [](storedriver::PipeIODriver *driver, std::queue<SOCKET *> *clients, std::mutex *driver_mtx)
 {
     int i_result;
