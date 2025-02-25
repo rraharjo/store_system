@@ -3,8 +3,6 @@
 
 int main(int argc, char **argv)
 {
-
-    //TODO test main program for server
     if (argc < 2)
     {
         std::cout << "unknown command" << std::endl;

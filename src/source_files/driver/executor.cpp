@@ -153,6 +153,11 @@ storedriver::Executor::Executor(nlohmann::json json_command)
     this->request = json_command;
 }
 
+void storedriver::Executor::validate_request(store::StoreSystem *s_system)
+{
+    return;
+}
+
 storedriver::AddInventoryExecutor::AddInventoryExecutor(nlohmann::json json_command) : Executor(json_command) {}
 
 nlohmann::json storedriver::AddInventoryExecutor::execute(store::StoreSystem *s_system)
@@ -238,9 +243,46 @@ nlohmann::json storedriver::CapitalizeAssetExecutor::execute(store::StoreSystem 
     return nlohmann::json(R"({})"_json);
 }
 
+// TODO: do not do transaction if there's an error
+// Note: if qty is less than available, transaction is recorded
 storedriver::SellInventoryExecutor::SellInventoryExecutor(nlohmann::json json_command) : Executor(json_command) {}
+
+void storedriver::SellInventoryExecutor::validate_request(store::StoreSystem *s_system)
+{
+    if (!s_system)
+    {
+        throw std::invalid_argument("Cannot validate request if store system is not passed...");
+    }
+    std::vector<nlohmann::json> items = request.at("items");
+    double request_amt = 0.0;
+    for (const nlohmann::json &item : items)
+    {
+        std::string item_code = item.at("dbcode");
+        int qty = item.at("qty");
+        int available_qty = s_system->get_inventory(item_code)->get_qty();
+        double item_price = s_system->get_inventory(item_code)->get_selling_price();
+        if (qty > available_qty)
+        {
+            throw std::invalid_argument("Item " + item_code + ": " + std::to_string(available_qty) +
+                                        " items remaining, but requested " + std::to_string(qty));
+        }
+        request_amt += qty * item_price;
+    }
+    double request_paid = (double)this->request.at("paid_cash");
+    if (request_paid < 0)
+    {
+        throw std::invalid_argument("requested paid " + std::to_string(request_paid) + ". Cannot pay negative amount...");
+    }
+    if (request_amt < request_paid)
+    {
+        throw std::invalid_argument("requested paid " + std::to_string(request_paid) +
+                                    " while the total amount is only " + std::to_string(request_amt));
+    }
+}
+
 nlohmann::json storedriver::SellInventoryExecutor::execute(store::StoreSystem *s_system)
 {
+    this->validate_request(s_system);
     util::Date *date = new util::Date(request.at("date"));
     std::vector<nlohmann::json> items = request.at("items");
     store::SellingTransaction *new_transaction = new store::SellingTransaction(date);
@@ -298,6 +340,7 @@ nlohmann::json storedriver::InventoriesInfoExecutor::execute(store::StoreSystem 
         item_json["item_code"] = item->get_item_code();
         item_json["name"] = item->get_name();
         item_json["price"] = item->get_selling_price();
+        item_json["qty"] = item->get_qty();
         data.push_back(item_json);
     }
     to_ret["data"] = data;

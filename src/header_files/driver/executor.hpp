@@ -14,8 +14,8 @@
 #define SELL_ASS 6
 #define EO_YEAR 7
 #define INV_INFO 8
-//Below are not implemented yet
-//TODO: Implement the following command
+// Below are not implemented yet
+// TODO: Implement the following command
 #define ASSETS_INFO 9
 #define INV_PURC_HIST 10
 #define INV_SELL_HIST 11
@@ -30,6 +30,8 @@ namespace storedriver
         nlohmann::json request;
 
         virtual nlohmann::json execute(store::StoreSystem *) = 0;
+
+        virtual void validate_request(store::StoreSystem *s_system = NULL);
 
     public:
         static nlohmann::json execute(store::StoreSystem *, std::string, bool);
@@ -71,6 +73,8 @@ namespace storedriver
     };
     class SellInventoryExecutor : public Executor
     {
+    protected:
+        void validate_request(store::StoreSystem *s_system = NULL) override;
 
     public:
         nlohmann::json execute(store::StoreSystem *) override;
@@ -105,6 +109,6 @@ namespace storedriver
     public:
         nlohmann::json execute(store::StoreSystem *) override;
         AssetsInfoExecutor(nlohmann::json);
-    }; 
+    };
 }
 #endif
