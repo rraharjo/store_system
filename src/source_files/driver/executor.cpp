@@ -360,6 +360,7 @@ nlohmann::json storedriver::AssetsInfoExecutor::execute(store::StoreSystem *s_sy
         item_json["name"] = item->get_name();
         item_json["cost"] = item->get_total_value();
         item_json["residual_value"] = item->get_residual_value();
+        item_json["book_value"] = item->get_current_value();
         item_json["useful_life"] = item->get_year_useful_life();
         item_json["date_purchased"] = item->get_date_bought()->to_string();
         item_json["last_depreciation_date"] = item->get_last_depreciation_date()->to_string();

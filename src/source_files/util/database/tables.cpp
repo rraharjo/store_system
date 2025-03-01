@@ -48,8 +48,19 @@ std::string generate_single_condition(util::TableCondition &condition)
     case TableComparator::LIKE:
         result += " like ";
         break;
+    case TableComparator::IS:
+        result += " is ";
+        break;
+    case TableComparator::ISNOT:
+        result += " is not ";
+        break;
     default:
         break;
+    }
+    if (condition.value == "null")
+    {
+        result += "null";
+        return result;
     }
     switch (type)
     {
@@ -368,7 +379,7 @@ PurchaseTransactionTable *PurchaseTransactionTable::get_instance()
 
 // purchase entry table
 std::vector<std::vector<std::string>> PurchaseEntryTable::get_records(std::vector<std::string> columns,
-                                                                     std::vector<TableCondition> conditions)
+                                                                      std::vector<TableCondition> conditions)
 {
     std::string entry_abbr = "et", transaction_abbr = "pt";
     std::string transaction_table_name = util::enums::table_names_map[util::enums::TableNames::PURCHASETRANSACTION];

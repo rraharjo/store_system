@@ -67,6 +67,9 @@ std::vector<Inventory *> InventorySystem::get_inventory()
 std::vector<Asset *> InventorySystem::get_assets(){
     std::vector<Asset *> to_ret;
     for (std::map<std::string, Asset *>::iterator it = this->assets.begin(); it != this->assets.end(); it++){
+        if (it->second->get_expiry_date()){
+            continue;
+        }
         to_ret.push_back(it->second);
     }
     return to_ret;

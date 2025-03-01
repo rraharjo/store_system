@@ -14,7 +14,9 @@ namespace util
         EQUAL,
         MORETHANEQUAL,
         MORETHAN,
-        LIKE
+        LIKE,
+        IS,
+        ISNOT
     };
 
     struct TableCondition
