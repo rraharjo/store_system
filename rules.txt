@@ -179,7 +179,7 @@ commands list:
           "cost": double,
           "residual_value": double,
           "useful_life": int,
-          "date_purchase": dd/MM/yyyy,
+          "date_purchased": dd/MM/yyyy,
           "last_depreciation_date": dd/MM/yyyy
         },
 
