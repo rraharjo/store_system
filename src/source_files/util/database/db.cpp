@@ -28,9 +28,7 @@ std::vector<std::vector<std::string>> DB::execute_query(std::string query){
     PGresult* res = PQexec(this->connection, query.c_str());
     std::vector<std::vector<std::string>> to_ret;
     if (PQresultStatus(res) != PGRES_TUPLES_OK){
-        std::cout << PQerrorMessage(this->connection) << std::endl;
-        PQclear(res);
-        return to_ret;
+        throw std::runtime_error(PQerrorMessage(this->connection));
     }
 
     int rows = PQntuples(res);

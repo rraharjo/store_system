@@ -4,7 +4,7 @@
 #include <string>
 #include <iostream>
 #include <thread>
-#define MY_PORT "80000"
+#define MY_PORT "8000"
 #define LOCAL_IP "127.0.0.1"
 #define BUFF_SIZE 512
 

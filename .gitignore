@@ -1,3 +1,4 @@
 /.VSCodeCounter
 /.vscode
-/src/.env
+/src/source_files/.env
+/azure.txt

@@ -1,31 +1,15 @@
-compiling
-general:
--I -> this flag means all the folders that has the header files
-all source code (.cpp) file has to be included when compiling
-
-with postgres, include this line. Sample:
--I "C:/Program Files/PostgreSQL/16/include" "C:/Program Files/PostgreSQL/16/lib/libpq.lib"
-"C:/Program Files/PostgreSQL/16/lib/libpq.lib" is the source file
-
-Microsoft's WinSock2 SDK (required for server). Sample:
-C:/Program Files/SDK/Windows Kits/10/Lib/10.0.20348.0/um/x64/WS2_32.Lib
-
-compile inventory_test:
-g++ ./src/inventory_test.cpp -I ./src/header_files ./src/source_files/inventory/*.cpp ./src/source_files/inventory/assets/*.cpp ./src/source_files/inventory/transaction/*.cpp ./src/source_files/util/database/*.cpp ./src/source_files/util/enums/date/*.cpp ./src/source_files/util/*.cpp ./src/source_files/util/enums/database/*.cpp ./src/source_files/util/class/*.cpp -I "C:/Program Files/PostgreSQL/16/include" "C:/Program Files/PostgreSQL/16/lib/libpq.lib"
-database reset:
-delete * from purchase_entry ; delete * from sellable ; 
-
-compile accounting_test:
-g++ ./src/accounting_test.cpp -I ./src/header_files ./src/source_files/accounting/*.cpp ./src/source_files/accounting/accounting_transaction/*.cpp ./src/source_files/accounting/accounts/*.cpp ./src/source_files/util/class/*.cpp ./src/source_files/util/database/*.cpp ./src/source_files/util/enums/accounting/*.cpp ./src/source_files/util/enums/database/*.cpp ./src/source_files/util/enums/date/*.cpp ./src/source_files/util/*.cpp -I "C:/Program Files/PostgreSQL/16/include" "C:/Program Files/PostgreSQL/16/lib/libpq.lib" 
-
-compile accounting_factory_test
-g++ ./src/accounting_factory_test.cpp -I ./src/header_files ./src/source_files/accounting/*.cpp ./src/source_files/accounting/accounting_transaction/*.cpp ./src/source_files/accounting/accounts/*.cpp ./src/source_files/util/class/*.cpp ./src/source_files/util/database/*.cpp ./src/source_files/util/enums/accounting/*.cpp ./src/source_files/util/enums/database/*.cpp ./src/source_files/util/enums/date/*.cpp ./src/source_files/util/factory/*.cpp ./src/source_files/util/*.cpp -I "C:/Program Files/PostgreSQL/16/include" "C:/Program Files/PostgreSQL/16/lib/libpq.lib" 
-
-compile database_test:
-g++ ./src/database_test.cpp -I ./src/header_files ./src/source_files/util/database/*.cpp ./src/source_files/util/*.cpp ./src/source_files/util/enums/database/*.cpp ./src/source_files/util/enums/date/*.cpp -I "C:/Program Files/PostgreSQL/16/include" "C:/Program Files/PostgreSQL/16/lib/libpq.lib"
-
-compile store_system:
-g++ store_system_test.cpp -I ./header_files ./source_files/accounting/accounting_transaction/*.cpp ./source_files/accounting/accounts/*.cpp ./source_files/accounting/*.cpp ./source_files/inventory/assets/*.cpp ./source_files/inventory/transaction/*.cpp ./source_files/inventory/*.cpp ./source_files/store/transaction/*.cpp ./source_files/store/*.cpp ./source_files/util/*.cpp ./source_files/util/class/*.cpp ./source_files/util/database/*.cpp ./source_files/util/enums/accounting/*.cpp ./source_files/util/enums/database/*.cpp ./source_files/util/enums/date/*.cpp ./source_files/util/factory/*.cpp -I "C:/Program Files/PostgreSQL/16/include" "C:/Program Files/PostgreSQL/16/lib/libpq.lib"
+Environment folders:
+1. "./src/source_files/.env"
+  -> create a new file to instantiate global variable local_postgres defined in ./src/header_files/.env/private.hpp
+External libraries:
+1. PostgreSQL C libraries
+  -> get from https://www.postgresql.org/download/
+  -> add include folder to the project include depending on IDE (e.g. ".vscode/c_cpp_properties.json")
+  -> add include and lib file during compilation (e.g. ".vscode/tasks.json")
+2. nlohmann json parser
+  -> get from https://github.com/nlohmann/json/
+  -> add include folder to the project include depending on IDE (e.g. ".vscode/c_cpp_properties.json")
+  -> add include file (no Lib or .cpp files) during compilation (e.g. ".vscode/tasks.json")
 
 Loaded data:
 assets and its purchase entries

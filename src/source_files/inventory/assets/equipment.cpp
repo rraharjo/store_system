@@ -4,7 +4,13 @@ using namespace inventory;
 std::vector<Asset *> Equipment::generate_from_database()
 {
     std::vector<Asset *> to_ret;
-    std::vector<std::vector<std::string>> records = Asset::class_table->get_records();
+    std::vector<util::TableCondition> conditions;
+    util::TableCondition not_sold;
+    not_sold.col = util::enums::assets_table_columns[util::enums::AssetsTable::DATESOLD];
+    not_sold.comparator = util::TableComparator::IS;
+    not_sold.value = "null";
+    conditions.push_back(not_sold);
+    std::vector<std::vector<std::string>> records = Asset::class_table->get_records(conditions);
     for (std::vector<std::string> &record : records)
     {
         util::Date *purchase = NULL, *depreciation_date = NULL, *sold = NULL;

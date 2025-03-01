@@ -4,17 +4,11 @@
 #include <exception>
 #include "store/store_system.hpp"
 #include "util/misc.hpp"
+#include "driver/executor.hpp"
 #ifndef STORE_DRIVER
 #define STORE_DRIVER
-#define ENDCMD "ENDCMD"
-#define STREAM_SIZE 512
-#define ADD_INV 1
-#define PURC_INV 2
-#define PURC_ASS 3
-#define CAPT_ASS 4
-#define SELL_INV 5
-#define SELL_ASS 6
-#define EO_YEAR 7
+#define STREAM_SIZE 1024 * 1024
+
 
 namespace storedriver
 {
@@ -23,20 +17,21 @@ namespace storedriver
     private:
         store::StoreSystem *s_system = NULL;
 
+    protected:
+        bool json_input;
+
     public:
-        Driver();
+        Driver(bool);
 
         virtual void start() = 0;
 
-        int execute_command(std::string);
-
-        virtual int execute_commands(std::string);
+        nlohmann::json execute_command(std::string);
     };
 
     class StdIODriver : public Driver
     {
     public:
-        StdIODriver();
+        StdIODriver(bool);
 
         void start() override;
     };
@@ -51,11 +46,9 @@ namespace storedriver
 
         void write_output(std::string);
     public:
-        PipeIODriver();
+        PipeIODriver(bool);
 
         void start() override;
-
-        int execute_commands(std::string) override;
 
         void write_input(std::string);
 
