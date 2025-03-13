@@ -6,6 +6,12 @@
 #include "inventory/transaction/entry.hpp"
 #ifndef STORETRANSACTION_HPP
 #define STORETRANSACTION_HPP
+namespace util {
+    namespace baseclass{
+        class PurchaseTransactionCollection;
+        class SellingTransactionCollection;
+    }
+}
 namespace store
 {
     class Transaction : public util::baseclass::HasTable
@@ -19,7 +25,7 @@ namespace store
     protected:
         bool is_finished;
 
-        Transaction(util::Date *transaction_date, double paid_cash, double paid_credit);
+        Transaction(std::string db_code, util::Date *transaction_date, double paid_cash, double paid_credit);
 
         Transaction(util::Date *transaction_date);
 
@@ -46,43 +52,27 @@ namespace store
     class PurchaseTransaction : public Transaction
     {
     private:
-        static util::Table *class_table;
         std::string seller;
-
-    protected:
-        std::vector<std::string> get_insert_parameter() override;
-
-        std::vector<std::string> get_update_parameter() override;
-
     public:
-        void insert_to_db() override;
-
-        void update_to_db() override;
-
         PurchaseTransaction(std::string seller, util::Date *purchase_date);
 
+        PurchaseTransaction(std::string db_code, std::string seller, util::Date *purchase_date, double paid_cash, double paid_credit);
+
         std::string get_seller();
+
+        friend class util::baseclass::PurchaseTransactionCollection;
     };
 
     /*****************************************SELLINGTRANSACTION*****************************************/
 
     class SellingTransaction : public Transaction
     {
-
-    private:
-        static util::Table *class_table;
-
     public:
-        void insert_to_db() override;
-
-        void update_to_db() override;
-
         SellingTransaction(util::Date *transaction_date);
 
-    protected:
-        std::vector<std::string> get_insert_parameter() override;
+        SellingTransaction(std::string db_code, util::Date *transaction_date, double paid_cash, double paid_credit);
 
-        std::vector<std::string> get_update_parameter() override;
+        friend class util::baseclass::SellingTransactionCollection;
     };
 };
 #endif

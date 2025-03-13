@@ -22,39 +22,6 @@ std::vector<Entry *> Entry::generate_from_db(std::string transaction_code)
     return to_ret;
 }
 
-void Entry::insert_to_db()
-{
-    this->insert_to_db_with_table(Entry::class_table);
-};
-
-void Entry::update_to_db()
-{
-    this->update_to_db_with_table(Entry::class_table);
-};
-
-std::vector<std::string> Entry::get_insert_parameter()
-{
-    std::vector<std::string> to_ret;
-    to_ret.push_back(util::enums::primary_key_codes_map[util::enums::PrimaryKeyCodes::ACCOUNTINGENTRY]);
-    to_ret.push_back(this->transaction_db);
-    to_ret.push_back(this->debit ? "true" : "false");
-    to_ret.push_back(std::to_string(this->amount));
-    to_ret.push_back(util::enums::t_accounts_name_map[this->t_account]);
-    to_ret.push_back(util::enums::account_titles_map[this->account]);
-    return to_ret;
-}
-
-std::vector<std::string> Entry::get_update_parameter()
-{
-    std::vector<std::string> to_ret;
-    to_ret.push_back(this->transaction_db);
-    to_ret.push_back(this->debit ? "true" : "false");
-    to_ret.push_back(std::to_string(this->amount));
-    to_ret.push_back(util::enums::t_accounts_name_map[this->t_account]);
-    to_ret.push_back(util::enums::account_titles_map[this->account]);
-    return to_ret;
-}
-
 Entry::Entry(std::string db_code, std::string transaction_db_code, bool debit, double amount,
              util::enums::TAccounts t_account)
     : util::baseclass::HasTable()

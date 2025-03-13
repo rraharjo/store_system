@@ -29,13 +29,14 @@ StoreSystem::StoreSystem()
 {
     this->a_system = accounting::AccountingSystem::get_instance();
     this->i_system = inventory::InventorySystem::get_instance();
-    this->purchase_transactions = {};
-    this->selling_transactions = {};
+    this->purchase_transactions = std::make_unique<util::baseclass::PurchaseTransactionCollection>();
+    this->selling_transactions = std::make_unique<util::baseclass::SellingTransactionCollection>();
 }
 
 void StoreSystem::sell_item(SellingTransaction *selling_transaction)
 {
     check_transaction(selling_transaction);
+    this->selling_transactions->insert_new_item(selling_transaction);
     double cogs = 0;
     double sell_amount = 0;
     for (inventory::Entry *entry : selling_transaction->get_all_entries())
@@ -60,6 +61,7 @@ void StoreSystem::sell_item(SellingTransaction *selling_transaction)
 void StoreSystem::buy_item(PurchaseTransaction *purchase_transaction)
 {
     check_transaction(purchase_transaction);
+    this->purchase_transactions->insert_new_item(purchase_transaction);
     double purchase_amount = 0;
     for (inventory::Entry *entry : purchase_transaction->get_all_entries())
     {
@@ -78,6 +80,7 @@ void StoreSystem::buy_item(PurchaseTransaction *purchase_transaction)
 void StoreSystem::capitalize_asset(PurchaseTransaction *purchase_transaction)
 {
     check_transaction(purchase_transaction);
+    this->purchase_transactions->insert_new_item(purchase_transaction);
     double amount = 0.0;
     for (inventory::Entry *entry : purchase_transaction->get_all_entries())
     {
@@ -96,6 +99,7 @@ void StoreSystem::capitalize_asset(PurchaseTransaction *purchase_transaction)
 void StoreSystem::dispose_asset(SellingTransaction *selling_transaction)
 { // one transaction one property
     check_transaction(selling_transaction);
+    this->selling_transactions->insert_new_item(selling_transaction);
     inventory::Equipment *to_dispose = NULL;
     double sell_amount = 0.0;
     double prop_valuation = 0.0;

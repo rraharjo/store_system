@@ -26,7 +26,8 @@ namespace util
     {
         enum class PrimaryKeyCodes
         {
-            INVENTORY = 0,
+            NOKEY = 0,
+            INVENTORY,
             PURCHASEENTRY,
             PURCHASETRANSACTION,
             SELLINGENTRY,

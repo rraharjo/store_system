@@ -1,6 +1,8 @@
 #include "accounting/accounts/account.hpp"
 #include "accounting/accounting_transaction/transaction.hpp"
 #include "util/factory/transaction_factory.hpp"
+#include "util/class/accounting_transaction_collection.hpp"
+#include "util/class/t_account_collection.hpp"
 
 #ifndef ACCOUNTINGSYSTEM_HPP
 #define ACCOUNTINGSYSTEM_HPP
@@ -11,7 +13,7 @@ namespace accounting
     private:
         static AccountingSystem *instance;
 
-        std::map<std::string, Transaction *> transactions;
+        std::unique_ptr<util::baseclass::AccountingTransactionCollection> transactions;
 
         AccountingSystem();
 

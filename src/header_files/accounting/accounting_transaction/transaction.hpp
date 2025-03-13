@@ -13,25 +13,13 @@ namespace accounting
     class Transaction : public util::baseclass::HasTable
     {
     private:
-        static util::Table *class_table;
         std::vector<Entry *> debit_entries;
         std::vector<Entry *> credit_entries;
         std::string name;
         util::Date *transaction_date;
         std::string entity_id;
 
-    protected:
-        std::vector<std::string> get_insert_parameter() override;
-
-        std::vector<std::string> get_update_parameter() override;
-
     public:
-        static std::vector<Transaction *> generate_from_database();
-
-        void insert_to_db() override;
-
-        void update_to_db() override;
-
         Transaction(std::string db_code, std::string name, util::Date *transaction_date, std::string pid);
 
         Transaction(std::string name, util::Date *transaction_date, std::string pid);
@@ -43,6 +31,12 @@ namespace accounting
         Transaction(std::string name);
 
         ~Transaction();
+
+        std::string get_name();
+
+        std::string get_entity_id();
+
+        util::Date* get_transaction_date();
 
         std::vector<Entry *> &get_debit_entries();
 

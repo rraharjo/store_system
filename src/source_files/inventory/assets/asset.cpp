@@ -1,18 +1,6 @@
 #include "inventory/assets/asset.hpp"
 using namespace inventory;
 
-util::Table *Asset::class_table = util::AssetsTable::get_instance();
-
-void Asset::insert_to_db()
-{
-    this->insert_to_db_with_table(Asset::class_table);
-};
-
-void Asset::update_to_db()
-{
-    this->update_to_db_with_table(Asset::class_table);
-};
-
 Asset::Asset(std::string db_code, std::string name, std::string item_code,
              double total_value, double residual_value, int year_useful_life,
              util::Date *date_bought, util::Date *last_depreciation_date, util::Date *date_sold)
@@ -38,24 +26,11 @@ void Asset::add_existing_purchase_entry(PurchaseEntry *entry)
     Item::add_existing_purchase_entry(entry);
 }
 
-std::vector<std::string> Asset::get_update_parameter()
-{
-    std::vector<std::string> args;
-    args.push_back(this->name);
-    args.push_back(std::to_string(this->get_total_value()));
-    args.push_back(std::to_string(this->get_residual_value()));
-    args.push_back(std::to_string(this->get_year_useful_life()));
-    args.push_back(this->get_date_bought()->to_db_format());
-    args.push_back(this->get_last_depreciation_date() ? this->get_last_depreciation_date()->to_db_format() : "NULL");
-    args.push_back(this->get_expiry_date() ? this->get_expiry_date()->to_db_format() : "NULL");
-    return args;
-};
-
 double Asset::sell_items(SellingEntry *entry)
 {
     this->selling_history->add_entry(entry);
     this->expiry_date = entry->get_transaction_date();
-    this->update_to_db();
+    //this->update_to_db();
     return this->get_total_value();
 }
 
@@ -63,7 +38,7 @@ void Asset::add_purchase(PurchaseEntry *entry)
 {
     set_total_value(this->value + entry->get_price());
     this->purchase_history->add_entry(entry);
-    this->update_to_db();
+    //this->update_to_db();
 }
 
 double Asset::get_total_value()
@@ -109,7 +84,7 @@ void Asset::set_total_value(double new_value)
 void Asset::set_last_depreciation_date(util::Date *depreciation_date)
 {
     this->last_depreciation_date = depreciation_date;
-    this->update_to_db();
+    //this->update_to_db();
 }
 
 std::string Asset::to_string()

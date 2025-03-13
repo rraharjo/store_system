@@ -23,6 +23,19 @@ void TransactionHistory::add_entry(Entry *entry)
     }*/
 }
 
+std::vector<Entry*> TransactionHistory::get_entries(){
+    int entries_size = this->entries.size();
+    std::vector<Entry *> to_ret;
+    while (entries_size){
+        Entry *temp_entry = this->entries.front();
+        this->entries.pop_front();
+        to_ret.push_back(temp_entry);
+        this->entries.push_back(temp_entry);
+        entries_size--;
+    }
+    return to_ret;
+}
+
 /*************************************Purchase History*************************************/
 PurchaseHistory::PurchaseHistory() : TransactionHistory()
 {
@@ -38,7 +51,7 @@ double PurchaseHistory::sell_item_first_in(int qty)
         qty -= to_subtract;
         earliest->set_available_qty(earliest->get_available_qty() - to_subtract);
         to_ret += to_subtract * (earliest->get_price());
-        earliest->update_to_db();
+        //earliest->update_to_db();
         if (!earliest->get_available_qty())
         {
             this->entries.pop_front();
@@ -57,7 +70,7 @@ double PurchaseHistory::sell_item_last_in(int qty)
         qty -= to_subtract;
         earliest->set_available_qty(earliest->get_qty() - to_subtract);
         to_ret += to_subtract * (earliest->get_price());
-        earliest->update_to_db();
+        //earliest->update_to_db();
         if (!earliest->get_available_qty())
         {
             this->entries.pop_back();

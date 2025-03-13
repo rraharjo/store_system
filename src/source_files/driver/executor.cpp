@@ -166,7 +166,7 @@ nlohmann::json storedriver::AddInventoryExecutor::execute(store::StoreSystem *s_
     std::string item_code = this->request.at("item_code");
     double price = (double)this->request.at("price");
     inventory::Inventory *new_inventory = new inventory::Inventory(item_code, name, price);
-    new_inventory->insert_to_db();
+    //new_inventory->insert_to_db();
     s_system->add_item(new_inventory);
     return nlohmann::json(R"({})"_json);
 }
@@ -196,7 +196,7 @@ nlohmann::json storedriver::PurchaseInventoryExecutor::execute(store::StoreSyste
     double paid_cash = (double)this->request.at("paid_cash");
     new_transaction->set_paid_cash(paid_cash);
     new_transaction->set_paid_credit(new_transaction->get_transaction_amount() - paid_cash);
-    new_transaction->insert_to_db();
+    //new_transaction->insert_to_db();
     s_system->buy_item(new_transaction);
     return nlohmann::json(R"({})"_json);
 }
@@ -212,14 +212,14 @@ nlohmann::json storedriver::PurchaseAssetsExecutor::execute(store::StoreSystem *
     int useful_life = this->request.at("useful_life");
 
     inventory::Equipment *new_eqp = new inventory::Equipment(name, item_code, residual_value, useful_life, date_purchased);
-    new_eqp->insert_to_db();
+    //new_eqp->insert_to_db();
     store::PurchaseTransaction *new_transaction = new store::PurchaseTransaction("", date_purchased);
     inventory::PurchaseEntry *new_entry = new inventory::PurchaseEntry(new_eqp->get_db_code(), "", purchase_cost, 1);
     new_transaction->add_entry(new_entry);
     double paid_cash = (double)this->request.at("paid_cash");
     new_transaction->set_paid_cash(paid_cash);
     new_transaction->set_paid_credit(new_transaction->get_transaction_amount() - paid_cash);
-    new_transaction->insert_to_db();
+    //new_transaction->insert_to_db();
     s_system->add_property(new_eqp);
     s_system->capitalize_asset(new_transaction);
     return nlohmann::json(R"({})"_json);
@@ -238,13 +238,11 @@ nlohmann::json storedriver::CapitalizeAssetExecutor::execute(store::StoreSystem 
     double paid_cash = (double)this->request.at("paid_cash");
     new_transaction->set_paid_cash(paid_cash);
     new_transaction->set_paid_credit(new_transaction->get_transaction_amount() - paid_cash);
-    new_transaction->insert_to_db();
+    //new_transaction->insert_to_db();
     s_system->capitalize_asset(new_transaction);
     return nlohmann::json(R"({})"_json);
 }
 
-// TODO: do not do transaction if there's an error
-// Note: if qty is less than available, transaction is recorded
 storedriver::SellInventoryExecutor::SellInventoryExecutor(nlohmann::json json_command) : Executor(json_command) {}
 
 void storedriver::SellInventoryExecutor::validate_request(store::StoreSystem *s_system)
@@ -297,7 +295,6 @@ nlohmann::json storedriver::SellInventoryExecutor::execute(store::StoreSystem *s
     double paid_cash = (double)this->request.at("paid_cash");
     new_transaction->set_paid_cash(paid_cash);
     new_transaction->set_paid_credit(new_transaction->get_transaction_amount() - paid_cash);
-    new_transaction->insert_to_db();
     s_system->sell_item(new_transaction);
     return nlohmann::json(R"({})"_json);
 }
@@ -315,7 +312,6 @@ nlohmann::json storedriver::SellAssetExecutor::execute(store::StoreSystem *s_sys
     double paid_cash = (double)this->request.at("paid_cash");
     new_transaction->set_paid_cash(paid_cash);
     new_transaction->set_paid_credit(new_transaction->get_transaction_amount() - paid_cash);
-    new_transaction->insert_to_db();
     s_system->dispose_asset(new_transaction);
     return nlohmann::json(R"({})"_json);
 }

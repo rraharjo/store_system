@@ -1,0 +1,151 @@
+#include "util/class/equipment_collection.hpp"
+
+namespace util
+{
+    namespace baseclass
+    {
+        EquipmentCollection::EquipmentCollection() : Collection(util::enums::primary_key_codes_map[util::enums::PrimaryKeyCodes::EQUIPMENT],
+                                                                util::AssetsTable::get_instance())
+        {
+            this->purchase_history_collection = std::unique_ptr<PurchaseEntriesCollection>(new PurchaseEntriesCollection());
+            this->selling_history_collection = std::unique_ptr<SellingEntriesCollection>(new SellingEntriesCollection());
+        }
+
+        void EquipmentCollection::insert_new_item(HasTable *new_item)
+        {
+            Collection::validate_insert(new_item);
+            inventory::Equipment *new_equipment = (inventory::Equipment *)new_item;
+            std::vector<std::string> parameter = {
+                this->primary_key,
+                new_equipment->get_name(),
+                std::to_string(new_equipment->get_total_value()),
+                std::to_string(new_equipment->get_residual_value()),
+                std::to_string(new_equipment->get_year_useful_life()),
+                new_equipment->get_date_bought()->to_db_format(),
+                new_equipment->get_last_depreciation_date() ? new_equipment->get_last_depreciation_date()->to_db_format() : "NULL",
+                new_equipment->get_expiry_date() ? new_equipment->get_expiry_date()->to_db_format() : "NULL",
+            };
+            std::vector<std::string> result = this->table->insert_row(parameter);
+            Collection::set_db_code(new_equipment, result[0]);
+            for (inventory::PurchaseEntry *new_entry : new_equipment->get_purchase_entries())
+            {
+                this->purchase_history_collection->set_item_db_code(new_entry, new_equipment->get_db_code());
+                // this->purchase_history_collection->insert_new_item(new_entry);
+                this->purchase_history_collection->update_existing_item(new_entry);
+            }
+            for (inventory::SellingEntry *new_entry : new_equipment->get_selling_entries())
+            {
+                this->selling_history_collection->set_item_db_code(new_entry, new_equipment->get_db_code());
+                // this->selling_history_collection->insert_new_item(new_entry);
+                this->purchase_history_collection->update_existing_item(new_entry);
+            }
+        }
+
+        void EquipmentCollection::update_existing_item(HasTable *existing_item)
+        {
+            Collection::validate_update(existing_item);
+            inventory::Equipment *existing_equipment = (inventory::Equipment *)existing_item;
+            std::vector<std::string> parameter = {
+                existing_equipment->get_name(),
+                std::to_string(existing_equipment->get_total_value()),
+                std::to_string(existing_equipment->get_residual_value()),
+                std::to_string(existing_equipment->get_year_useful_life()),
+                existing_equipment->get_date_bought()->to_db_format(),
+                existing_equipment->get_last_depreciation_date() ? existing_equipment->get_last_depreciation_date()->to_db_format() : "NULL",
+                existing_equipment->get_expiry_date() ? existing_equipment->get_expiry_date()->to_db_format() : "NULL",
+            };
+            this->table->update_row(existing_equipment->get_db_code(), parameter);
+            for (inventory::PurchaseEntry *existing_entry : existing_equipment->get_purchase_entries())
+            {
+                this->purchase_history_collection->update_existing_item(existing_entry);
+            }
+            for (inventory::SellingEntry *existing_entry : existing_equipment->get_selling_entries())
+            {
+                this->selling_history_collection->update_existing_item(existing_entry);
+            }
+        }
+
+        HasTable *EquipmentCollection::get_from_database(std::string db_code)
+        {
+            if (db_code.rfind(this->primary_key) != 0)
+            {
+                throw std::invalid_argument("Cannot get a " + db_code + " from " + this->primary_key + " table...\n");
+            }
+            std::vector<util::TableCondition> conditions;
+            util::TableCondition equal_db_code;
+            equal_db_code.col = util::enums::assets_table_columns[util::enums::AssetsTable::DATABASECODE];
+            equal_db_code.comparator = TableComparator::EQUAL;
+            equal_db_code.value = db_code;
+            conditions.push_back(equal_db_code);
+            std::vector<std::vector<std::string>> records = this->table->get_records(conditions);
+            if (records.empty())
+            {
+                throw std::invalid_argument("No item with code " + db_code + " in the database");
+            }
+            std::vector<std::string> record = records[0];
+            util::Date *purchase = NULL, *depreciation_date = NULL, *sold = NULL;
+            if (record[5] != "")
+            {
+                purchase = new util::Date(record[5], "%Y-%m-%d");
+            }
+            if (record[6] != "")
+            {
+                depreciation_date = new util::Date(record[6], "%Y-%m-%d");
+            }
+            if (record[7] != "")
+            {
+                sold = new util::Date(record[6], "%Y-%m-%d");
+            }
+            inventory::Equipment *new_equipment = new inventory::Equipment(record[0], record[1], "", std::stod(record[2]),
+                                                                           std::stod(record[3]), std::stoi(record[4]), purchase, depreciation_date, sold);
+            conditions.clear();
+            util::TableCondition equal_asset_code;
+            equal_asset_code.col = util::enums::purchase_entry_table_columns[util::enums::PurchaseEntryTable::ASSETSCODE];
+            equal_asset_code.comparator = util::TableComparator::EQUAL;
+            equal_asset_code.value = new_equipment->get_db_code();
+            conditions.push_back(equal_asset_code);
+            std::vector<util::baseclass::HasTable *> purchase_entries = this->purchase_history_collection.get()->get_from_database(conditions);
+            for (util::baseclass::HasTable *purchase_entry : purchase_entries)
+            {
+                new_equipment->add_existing_purchase_entry((inventory::PurchaseEntry *)purchase_entry);
+            }
+
+            conditions.clear();
+            equal_asset_code.col = util::enums::selling_entry_table_columns[util::enums::SellingEntryTable::ASSETSCODE];
+            equal_asset_code.comparator = util::TableComparator::EQUAL;
+            equal_asset_code.value = new_equipment->get_db_code();
+            conditions.push_back(equal_asset_code);
+            std::vector<util::baseclass::HasTable *> selling_entries = this->selling_history_collection.get()->get_from_database(conditions);
+            for (util::baseclass::HasTable *selling_entry : selling_entries)
+            {
+                new_equipment->add_existing_selling_entry((inventory::SellingEntry *)selling_entry);
+            }
+            return new_equipment;
+        }
+        std::vector<HasTable *> EquipmentCollection::get_from_database(std::vector<util::TableCondition> &conditions)
+        {
+            std::vector<HasTable *> to_ret;
+            std::vector<std::vector<std::string>> records = this->table->get_records(conditions);
+            for (std::vector<std::string> &record : records)
+            {
+                util::Date *purchase = NULL, *depreciation_date = NULL, *sold = NULL;
+                if (record[5] != "")
+                {
+                    purchase = new util::Date(record[5], "%Y-%m-%d");
+                }
+                if (record[6] != "")
+                {
+                    depreciation_date = new util::Date(record[6], "%Y-%m-%d");
+                }
+                if (record[7] != "")
+                {
+                    sold = new util::Date(record[6], "%Y-%m-%d");
+                }
+                inventory::Equipment *equipment_from_db = new inventory::Equipment(record[0], record[1], "", std::stod(record[2]),
+                                                                                   std::stod(record[3]), std::stoi(record[4]), purchase, depreciation_date, sold);
+                to_ret.push_back(equipment_from_db);
+            }
+            return to_ret;
+        }
+    };
+}

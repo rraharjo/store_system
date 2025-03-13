@@ -7,30 +7,25 @@
 #ifndef INVENTORYINVENTORY_HPP
 #define INVENTORYINVENTORY_HPP
 
+namespace util
+{
+    namespace baseclass
+    {
+        class InventoryCollection;
+    }
+}
+
 namespace inventory
 {
     class Inventory : public Item
     {
     private:
-        static util::Table *class_table;
-
         double selling_price;
         // tax
 
         void add_existing_purchase_entry(PurchaseEntry *) override;
 
-    protected:
-        std::vector<std::string> get_insert_parameter() override;
-
-        std::vector<std::string> get_update_parameter() override;
-
     public:
-        static std::vector<Inventory *> generate_from_database();
-
-        void insert_to_db() override;
-
-        void update_to_db() override;
-
         Inventory(std::string, std::string, std::string, double);
 
         Inventory(std::string item_code, std::string name, double selling_price);
@@ -44,6 +39,8 @@ namespace inventory
         void set_selling_price(double new_price);
 
         std::string to_string();
+
+        friend class util::baseclass::InventoryCollection;
     };
 
 };

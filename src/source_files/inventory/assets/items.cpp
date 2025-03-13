@@ -20,6 +20,24 @@ void Item::add_existing_selling_entry(SellingEntry *entry)
     this->selling_history->add_entry(entry);
 }
 
+std::vector<PurchaseEntry *> Item::get_purchase_entries()
+{
+    std::vector<PurchaseEntry *> to_ret;
+    for (Entry *entry : this->purchase_history->get_entries()){
+        to_ret.push_back((PurchaseEntry *) entry);
+    }
+    return to_ret;
+}
+
+std::vector<SellingEntry *> Item::get_selling_entries()
+{
+    std::vector<SellingEntry *> to_ret;
+    for (Entry *entry : this->selling_history->get_entries()){
+        to_ret.push_back((SellingEntry *) entry);
+    }
+    return to_ret;
+}
+
 std::string Item::get_name()
 {
     return this->name;

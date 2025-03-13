@@ -6,7 +6,6 @@
 #include "util/database/tables.hpp"
 #ifndef INVENTORYPURCHASEHISTORY_HPP
 #define INVENTORYPURCHASEHISTORY_HPP
-// FIX THIS FIRST (7/28/2024)
 namespace inventory
 {
     /*************************************Transaction History (parent class)*************************************/
@@ -19,6 +18,8 @@ namespace inventory
 
     public:
         void add_entry(Entry *entry);
+
+        std::vector<Entry *> get_entries();
     };
 
     /*************************************Purchase History*************************************/

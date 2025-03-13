@@ -23,15 +23,7 @@ namespace accounting
         util::enums::AccountTitles account;
         std::string transaction_db;
 
-    protected:
-        std::vector<std::string> get_insert_parameter() override;
-
-        std::vector<std::string> get_update_parameter() override;
-
     public:
-        void insert_to_db() override;
-
-        void update_to_db() override;
 
         Entry(std::string transaction_db_code, bool debit, double amount, util::enums::TAccounts t_account);
 

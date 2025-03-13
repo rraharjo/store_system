@@ -20,6 +20,10 @@ namespace inventory
 
         void add_existing_selling_entry(SellingEntry *);
 
+        std::vector<PurchaseEntry *> get_purchase_entries();
+
+        std::vector<SellingEntry *> get_selling_entries();
+
     public:
         std::string get_name();
         std::string get_item_code();

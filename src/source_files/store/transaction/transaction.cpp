@@ -1,9 +1,10 @@
 #include "store/transaction/transaction.hpp"
 using namespace store;
 
-Transaction::Transaction(util::Date *transaction_date, double paid_cash, double paid_credit)
+Transaction::Transaction(std::string db_code, util::Date *transaction_date, double paid_cash, double paid_credit)
     : util::baseclass::HasTable()
 {
+    this->set_db_code(db_code);
     this->transaction_date = transaction_date;
     this->paid_cash = paid_cash;
     this->paid_credit = paid_credit;
@@ -12,7 +13,7 @@ Transaction::Transaction(util::Date *transaction_date, double paid_cash, double 
 }
 
 Transaction::Transaction(util::Date *transaction_date)
-    : Transaction::Transaction(transaction_date, 0, 0)
+    : Transaction::Transaction("", transaction_date, 0, 0)
 {
 }
 
@@ -64,24 +65,19 @@ std::vector<inventory::Entry *> Transaction::get_all_entries()
 }
 
 /************************PURCHASETRANSACTION****************************/
-util::Table *PurchaseTransaction::class_table = util::PurchaseTransactionTable::get_instance();
 
-void PurchaseTransaction::insert_to_db()
-{
-    this->insert_to_db_with_table(PurchaseTransaction::class_table);
-    for (inventory::Entry *entry : this->get_all_entries())
-    {
-        entry->set_transaction_db_code(this->get_db_code());
-        entry->insert_to_db();
-    }
-};
-
-void PurchaseTransaction::update_to_db()
-{
-    this->update_to_db_with_table(PurchaseTransaction::class_table);
-};
 
 PurchaseTransaction::PurchaseTransaction(std::string seller, util::Date *purchase_date) : Transaction::Transaction(purchase_date)
+{
+    this->seller = seller;
+}
+
+PurchaseTransaction::PurchaseTransaction(std::string db_code,
+                                         std::string seller,
+                                         util::Date *purchase_date,
+                                         double paid_cash,
+                                         double paid_credit)
+    : Transaction::Transaction(db_code, purchase_date, paid_cash, paid_credit)
 {
     this->seller = seller;
 }
@@ -91,69 +87,16 @@ std::string PurchaseTransaction::get_seller()
     return this->seller;
 }
 
-std::vector<std::string> PurchaseTransaction::get_insert_parameter()
-{
-    std::vector<std::string> args;
-    args.push_back(util::enums::primary_key_codes_map[util::enums::PrimaryKeyCodes::PURCHASETRANSACTION]);
-    args.push_back(this->get_date()->to_db_format());
-    args.push_back(this->get_seller());
-    args.push_back(std::to_string(this->get_paid_cash()));
-    args.push_back(std::to_string(this->get_paid_credit()));
-    args.push_back(this->is_finished ? "true" : "false");
-    return args;
-}
-
-std::vector<std::string> PurchaseTransaction::get_update_parameter()
-{
-    std::vector<std::string> args;
-    args.push_back(this->get_date()->to_db_format());
-    args.push_back(this->get_seller());
-    args.push_back(std::to_string(this->get_paid_cash()));
-    args.push_back(std::to_string(this->get_paid_credit()));
-    args.push_back(this->is_finished ? "true" : "false");
-    return args;
-}
-
 /*********************SELLINGTRANSACTION***********************/
-
-util::Table *SellingTransaction::class_table = util::SellingTransactionTable::get_instance();
-
-void SellingTransaction::insert_to_db()
-{
-    this->insert_to_db_with_table(SellingTransaction::class_table);
-    for (inventory::Entry *entry : this->get_all_entries())
-    {
-        entry->set_transaction_db_code(this->get_db_code());
-        entry->insert_to_db();
-    }
-};
-
-void SellingTransaction::update_to_db()
-{
-    this->update_to_db_with_table(SellingTransaction::class_table);
-};
 
 SellingTransaction::SellingTransaction(util::Date *transaction_date) : Transaction::Transaction(transaction_date)
 {
 }
 
-std::vector<std::string> SellingTransaction::get_insert_parameter()
+SellingTransaction::SellingTransaction(std::string db_code,
+                                       util::Date *transaction_date,
+                                       double paid_cash,
+                                       double paid_credit)
+    : Transaction::Transaction(db_code, transaction_date, paid_cash, paid_credit)
 {
-    std::vector<std::string> args;
-    args.push_back(util::enums::primary_key_codes_map[util::enums::PrimaryKeyCodes::SELLINGTRANSACTION]);
-    args.push_back(this->get_date()->to_db_format());
-    args.push_back(std::to_string(this->get_paid_cash()));
-    args.push_back(std::to_string(this->get_paid_credit()));
-    args.push_back(this->is_finished ? "true" : "false");
-    return args;
-}
-
-std::vector<std::string> SellingTransaction::get_update_parameter()
-{
-    std::vector<std::string> args;
-    args.push_back(this->get_date()->to_db_format());
-    args.push_back(std::to_string(this->get_paid_cash()));
-    args.push_back(std::to_string(this->get_paid_credit()));
-    args.push_back(this->is_finished ? "true" : "false");
-    return args;
 }

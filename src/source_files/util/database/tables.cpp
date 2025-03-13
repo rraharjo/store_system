@@ -57,9 +57,9 @@ std::string generate_single_condition(util::TableCondition &condition)
     default:
         break;
     }
-    if (condition.value == "null")
+    if (condition.value == "NULL")
     {
-        result += "null";
+        result += "NULL";
         return result;
     }
     switch (type)

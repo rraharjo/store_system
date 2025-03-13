@@ -1,6 +1,8 @@
 #include "./assets/inventory.hpp"
 #include "./assets/equipment.hpp"
 #include "accounting/accounting_system.hpp"
+#include "util/class/equipment_collection.hpp"
+#include "util/class/inventories_collection.hpp"
 #include "util/factory/transaction_factory.hpp"
 #ifndef INVENTORYSYSTEM_HPP
 #define INVENTORYSYSTEM_HPP
@@ -11,8 +13,10 @@ namespace inventory
     private:
         static InventorySystem *instance;
         accounting::AccountingSystem *a_system;
-        std::map<std::string, Inventory *> sellables;
-        std::map<std::string, Asset *> assets; 
+        //std::map<std::string, Inventory *> sellables;
+        //std::map<std::string, Asset *> assets; 
+        std::unique_ptr<util::baseclass::EquipmentCollection> equipments;
+        std::unique_ptr<util::baseclass::InventoryCollection> inventories;
 
         InventorySystem();
 

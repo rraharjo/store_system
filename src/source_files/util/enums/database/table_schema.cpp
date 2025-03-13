@@ -3,6 +3,7 @@ using namespace util::enums;
 using namespace util;
 
 std::map<PrimaryKeyCodes, std::string> util::enums::primary_key_codes_map = {
+    {PrimaryKeyCodes::NOKEY, ""},
     {PrimaryKeyCodes::INVENTORY, "INV"},
     {PrimaryKeyCodes::PURCHASEENTRY, "PNT"},
     {PrimaryKeyCodes::PURCHASETRANSACTION, "PTR"},

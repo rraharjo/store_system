@@ -8,7 +8,6 @@ namespace inventory
     class Asset : public Item
     {
     protected:
-        static util::Table *class_table;
         std::string name;
         double value = 0;
         double residual_value;
@@ -19,8 +18,6 @@ namespace inventory
 
         void add_existing_purchase_entry(PurchaseEntry *entry) override;
 
-        std::vector<std::string> get_update_parameter() override;
-
         Asset(std::string db_code, std::string name, std::string item_code,
               double total_value, double residual_value, int year_useful_life,
               util::Date *date_bought, util::Date *last_depreciation_date, util::Date *date_sold);
@@ -28,10 +25,6 @@ namespace inventory
         Asset(std::string name, std::string item_code, double residual_value, int year_useful_life, util::Date *date_bought);
 
     public:
-        void insert_to_db() override;
-
-        void update_to_db() override;
-
         void add_purchase(PurchaseEntry *entry) override;
 
         double sell_items(SellingEntry *entry) override;

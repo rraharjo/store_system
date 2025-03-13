@@ -3,6 +3,7 @@
 using namespace accounting;
 AccountingSystem::AccountingSystem()
 {
+    this->transactions = std::unique_ptr<util::baseclass::AccountingTransactionCollection>(new util::baseclass::AccountingTransactionCollection());
     this->assets = new Assets();
     this->liabilities = new Liabilities();
     this->stockholders_equity = new StockholdersEquityAccount();
@@ -56,10 +57,9 @@ void AccountingSystem::add_transaction(Transaction *transaction)
     {
         this->add_entry(entry);
     }
-    this->transactions[transaction->get_db_code()] = transaction;
 }
 
-void AccountingSystem::end_year_adjustment()//TO DO: adjust the closing the book entries for all temporary t-accounts
+void AccountingSystem::end_year_adjustment() // TO DO: adjust the closing the book entries for all temporary t-accounts
 {
     util::Date *now = new util::Date();
     std::string transaction_title = "Closing the book";

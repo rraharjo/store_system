@@ -1,46 +1,6 @@
 #include "accounting/accounting_transaction/transaction.hpp"
 using namespace accounting;
 
-util::Table *Transaction::class_table = util::AccountingTransactionTable::get_instance();
-
-std::vector<Transaction *> Transaction::generate_from_database()
-{
-    util::Date now = util::Date();
-    std::string string_date = std::to_string(now.get_m_day()) + "/" +
-                             std::to_string(now.get_month()) + "/" +
-                             std::to_string(now.get_year() - 1);
-    util::Date last_year = util::Date(string_date);
-    std::vector<util::TableCondition> conditions;
-    util::TableCondition cond1 = util::TableCondition();
-    cond1.col = util::enums::accounting_transaction_table_columns[util::enums::AccountingTransactionTable::TRANSACTIONDATE];
-    cond1.comparator = util::TableComparator::MORETHAN;
-    cond1.value = last_year.to_db_format();
-    conditions.push_back(cond1);
-    std::vector<Transaction *> to_ret;
-    std::vector<std::vector<std::string>> records = class_table->get_records(conditions);
-    for (std::vector<std::string> &record : records)
-    {
-        util::Date *transaction_date = new util::Date(record[2], "%Y-%m-%d");
-        Transaction *transaction_from_db = new Transaction(record[0], record[1], transaction_date, record[3]);
-        std::vector<Entry *> entries = Entry::generate_from_db(transaction_from_db->get_db_code());
-        for (Entry *entry : entries){
-            transaction_from_db->add_entry(entry);
-        }
-        to_ret.push_back(transaction_from_db);
-    }
-    return to_ret;
-}
-
-void Transaction::insert_to_db()
-{
-    this->insert_to_db_with_table(Transaction::class_table);
-};
-
-void Transaction::update_to_db()
-{
-    this->update_to_db_with_table(Transaction::class_table);
-};
-
 Transaction::Transaction(std::string db_code, std::string name, util::Date *transaction_date, std::string pid)
     : util::baseclass::HasTable()
 {
@@ -95,23 +55,16 @@ Transaction::~Transaction()
     }
 }
 
-std::vector<std::string> Transaction::get_insert_parameter()
-{
-    std::vector<std::string> args;
-    args.push_back(util::enums::primary_key_codes_map[util::enums::PrimaryKeyCodes::ACCOUNTINGTRANSACTION]);
-    args.push_back(this->name);
-    args.push_back(this->transaction_date->to_db_format());
-    args.push_back(this->entity_id == "" ? "NULL" : this->entity_id);
-    return args;
+std::string Transaction::get_name(){
+    return this->name;
 }
 
-std::vector<std::string> Transaction::get_update_parameter()
-{
-    std::vector<std::string> args;
-    args.push_back(this->name);
-    args.push_back(this->transaction_date->to_db_format());
-    args.push_back(this->entity_id == "" ? "NULL" : this->entity_id);
-    return args;
+std::string Transaction::get_entity_id(){
+    return this->entity_id;
+}
+
+util::Date* Transaction::get_transaction_date(){
+    return this->transaction_date;
 }
 
 std::vector<Entry *> &Transaction::get_debit_entries()
