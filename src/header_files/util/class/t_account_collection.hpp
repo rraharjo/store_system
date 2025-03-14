@@ -19,8 +19,6 @@ namespace util
             HasTable *get_from_database(util::enums::TAccounts title);
 
             void update_existing_item(HasTable *existing_item) override;
-
-            std::vector<HasTable *> get_from_database(std::vector<util::TableCondition> &conditions) override;
         };
     }
 }

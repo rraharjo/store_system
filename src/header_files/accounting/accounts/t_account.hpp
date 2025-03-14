@@ -14,13 +14,12 @@ namespace accounting
     {
     private:
         util::enums::TAccounts title;
+        util::enums::AccountTitles account_title;
         double debit_amount;
         double credit_amount;
-        std::vector<Entry *> debit_entries;
-        std::vector<Entry *> credit_entries;
 
     public:
-        TAccount(util::enums::TAccounts title, double debit, double credit);
+        TAccount(util::enums::TAccounts title, util::enums::AccountTitles account_title, double debit, double credit);
 
         TAccount(util::enums::TAccounts title);
 

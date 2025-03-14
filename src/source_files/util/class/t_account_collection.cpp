@@ -33,7 +33,7 @@ namespace util
         {
             accounting::TAccount *t_acc = (accounting::TAccount *)existing_item;
             std::vector<std::string> values = {
-                //t_acc->get_db_code(),
+                // t_acc->get_db_code(),
                 t_acc->get_title_name(),
                 std::to_string(t_acc->get_debit_amount()),
                 std::to_string(t_acc->get_credit_amount()),
@@ -61,7 +61,10 @@ namespace util
                 throw std::invalid_argument("No T-Account with title " + t_account_name + " in the database...\n");
             }
             std::vector<std::string> record = records[0];
-            util::baseclass::HasTable *t_acc_from_db = new accounting::TAccount(title, std::stod(record[2]), std::stod(record[3]));
+            util::baseclass::HasTable *t_acc_from_db = new accounting::TAccount(title,
+                                                                                util::enums::t_accounts_title_map[title],
+                                                                                std::stod(record[2]),
+                                                                                std::stod(record[3]));
             return t_acc_from_db;
         }
     };

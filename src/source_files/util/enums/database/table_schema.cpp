@@ -99,5 +99,6 @@ std::map<AccountingEntryTable, ColumnSchema> util::enums::accounting_entry_table
 
 std::map<TAccountTable, ColumnSchema> util::enums::t_account_table_columns = {
     {TAccountTable::TITLE, ColumnSchema{"title", ColumnTypes::TEXTCOL}},
+    {TAccountTable::ACCOUNT, ColumnSchema{"account", ColumnTypes::TEXTCOL}},
     {TAccountTable::DEBITAMOUNT, ColumnSchema{"debit_amount", ColumnTypes::FLOATCOL}},
     {TAccountTable::CREDITAMOUNT, ColumnSchema{"credit_amount", ColumnTypes::FLOATCOL}}};

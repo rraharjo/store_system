@@ -28,9 +28,33 @@ std::map<TAccounts, std::string> util::enums::t_accounts_name_map = {
     {TAccounts::RETAINEDEARNINGS, "Retained Earnings"},
     {TAccounts::END, "HOLD"}};
 
+std::map<TAccounts, AccountTitles> util::enums::t_accounts_title_map = {
+    {TAccounts::CASH, AccountTitles::ASSETS},
+    {TAccounts::EQUIPMENT, AccountTitles::ASSETS},
+    {TAccounts::ACCTRCV, AccountTitles::ASSETS},
+    {TAccounts::NOTERCV, AccountTitles::ASSETS},
+    {TAccounts::LAND, AccountTitles::ASSETS},
+    {TAccounts::ACCUMDEPRECIATION, AccountTitles::ASSETS},
+    {TAccounts::INVENTORY, AccountTitles::ASSETS},
+    {TAccounts::ACCPAYABLE, AccountTitles::LIABILITIES},
+    {TAccounts::NOTEPAYABLE, AccountTitles::LIABILITIES},
+    {TAccounts::UNEARNEDREV, AccountTitles::LIABILITIES},
+    {TAccounts::COMMONSTOCK, AccountTitles::STOCKHOLDERSEQUITY},
+    {TAccounts::ADDTLCPT, AccountTitles::STOCKHOLDERSEQUITY},
+    {TAccounts::OWNEREQ, AccountTitles::STOCKHOLDERSEQUITY},
+    {TAccounts::DIVIDEND, AccountTitles::STOCKHOLDERSEQUITY},
+    {TAccounts::REV, AccountTitles::STOCKHOLDERSEQUITY},
+    {TAccounts::EXPENSE, AccountTitles::STOCKHOLDERSEQUITY},
+    {TAccounts::COGS, AccountTitles::STOCKHOLDERSEQUITY},
+    {TAccounts::DEPREXP, AccountTitles::STOCKHOLDERSEQUITY},
+    {TAccounts::WAGEEXP, AccountTitles::STOCKHOLDERSEQUITY},
+    {TAccounts::RETAINEDEARNINGS, AccountTitles::STOCKHOLDERSEQUITY},
+};
+
 TAccounts &util::enums::operator++(TAccounts &t_account)
 {
-    if (t_account == LAST_TACCOUNT){
+    if (t_account == LAST_TACCOUNT)
+    {
         throw std::invalid_argument("Maximum value reached");
     }
     int int_equivalent = static_cast<int>(t_account) + 1;
@@ -91,7 +115,8 @@ AccountTitles util::enums::get_account_title(TAccounts t_account_name)
     {
         return AccountTitles::LIABILITIES;
     }
-    if (t_account_name < MAX_STOCKHOLDER){
+    if (t_account_name < MAX_STOCKHOLDER)
+    {
         return AccountTitles::STOCKHOLDERSEQUITY;
     }
     throw std::invalid_argument("T-Account doesn't exist");

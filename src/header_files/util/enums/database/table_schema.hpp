@@ -163,6 +163,7 @@ namespace util
 
         enum class TAccountTable{
             TITLE = 0,
+            ACCOUNT,
             DEBITAMOUNT,
             CREDITAMOUNT
         };
