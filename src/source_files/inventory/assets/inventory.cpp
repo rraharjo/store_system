@@ -3,7 +3,7 @@
 using namespace inventory;
 
 Inventory::Inventory(std::string db_code, std::string item_code, std::string name, double selling_price)
-    : Item::Item(name, item_code)
+    : Item::Item(util::enums::PrimaryKeyPrefix::INVENTORY, name, item_code)
 {
     this->set_db_code(db_code);
     this->qty = 0;

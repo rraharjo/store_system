@@ -63,6 +63,7 @@ void StoreSystem::buy_item(PurchaseTransaction *purchase_transaction)
     check_transaction(purchase_transaction);
     this->purchase_transactions->insert_new_item(purchase_transaction);
     double purchase_amount = 0;
+    //entry does not have inventory code
     for (inventory::Entry *entry : purchase_transaction->get_all_entries())
     {
         purchase_amount += entry->get_price() * entry->get_qty();

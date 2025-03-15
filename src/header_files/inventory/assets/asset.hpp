@@ -18,11 +18,11 @@ namespace inventory
 
         void add_existing_purchase_entry(PurchaseEntry *entry) override;
 
-        Asset(std::string db_code, std::string name, std::string item_code,
+        Asset(util::enums::PrimaryKeyPrefix primary_key_prefix, std::string db_code, std::string name, std::string item_code,
               double total_value, double residual_value, int year_useful_life,
               util::Date *date_bought, util::Date *last_depreciation_date, util::Date *date_sold);
 
-        Asset(std::string name, std::string item_code, double residual_value, int year_useful_life, util::Date *date_bought);
+        Asset(util::enums::PrimaryKeyPrefix primary_key_prefix, std::string name, std::string item_code, double residual_value, int year_useful_life, util::Date *date_bought);
 
     public:
         void add_purchase(PurchaseEntry *entry) override;

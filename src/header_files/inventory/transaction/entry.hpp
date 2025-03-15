@@ -24,7 +24,7 @@ namespace inventory
     protected:
         void set_item_db_code(std::string db_code);
 
-        Entry(std::string item_db_code, std::string transaction_code, double price, int qty);
+        Entry(util::enums::PrimaryKeyPrefix primary_key_prefix, std::string item_db_code, std::string transaction_code, double price, int qty);
 
     public:
         std::string get_sellable_db_code();

@@ -14,7 +14,7 @@ namespace inventory
         SellingHistory *selling_history;
         int qty;
 
-        Item(std::string name, std::string item_code);
+        Item(util::enums::PrimaryKeyPrefix primary_key_prefix, std::string name, std::string item_code);
 
         virtual void add_existing_purchase_entry(PurchaseEntry *);
 

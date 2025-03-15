@@ -2,7 +2,7 @@
 using namespace accounting;
 
 TAccount::TAccount(util::enums::TAccounts title, util::enums::AccountTitles account_title, double debit, double credit)
-    : util::baseclass::HasTable()
+    : util::baseclass::HasTable(util::enums::PrimaryKeyPrefix::NOKEY)
 {
     this->title = title;
     this->account_title = account_title;
@@ -12,7 +12,7 @@ TAccount::TAccount(util::enums::TAccounts title, util::enums::AccountTitles acco
 }
 
 TAccount::TAccount(util::enums::TAccounts title)
-    : TAccount(title, util::enums::t_accounts_title_map[title], 0, 0)
+    : TAccount(title, util::enums::t_accounts_acc_title_map[title], 0, 0)
 {
 }
 

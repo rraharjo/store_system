@@ -4,7 +4,7 @@ namespace util
 {
     namespace baseclass
     {
-        InventoryCollection::InventoryCollection() : Collection(util::enums::primary_key_codes_map[util::enums::PrimaryKeyCodes::INVENTORY],
+        InventoryCollection::InventoryCollection() : Collection(util::enums::PrimaryKeyPrefix::INVENTORY,
                                                                 util::InventoryTable::get_instance())
         {
             this->purchase_history_collection = std::unique_ptr<PurchaseEntriesCollection>(new PurchaseEntriesCollection());
@@ -16,7 +16,7 @@ namespace util
             Collection::validate_insert(new_item);
             inventory::Inventory *new_inventory = (inventory::Inventory *)new_item;
             std::vector<std::string> parameter = {
-                this->primary_key,
+                util::enums::primary_key_prefix_map[this->primary_key_prefix],
                 new_inventory->get_item_code(),
                 new_inventory->get_name(),
                 std::to_string(new_inventory->get_selling_price()),
@@ -48,9 +48,10 @@ namespace util
 
         HasTable *InventoryCollection::get_from_database(std::string db_code)
         {
-            if (db_code.rfind(this->primary_key) != 0)
+            std::string this_primary_key_prefix_string = util::enums::primary_key_prefix_map[this->primary_key_prefix];
+            if (db_code.rfind(this_primary_key_prefix_string) != 0)
             {
-                throw std::invalid_argument("Cannot get a " + db_code + " from " + this->primary_key + " table...\n");
+                throw std::invalid_argument("Cannot get a " + db_code + " from " + this_primary_key_prefix_string + " table...\n");
             }
             std::vector<util::TableCondition> conditions;
             util::TableCondition equal_db_code;

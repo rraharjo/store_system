@@ -4,6 +4,7 @@ using namespace accounting;
 AccountingSystem::AccountingSystem()
 {
     this->transactions = std::unique_ptr<util::baseclass::AccountingTransactionCollection>(new util::baseclass::AccountingTransactionCollection());
+    this->t_accounts = std::unique_ptr<util::baseclass::TAccountCollection>(new util::baseclass::TAccountCollection());
     // this->assets = new Assets();
     // this->liabilities = new Liabilities();
     // this->stockholders_equity = new StockholdersEquityAccount();
@@ -23,8 +24,17 @@ void AccountingSystem::add_existing_transaction(Transaction *transaction)
 
 void AccountingSystem::add_entry(Entry *entry)
 {
-    util::baseclass::HasTable *item_from_db = this->t_accounts->get_from_database(entry->get_t_account());
-    accounting::TAccount *t_account_from_db = (accounting::TAccount *) item_from_db;
+    util::baseclass::HasTable *item_from_db = NULL;
+    try
+    {
+        item_from_db = this->t_accounts->get_from_database(entry->get_t_account());
+    }
+    catch (const std::exception &e)
+    {
+        item_from_db = new accounting::TAccount(entry->get_t_account());
+        this->t_accounts->insert_new_item(item_from_db);
+    }
+    accounting::TAccount *t_account_from_db = (accounting::TAccount *)item_from_db;
     t_account_from_db->add_entry(entry);
     this->t_accounts->update_existing_item(t_account_from_db);
     delete t_account_from_db;
@@ -46,7 +56,7 @@ AccountingSystem *AccountingSystem::get_instance()
 {
     if (AccountingSystem::instance == NULL)
     {
-        //TAccount::initiate_t_account_on_db();
+        // TAccount::initiate_t_account_on_db();
         AccountingSystem::instance = new AccountingSystem();
     }
     return AccountingSystem::instance;

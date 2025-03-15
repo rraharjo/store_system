@@ -4,8 +4,9 @@ namespace util
 {
     namespace baseclass
     {
-        EquipmentCollection::EquipmentCollection() : Collection(util::enums::primary_key_codes_map[util::enums::PrimaryKeyCodes::EQUIPMENT],
-                                                                util::AssetsTable::get_instance())
+        EquipmentCollection::EquipmentCollection()
+            : Collection(util::enums::PrimaryKeyPrefix::EQUIPMENT,
+                         util::AssetsTable::get_instance())
         {
             this->purchase_history_collection = std::unique_ptr<PurchaseEntriesCollection>(new PurchaseEntriesCollection());
             this->selling_history_collection = std::unique_ptr<SellingEntriesCollection>(new SellingEntriesCollection());
@@ -16,7 +17,7 @@ namespace util
             Collection::validate_insert(new_item);
             inventory::Equipment *new_equipment = (inventory::Equipment *)new_item;
             std::vector<std::string> parameter = {
-                this->primary_key,
+                util::enums::primary_key_prefix_map[this->primary_key_prefix],
                 new_equipment->get_name(),
                 std::to_string(new_equipment->get_total_value()),
                 std::to_string(new_equipment->get_residual_value()),
@@ -67,9 +68,10 @@ namespace util
 
         HasTable *EquipmentCollection::get_from_database(std::string db_code)
         {
-            if (db_code.rfind(this->primary_key) != 0)
+            std::string this_primary_key_prefix_string = util::enums::primary_key_prefix_map[this->primary_key_prefix];
+            if (db_code.rfind(this_primary_key_prefix_string) != 0)
             {
-                throw std::invalid_argument("Cannot get a " + db_code + " from " + this->primary_key + " table...\n");
+                throw std::invalid_argument("Cannot get a " + db_code + " from " + this_primary_key_prefix_string + " table...\n");
             }
             std::vector<util::TableCondition> conditions;
             util::TableCondition equal_db_code;

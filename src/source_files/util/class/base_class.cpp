@@ -1,7 +1,9 @@
 #include "util/class/base_class.hpp"
 using namespace util;
-baseclass::HasTable::HasTable() {
-};
+baseclass::HasTable::HasTable(util::enums::PrimaryKeyPrefix primary_key_prefix)
+    : primary_key_prefix(primary_key_prefix)
+{
+}
 
 void util::baseclass::HasTable::set_db_code(std::string db_code)
 {

@@ -24,7 +24,7 @@ namespace util
     };
     namespace enums
     {
-        enum class PrimaryKeyCodes
+        enum class PrimaryKeyPrefix
         {
             NOKEY = 0,
             INVENTORY,
@@ -37,7 +37,7 @@ namespace util
             ACCOUNTINGENTRY
         };
 
-        extern std::map<PrimaryKeyCodes, std::string> primary_key_codes_map;
+        extern std::map<PrimaryKeyPrefix, std::string> primary_key_prefix_map;
 
         enum class SequenceNames
         {

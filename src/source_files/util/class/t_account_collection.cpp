@@ -4,8 +4,9 @@ namespace util
 {
     namespace baseclass
     {
-        TAccountCollection::TAccountCollection() : Collection(util::enums::primary_key_codes_map[util::enums::PrimaryKeyCodes::NOKEY],
-                                                              util::TAccountTable::get_instance())
+        TAccountCollection::TAccountCollection()
+            : Collection(util::enums::PrimaryKeyPrefix::NOKEY,
+                         util::TAccountTable::get_instance())
         {
         }
 
@@ -21,8 +22,10 @@ namespace util
             std::vector<std::vector<std::string>> res = this->table->get_records(conditions);
             if (res.size() == 0)
             {
+                util::enums::AccountTitles this_account_title = util::enums::t_accounts_acc_title_map[t_acc->get_title()];
                 std::vector<std::string> values = {
                     util::enums::t_accounts_name_map[t_acc->get_title()],
+                    util::enums::account_titles_map[this_account_title],
                     "0",
                     "0"};
                 this->table->insert_row(values);
@@ -32,9 +35,11 @@ namespace util
         void TAccountCollection::update_existing_item(HasTable *existing_item)
         {
             accounting::TAccount *t_acc = (accounting::TAccount *)existing_item;
+            util::enums::AccountTitles this_account_title = util::enums::t_accounts_acc_title_map[t_acc->get_title()];
             std::vector<std::string> values = {
                 // t_acc->get_db_code(),
                 t_acc->get_title_name(),
+                util::enums::account_titles_map[this_account_title],
                 std::to_string(t_acc->get_debit_amount()),
                 std::to_string(t_acc->get_credit_amount()),
             };
@@ -58,11 +63,12 @@ namespace util
             std::vector<std::vector<std::string>> records = this->table->get_records(conditions);
             if (records.empty())
             {
-                throw std::invalid_argument("No T-Account with title " + t_account_name + " in the database...\n");
+                std::string error_msg = "No T-Account with title " + t_account_name + " in the database...";
+                throw std::invalid_argument(error_msg);
             }
             std::vector<std::string> record = records[0];
             util::baseclass::HasTable *t_acc_from_db = new accounting::TAccount(title,
-                                                                                util::enums::t_accounts_title_map[title],
+                                                                                util::enums::t_accounts_acc_title_map[title],
                                                                                 std::stod(record[2]),
                                                                                 std::stod(record[3]));
             return t_acc_from_db;

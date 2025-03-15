@@ -4,8 +4,9 @@ namespace util
 {
     namespace baseclass
     {
-        SellingEntriesCollection::SellingEntriesCollection() : Collection(util::enums::primary_key_codes_map[util::enums::PrimaryKeyCodes::SELLINGENTRY],
-                                                                          util::SellingEntryTable::get_instance())
+        SellingEntriesCollection::SellingEntriesCollection()
+            : Collection(util::enums::PrimaryKeyPrefix::SELLINGENTRY,
+                         util::SellingEntryTable::get_instance())
         {
         }
 
@@ -14,7 +15,7 @@ namespace util
             Collection::validate_insert(new_item);
             inventory::SellingEntry *new_entry = (inventory::SellingEntry *)new_item;
             std::vector<std::string> parameter = {
-                this->primary_key,
+                util::enums::primary_key_prefix_map[this->primary_key_prefix],
                 new_entry->get_sellable_db_code() == "" ? "NULL" : new_entry->get_sellable_db_code(),
                 new_entry->get_properties_db_code() == "" ? "NULL" : new_entry->get_properties_db_code(),
                 new_entry->get_transaction_db_code(),
@@ -26,9 +27,10 @@ namespace util
 
         HasTable *SellingEntriesCollection::get_from_database(std::string db_code)
         {
-            if (db_code.rfind(this->primary_key) != 0)
+            std::string this_primary_key_prefix_string = util::enums::primary_key_prefix_map[this->primary_key_prefix];
+            if (db_code.rfind(this_primary_key_prefix_string) != 0)
             {
-                throw std::invalid_argument("Cannot get a " + db_code + " from " + this->primary_key + " table...\n");
+                throw std::invalid_argument("Cannot get a " + db_code + " from " + this_primary_key_prefix_string + " table...\n");
             }
             std::vector<util::TableCondition> conditions;
             util::TableCondition equal_db_code;
@@ -64,7 +66,7 @@ namespace util
         {
             inventory::SellingEntry *existing_entry = (inventory::SellingEntry *)existing_item;
             std::string inv_db_code, asset_db_code;
-            if (existing_entry->get_properties_db_code().rfind(util::enums::primary_key_codes_map[util::enums::PrimaryKeyCodes::INVENTORY]) == 0)
+            if (existing_entry->get_properties_db_code().rfind(util::enums::primary_key_prefix_map[util::enums::PrimaryKeyPrefix::INVENTORY]) == 0)
             {
                 inv_db_code = existing_entry->get_properties_db_code();
                 asset_db_code = "";

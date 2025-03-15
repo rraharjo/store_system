@@ -28,7 +28,7 @@ std::map<TAccounts, std::string> util::enums::t_accounts_name_map = {
     {TAccounts::RETAINEDEARNINGS, "Retained Earnings"},
     {TAccounts::END, "HOLD"}};
 
-std::map<TAccounts, AccountTitles> util::enums::t_accounts_title_map = {
+std::map<TAccounts, AccountTitles> util::enums::t_accounts_acc_title_map = {
     {TAccounts::CASH, AccountTitles::ASSETS},
     {TAccounts::EQUIPMENT, AccountTitles::ASSETS},
     {TAccounts::ACCTRCV, AccountTitles::ASSETS},

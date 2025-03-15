@@ -2,16 +2,16 @@
 using namespace util::enums;
 using namespace util;
 
-std::map<PrimaryKeyCodes, std::string> util::enums::primary_key_codes_map = {
-    {PrimaryKeyCodes::NOKEY, ""},
-    {PrimaryKeyCodes::INVENTORY, "INV"},
-    {PrimaryKeyCodes::PURCHASEENTRY, "PNT"},
-    {PrimaryKeyCodes::PURCHASETRANSACTION, "PTR"},
-    {PrimaryKeyCodes::SELLINGENTRY, "SNT"},
-    {PrimaryKeyCodes::SELLINGTRANSACTION, "STR"},
-    {PrimaryKeyCodes::EQUIPMENT, "EQP"},
-    {PrimaryKeyCodes::ACCOUNTINGTRANSACTION, "ATR"},
-    {PrimaryKeyCodes::ACCOUNTINGENTRY, "ANT"}};
+std::map<PrimaryKeyPrefix, std::string> util::enums::primary_key_prefix_map = {
+    {PrimaryKeyPrefix::NOKEY, ""},
+    {PrimaryKeyPrefix::INVENTORY, "INV"},
+    {PrimaryKeyPrefix::PURCHASEENTRY, "PNT"},
+    {PrimaryKeyPrefix::PURCHASETRANSACTION, "PTR"},
+    {PrimaryKeyPrefix::SELLINGENTRY, "SNT"},
+    {PrimaryKeyPrefix::SELLINGTRANSACTION, "STR"},
+    {PrimaryKeyPrefix::EQUIPMENT, "EQP"},
+    {PrimaryKeyPrefix::ACCOUNTINGTRANSACTION, "ATR"},
+    {PrimaryKeyPrefix::ACCOUNTINGENTRY, "ANT"}};
 
 std::map<SequenceNames, std::string> util::enums::sequence_names_map = {
     {SequenceNames::INVENTORY, "inventory_seq"},

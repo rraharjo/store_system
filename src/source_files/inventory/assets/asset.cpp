@@ -1,10 +1,10 @@
 #include "inventory/assets/asset.hpp"
 using namespace inventory;
 
-Asset::Asset(std::string db_code, std::string name, std::string item_code,
+Asset::Asset(util::enums::PrimaryKeyPrefix primary_key_prefix, std::string db_code, std::string name, std::string item_code,
              double total_value, double residual_value, int year_useful_life,
              util::Date *date_bought, util::Date *last_depreciation_date, util::Date *date_sold)
-    : Item(name, item_code)
+    : Item(primary_key_prefix, name, item_code)
 {
     this->set_db_code(db_code);
     this->name = name;
@@ -16,8 +16,8 @@ Asset::Asset(std::string db_code, std::string name, std::string item_code,
     this->expiry_date = date_sold;
 }
 
-Asset::Asset(std::string name, std::string item_code, double residual_value, int year_useful_life, util::Date *date_bought)
-    : Asset("", name, item_code, 0, residual_value, year_useful_life, date_bought, NULL, NULL)
+Asset::Asset(util::enums::PrimaryKeyPrefix primary_key_prefix, std::string name, std::string item_code, double residual_value, int year_useful_life, util::Date *date_bought)
+    : Asset(primary_key_prefix, "", name, item_code, 0, residual_value, year_useful_life, date_bought, NULL, NULL)
 {
 }
 

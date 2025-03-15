@@ -10,9 +10,9 @@ namespace util
         class Collection
         {
         protected:
-            std::string primary_key;
+            util::enums::PrimaryKeyPrefix primary_key_prefix;
             util::Table *table;
-            Collection(std::string primary_key, util::Table *table);
+            Collection(util::enums::PrimaryKeyPrefix primary_key_prefix, util::Table *table);
         
             void validate_insert(HasTable *new_item);
 

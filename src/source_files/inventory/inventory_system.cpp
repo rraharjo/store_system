@@ -76,7 +76,7 @@ double InventorySystem::sell_sellables(Entry *new_entry)
 
 void InventorySystem::purchase_sellables(Entry *new_entry)
 {
-    Inventory *inventory = (Inventory *)this->inventories->get_from_database(new_entry->get_db_code());
+    Inventory *inventory = (Inventory *)this->inventories->get_from_database(new_entry->get_sellable_db_code());
     inventory->add_purchase((PurchaseEntry *)new_entry);
 }
 

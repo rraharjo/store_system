@@ -25,9 +25,9 @@ namespace store
     protected:
         bool is_finished;
 
-        Transaction(std::string db_code, util::Date *transaction_date, double paid_cash, double paid_credit);
+        Transaction(util::enums::PrimaryKeyPrefix primary_key_prefix, std::string db_code, util::Date *transaction_date, double paid_cash, double paid_credit);
 
-        Transaction(util::Date *transaction_date);
+        Transaction(util::enums::PrimaryKeyPrefix primary_key_prefix, util::Date *transaction_date);
 
     public:
         util::Date *get_date();

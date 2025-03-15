@@ -4,8 +4,9 @@ namespace util
 {
     namespace baseclass
     {
-        SellingTransactionCollection::SellingTransactionCollection() : Collection(util::enums::primary_key_codes_map[util::enums::PrimaryKeyCodes::SELLINGTRANSACTION],
-                                                                                    util::SellingTransactionTable::get_instance())
+        SellingTransactionCollection::SellingTransactionCollection()
+            : Collection(util::enums::PrimaryKeyPrefix::SELLINGTRANSACTION,
+                         util::SellingTransactionTable::get_instance())
         {
             this->selling_entries = std::unique_ptr<SellingEntriesCollection>(new SellingEntriesCollection());
         }
@@ -15,7 +16,7 @@ namespace util
             Collection::validate_insert(new_item);
             store::SellingTransaction *new_transaction = (store::SellingTransaction *)new_item;
             std::vector<std::string> parameter = {
-                this->primary_key,
+                util::enums::primary_key_prefix_map[this->primary_key_prefix],
                 new_transaction->get_date()->to_db_format(),
                 std::to_string(new_transaction->get_paid_cash()),
                 std::to_string(new_transaction->get_paid_credit()),
@@ -36,7 +37,6 @@ namespace util
             Collection::validate_update(existing_item);
             store::SellingTransaction *existing_transaction = (store::SellingTransaction *)existing_item;
             std::vector<std::string> parameter = {
-                this->primary_key,
                 existing_transaction->get_date()->to_db_format(),
                 std::to_string(existing_transaction->get_paid_cash()),
                 std::to_string(existing_transaction->get_paid_credit()),
@@ -51,9 +51,10 @@ namespace util
 
         HasTable *SellingTransactionCollection::get_from_database(std::string db_code)
         {
-            if (db_code.rfind(this->primary_key) != 0)
+            std::string this_primary_key_prefix_string = util::enums::primary_key_prefix_map[this->primary_key_prefix];
+            if (db_code.rfind(this_primary_key_prefix_string) != 0)
             {
-                throw std::invalid_argument("Cannot get a " + db_code + " from " + this->primary_key + " table...\n");
+                throw std::invalid_argument("Cannot get a " + db_code + " from " + this_primary_key_prefix_string + " table...\n");
             }
             std::vector<util::TableCondition> conditions;
             util::TableCondition equal_db_code;
@@ -69,9 +70,9 @@ namespace util
             std::vector<std::string> record = records[0];
             util::Date *transaction_date = new util::Date(record[1], "%Y-%m-%d");
             store::SellingTransaction *transaction_from_db = new store::SellingTransaction(record[0],
-                                                                                             transaction_date,
-                                                                                             std::stod(record[2]),
-                                                                                             std::stod(record[3]));
+                                                                                           transaction_date,
+                                                                                           std::stod(record[2]),
+                                                                                           std::stod(record[3]));
             conditions.clear();
             util::TableCondition equal_transaction_code;
             equal_transaction_code.col = util::enums::selling_entry_table_columns[util::enums::SellingEntryTable::ASSETSCODE];

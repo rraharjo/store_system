@@ -6,7 +6,7 @@ namespace util
     {
         AccountingTransactionCollection::AccountingTransactionCollection()
             : Collection(
-                  util::enums::primary_key_codes_map[util::enums::PrimaryKeyCodes::ACCOUNTINGTRANSACTION],
+                  util::enums::PrimaryKeyPrefix::ACCOUNTINGTRANSACTION,
                   util::AccountingTransactionTable::get_instance())
         {
             this->entries_collection = std::unique_ptr<AccountingEntryCollection>(new AccountingEntryCollection());
@@ -17,7 +17,7 @@ namespace util
             Collection::validate_insert(new_item);
             accounting::Transaction *new_transaction = (accounting::Transaction *)new_item;
             std::vector<std::string> parameter = {
-                this->primary_key,
+                util::enums::primary_key_prefix_map[this->primary_key_prefix],
                 new_transaction->get_name(),
                 new_transaction->get_transaction_date()->to_db_format(),
                 new_transaction->get_entity_id() == "" ? "NULL" : new_transaction->get_entity_id(),
@@ -57,9 +57,10 @@ namespace util
 
         HasTable *AccountingTransactionCollection::get_from_database(std::string db_code)
         {
-            if (db_code.rfind(this->primary_key) != 0)
+            std::string this_primary_key_prefix_string = util::enums::primary_key_prefix_map[this->primary_key_prefix];
+            if (db_code.rfind(this_primary_key_prefix_string) != 0)
             {
-                throw std::invalid_argument("Cannot get a " + db_code + " from " + this->primary_key + " table...\n");
+                throw std::invalid_argument("Cannot get a " + db_code + " from " + this_primary_key_prefix_string + " table...\n");
             }
             // Generate the transaction
             std::vector<util::TableCondition> conditions;

@@ -12,12 +12,12 @@ namespace util
         class HasTable
         {
         private:
-            std::string primary_key;
+            util::enums::PrimaryKeyPrefix primary_key_prefix;
             std::string db_code;
 
         protected:
 
-            HasTable();
+            HasTable(util::enums::PrimaryKeyPrefix primary_key_prefix);
 
             void set_db_code(std::string db_code);
 

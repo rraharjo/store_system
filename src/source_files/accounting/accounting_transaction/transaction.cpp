@@ -2,7 +2,7 @@
 using namespace accounting;
 
 Transaction::Transaction(std::string db_code, std::string name, util::Date *transaction_date, std::string pid)
-    : util::baseclass::HasTable()
+    : util::baseclass::HasTable(util::enums::PrimaryKeyPrefix::ACCOUNTINGTRANSACTION)
 {
     this->set_db_code(db_code);
     this->name = name;
@@ -13,7 +13,7 @@ Transaction::Transaction(std::string db_code, std::string name, util::Date *tran
 }
 
 Transaction::Transaction(std::string name, util::Date *transaction_date, std::string pid)
-    : util::baseclass::HasTable()
+    : util::baseclass::HasTable(util::enums::PrimaryKeyPrefix::ACCOUNTINGTRANSACTION)
 {
     this->name = name;
     this->debit_entries = {};

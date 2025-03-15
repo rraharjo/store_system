@@ -6,7 +6,7 @@ namespace util
     {
         AccountingEntryCollection::AccountingEntryCollection()
             : Collection(
-                  util::enums::primary_key_codes_map[util::enums::PrimaryKeyCodes::ACCOUNTINGENTRY],
+                  util::enums::PrimaryKeyPrefix::ACCOUNTINGENTRY,
                   util::AccountingEntryTable::get_instance())
         {
         }
@@ -16,7 +16,7 @@ namespace util
             Collection::validate_insert(new_item);
             accounting::Entry *new_entry = (accounting::Entry *)new_item;
             std::vector<std::string> parameter = {
-                this->primary_key,
+                util::enums::primary_key_prefix_map[this->primary_key_prefix],
                 new_entry->get_transaction_db(),
                 new_entry->is_debit() ? "true" : "false",
                 std::to_string(new_entry->get_amount()),
@@ -43,9 +43,10 @@ namespace util
 
         HasTable *AccountingEntryCollection::get_from_database(std::string db_code)
         {
-            if (db_code.rfind(this->primary_key) != 0)
+            if (db_code.rfind(util::enums::primary_key_prefix_map[this->primary_key_prefix]) != 0)
             {
-                throw std::invalid_argument("Cannot get a " + db_code + " from " + this->primary_key + " table...\n");
+                throw std::invalid_argument("Cannot get a " + db_code + " from " +
+                                            util::enums::primary_key_prefix_map[this->primary_key_prefix] + " table...\n");
             }
             std::vector<util::TableCondition> conditions;
             util::TableCondition equal_db_code;

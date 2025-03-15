@@ -24,7 +24,7 @@ std::vector<Entry *> Entry::generate_from_db(std::string transaction_code)
 
 Entry::Entry(std::string db_code, std::string transaction_db_code, bool debit, double amount,
              util::enums::TAccounts t_account)
-    : util::baseclass::HasTable()
+    : util::baseclass::HasTable(util::enums::PrimaryKeyPrefix::ACCOUNTINGENTRY)
 {
     this->set_db_code(db_code);
     this->debit = debit;
