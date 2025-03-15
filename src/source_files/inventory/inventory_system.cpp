@@ -93,6 +93,7 @@ void InventorySystem::purchase_properties(Entry *new_entry)
     Equipment *to_sell = (Equipment *)this->equipments.get()->get_from_database(
         new_entry->get_properties_db_code());
     to_sell->add_purchase((PurchaseEntry *)new_entry);
+    this->equipments->update_existing_item(to_sell);
 }
 
 void InventorySystem::add_new_item(Inventory *new_sellable)

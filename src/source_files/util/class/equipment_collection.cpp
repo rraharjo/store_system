@@ -56,13 +56,23 @@ namespace util
                 existing_equipment->get_expiry_date() ? existing_equipment->get_expiry_date()->to_db_format() : "NULL",
             };
             this->table->update_row(existing_equipment->get_db_code(), parameter);
-            for (inventory::PurchaseEntry *existing_entry : existing_equipment->get_purchase_entries())
+            for (inventory::PurchaseEntry *entry : existing_equipment->get_purchase_entries())
             {
-                this->purchase_history_collection->update_existing_item(existing_entry);
+                if (entry->get_db_code() == ""){
+                    this->purchase_history_collection->insert_new_item(entry);
+                }
+                else{
+                    this->purchase_history_collection->update_existing_item(entry);
+                }
             }
-            for (inventory::SellingEntry *existing_entry : existing_equipment->get_selling_entries())
+            for (inventory::SellingEntry *entry : existing_equipment->get_selling_entries())
             {
-                this->selling_history_collection->update_existing_item(existing_entry);
+                if (entry->get_db_code() == ""){
+                    this->selling_history_collection->insert_new_item(entry);
+                }
+                else{
+                    this->selling_history_collection->update_existing_item(entry);
+                }
             }
         }
 

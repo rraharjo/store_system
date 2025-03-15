@@ -120,6 +120,10 @@ nlohmann::json storedriver::Executor::execute(store::StoreSystem *s_system, std:
         break;
     case PURC_ASS:
         e = new PurchaseAssetsExecutor(exec);
+        exec["dbcode"] = e->execute(s_system).at("dbcode");
+        exec["main_command"] = CAPT_ASS;
+        delete e;
+        e = new CapitalizeAssetExecutor(exec);
         break;
     case CAPT_ASS:
         e = new CapitalizeAssetExecutor(exec);
@@ -207,22 +211,24 @@ nlohmann::json storedriver::PurchaseAssetsExecutor::execute(store::StoreSystem *
     util::Date *date_purchased = new util::Date(this->request.at("date"));
     std::string name = this->request.at("name");
     std::string item_code = this->request.at("item_code");
-    double purchase_cost = (double)this->request.at("cost");
+    //double purchase_cost = (double)this->request.at("cost");
     double residual_value = (double)this->request.at("residual_value");
     int useful_life = this->request.at("useful_life");
 
     inventory::Equipment *new_eqp = new inventory::Equipment(name, item_code, residual_value, useful_life, date_purchased);
     //new_eqp->insert_to_db();
-    store::PurchaseTransaction *new_transaction = new store::PurchaseTransaction("", date_purchased);
-    inventory::PurchaseEntry *new_entry = new inventory::PurchaseEntry(new_eqp->get_db_code(), "", purchase_cost, 1);
-    new_transaction->add_entry(new_entry);
-    double paid_cash = (double)this->request.at("paid_cash");
-    new_transaction->set_paid_cash(paid_cash);
-    new_transaction->set_paid_credit(new_transaction->get_transaction_amount() - paid_cash);
+    //store::PurchaseTransaction *new_transaction = new store::PurchaseTransaction("", date_purchased);
+    //inventory::PurchaseEntry *new_entry = new inventory::PurchaseEntry(new_eqp->get_db_code(), "", purchase_cost, 1);
+    //new_transaction->add_entry(new_entry);
+    //double paid_cash = (double)this->request.at("paid_cash");
+    //new_transaction->set_paid_cash(paid_cash);
+    //new_transaction->set_paid_credit(new_transaction->get_transaction_amount() - paid_cash);
     //new_transaction->insert_to_db();
     s_system->add_property(new_eqp);
-    s_system->capitalize_asset(new_transaction);
-    return nlohmann::json(R"({})"_json);
+    //s_system->capitalize_asset(new_transaction);
+    nlohmann::json to_ret;
+    to_ret["dbcode"] = new_eqp->get_db_code();
+    return to_ret;
 }
 
 storedriver::CapitalizeAssetExecutor::CapitalizeAssetExecutor(nlohmann::json json_command) : Executor(json_command) {}

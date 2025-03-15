@@ -34,11 +34,11 @@ namespace util
             if (existing_entry->get_properties_db_code().rfind(util::enums::primary_key_prefix_map[util::enums::PrimaryKeyPrefix::INVENTORY]) == 0)
             {
                 inv_db_code = existing_entry->get_properties_db_code();
-                asset_db_code = "";
+                asset_db_code = "NULL";
             }
             else
             {
-                inv_db_code = "";
+                inv_db_code = "NULL";
                 asset_db_code = existing_entry->get_properties_db_code();
             }
             std::vector<std::string> values = {

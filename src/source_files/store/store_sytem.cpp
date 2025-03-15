@@ -63,7 +63,7 @@ void StoreSystem::buy_item(PurchaseTransaction *purchase_transaction)
     check_transaction(purchase_transaction);
     this->purchase_transactions->insert_new_item(purchase_transaction);
     double purchase_amount = 0;
-    //entry does not have inventory code
+    // entry does not have inventory code
     for (inventory::Entry *entry : purchase_transaction->get_all_entries())
     {
         purchase_amount += entry->get_price() * entry->get_qty();
@@ -94,9 +94,8 @@ void StoreSystem::capitalize_asset(PurchaseTransaction *purchase_transaction)
         util::factory::BuyEquipmentFactory(transaction_date, description, purchase_transaction->get_db_code(),
                                            amount, purchase_transaction->get_paid_cash(), purchase_transaction->get_paid_credit())
             .create_transaction();
-    this->a_system->add_transaction(acct_transaction);
+    this->a_system->add_transaction(acct_transaction);    
 }
-
 void StoreSystem::dispose_asset(SellingTransaction *selling_transaction)
 { // one transaction one property
     check_transaction(selling_transaction);
@@ -131,7 +130,8 @@ void StoreSystem::add_property(inventory::Equipment *new_prop)
     this->i_system->add_new_property(new_prop);
 }
 
-void StoreSystem::end_year_adjustment(){
+void StoreSystem::end_year_adjustment()
+{
     this->i_system->apply_all_depreciation();
     this->a_system->end_year_adjustment();
 }
@@ -141,11 +141,13 @@ inventory::Inventory *StoreSystem::get_inventory(std::string db_code)
     return this->i_system->get_inventory(db_code);
 }
 
-std::vector<inventory::Inventory *> StoreSystem::get_inventory(){
+std::vector<inventory::Inventory *> StoreSystem::get_inventory()
+{
     return this->i_system->get_inventory();
 }
 
-std::vector<inventory::Asset *> StoreSystem::get_assets(){
+std::vector<inventory::Asset *> StoreSystem::get_assets()
+{
     return this->i_system->get_assets();
 }
 
