@@ -86,7 +86,9 @@ double InventorySystem::sell_properties(Entry *new_entry)
 {
     Equipment *to_sell = (Equipment *)this->equipments.get()->get_from_database(
         new_entry->get_properties_db_code());
-    return to_sell->sell_items((SellingEntry *)new_entry);
+    double to_ret = to_sell->sell_items((SellingEntry *)new_entry);
+    this->equipments->update_existing_item(to_sell);
+    return to_ret;
 }
 
 void InventorySystem::purchase_properties(Entry *new_entry)

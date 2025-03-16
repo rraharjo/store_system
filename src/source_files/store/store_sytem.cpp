@@ -85,7 +85,7 @@ void StoreSystem::capitalize_asset(PurchaseTransaction *purchase_transaction)
     double amount = 0.0;
     for (inventory::Entry *entry : purchase_transaction->get_all_entries())
     {
-        this->i_system->purchase_properties(entry);
+        this->i_system->purchase_properties(entry);//Double insert
         amount += entry->get_price();
     }
     util::Date *transaction_date = new util::Date();
@@ -118,6 +118,7 @@ void StoreSystem::dispose_asset(SellingTransaction *selling_transaction)
                                             selling_transaction->get_paid_cash(), selling_transaction->get_paid_credit())
             .create_transaction();
     this->a_system->add_transaction(acct_transaction);
+    //delete acct_transaction;
 }
 
 void StoreSystem::add_item(inventory::Inventory *new_sellable)

@@ -23,7 +23,8 @@ namespace util
                 std::to_string(new_entry->get_qty()),
                 std::to_string(new_entry->get_available_qty()),
             };
-            this->table->insert_row(parameter);
+            std::vector<std::string> res = this->table->insert_row(parameter);
+            Collection::set_db_code(new_item, res[0]);
         }
 
         void PurchaseEntriesCollection::update_existing_item(HasTable *existing_item)

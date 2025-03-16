@@ -59,7 +59,7 @@ namespace util
             for (inventory::PurchaseEntry *entry : existing_equipment->get_purchase_entries())
             {
                 if (entry->get_db_code() == ""){
-                    this->purchase_history_collection->insert_new_item(entry);
+                    this->purchase_history_collection->insert_new_item(entry);//double insert
                 }
                 else{
                     this->purchase_history_collection->update_existing_item(entry);
