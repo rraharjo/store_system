@@ -51,6 +51,8 @@ namespace util
 
         extern std::map<TAccounts, std::string> t_accounts_name_map;
 
+        extern std::map<std::string, TAccounts> t_accounts_name_map_inversed;
+
         extern std::map<TAccounts, AccountTitles> t_accounts_acc_title_map;
 
         extern std::vector<TAccounts> assets_t_accounts;

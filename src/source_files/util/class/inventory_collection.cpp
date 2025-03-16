@@ -30,7 +30,7 @@ namespace util
             Collection::validate_update(existing_item);
             inventory::Inventory *existing_inventory = (inventory::Inventory *)existing_item;
             std::vector<std::string> parameter = {
-                //existing_inventory->get_db_code(),
+                // existing_inventory->get_db_code(),
                 existing_inventory->get_item_code(),
                 existing_inventory->get_name(),
                 std::to_string(existing_inventory->get_selling_price()),
@@ -78,7 +78,7 @@ namespace util
                 inventory_from_db->add_existing_purchase_entry((inventory::PurchaseEntry *)purchase_entry);
             }
             conditions.clear();
-            equal_inventory_code.col = util::enums::selling_entry_table_columns[util::enums::SellingEntryTable::ASSETSCODE];
+            equal_inventory_code.col = util::enums::selling_entry_table_columns[util::enums::SellingEntryTable::INVENTORYDBCODE];
             equal_inventory_code.comparator = util::TableComparator::EQUAL;
             equal_inventory_code.value = inventory_from_db->get_db_code();
             conditions.push_back(equal_inventory_code);
@@ -94,8 +94,32 @@ namespace util
         {
             std::vector<HasTable *> to_ret;
             std::vector<std::vector<std::string>> records = this->table->get_records(conditions);
-            for (std::vector<std::string> &record : records){
-                to_ret.push_back(new inventory::Inventory(record[0], record[1], record[2], std::stod(record[3])));
+            for (std::vector<std::string> &record : records)
+            {
+                inventory::Inventory *to_add = new inventory::Inventory(record[0], record[1], record[2], std::stod(record[3]));
+                to_ret.push_back(to_add);
+                std::vector<util::TableCondition> inventory_condition;
+                util::TableCondition equal_inventory_code;
+                equal_inventory_code.col = util::enums::purchase_entry_table_columns[util::enums::PurchaseEntryTable::INVENTORYDBCODE];
+                equal_inventory_code.comparator = util::TableComparator::EQUAL;
+                equal_inventory_code.value = to_add->get_db_code();
+                inventory_condition.push_back(equal_inventory_code);
+                std::vector<util::baseclass::HasTable *> purchase_entries = this->purchase_history_collection.get()->get_from_database(inventory_condition);
+                for (util::baseclass::HasTable *purchase_entry : purchase_entries)
+                {
+                    to_add->add_existing_purchase_entry((inventory::PurchaseEntry *)purchase_entry);
+                }
+                inventory_condition.clear();
+                equal_inventory_code.col = util::enums::selling_entry_table_columns[util::enums::SellingEntryTable::INVENTORYDBCODE];
+                equal_inventory_code.comparator = util::TableComparator::EQUAL;
+                equal_inventory_code.value = to_add->get_db_code();
+                inventory_condition.push_back(equal_inventory_code);
+                std::vector<util::baseclass::HasTable *> selling_entries = this->selling_history_collection.get()->get_from_database(inventory_condition);
+                for (util::baseclass::HasTable *selling_entry : selling_entries)
+                {
+                    to_add->add_existing_selling_entry((inventory::SellingEntry *)selling_entry);
+                }
+                
             }
             return to_ret;
         }

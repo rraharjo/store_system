@@ -73,5 +73,38 @@ namespace util
                                                                                 std::stod(record[3]));
             return t_acc_from_db;
         }
+
+        std::vector<HasTable *> TAccountCollection::get_temporary_accounts()
+        {
+            std::vector<util::enums::TAccounts> temporary_account = {
+                util::enums::TAccounts::REV,
+                util::enums::TAccounts::EXPENSE,
+                util::enums::TAccounts::COGS,
+                util::enums::TAccounts::DEPREXP,
+                util::enums::TAccounts::WAGEEXP,
+                util::enums::TAccounts::RETAINEDEARNINGS,
+            };
+            std::vector<util::TableCondition> conditions;
+            for (util::enums::TAccounts t_account : temporary_account)
+            {
+                util::TableCondition this_condition;
+                this_condition.col = util::enums::t_account_table_columns[util::enums::TAccountTable::TITLE];
+                this_condition.comparator = util::TableComparator::EQUAL;
+                this_condition.value = util::enums::t_accounts_name_map[t_account];
+                conditions.push_back(this_condition);
+            }
+            std::vector<std::vector<std::string>> rows = this->table->get_records_or_conditions(conditions);
+            std::vector<HasTable *> to_ret;
+            for (const std::vector<std::string> &row : rows)
+            {
+                util::enums::TAccounts this_t_acc = util::enums::t_accounts_name_map_inversed[row[0]];
+                util::baseclass::HasTable *t_acc_from_db = new accounting::TAccount(this_t_acc,
+                                                                                    util::enums::t_accounts_acc_title_map[this_t_acc],
+                                                                                    std::stod(row[2]),
+                                                                                    std::stod(row[3]));
+                to_ret.push_back(t_acc_from_db);                                                                    
+            }
+            return to_ret;
+        }
     };
 }

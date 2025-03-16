@@ -77,13 +77,18 @@ void AccountingSystem::add_transaction(Transaction *transaction)
 
 void AccountingSystem::end_year_adjustment() // TO DO: adjust the closing the book entries for all temporary t-accounts
 {
-    // util::Date *now = new util::Date();
-    // std::string transaction_title = "Closing the book";
-    // std::vector<TAccount *> temporary_accounts = this->stockholders_equity->get_temporary_accounts();
-    // accounting::Transaction *close_the_book =
-    //     util::factory::ClosingTemporaryAccountsFactory(now, transaction_title, temporary_accounts)
-    //         .create_transaction();
-    // this->add_transaction(close_the_book);
+    util::Date *now = new util::Date();
+    std::string transaction_title = "Closing the book";
+    std::vector<util::baseclass::HasTable *> items = this->t_accounts->get_temporary_accounts();
+    std::vector<TAccount *> temporary_accounts;
+    for (util::baseclass::HasTable *item : items)
+    {
+        temporary_accounts.push_back((TAccount *)item);
+    }
+    accounting::Transaction *close_the_book =
+        util::factory::ClosingTemporaryAccountsFactory(now, transaction_title, temporary_accounts)
+            .create_transaction();
+    this->add_transaction(close_the_book);
 }
 
 std::string AccountingSystem::to_string()

@@ -43,6 +43,8 @@ namespace util
 
         virtual std::vector<std::vector<std::string>> get_records(std::vector<TableCondition>);
 
+        virtual std::vector<std::vector<std::string>> get_records_or_conditions(std::vector<TableCondition>);
+
         std::vector<std::vector<std::string>> get_records();
 
         virtual std::vector<std::string> insert_row(std::vector<std::string> &values);

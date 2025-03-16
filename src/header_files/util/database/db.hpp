@@ -1,6 +1,7 @@
 #include <string>
 #include <vector>
 #include <iostream>
+#include <cstring>
 #include "libpq-fe.h"
 #include ".env/private.hpp"
 
@@ -19,6 +20,8 @@ namespace util
     public:
         static DB *get_instance();
         std::vector<std::vector<std::string>> execute_query(std::string query);
+
+        std::vector<std::vector<std::string>> execute_query_parameterized(std::string query, std::vector<std::string>& values);
     };
 };
 #endif

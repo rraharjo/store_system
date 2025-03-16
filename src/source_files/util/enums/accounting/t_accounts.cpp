@@ -28,6 +28,32 @@ std::map<TAccounts, std::string> util::enums::t_accounts_name_map = {
     {TAccounts::RETAINEDEARNINGS, "Retained Earnings"},
     {TAccounts::END, "HOLD"}};
 
+std::map<std::string, TAccounts> util::enums::t_accounts_name_map_inversed = {
+    // assets
+    {"Cash", TAccounts::CASH},
+    {"Equipment", TAccounts::EQUIPMENT},
+    {"Accounts Receivable", TAccounts::ACCTRCV},
+    {"Notes Receivable", TAccounts::NOTERCV},
+    {"Land", TAccounts::LAND},
+    {"Accumulated Depreciation", TAccounts::ACCUMDEPRECIATION},
+    {"Inventory", TAccounts::INVENTORY},
+    // liabilities
+    {"Accounts Payable", TAccounts::ACCPAYABLE},
+    {"Notes Payable", TAccounts::NOTEPAYABLE},
+    {"Unearned Revenue", TAccounts::UNEARNEDREV},
+    // stockholders equity
+    {"Common Stock", TAccounts::COMMONSTOCK},
+    {"Additional Paid-in Capital", TAccounts::ADDTLCPT},
+    {"Owners Equity", TAccounts::OWNEREQ},
+    {"Dividends", TAccounts::DIVIDEND},
+    {"Revenue", TAccounts::REV},
+    {"Expense", TAccounts::EXPENSE},
+    {"Cost of Goods Sold", TAccounts::COGS},
+    {"Depreciation Expense", TAccounts::DEPREXP},
+    {"Wages Expense", TAccounts::WAGEEXP},
+    {"Retained Earnings", TAccounts::RETAINEDEARNINGS},
+    {"HOLD", TAccounts::END}};
+
 std::map<TAccounts, AccountTitles> util::enums::t_accounts_acc_title_map = {
     {TAccounts::CASH, AccountTitles::ASSETS},
     {TAccounts::EQUIPMENT, AccountTitles::ASSETS},

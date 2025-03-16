@@ -82,6 +82,46 @@ std::string generate_single_condition(util::TableCondition &condition)
     return result;
 }
 
+std::string generate_single_condition_parameterized(util::TableCondition &condition, int parameter_pos)
+{
+    util::TableComparator comp = condition.comparator;
+    util::enums::ColumnTypes type = condition.col.type;
+    std::string result = condition.col.column_name;
+
+    switch (comp)
+    {
+    case TableComparator::LESSTHAN:
+        result += " < ";
+        break;
+    case TableComparator::LESSTHANEQUAL:
+        result += " <= ";
+        break;
+    case TableComparator::EQUAL:
+        result += " = ";
+        break;
+    case TableComparator::MORETHANEQUAL:
+        result += " >= ";
+        break;
+    case TableComparator::MORETHAN:
+        result += " > ";
+        break;
+    case TableComparator::LIKE:
+        result += " like ";
+        break;
+    case TableComparator::IS:
+        result += " is ";
+        break;
+    case TableComparator::ISNOT:
+        result += " is not ";
+        break;
+    default:
+        break;
+    }
+    result += "$" + std::to_string(parameter_pos + 1);
+    // result += " ";
+    return result;
+}
+
 std::string generate_conditions(std::vector<util::TableCondition> &conditions)
 {
     std::string query = "";
@@ -91,6 +131,18 @@ std::string generate_conditions(std::vector<util::TableCondition> &conditions)
         query += " and ";
     }
     query += generate_single_condition(conditions[conditions.size() - 1]);
+    return query;
+}
+
+std::string generate_or_conditions(std::vector<util::TableCondition> &conditions)
+{
+    std::string query = "";
+    for (int i = 0; i < conditions.size() - 1; i++)
+    {
+        query += generate_single_condition_parameterized(conditions[i], i);
+        query += " or ";
+    }
+    query += generate_single_condition_parameterized(conditions[conditions.size() - 1], conditions.size() - 1);
     return query;
 }
 
@@ -161,6 +213,28 @@ std::vector<std::vector<std::string>> Table::get_records(std::vector<TableCondit
     query += ";";
     DB *instance = DB::get_instance();
     return instance->execute_query(query);
+}
+
+std::vector<std::vector<std::string>> Table::get_records_or_conditions(std::vector<TableCondition> conditions){
+    size_t size = conditions.size();
+    std::vector<std::string> col_names;
+    if (size == 0)
+    {
+        return this->get_records();
+    }
+    for (ColumnSchema schema : this->get_schema())
+    {
+        col_names.push_back(schema.column_name);
+    }
+    std::string query = "select " + generate_column_name(col_names) + " from " + this->table_name + " where ";
+    query += generate_or_conditions(conditions);
+    query += ";";
+    std::vector<std::string> parameter;
+    for (TableCondition condition : conditions){
+        parameter.push_back(condition.value);
+    }
+    DB *instance = DB::get_instance();
+    return instance->execute_query_parameterized(query, parameter);
 }
 
 std::vector<std::vector<std::string>> Table::get_records()
