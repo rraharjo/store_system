@@ -53,26 +53,27 @@ std::vector<std::vector<std::string>> DB::execute_query_parameterized(std::strin
 {
     const int num_of_params = values.size();
     char **param_values;
-    int *param_len, *param_format;
-    param_len = new int[num_of_params];
-    param_format = new int[num_of_params];
     param_values = new char *[num_of_params];
-    memset(param_format, 0, num_of_params);
     for (int i = 0; i < num_of_params; i++)
     {
         param_values[i] = new char[values[i].length() + 1];
         memcpy(param_values[i], values[i].c_str(), values[i].length() + 1);
-        param_len[i] = values[i].length();
+        param_values[i][values[i].length()] = '\0';
     }
-    PGresult *res = PQexecParams(this->connection, query.c_str(), num_of_params, NULL, param_values, param_len, param_format, 0);
+    PGresult *res = PQexecParams(this->connection,
+                                 query.c_str(),
+                                 num_of_params,
+                                 NULL,
+                                 param_values,
+                                 NULL,
+                                 NULL,
+                                 0);
     for (int i = 0; i < num_of_params; i++)
     {
         delete[] param_values[i];
     }
     delete[] param_values;
-    delete[] param_format;
-    delete[] param_len;
-    std::vector<std::vector<std::string>> to_ret;
+    std::vector<std::vector<std::string>> to_ret; // error
     if (PQresultStatus(res) != PGRES_TUPLES_OK)
     {
         throw std::runtime_error(PQerrorMessage(this->connection));

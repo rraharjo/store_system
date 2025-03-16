@@ -75,7 +75,7 @@ void AccountingSystem::add_transaction(Transaction *transaction)
     }
 }
 
-void AccountingSystem::end_year_adjustment() // TO DO: adjust the closing the book entries for all temporary t-accounts
+void AccountingSystem::end_year_adjustment()
 {
     util::Date *now = new util::Date();
     std::string transaction_title = "Closing the book";
