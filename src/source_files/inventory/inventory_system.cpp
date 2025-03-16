@@ -70,8 +70,10 @@ std::vector<Asset *> InventorySystem::get_assets()
 
 double InventorySystem::sell_sellables(Entry *new_entry)
 {
-    Inventory *inventory = (Inventory *)this->inventories->get_from_database(new_entry->get_db_code());
-    return inventory->sell_items((SellingEntry *)new_entry);
+    Inventory *inventory = (Inventory *)this->inventories->get_from_database(new_entry->get_sellable_db_code());
+    double to_ret =  inventory->sell_items((SellingEntry *)new_entry);
+    this->inventories->update_existing_item(inventory);
+    return to_ret;
 }
 
 void InventorySystem::purchase_sellables(Entry *new_entry)

@@ -22,7 +22,8 @@ namespace util
                 std::to_string(new_entry->get_price()),
                 std::to_string(new_entry->get_qty()),
             };
-            this->table->insert_row(parameter);
+            std::vector<std::string> result = this->table->insert_row(parameter);
+            Collection::set_db_code(new_item, result[0]);
         }
 
         HasTable *SellingEntriesCollection::get_from_database(std::string db_code)
@@ -66,15 +67,15 @@ namespace util
         {
             inventory::SellingEntry *existing_entry = (inventory::SellingEntry *)existing_item;
             std::string inv_db_code, asset_db_code;
-            if (existing_entry->get_properties_db_code().rfind(util::enums::primary_key_prefix_map[util::enums::PrimaryKeyPrefix::INVENTORY]) == 0)
+            inv_db_code = existing_entry->get_sellable_db_code();
+            asset_db_code = existing_entry->get_properties_db_code();
+            if (inv_db_code == "")
             {
-                inv_db_code = existing_entry->get_properties_db_code();
-                asset_db_code = "";
+                inv_db_code = "NULL";
             }
-            else
+            if (asset_db_code == "")
             {
-                inv_db_code = "";
-                asset_db_code = existing_entry->get_properties_db_code();
+                asset_db_code = "NULL";
             }
             std::vector<std::string> values = {
                 inv_db_code,

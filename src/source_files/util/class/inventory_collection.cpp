@@ -30,7 +30,7 @@ namespace util
             Collection::validate_update(existing_item);
             inventory::Inventory *existing_inventory = (inventory::Inventory *)existing_item;
             std::vector<std::string> parameter = {
-                existing_inventory->get_db_code(),
+                //existing_inventory->get_db_code(),
                 existing_inventory->get_item_code(),
                 existing_inventory->get_name(),
                 std::to_string(existing_inventory->get_selling_price()),
@@ -68,7 +68,7 @@ namespace util
             inventory::Inventory *inventory_from_db = new inventory::Inventory(record[0], record[1], record[2], std::stod(record[3]));
             conditions.clear();
             util::TableCondition equal_inventory_code;
-            equal_inventory_code.col = util::enums::purchase_entry_table_columns[util::enums::PurchaseEntryTable::ASSETSCODE];
+            equal_inventory_code.col = util::enums::purchase_entry_table_columns[util::enums::PurchaseEntryTable::INVENTORYDBCODE];
             equal_inventory_code.comparator = util::TableComparator::EQUAL;
             equal_inventory_code.value = inventory_from_db->get_db_code();
             conditions.push_back(equal_inventory_code);

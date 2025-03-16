@@ -31,15 +31,13 @@ namespace util
             Collection::validate_update(existing_item);
             inventory::PurchaseEntry *existing_entry = (inventory::PurchaseEntry *)existing_item;
             std::string inv_db_code, asset_db_code;
-            if (existing_entry->get_properties_db_code().rfind(util::enums::primary_key_prefix_map[util::enums::PrimaryKeyPrefix::INVENTORY]) == 0)
-            {
-                inv_db_code = existing_entry->get_properties_db_code();
-                asset_db_code = "NULL";
-            }
-            else
-            {
+            inv_db_code = existing_entry->get_sellable_db_code();
+            asset_db_code = existing_entry->get_properties_db_code();
+            if (inv_db_code == ""){
                 inv_db_code = "NULL";
-                asset_db_code = existing_entry->get_properties_db_code();
+            }
+            if (asset_db_code == ""){
+                asset_db_code = "NULL";
             }
             std::vector<std::string> values = {
                 inv_db_code,
