@@ -24,9 +24,9 @@ namespace util
             };
             std::vector<std::string> result = this->table->insert_row(parameter);
             Collection::set_db_code(new_transaction, result[0]);
-            for (inventory::Entry *entry : new_transaction->get_all_entries())
+            for (std::shared_ptr<inventory::Entry> entry : new_transaction->get_all_entries())
             {
-                inventory::SellingEntry *new_entry = (inventory::SellingEntry *)entry;
+                inventory::SellingEntry *new_entry = (inventory::SellingEntry *)entry.get();
                 new_entry->set_transaction_db_code(new_transaction->get_db_code());
                 this->selling_entries->insert_new_item(new_entry);
             }
@@ -43,9 +43,9 @@ namespace util
                 existing_transaction->is_finished ? "true" : "false",
             };
             this->table->update_row(existing_transaction->get_db_code(), parameter);
-            for (inventory::Entry *existing_entry : existing_transaction->get_all_entries())
+            for (std::shared_ptr<inventory::Entry> existing_entry : existing_transaction->get_all_entries())
             {
-                this->selling_entries->update_existing_item((inventory::SellingEntry *)existing_entry);
+                this->selling_entries->update_existing_item((inventory::SellingEntry *)existing_entry.get());
             }
         }
 

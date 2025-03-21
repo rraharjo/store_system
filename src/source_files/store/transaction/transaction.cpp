@@ -9,7 +9,7 @@ Transaction::Transaction(util::enums::PrimaryKeyPrefix primary_key_prefix,
     : util::baseclass::HasTable(primary_key_prefix)
 {
     this->set_db_code(db_code);
-    this->transaction_date = transaction_date;
+    this->transaction_date.reset(transaction_date);
     this->paid_cash = paid_cash;
     this->paid_credit = paid_credit;
     this->is_finished = this->paid_credit == 0.0 ? true : false;
@@ -20,6 +20,8 @@ Transaction::Transaction(util::enums::PrimaryKeyPrefix primary_key_prefix, util:
     : Transaction::Transaction(primary_key_prefix, "", transaction_date, 0, 0)
 {
 }
+
+Transaction::~Transaction() {}
 
 double Transaction::get_paid_cash()
 {
@@ -34,21 +36,23 @@ double Transaction::get_paid_credit()
 double Transaction::get_transaction_amount()
 {
     double to_ret = 0.0;
-    for (inventory::Entry *entry : this->entries)
+    for (std::shared_ptr<inventory::Entry> entry : this->entries)
     {
-        to_ret += entry->get_price() * entry->get_qty();
+        to_ret += entry.get()->get_price() * entry.get()->get_qty();
     }
     return to_ret;
 }
 
 util::Date *Transaction::get_date()
 {
-    return this->transaction_date;
+    return this->transaction_date.get();
 }
 
 void Transaction::add_entry(inventory::Entry *entry)
 {
-    this->entries.push_back(entry);
+    std::shared_ptr<inventory::Entry> to_add;
+    to_add.reset(entry);
+    this->entries.push_back(to_add);
 }
 
 void Transaction::set_paid_cash(double amount)
@@ -63,7 +67,7 @@ void Transaction::set_paid_credit(double amount)
     this->is_finished = this->paid_credit == 0 ? true : false;
 }
 
-std::vector<inventory::Entry *> Transaction::get_all_entries()
+std::vector<std::shared_ptr<inventory::Entry>> Transaction::get_all_entries()
 {
     return this->entries;
 }

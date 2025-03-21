@@ -28,17 +28,15 @@ namespace util
             };
             std::vector<std::string> result = this->table->insert_row(parameter);
             Collection::set_db_code(new_equipment, result[0]);
-            for (inventory::PurchaseEntry *new_entry : new_equipment->get_purchase_entries())
+            for (std::shared_ptr<inventory::PurchaseEntry> new_entry : new_equipment->get_purchase_entries())
             {
-                this->purchase_history_collection->set_item_db_code(new_entry, new_equipment->get_db_code());
-                // this->purchase_history_collection->insert_new_item(new_entry);
-                this->purchase_history_collection->update_existing_item(new_entry);
+                this->purchase_history_collection->set_item_db_code(new_entry.get(), new_equipment->get_db_code());
+                this->purchase_history_collection->update_existing_item(new_entry.get());
             }
-            for (inventory::SellingEntry *new_entry : new_equipment->get_selling_entries())
+            for (std::shared_ptr<inventory::SellingEntry> new_entry : new_equipment->get_selling_entries())
             {
-                this->selling_history_collection->set_item_db_code(new_entry, new_equipment->get_db_code());
-                // this->selling_history_collection->insert_new_item(new_entry);
-                this->purchase_history_collection->update_existing_item(new_entry);
+                this->selling_history_collection->set_item_db_code(new_entry.get(), new_equipment->get_db_code());
+                this->purchase_history_collection->update_existing_item(new_entry.get());
             }
         }
 
@@ -56,22 +54,22 @@ namespace util
                 existing_equipment->get_expiry_date() ? existing_equipment->get_expiry_date()->to_db_format() : "NULL",
             };
             this->table->update_row(existing_equipment->get_db_code(), parameter);
-            for (inventory::PurchaseEntry *entry : existing_equipment->get_purchase_entries())
+            for (std::shared_ptr<inventory::PurchaseEntry> entry : existing_equipment->get_purchase_entries())
             {
                 if (entry->get_db_code() == ""){
-                    this->purchase_history_collection->insert_new_item(entry);//double insert
+                    this->purchase_history_collection->insert_new_item(entry.get());
                 }
                 else{
-                    this->purchase_history_collection->update_existing_item(entry);
+                    this->purchase_history_collection->update_existing_item(entry.get());
                 }
             }
-            for (inventory::SellingEntry *entry : existing_equipment->get_selling_entries())
+            for (std::shared_ptr<inventory::SellingEntry> entry : existing_equipment->get_selling_entries())
             {
                 if (entry->get_db_code() == ""){
-                    this->selling_history_collection->insert_new_item(entry);
+                    this->selling_history_collection->insert_new_item(entry.get());
                 }
                 else{
-                    this->selling_history_collection->update_existing_item(entry);
+                    this->selling_history_collection->update_existing_item(entry.get());
                 }
             }
         }

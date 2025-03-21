@@ -8,7 +8,7 @@ Transaction::Transaction(std::string db_code, std::string name, util::Date *tran
     this->name = name;
     this->debit_entries = {};
     this->credit_entries = {};
-    this->transaction_date = transaction_date;
+    this->transaction_date.reset(transaction_date);
     this->entity_id = pid;
 }
 
@@ -18,7 +18,7 @@ Transaction::Transaction(std::string name, util::Date *transaction_date, std::st
     this->name = name;
     this->debit_entries = {};
     this->credit_entries = {};
-    this->transaction_date = transaction_date;
+    this->transaction_date.reset(transaction_date);
     this->entity_id = pid;
 }
 
@@ -38,51 +38,49 @@ Transaction::Transaction(std::string name) : Transaction::Transaction(name, new 
 
 Transaction::~Transaction()
 {
-    for (Entry *e : this->credit_entries)
-    {
-        if (e->get_db_code() != "")
-        {
-            delete e;
-        }
-    }
-
-    for (Entry *e : this->debit_entries)
-    {
-        if (e->get_db_code() != "")
-        {
-            delete e;
-        }
-    }
 }
 
-std::string Transaction::get_name(){
+std::string Transaction::get_name()
+{
     return this->name;
 }
 
-std::string Transaction::get_entity_id(){
+std::string Transaction::get_entity_id()
+{
     return this->entity_id;
 }
 
-util::Date* Transaction::get_transaction_date(){
-    return this->transaction_date;
+util::Date *Transaction::get_transaction_date()
+{
+    return this->transaction_date.get();
 }
 
-std::vector<Entry *> &Transaction::get_debit_entries()
+std::vector<Entry *> Transaction::get_debit_entries()
 {
-    return this->debit_entries;
+    std::vector<Entry *> to_ret;
+    for (std::shared_ptr<Entry> shared : this->debit_entries)
+    {
+        to_ret.push_back(shared.get());
+    }
+    return to_ret;
 }
 
-std::vector<Entry *> &Transaction::get_credit_entries()
+std::vector<Entry *> Transaction::get_credit_entries()
 {
-    return this->credit_entries;
+    std::vector<Entry *> to_ret;
+    for (std::shared_ptr<Entry> shared : this->credit_entries)
+    {
+        to_ret.push_back(shared.get());
+    }
+    return to_ret;
 }
 
 double Transaction::get_debit_amount()
 {
     double total = 0;
-    for (Entry *entry : this->debit_entries)
+    for (std::shared_ptr<Entry> entry : this->debit_entries)
     {
-        total += (*entry).get_amount();
+        total += entry.get()->get_amount();
     }
     return total;
 }
@@ -90,9 +88,9 @@ double Transaction::get_debit_amount()
 double Transaction::get_credit_amount()
 {
     double total = 0;
-    for (Entry *entry : this->credit_entries)
+    for (std::shared_ptr<Entry> entry : this->credit_entries)
     {
-        total += (*entry).get_amount();
+        total += entry.get()->get_amount();
     }
     return total;
 }
@@ -101,11 +99,15 @@ void Transaction::add_entry(Entry *entry)
 {
     if (entry->is_debit())
     {
-        this->debit_entries.push_back(entry);
+        std::shared_ptr<Entry> to_add;
+        to_add.reset(entry);
+        this->debit_entries.push_back(to_add);
     }
     else
     {
-        this->credit_entries.push_back(entry);
+        std::shared_ptr<Entry> to_add;
+        to_add.reset(entry);
+        this->credit_entries.push_back(to_add);
     }
     entry->set_transaction_db(this->get_db_code());
     entry->set_transaction_title(this->name);
@@ -116,18 +118,21 @@ bool Transaction::is_balanced()
     return this->get_debit_amount() == this->get_credit_amount();
 }
 
-std::string Transaction::to_string(){
+std::string Transaction::to_string()
+{
     std::string to_ret = "";
     to_ret += "database code: " + this->get_db_code() + "\n";
     to_ret += "name: " + this->name + "\n";
     to_ret += "date: " + this->transaction_date->to_string() + "\n";
     to_ret += "related entity: " + this->entity_id + "\n";
     to_ret += "=========Entries=========\n";
-    for (Entry *entry : this->debit_entries){
-        to_ret += entry->to_string();
+    for (std::shared_ptr<Entry> entry : this->debit_entries)
+    {
+        to_ret += entry.get()->to_string();
     }
-    for (Entry *entry : this->credit_entries){
-        to_ret += entry->to_string();
+    for (std::shared_ptr<Entry> entry : this->credit_entries)
+    {
+        to_ret += entry.get()->to_string();
     }
     return to_ret;
 }

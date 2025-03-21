@@ -36,13 +36,13 @@ namespace util
                 std::to_string(existing_inventory->get_selling_price()),
             };
             this->table->update_row(existing_inventory->get_db_code(), parameter);
-            for (inventory::PurchaseEntry *existing_entry : existing_inventory->get_purchase_entries())
+            for (std::shared_ptr<inventory::PurchaseEntry> existing_entry : existing_inventory->get_purchase_entries())
             {
-                this->purchase_history_collection->update_existing_item(existing_entry);
+                this->purchase_history_collection->update_existing_item(existing_entry.get());
             }
-            for (inventory::SellingEntry *existing_entry : existing_inventory->get_selling_entries())
+            for (std::shared_ptr<inventory::SellingEntry> existing_entry : existing_inventory->get_selling_entries())
             {
-                this->selling_history_collection->update_existing_item(existing_entry);
+                this->selling_history_collection->update_existing_item(existing_entry.get());
             }
         }
 

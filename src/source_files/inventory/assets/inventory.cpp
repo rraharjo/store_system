@@ -21,7 +21,7 @@ void Inventory::add_existing_purchase_entry(PurchaseEntry *entry)
     this->qty += entry->get_available_qty();
 }
 
-double Inventory::sell_items(SellingEntry *entry)
+double Inventory::sell_items(std::shared_ptr<SellingEntry> entry)
 {
     if (this->qty < entry->get_qty())
     {
@@ -33,7 +33,7 @@ double Inventory::sell_items(SellingEntry *entry)
     return this->purchase_history->sell_item_first_in(entry->get_qty());
 }
 
-void Inventory::add_purchase(PurchaseEntry *entry)
+void Inventory::add_purchase(std::shared_ptr<PurchaseEntry> entry)
 {
     this->purchase_history->add_entry(entry);
     this->qty += entry->get_available_qty();
@@ -47,7 +47,6 @@ double Inventory::get_selling_price()
 void Inventory::set_selling_price(double new_price)
 {
     this->selling_price = new_price;
-    //this->update_to_db();
 }
 
 std::string Inventory::to_string()

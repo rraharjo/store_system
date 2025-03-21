@@ -12,9 +12,9 @@ namespace inventory
         double value = 0;
         double residual_value;
         int year_useful_life;
-        util::Date *expiry_date;
-        util::Date *last_depreciation_date;
-        util::Date *date_bought;
+        std::unique_ptr<util::Date> expiry_date;
+        std::unique_ptr<util::Date> last_depreciation_date;
+        std::unique_ptr<util::Date> date_bought;
 
         void add_existing_purchase_entry(PurchaseEntry *entry) override;
 
@@ -25,9 +25,11 @@ namespace inventory
         Asset(util::enums::PrimaryKeyPrefix primary_key_prefix, std::string name, std::string item_code, double residual_value, int year_useful_life, util::Date *date_bought);
 
     public:
-        void add_purchase(PurchaseEntry *entry) override;
+        ~Asset();
 
-        double sell_items(SellingEntry *entry) override;
+        void add_purchase(std::shared_ptr<PurchaseEntry> entry) override;
+
+        double sell_items(std::shared_ptr<SellingEntry> entry) override;
 
         virtual double get_reduced_value_at_year(int year) = 0;
 

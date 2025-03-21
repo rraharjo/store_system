@@ -11,7 +11,7 @@ namespace accounting
     class AccountingSystem
     {
     private:
-        static AccountingSystem *instance;
+        static std::unique_ptr<AccountingSystem> instance;
 
         std::unique_ptr<util::baseclass::AccountingTransactionCollection> transactions;
         std::unique_ptr<util::baseclass::TAccountCollection> t_accounts;
@@ -23,9 +23,6 @@ namespace accounting
         void add_existing_transaction(Transaction *transaction);
 
     public:
-        // Assets *assets;
-        // Liabilities *liabilities;
-        // StockholdersEquityAccount *stockholders_equity;
         static AccountingSystem *get_instance();
 
         ~AccountingSystem();

@@ -1,16 +1,35 @@
 #include "inventory/assets/equipment.hpp"
 using namespace inventory;
 
-Equipment::Equipment(std::string db_code, std::string name, std::string item_code,
-                     double total_value, double residual_value, int year_useful_life,
-                     util::Date *date_bought, util::Date *last_depreciation_date, util::Date *date_sold)
-    : Asset(util::enums::PrimaryKeyPrefix::EQUIPMENT, db_code, name, item_code, total_value, residual_value, year_useful_life, date_bought, last_depreciation_date, date_sold)
+Equipment::Equipment(std::string db_code,
+                     std::string name,
+                     std::string item_code,
+                     double total_value,
+                     double residual_value,
+                     int year_useful_life,
+                     util::Date *date_bought,
+                     util::Date *last_depreciation_date,
+                     util::Date *date_sold)
+    : Asset(util::enums::PrimaryKeyPrefix::EQUIPMENT,
+            db_code,
+            name,
+            item_code,
+            total_value,
+            residual_value,
+            year_useful_life,
+            date_bought,
+            last_depreciation_date,
+            date_sold)
 {
-    this->depreciation_method = new util::DoubleDecliningDepreciation(this->get_total_value(), this->get_year_useful_life());
+    this->depreciation_method.reset(new util::DoubleDecliningDepreciation(this->get_total_value(), this->get_year_useful_life()));
 }
 
 Equipment::Equipment(std::string name, std::string item_code, double residual_value, int year_useful_life, util::Date *date_bought)
     : Equipment("", name, item_code, 0, residual_value, year_useful_life, date_bought, date_bought, NULL)
+{
+}
+
+Equipment::~Equipment()
 {
 }
 

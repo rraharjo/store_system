@@ -1,6 +1,7 @@
 #include <iostream>
 #include <algorithm>
 #include <vector>
+#include <memory>
 #include "accounting/accounting_transaction/entry.hpp"
 #include "util/date.hpp"
 #include "util/class/base_class.hpp"
@@ -13,10 +14,10 @@ namespace accounting
     class Transaction : public util::baseclass::HasTable
     {
     private:
-        std::vector<Entry *> debit_entries;
-        std::vector<Entry *> credit_entries;
+        std::vector<std::shared_ptr<Entry>> debit_entries;
+        std::vector<std::shared_ptr<Entry>> credit_entries;
         std::string name;
-        util::Date *transaction_date;
+        std::unique_ptr<util::Date> transaction_date;
         std::string entity_id;
 
     public:
@@ -38,9 +39,9 @@ namespace accounting
 
         util::Date* get_transaction_date();
 
-        std::vector<Entry *> &get_debit_entries();
+        std::vector<Entry *> get_debit_entries();
 
-        std::vector<Entry *> &get_credit_entries();
+        std::vector<Entry *> get_credit_entries();
 
         double get_debit_amount();
 

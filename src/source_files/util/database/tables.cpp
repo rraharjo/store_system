@@ -146,15 +146,15 @@ std::string generate_or_conditions(std::vector<util::TableCondition> &conditions
     return query;
 }
 
-InventoryTable *InventoryTable::instance = NULL;
-PurchaseTransactionTable *PurchaseTransactionTable::instance = NULL;
-PurchaseEntryTable *PurchaseEntryTable::instance = NULL;
-SellingEntryTable *SellingEntryTable::instance = NULL;
-SellingTransactionTable *SellingTransactionTable::instance = NULL;
-AccountingTransactionTable *AccountingTransactionTable::instance = NULL;
-AccountingEntryTable *AccountingEntryTable::instance = NULL;
-AssetsTable *AssetsTable::instance = NULL;
-TAccountTable *TAccountTable::instance = NULL;
+std::unique_ptr<InventoryTable> InventoryTable::instance = NULL;
+std::unique_ptr<PurchaseTransactionTable> PurchaseTransactionTable::instance = NULL;
+std::unique_ptr<PurchaseEntryTable> PurchaseEntryTable::instance = NULL;
+std::unique_ptr<SellingEntryTable> SellingEntryTable::instance = NULL;
+std::unique_ptr<SellingTransactionTable> SellingTransactionTable::instance = NULL;
+std::unique_ptr<AccountingTransactionTable> AccountingTransactionTable::instance = NULL;
+std::unique_ptr<AccountingEntryTable> AccountingEntryTable::instance = NULL;
+std::unique_ptr<AssetsTable> AssetsTable::instance = NULL;
+std::unique_ptr<TAccountTable> TAccountTable::instance = NULL;
 
 // parent class
 Table::Table(std::string table_name, std::string sequence_name)
@@ -215,7 +215,8 @@ std::vector<std::vector<std::string>> Table::get_records(std::vector<TableCondit
     return instance->execute_query(query);
 }
 
-std::vector<std::vector<std::string>> Table::get_records_or_conditions(std::vector<TableCondition> conditions){
+std::vector<std::vector<std::string>> Table::get_records_or_conditions(std::vector<TableCondition> conditions)
+{
     size_t size = conditions.size();
     std::vector<std::string> col_names;
     if (size == 0)
@@ -230,7 +231,8 @@ std::vector<std::vector<std::string>> Table::get_records_or_conditions(std::vect
     query += generate_or_conditions(conditions);
     query += ";";
     std::vector<std::string> parameter;
-    for (TableCondition condition : conditions){
+    for (TableCondition condition : conditions)
+    {
         parameter.push_back(condition.value);
     }
     DB *instance = DB::get_instance();
@@ -417,12 +419,13 @@ InventoryTable::~InventoryTable()
 
 InventoryTable *InventoryTable::get_instance()
 {
-    if (InventoryTable::instance == NULL)
+    if (InventoryTable::instance.get() == NULL)
     {
-        InventoryTable::instance = new InventoryTable(util::enums::table_names_map[util::enums::TableNames::INVENTORY],
-                                                      util::enums::sequence_names_map[util::enums::SequenceNames::INVENTORY]);
+        InventoryTable::instance.reset(
+            new InventoryTable(util::enums::table_names_map[util::enums::TableNames::INVENTORY],
+                               util::enums::sequence_names_map[util::enums::SequenceNames::INVENTORY]));
     }
-    return InventoryTable::instance;
+    return InventoryTable::instance.get();
 }
 
 // purchase transaction table
@@ -437,18 +440,17 @@ PurchaseTransactionTable::PurchaseTransactionTable(std::string table_name, std::
 
 PurchaseTransactionTable::~PurchaseTransactionTable()
 {
-    PurchaseTransactionTable::instance = NULL;
 }
 
 PurchaseTransactionTable *PurchaseTransactionTable::get_instance()
 {
-    if (PurchaseTransactionTable::instance == NULL)
+    if (PurchaseTransactionTable::instance.get() == NULL)
     {
-        PurchaseTransactionTable::instance =
+        PurchaseTransactionTable::instance.reset(
             new PurchaseTransactionTable(util::enums::table_names_map[util::enums::TableNames::PURCHASETRANSACTION],
-                                         util::enums::sequence_names_map[util::enums::SequenceNames::PURCHASETRANSACTION]);
+                                         util::enums::sequence_names_map[util::enums::SequenceNames::PURCHASETRANSACTION]));
     }
-    return PurchaseTransactionTable::instance;
+    return PurchaseTransactionTable::instance.get();
 }
 
 // purchase entry table
@@ -486,18 +488,17 @@ PurchaseEntryTable::PurchaseEntryTable(std::string table_name, std::string seque
 
 PurchaseEntryTable::~PurchaseEntryTable()
 {
-    PurchaseEntryTable::instance = NULL;
 }
 
 PurchaseEntryTable *PurchaseEntryTable::get_instance()
 {
-    if (PurchaseEntryTable::instance == NULL)
+    if (PurchaseEntryTable::instance.get() == NULL)
     {
-        PurchaseEntryTable::instance =
+        PurchaseEntryTable::instance.reset(
             new PurchaseEntryTable(util::enums::table_names_map[util::enums::TableNames::PURCHASEENTRY],
-                                   util::enums::sequence_names_map[util::enums::SequenceNames::PURCHASEENTRY]);
+                                   util::enums::sequence_names_map[util::enums::SequenceNames::PURCHASEENTRY]));
     }
-    return PurchaseEntryTable::instance;
+    return PurchaseEntryTable::instance.get();
 }
 
 // selling entry table
@@ -512,18 +513,17 @@ SellingEntryTable::SellingEntryTable(std::string table_name, std::string sequenc
 
 SellingEntryTable::~SellingEntryTable()
 {
-    SellingEntryTable::instance = NULL;
 }
 
 SellingEntryTable *SellingEntryTable::get_instance()
 {
-    if (SellingEntryTable::instance == NULL)
+    if (SellingEntryTable::instance.get() == NULL)
     {
-        SellingEntryTable::instance =
+        SellingEntryTable::instance.reset(
             new SellingEntryTable(util::enums::table_names_map[util::enums::TableNames::SELLINGENTRY],
-                                  util::enums::sequence_names_map[util::enums::SequenceNames::SELLINGENTRY]);
+                                  util::enums::sequence_names_map[util::enums::SequenceNames::SELLINGENTRY]));
     }
-    return SellingEntryTable::instance;
+    return SellingEntryTable::instance.get();
 }
 
 // selling transaction table
@@ -538,18 +538,17 @@ SellingTransactionTable::SellingTransactionTable(std::string table_name, std::st
 
 SellingTransactionTable::~SellingTransactionTable()
 {
-    SellingTransactionTable::instance = NULL;
 }
 
 SellingTransactionTable *SellingTransactionTable::get_instance()
 {
-    if (SellingTransactionTable::instance == NULL)
+    if (SellingTransactionTable::instance.get() == NULL)
     {
-        SellingTransactionTable::instance =
+        SellingTransactionTable::instance.reset(
             new SellingTransactionTable(util::enums::table_names_map[util::enums::TableNames::SELLINGTRANSACTION],
-                                        util::enums::sequence_names_map[util::enums::SequenceNames::SELLINGTRANSACTION]);
+                                        util::enums::sequence_names_map[util::enums::SequenceNames::SELLINGTRANSACTION]));
     }
-    return SellingTransactionTable::instance;
+    return SellingTransactionTable::instance.get();
 }
 
 // Equipment Table
@@ -563,17 +562,17 @@ AssetsTable::AssetsTable(std::string table_name, std::string sequence_name) : Ta
 
 AssetsTable::~AssetsTable()
 {
-    AssetsTable::instance = NULL;
 }
 
 AssetsTable *AssetsTable::get_instance()
 {
-    if (AssetsTable::instance == NULL)
+    if (AssetsTable::instance.get() == NULL)
     {
-        AssetsTable::instance = new AssetsTable(util::enums::table_names_map[util::enums::TableNames::ASSETS],
-                                                util::enums::sequence_names_map[util::enums::SequenceNames::ASSETS]);
+        AssetsTable::instance.reset(
+            new AssetsTable(util::enums::table_names_map[util::enums::TableNames::ASSETS],
+                            util::enums::sequence_names_map[util::enums::SequenceNames::ASSETS]));
     }
-    return AssetsTable::instance;
+    return AssetsTable::instance.get();
 }
 
 // accounting transaction table
@@ -589,18 +588,17 @@ AccountingTransactionTable::AccountingTransactionTable(std::string table_name, s
 
 AccountingTransactionTable::~AccountingTransactionTable()
 {
-    AccountingTransactionTable::instance = NULL;
 }
 
 AccountingTransactionTable *AccountingTransactionTable::get_instance()
 {
-    if (AccountingTransactionTable::instance == NULL)
+    if (AccountingTransactionTable::instance.get() == NULL)
     {
-        AccountingTransactionTable::instance =
+        AccountingTransactionTable::instance.reset(
             new AccountingTransactionTable(util::enums::table_names_map[util::enums::TableNames::ACCOUNTINGTRANSACTION],
-                                           util::enums::sequence_names_map[util::enums::SequenceNames::ACCOUNTINGTRANSACTION]);
+                                           util::enums::sequence_names_map[util::enums::SequenceNames::ACCOUNTINGTRANSACTION]));
     }
-    return AccountingTransactionTable::instance;
+    return AccountingTransactionTable::instance.get();
 }
 
 // accounting entry table
@@ -616,18 +614,17 @@ AccountingEntryTable::AccountingEntryTable(std::string table_name, std::string s
 
 AccountingEntryTable::~AccountingEntryTable()
 {
-    AccountingEntryTable::instance = NULL;
 }
 
 AccountingEntryTable *AccountingEntryTable::get_instance()
 {
-    if (AccountingEntryTable::instance == NULL)
+    if (AccountingEntryTable::instance.get() == NULL)
     {
-        AccountingEntryTable::instance =
+        AccountingEntryTable::instance.reset(
             new AccountingEntryTable(util::enums::table_names_map[util::enums::TableNames::ACCOUNTINGENTRY],
-                                     util::enums::sequence_names_map[util::enums::SequenceNames::ACCOUNTINGENTRY]);
+                                     util::enums::sequence_names_map[util::enums::SequenceNames::ACCOUNTINGENTRY]));
     }
-    return AccountingEntryTable::instance;
+    return AccountingEntryTable::instance.get();
 }
 
 // TAccount table
@@ -716,14 +713,13 @@ TAccountTable::TAccountTable(std::string table_name)
 
 TAccountTable::~TAccountTable()
 {
-    TAccountTable::instance = NULL;
 }
 
 TAccountTable *TAccountTable::get_instance()
 {
-    if (TAccountTable::instance == NULL)
+    if (TAccountTable::instance.get() == NULL)
     {
-        TAccountTable::instance = new TAccountTable(util::enums::table_names_map[util::enums::TableNames::TACCOUNTS]);
+        TAccountTable::instance.reset(new TAccountTable(util::enums::table_names_map[util::enums::TableNames::TACCOUNTS]));
     }
-    return TAccountTable::instance;
+    return TAccountTable::instance.get();
 }

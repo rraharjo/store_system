@@ -12,9 +12,7 @@ namespace store
     class StoreSystem
     {
     private:
-        static StoreSystem *instance;
-        //std::vector<PurchaseTransaction *> purchase_transactions;
-        //std::vector<SellingTransaction *> selling_transactions;
+        static std::unique_ptr<StoreSystem> instance;
         std::unique_ptr<util::baseclass::PurchaseTransactionCollection> purchase_transactions;
         std::unique_ptr<util::baseclass::SellingTransactionCollection> selling_transactions;
         accounting::AccountingSystem *a_system;

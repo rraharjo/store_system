@@ -12,14 +12,16 @@ namespace inventory
     class TransactionHistory
     {
     protected:
-        std::deque<Entry *> entries;
+        std::deque<std::shared_ptr<Entry>> entries;
 
         TransactionHistory();
 
     public:
-        void add_entry(Entry *entry);
+        virtual ~TransactionHistory();
 
-        std::vector<Entry *> get_entries();
+        void add_entry(std::shared_ptr<Entry> entry);
+
+        std::vector<std::shared_ptr<Entry>> get_entries();
     };
 
     /*************************************Purchase History*************************************/

@@ -16,7 +16,7 @@ nlohmann::json build_json_from_untokenized_command(const std::string &raw_comman
     switch (main_command)
     {
     case ADD_INV:
-        // format 1 product_name item_code price
+        // format: 1 product_name item_code price
         to_ret["product_name"] = tokenized_command[1];
         to_ret["item_code"] = tokenized_command[2];
         to_ret["price"] = std::stod(tokenized_command[3]);
@@ -51,14 +51,14 @@ nlohmann::json build_json_from_untokenized_command(const std::string &raw_comman
         to_ret["paid_cash"] = std::stod(tokenized_command[7]);
         break;
     case CAPT_ASS:
-        //-format: 4 date db_code capt_amt paid_cash ENDCMD
+        // format: 4 date db_code capt_amt paid_cash ENDCMD
         to_ret["date"] = tokenized_command[1];
         to_ret["dbcode"] = tokenized_command[2];
         to_ret["cost"] = std::stod(tokenized_command[3]);
         to_ret["paid_cash"] = std::stod(tokenized_command[4]);
         break;
     case SELL_INV:
-    { //-format: 5 date [db_code qty]+ paid_cash ENDCMD
+    { // format: 5 date [db_code qty]+ paid_cash ENDCMD
         to_ret["date"] = tokenized_command[1];
         std::vector<nlohmann::json> items;
         int cur_idx = 2;
@@ -74,20 +74,20 @@ nlohmann::json build_json_from_untokenized_command(const std::string &raw_comman
         break;
     }
     case SELL_ASS:
-        //-format: 6 date db_code price paid_cash ENDCMD
+        // format: 6 date db_code price paid_cash ENDCMD
         to_ret["date"] = tokenized_command[1];
         to_ret["dbcode"] = tokenized_command[2];
         to_ret["price"] = std::stod(tokenized_command[3]);
         to_ret["paid_cash"] = std::stod(tokenized_command[4]);
         break;
     case EO_YEAR:
-        //-format: 7 ENDCMD
+        // format: 7 ENDCMD
         break;
     case INV_INFO:
-        //-format: 8 ENDCMD
+        // format: 8 ENDCMD
         break;
     case ASSETS_INFO:
-        //-format: 9 ENDCMD
+        // format: 9 ENDCMD
         break;
     default:
         throw std::invalid_argument("Unknown command " + raw_command);
@@ -170,8 +170,8 @@ nlohmann::json storedriver::AddInventoryExecutor::execute(store::StoreSystem *s_
     std::string item_code = this->request.at("item_code");
     double price = (double)this->request.at("price");
     inventory::Inventory *new_inventory = new inventory::Inventory(item_code, name, price);
-    //new_inventory->insert_to_db();
     s_system->add_item(new_inventory);
+    delete new_inventory;
     return nlohmann::json(R"({})"_json);
 }
 
@@ -200,8 +200,8 @@ nlohmann::json storedriver::PurchaseInventoryExecutor::execute(store::StoreSyste
     double paid_cash = (double)this->request.at("paid_cash");
     new_transaction->set_paid_cash(paid_cash);
     new_transaction->set_paid_credit(new_transaction->get_transaction_amount() - paid_cash);
-    //new_transaction->insert_to_db();
     s_system->buy_item(new_transaction);
+    delete new_transaction;
     return nlohmann::json(R"({})"_json);
 }
 
@@ -211,21 +211,10 @@ nlohmann::json storedriver::PurchaseAssetsExecutor::execute(store::StoreSystem *
     util::Date *date_purchased = new util::Date(this->request.at("date"));
     std::string name = this->request.at("name");
     std::string item_code = this->request.at("item_code");
-    //double purchase_cost = (double)this->request.at("cost");
     double residual_value = (double)this->request.at("residual_value");
     int useful_life = this->request.at("useful_life");
-
     inventory::Equipment *new_eqp = new inventory::Equipment(name, item_code, residual_value, useful_life, date_purchased);
-    //new_eqp->insert_to_db();
-    //store::PurchaseTransaction *new_transaction = new store::PurchaseTransaction("", date_purchased);
-    //inventory::PurchaseEntry *new_entry = new inventory::PurchaseEntry(new_eqp->get_db_code(), "", purchase_cost, 1);
-    //new_transaction->add_entry(new_entry);
-    //double paid_cash = (double)this->request.at("paid_cash");
-    //new_transaction->set_paid_cash(paid_cash);
-    //new_transaction->set_paid_credit(new_transaction->get_transaction_amount() - paid_cash);
-    //new_transaction->insert_to_db();
     s_system->add_property(new_eqp);
-    //s_system->capitalize_asset(new_transaction);
     nlohmann::json to_ret;
     to_ret["dbcode"] = new_eqp->get_db_code();
     return to_ret;
@@ -244,8 +233,8 @@ nlohmann::json storedriver::CapitalizeAssetExecutor::execute(store::StoreSystem 
     double paid_cash = (double)this->request.at("paid_cash");
     new_transaction->set_paid_cash(paid_cash);
     new_transaction->set_paid_credit(new_transaction->get_transaction_amount() - paid_cash);
-    //new_transaction->insert_to_db();
     s_system->capitalize_asset(new_transaction);
+    delete new_transaction;
     return nlohmann::json(R"({})"_json);
 }
 
@@ -302,6 +291,7 @@ nlohmann::json storedriver::SellInventoryExecutor::execute(store::StoreSystem *s
     new_transaction->set_paid_cash(paid_cash);
     new_transaction->set_paid_credit(new_transaction->get_transaction_amount() - paid_cash);
     s_system->sell_item(new_transaction);
+    delete new_transaction;
     return nlohmann::json(R"({})"_json);
 }
 
@@ -319,6 +309,7 @@ nlohmann::json storedriver::SellAssetExecutor::execute(store::StoreSystem *s_sys
     new_transaction->set_paid_cash(paid_cash);
     new_transaction->set_paid_credit(new_transaction->get_transaction_amount() - paid_cash);
     s_system->dispose_asset(new_transaction);
+    delete new_transaction;
     return nlohmann::json(R"({})"_json);
 }
 

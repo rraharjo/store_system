@@ -30,9 +30,9 @@ namespace inventory
 
         Inventory(std::string item_code, std::string name, double selling_price);
 
-        double sell_items(SellingEntry *entry) override;
+        double sell_items(std::shared_ptr<SellingEntry> entry) override;
 
-        void add_purchase(PurchaseEntry *entry) override;
+        void add_purchase(std::shared_ptr<PurchaseEntry> entry) override;
 
         double get_selling_price();
 

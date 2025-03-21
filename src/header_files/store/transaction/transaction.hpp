@@ -1,13 +1,16 @@
 #include <string>
 #include <vector>
+#include <memory>
 #include "util/date.hpp"
 #include "util/database/tables.hpp"
 #include "util/class/base_class.hpp"
 #include "inventory/transaction/entry.hpp"
 #ifndef STORETRANSACTION_HPP
 #define STORETRANSACTION_HPP
-namespace util {
-    namespace baseclass{
+namespace util
+{
+    namespace baseclass
+    {
         class PurchaseTransactionCollection;
         class SellingTransactionCollection;
     }
@@ -17,17 +20,23 @@ namespace store
     class Transaction : public util::baseclass::HasTable
     {
     private:
-        util::Date *transaction_date;
+        std::unique_ptr<util::Date> transaction_date;
         double paid_cash;
         double paid_credit;
-        std::vector<inventory::Entry *> entries;
+        std::vector<std::shared_ptr<inventory::Entry>> entries;
 
     protected:
         bool is_finished;
 
-        Transaction(util::enums::PrimaryKeyPrefix primary_key_prefix, std::string db_code, util::Date *transaction_date, double paid_cash, double paid_credit);
+        Transaction(util::enums::PrimaryKeyPrefix primary_key_prefix,
+                    std::string db_code,
+                    util::Date *transaction_date,
+                    double paid_cash,
+                    double paid_credit);
 
         Transaction(util::enums::PrimaryKeyPrefix primary_key_prefix, util::Date *transaction_date);
+
+        virtual ~Transaction();
 
     public:
         util::Date *get_date();
@@ -44,7 +53,7 @@ namespace store
 
         void set_paid_credit(double amount);
 
-        std::vector<inventory::Entry *> get_all_entries();
+        std::vector<std::shared_ptr<inventory::Entry>> get_all_entries();
     };
 
     /*****************************************PURCHASETRANSACTION*****************************************/
@@ -53,6 +62,7 @@ namespace store
     {
     private:
         std::string seller;
+
     public:
         PurchaseTransaction(std::string seller, util::Date *purchase_date);
 

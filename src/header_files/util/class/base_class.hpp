@@ -16,14 +16,14 @@ namespace util
             std::string db_code;
 
         protected:
-
             HasTable(util::enums::PrimaryKeyPrefix primary_key_prefix);
 
             void set_db_code(std::string db_code);
 
-            //void update_to_db_with_table(util::Table *table);
-
+            // void update_to_db_with_table(util::Table *table);
         public:
+            virtual ~HasTable();
+            
             std::string get_db_code();
 
             friend class Collection;

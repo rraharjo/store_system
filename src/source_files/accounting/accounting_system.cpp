@@ -5,16 +5,11 @@ AccountingSystem::AccountingSystem()
 {
     this->transactions = std::unique_ptr<util::baseclass::AccountingTransactionCollection>(new util::baseclass::AccountingTransactionCollection());
     this->t_accounts = std::unique_ptr<util::baseclass::TAccountCollection>(new util::baseclass::TAccountCollection());
-    // this->assets = new Assets();
-    // this->liabilities = new Liabilities();
-    // this->stockholders_equity = new StockholdersEquityAccount();
 }
 
 AccountingSystem::~AccountingSystem()
 {
-    // delete this->assets;
-    // delete this->liabilities;
-    // delete this->stockholders_equity;
+
 }
 
 void AccountingSystem::add_existing_transaction(Transaction *transaction)
@@ -38,28 +33,15 @@ void AccountingSystem::add_entry(Entry *entry)
     t_account_from_db->add_entry(entry);
     this->t_accounts->update_existing_item(t_account_from_db);
     delete t_account_from_db;
-    // switch (entry->get_account_title())
-    // {
-    // case util::enums::AccountTitles::ASSETS:
-    //     this->assets->add_entry(entry);
-    //     break;
-    // case util::enums::AccountTitles::LIABILITIES:
-    //     this->liabilities->add_entry(entry);
-    //     break;
-    // case util::enums::AccountTitles::STOCKHOLDERSEQUITY:
-    //     this->stockholders_equity->add_entry(entry);
-    //     break;
-    // }
 }
 
 AccountingSystem *AccountingSystem::get_instance()
 {
-    if (AccountingSystem::instance == NULL)
+    if (AccountingSystem::instance.get() == NULL)
     {
-        // TAccount::initiate_t_account_on_db();
-        AccountingSystem::instance = new AccountingSystem();
+        AccountingSystem::instance.reset(new AccountingSystem());
     }
-    return AccountingSystem::instance;
+    return AccountingSystem::instance.get();
 }
 
 void AccountingSystem::add_transaction(Transaction *transaction)
@@ -89,6 +71,10 @@ void AccountingSystem::end_year_adjustment()
         util::factory::ClosingTemporaryAccountsFactory(now, transaction_title, temporary_accounts)
             .create_transaction();
     this->add_transaction(close_the_book);
+    for (util::baseclass::HasTable *item : items){
+        delete item;
+    }
+    delete close_the_book;
 }
 
 std::string AccountingSystem::to_string()
@@ -102,4 +88,4 @@ std::string AccountingSystem::to_string()
     return to_ret;
 }
 
-AccountingSystem *AccountingSystem::instance = NULL;
+std::unique_ptr<AccountingSystem> AccountingSystem::instance = NULL;

@@ -1,3 +1,4 @@
+#include <memory>
 #include <string>
 #include "util/class/base_class.hpp"
 #include "inventory/transaction/transaction_history.hpp"
@@ -10,8 +11,8 @@ namespace inventory
     protected:
         std::string name;
         std::string item_code;
-        PurchaseHistory *purchase_history;
-        SellingHistory *selling_history;
+        std::unique_ptr<PurchaseHistory> purchase_history;
+        std::unique_ptr<SellingHistory> selling_history;
         int qty;
 
         Item(util::enums::PrimaryKeyPrefix primary_key_prefix, std::string name, std::string item_code);
@@ -20,19 +21,22 @@ namespace inventory
 
         void add_existing_selling_entry(SellingEntry *);
 
-        std::vector<PurchaseEntry *> get_purchase_entries();
+        std::vector<std::shared_ptr<PurchaseEntry>> get_purchase_entries();
 
-        std::vector<SellingEntry *> get_selling_entries();
+        std::vector<std::shared_ptr<SellingEntry>> get_selling_entries();
 
     public:
+        virtual ~Item();
+
         std::string get_name();
+
         std::string get_item_code();
 
         int get_qty();
 
-        virtual double sell_items(SellingEntry *entry) = 0;
+        virtual double sell_items(std::shared_ptr<SellingEntry> entry) = 0;
 
-        virtual void add_purchase(PurchaseEntry *entry) = 0;
+        virtual void add_purchase(std::shared_ptr<PurchaseEntry> entry) = 0;
     };
 };
 

@@ -4,6 +4,7 @@ namespace util
 {
     namespace baseclass
     {
+        //Object returned by collection does not belong to the collection class anymore
         Collection::Collection(util::enums::PrimaryKeyPrefix primary_key_prefix, util::Table *table) : primary_key_prefix(primary_key_prefix), table(table) {}
 
         std::vector<util::baseclass::HasTable *> Collection::get_from_database(std::vector<util::TableCondition> &conditions)

@@ -87,7 +87,7 @@ commands list:
 
 5. Sell inventory: 
   -format: 5 date [db_code qty]+ paid_cash ENDCMD
-  -example: 5 10/10/2024 INV000002 50 0 ENDCMD
+  -example: 5 10/10/2024 INV000001 10 0 ENDCMD
   -json:
   {
     "main_command": 5,
@@ -108,7 +108,7 @@ commands list:
 
 6. Sell assets:
   -format: 6 date db_code price paid_cash ENDCMD
-  -example: 6 11/11/2024 EQP000002 5000 5000 ENDCMD
+  -example: 6 11/11/2024 EQP000001 10000 10000 ENDCMD
   -json:
   {
     "main_command": 6,

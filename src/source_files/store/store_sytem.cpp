@@ -4,7 +4,7 @@ using namespace store;
 void check_transaction(Transaction *transaction)
 {
     double total_amt = 0;
-    for (inventory::Entry *entry : transaction->get_all_entries())
+    for (std::shared_ptr<inventory::Entry> entry : transaction->get_all_entries())
     {
         total_amt += entry->get_price() * entry->get_qty();
     }
@@ -14,23 +14,23 @@ void check_transaction(Transaction *transaction)
     }
 }
 
-StoreSystem *StoreSystem::instance = NULL;
+std::unique_ptr<StoreSystem> StoreSystem::instance = NULL;
 
 StoreSystem *StoreSystem::get_instance()
 {
-    if (StoreSystem::instance == NULL)
+    if (StoreSystem::instance.get() == NULL)
     {
-        StoreSystem::instance = new StoreSystem();
+        StoreSystem::instance.reset(new StoreSystem());
     }
-    return StoreSystem::instance;
+    return StoreSystem::instance.get();
 }
 
 StoreSystem::StoreSystem()
 {
     this->a_system = accounting::AccountingSystem::get_instance();
     this->i_system = inventory::InventorySystem::get_instance();
-    this->purchase_transactions = std::make_unique<util::baseclass::PurchaseTransactionCollection>();
-    this->selling_transactions = std::make_unique<util::baseclass::SellingTransactionCollection>();
+    this->purchase_transactions.reset(new util::baseclass::PurchaseTransactionCollection());
+    this->selling_transactions.reset(new util::baseclass::SellingTransactionCollection());
 }
 
 void StoreSystem::sell_item(SellingTransaction *selling_transaction)
@@ -39,7 +39,7 @@ void StoreSystem::sell_item(SellingTransaction *selling_transaction)
     this->selling_transactions->insert_new_item(selling_transaction);
     double cogs = 0;
     double sell_amount = 0;
-    for (inventory::Entry *entry : selling_transaction->get_all_entries())
+    for (std::shared_ptr<inventory::Entry> entry : selling_transaction->get_all_entries())
     {
         sell_amount += entry->get_price() * entry->get_qty();
         cogs += this->i_system->sell_sellables(entry);
@@ -56,6 +56,8 @@ void StoreSystem::sell_item(SellingTransaction *selling_transaction)
             .create_transaction();
     this->a_system->add_transaction(acct_transaction);
     this->a_system->add_transaction(acct_transaction_2);
+    delete acct_transaction;
+    delete acct_transaction_2;
 }
 
 void StoreSystem::buy_item(PurchaseTransaction *purchase_transaction)
@@ -64,7 +66,7 @@ void StoreSystem::buy_item(PurchaseTransaction *purchase_transaction)
     this->purchase_transactions->insert_new_item(purchase_transaction);
     double purchase_amount = 0;
     // entry does not have inventory code
-    for (inventory::Entry *entry : purchase_transaction->get_all_entries())
+    for (std::shared_ptr<inventory::Entry> entry : purchase_transaction->get_all_entries())
     {
         purchase_amount += entry->get_price() * entry->get_qty();
         this->i_system->purchase_sellables(entry);
@@ -76,17 +78,20 @@ void StoreSystem::buy_item(PurchaseTransaction *purchase_transaction)
                                             purchase_amount, purchase_transaction->get_paid_cash(), purchase_transaction->get_paid_credit())
             .create_transaction();
     this->a_system->add_transaction(acct_transaction);
+    delete acct_transaction;
 }
 
 void StoreSystem::capitalize_asset(PurchaseTransaction *purchase_transaction)
 {
     check_transaction(purchase_transaction);
-    this->purchase_transactions->insert_new_item(purchase_transaction);
     double amount = 0.0;
-    for (inventory::Entry *entry : purchase_transaction->get_all_entries())
+    this->purchase_transactions->insert_new_item(purchase_transaction);
+    for (std::shared_ptr<inventory::Entry> entry : purchase_transaction->get_all_entries())
     {
-        this->i_system->purchase_properties(entry);//Double insert
         amount += entry->get_price();
+        this->i_system->purchase_properties(entry);
+        //amount is wrong
+        //entry is deleted on purchase_properties
     }
     util::Date *transaction_date = new util::Date();
     std::string description = "Purchase asset";
@@ -94,7 +99,8 @@ void StoreSystem::capitalize_asset(PurchaseTransaction *purchase_transaction)
         util::factory::BuyEquipmentFactory(transaction_date, description, purchase_transaction->get_db_code(),
                                            amount, purchase_transaction->get_paid_cash(), purchase_transaction->get_paid_credit())
             .create_transaction();
-    this->a_system->add_transaction(acct_transaction);    
+    this->a_system->add_transaction(acct_transaction);
+    delete acct_transaction;
 }
 void StoreSystem::dispose_asset(SellingTransaction *selling_transaction)
 { // one transaction one property
@@ -103,12 +109,12 @@ void StoreSystem::dispose_asset(SellingTransaction *selling_transaction)
     inventory::Equipment *to_dispose = NULL;
     double sell_amount = 0.0;
     double prop_valuation = 0.0;
-    for (inventory::Entry *entry : selling_transaction->get_all_entries())
+    for (std::shared_ptr<inventory::Entry> entry : selling_transaction->get_all_entries())
     {
         sell_amount += entry->get_price();
         entry->set_transaction_date(selling_transaction->get_date());
         prop_valuation += this->i_system->sell_properties(entry);
-        to_dispose = (inventory::Equipment *)this->i_system->get_property(entry->get_properties_db_code());
+        to_dispose = (inventory::Equipment *)this->i_system->get_property(entry->get_properties_db_code()); // possible mem_leak
     }
     util::Date *transaction_date = new util::Date();
     std::string description = "Asset disposal";
@@ -118,7 +124,8 @@ void StoreSystem::dispose_asset(SellingTransaction *selling_transaction)
                                             selling_transaction->get_paid_cash(), selling_transaction->get_paid_credit())
             .create_transaction();
     this->a_system->add_transaction(acct_transaction);
-    //delete acct_transaction;
+    delete to_dispose;
+    delete acct_transaction;
 }
 
 void StoreSystem::add_item(inventory::Inventory *new_sellable)

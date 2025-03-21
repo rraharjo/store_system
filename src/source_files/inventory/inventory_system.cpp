@@ -1,16 +1,16 @@
 #include "inventory/inventory_system.hpp"
 using namespace inventory;
 
-InventorySystem *InventorySystem::instance = NULL;
+std::unique_ptr<InventorySystem> InventorySystem::instance = NULL;
 
 InventorySystem *InventorySystem::get_instance()
 {
-    if (InventorySystem::instance == NULL)
+    if (InventorySystem::instance.get() == NULL)
     {
-        InventorySystem::instance = new InventorySystem();
+        InventorySystem::instance.reset(new InventorySystem());
         InventorySystem::instance->set_a_system(accounting::AccountingSystem::get_instance());
     }
-    return InventorySystem::instance;
+    return InventorySystem::instance.get();
 }
 
 InventorySystem::InventorySystem()
@@ -68,36 +68,43 @@ std::vector<Asset *> InventorySystem::get_assets()
     return to_ret;
 }
 
-double InventorySystem::sell_sellables(Entry *new_entry)
+double InventorySystem::sell_sellables(std::shared_ptr<Entry> new_entry)
 {
     Inventory *inventory = (Inventory *)this->inventories->get_from_database(new_entry->get_sellable_db_code());
-    double to_ret =  inventory->sell_items((SellingEntry *)new_entry);
+    std::shared_ptr<SellingEntry> casted_entry = std::static_pointer_cast<SellingEntry>(new_entry);
+    double to_ret = inventory->sell_items(casted_entry);
     this->inventories->update_existing_item(inventory);
+    delete inventory;
     return to_ret;
 }
 
-void InventorySystem::purchase_sellables(Entry *new_entry)
+void InventorySystem::purchase_sellables(std::shared_ptr<Entry> new_entry)
 {
     Inventory *inventory = (Inventory *)this->inventories->get_from_database(new_entry->get_sellable_db_code());
-    inventory->add_purchase((PurchaseEntry *)new_entry);
+    std::shared_ptr<PurchaseEntry> casted_entry = std::static_pointer_cast<PurchaseEntry>(new_entry);
+    inventory->add_purchase(casted_entry);
+    delete inventory;
 }
 
-double InventorySystem::sell_properties(Entry *new_entry)
+double InventorySystem::sell_properties(std::shared_ptr<Entry> new_entry)
 {
     Equipment *to_sell = (Equipment *)this->equipments.get()->get_from_database(
         new_entry->get_properties_db_code());
-    double to_ret = to_sell->sell_items((SellingEntry *)new_entry);
+    std::shared_ptr<SellingEntry> casted_entry = std::static_pointer_cast<SellingEntry>(new_entry);
+    double to_ret = to_sell->sell_items(casted_entry);
     this->equipments->update_existing_item(to_sell);
+    delete to_sell;
     return to_ret;
 }
 
-void InventorySystem::purchase_properties(Entry *new_entry)
+void InventorySystem::purchase_properties(std::shared_ptr<Entry> new_entry)
 {
-
     Equipment *to_sell = (Equipment *)this->equipments.get()->get_from_database(
         new_entry->get_properties_db_code());
-    to_sell->add_purchase((PurchaseEntry *)new_entry);
+    std::shared_ptr<PurchaseEntry> casted_entry = std::static_pointer_cast<PurchaseEntry>(new_entry);
+    to_sell->add_purchase(casted_entry);
     this->equipments->update_existing_item(to_sell);
+    delete to_sell;
 }
 
 void InventorySystem::add_new_item(Inventory *new_sellable)
@@ -122,13 +129,14 @@ void InventorySystem::apply_depreciation(std::string asset_db_code)
     }
     double depreciation_amt_this_year = asset->get_reduced_value_current_year();
     util::Date *new_depreciation_date = new util::Date();
-    delete asset->get_last_depreciation_date();
     asset->set_last_depreciation_date(new_depreciation_date);
     std::string acct_transaction_title = "Incurred depreciation expense";
     accounting::Transaction *new_transaction =
         util::factory::ApplyDepreciationFactory(now, acct_transaction_title, asset_db_code, depreciation_amt_this_year)
             .create_transaction();
     this->a_system->add_transaction(new_transaction);
+    delete asset;
+    delete new_transaction;
 }
 
 void InventorySystem::apply_all_depreciation()
@@ -138,6 +146,7 @@ void InventorySystem::apply_all_depreciation()
     for (util::baseclass::HasTable *single : all)
     {
         this->apply_depreciation(single->get_db_code());
+        delete single;
     }
 }
 

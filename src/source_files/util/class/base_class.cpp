@@ -5,6 +5,10 @@ baseclass::HasTable::HasTable(util::enums::PrimaryKeyPrefix primary_key_prefix)
 {
 }
 
+baseclass::HasTable::~HasTable()
+{
+}
+
 void util::baseclass::HasTable::set_db_code(std::string db_code)
 {
     this->db_code = db_code;
