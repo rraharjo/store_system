@@ -12,16 +12,18 @@ namespace store
     class StoreSystem
     {
     private:
-        static std::unique_ptr<StoreSystem> instance;
+        static std::shared_ptr<StoreSystem> instance;
         std::unique_ptr<util::baseclass::PurchaseTransactionCollection> purchase_transactions;
         std::unique_ptr<util::baseclass::SellingTransactionCollection> selling_transactions;
-        accounting::AccountingSystem *a_system;
-        inventory::InventorySystem *i_system;
+        std::shared_ptr<accounting::AccountingSystem> a_system;
+        std::shared_ptr<inventory::InventorySystem> i_system;
 
         StoreSystem();
 
     public:
-        static StoreSystem *get_instance();
+        static std::shared_ptr<StoreSystem> get_instance();
+
+        ~StoreSystem();
 
         void sell_item(SellingTransaction *sell_transaction);
 

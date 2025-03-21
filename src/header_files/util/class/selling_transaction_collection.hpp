@@ -16,6 +16,8 @@ namespace util
         public:
             SellingTransactionCollection();
 
+            ~SellingTransactionCollection();
+
             void insert_new_item(HasTable *new_item) override;
 
             HasTable *get_from_database(std::string db_code) override;

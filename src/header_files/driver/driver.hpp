@@ -15,13 +15,15 @@ namespace storedriver
     class Driver
     {
     private:
-        store::StoreSystem *s_system = NULL;
+        std::shared_ptr<store::StoreSystem> s_system = NULL;
 
     protected:
         bool json_input;
 
     public:
         Driver(bool);
+
+        virtual ~Driver();
 
         virtual void start() = 0;
 
@@ -32,6 +34,8 @@ namespace storedriver
     {
     public:
         StdIODriver(bool);
+
+        ~StdIODriver();
 
         void start() override;
     };
@@ -47,6 +51,8 @@ namespace storedriver
         void write_output(std::string);
     public:
         PipeIODriver(bool);
+
+        ~PipeIODriver();
 
         void start() override;
 

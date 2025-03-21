@@ -18,6 +18,8 @@ namespace util
         public:
             InventoryCollection();
 
+            ~InventoryCollection();
+
             void insert_new_item(HasTable *new_item) override;
 
             void update_existing_item(HasTable *existing_item) override;

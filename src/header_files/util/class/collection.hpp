@@ -21,6 +21,8 @@ namespace util
             //This is here because set_db_code is Collection class is friend to HasTable
             void set_db_code(HasTable *new_item, const std::string db_code);
 
+            virtual ~Collection();
+
         public:
             //Make this pure virtual
             virtual void insert_new_item(HasTable *new_item) = 0;

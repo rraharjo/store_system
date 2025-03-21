@@ -25,7 +25,7 @@ namespace inventory
         Asset(util::enums::PrimaryKeyPrefix primary_key_prefix, std::string name, std::string item_code, double residual_value, int year_useful_life, util::Date *date_bought);
 
     public:
-        ~Asset();
+        virtual ~Asset();
 
         void add_purchase(std::shared_ptr<PurchaseEntry> entry) override;
 

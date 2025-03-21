@@ -11,6 +11,12 @@ namespace util
             this->purchase_entries = std::unique_ptr<PurchaseEntriesCollection>(new PurchaseEntriesCollection());
         }
 
+        PurchaseTransactionCollection::~PurchaseTransactionCollection(){
+            #ifdef DEBUG
+                std::cout << "Deleting Purchase Transaction Collection" << std::endl;
+            #endif
+        }
+
         void PurchaseTransactionCollection::insert_new_item(HasTable *new_item)
         {
             Collection::validate_insert(new_item);

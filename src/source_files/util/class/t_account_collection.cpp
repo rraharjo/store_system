@@ -10,6 +10,12 @@ namespace util
         {
         }
 
+        TAccountCollection::~TAccountCollection(){
+            #ifdef DEBUG
+            std::cout << "Deleting TAccount Collection" << std::endl;
+        #endif
+        }
+
         void TAccountCollection::insert_new_item(HasTable *new_item)
         {
             std::vector<util::TableCondition> conditions;

@@ -15,6 +15,12 @@ namespace util
             return std::vector<util::baseclass::HasTable *>();
         }
 
+        Collection::~Collection(){
+            #ifdef DEBUG
+                std::cout << "Deleting Collection (Parent) class for " << util::enums::primary_key_prefix_map[this->primary_key_prefix] << std::endl;
+            #endif
+        }
+
         void Collection::validate_insert(HasTable *new_item)
         {
             if (new_item->primary_key_prefix != this->primary_key_prefix)

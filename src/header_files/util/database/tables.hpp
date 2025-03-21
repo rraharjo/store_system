@@ -40,6 +40,8 @@ namespace util
         Table(std::string table_name, std::string sequence_name);
 
     public:
+        virtual ~Table();
+        
         virtual std::vector<std::vector<std::string>> get_records(std::vector<std::string>, std::vector<TableCondition>);
 
         virtual std::vector<std::vector<std::string>> get_records(std::vector<TableCondition>);

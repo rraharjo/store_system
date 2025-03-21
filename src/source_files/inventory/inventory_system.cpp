@@ -1,16 +1,16 @@
 #include "inventory/inventory_system.hpp"
 using namespace inventory;
 
-std::unique_ptr<InventorySystem> InventorySystem::instance = NULL;
+std::shared_ptr<InventorySystem> InventorySystem::instance = NULL;
 
-InventorySystem *InventorySystem::get_instance()
+std::shared_ptr<InventorySystem> InventorySystem::get_instance()
 {
     if (InventorySystem::instance.get() == NULL)
     {
         InventorySystem::instance.reset(new InventorySystem());
         InventorySystem::instance->set_a_system(accounting::AccountingSystem::get_instance());
     }
-    return InventorySystem::instance.get();
+    return InventorySystem::instance;
 }
 
 InventorySystem::InventorySystem()
@@ -19,7 +19,14 @@ InventorySystem::InventorySystem()
     this->inventories = std::unique_ptr<util::baseclass::InventoryCollection>(new util::baseclass::InventoryCollection());
 }
 
-void InventorySystem::set_a_system(accounting::AccountingSystem *a_system)
+InventorySystem::~InventorySystem()
+{
+#ifdef DEBUG
+    std::cout << "Deleting inventory system" << std::endl;
+#endif
+}
+
+void InventorySystem::set_a_system(std::shared_ptr<accounting::AccountingSystem> a_system)
 {
     this->a_system = a_system;
 }

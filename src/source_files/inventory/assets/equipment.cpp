@@ -21,7 +21,7 @@ Equipment::Equipment(std::string db_code,
             last_depreciation_date,
             date_sold)
 {
-    this->depreciation_method.reset(new util::DoubleDecliningDepreciation(this->get_total_value(), this->get_year_useful_life()));
+    this->depreciation_method = std::make_unique<util::DoubleDecliningDepreciation>(this->get_total_value(), this->get_year_useful_life());
 }
 
 Equipment::Equipment(std::string name, std::string item_code, double residual_value, int year_useful_life, util::Date *date_bought)
@@ -31,6 +31,9 @@ Equipment::Equipment(std::string name, std::string item_code, double residual_va
 
 Equipment::~Equipment()
 {
+    #ifdef DEBUG
+    std::cout << "Deleting Equipment" << std::endl;
+#endif
 }
 
 double Equipment::get_reduced_value_at_year(int year)

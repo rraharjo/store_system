@@ -7,6 +7,9 @@ baseclass::HasTable::HasTable(util::enums::PrimaryKeyPrefix primary_key_prefix)
 
 baseclass::HasTable::~HasTable()
 {
+    #ifdef DEBUG
+    std::cout << "Deleting Has Table" << std::endl;
+#endif
 }
 
 void util::baseclass::HasTable::set_db_code(std::string db_code)

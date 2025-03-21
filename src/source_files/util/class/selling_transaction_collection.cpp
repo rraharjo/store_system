@@ -11,6 +11,12 @@ namespace util
             this->selling_entries = std::unique_ptr<SellingEntriesCollection>(new SellingEntriesCollection());
         }
 
+        SellingTransactionCollection::~SellingTransactionCollection(){
+            #ifdef DEBUG
+                std::cout << "Deleting Selling Transaction Collection" << std::endl;
+            #endif
+        }
+
         void SellingTransactionCollection::insert_new_item(HasTable *new_item)
         {
             Collection::validate_insert(new_item);

@@ -34,6 +34,8 @@ namespace inventory
         int get_qty();
         util::Date *get_transaction_date();
 
+        virtual ~Entry();
+
         void set_transaction_date(util::Date *transaction_date);
 
         void set_transaction_db_code(std::string db_code);
@@ -54,6 +56,8 @@ namespace inventory
 
         PurchaseEntry(std::string item_db_code, std::string transaction_db_code, double price, int qty);
 
+        ~PurchaseEntry();
+
         int get_available_qty();
 
         void set_available_qty(int qty);
@@ -71,7 +75,10 @@ namespace inventory
 
     public:
         SellingEntry(std::string item_db_code, std::string transaction_code, double price, int qty);
+
         SellingEntry(std::string db_code, std::string item_db_code, std::string transaction_code, double price, int qty);
+
+        ~SellingEntry();
     };
 }
 #endif

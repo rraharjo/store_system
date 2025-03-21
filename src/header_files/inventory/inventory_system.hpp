@@ -11,9 +11,9 @@ namespace inventory
     class InventorySystem
     {
     private:
-        static std::unique_ptr<InventorySystem> instance;
+        static std::shared_ptr<InventorySystem> instance;
 
-        accounting::AccountingSystem *a_system;
+        std::shared_ptr<accounting::AccountingSystem> a_system;
         std::unique_ptr<util::baseclass::EquipmentCollection> equipments;
         std::unique_ptr<util::baseclass::InventoryCollection> inventories;
 
@@ -24,7 +24,9 @@ namespace inventory
         void add_existing_inventory(Inventory *);
 
     public:
-        static InventorySystem *get_instance();
+        static std::shared_ptr<InventorySystem> get_instance();
+
+        ~InventorySystem();
 
         Asset *get_property(std::string db_code);
 
@@ -34,7 +36,7 @@ namespace inventory
 
         std::vector<Asset *> get_assets();
 
-        void set_a_system(accounting::AccountingSystem *a_system);
+        void set_a_system(std::shared_ptr<accounting::AccountingSystem> a_system);
 
         double sell_sellables(std::shared_ptr<Entry> new_entry); // return the COGS
 

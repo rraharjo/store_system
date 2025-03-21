@@ -68,6 +68,8 @@ namespace store
 
         PurchaseTransaction(std::string db_code, std::string seller, util::Date *purchase_date, double paid_cash, double paid_credit);
 
+        ~PurchaseTransaction();
+
         std::string get_seller();
 
         friend class util::baseclass::PurchaseTransactionCollection;
@@ -81,6 +83,8 @@ namespace store
         SellingTransaction(util::Date *transaction_date);
 
         SellingTransaction(std::string db_code, util::Date *transaction_date, double paid_cash, double paid_credit);
+
+        ~SellingTransaction();
 
         friend class util::baseclass::SellingTransactionCollection;
     };

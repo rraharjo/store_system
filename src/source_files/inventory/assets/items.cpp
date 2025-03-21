@@ -13,6 +13,9 @@ Item::Item(util::enums::PrimaryKeyPrefix primary_key_prefix, std::string name = 
 
 Item::~Item()
 {
+    #ifdef DEBUG
+    std::cout << "Deleting Item" << std::endl;
+#endif
 }
 
 void Item::add_existing_purchase_entry(PurchaseEntry *entry)

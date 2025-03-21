@@ -15,6 +15,12 @@ Inventory::Inventory(std::string item_code, std::string name, double selling_pri
 {
 }
 
+Inventory::~Inventory(){
+    #ifdef DEBUG
+    std::cout << "Deleting Inventory" << std::endl;
+#endif
+}
+
 void Inventory::add_existing_purchase_entry(PurchaseEntry *entry)
 {
     Item::add_existing_purchase_entry(entry);

@@ -13,11 +13,14 @@ TransactionHistory::TransactionHistory()
 
 TransactionHistory::~TransactionHistory()
 {
+#ifdef DEBUG
+    std::cout << "Deleting Transaction history (parent)" << std::endl;
+#endif
 }
 
 void TransactionHistory::add_entry(std::shared_ptr<Entry> entry)
 {
-    //std::shared_ptr<Entry> to_add(entry);
+    // std::shared_ptr<Entry> to_add(entry);
     this->entries.push_back(entry);
 }
 
@@ -39,6 +42,13 @@ std::vector<std::shared_ptr<Entry>> TransactionHistory::get_entries()
 /*************************************Purchase History*************************************/
 PurchaseHistory::PurchaseHistory() : TransactionHistory()
 {
+}
+
+PurchaseHistory::~PurchaseHistory()
+{
+#ifdef DEBUG
+    std::cout << "Deleting Purchase history" << std::endl;
+#endif
 }
 
 double PurchaseHistory::sell_item_first_in(int qty)
@@ -81,4 +91,11 @@ double PurchaseHistory::sell_item_last_in(int qty)
 /*************************************Selling History*************************************/
 SellingHistory::SellingHistory() : TransactionHistory()
 {
+}
+
+SellingHistory::~SellingHistory()
+{
+#ifdef DEBUG
+    std::cout << "Deleting Selling History" << std::endl;
+#endif
 }

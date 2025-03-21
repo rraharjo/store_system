@@ -11,6 +11,12 @@ namespace util
         {
         }
 
+        AccountingEntryCollection::~AccountingEntryCollection(){
+            #ifdef DEBUG
+                std::cout << "Deleting Accounting Entry Collection" << std::endl;
+            #endif
+        }
+
         void AccountingEntryCollection::insert_new_item(HasTable *new_item)
         {
             Collection::validate_insert(new_item);

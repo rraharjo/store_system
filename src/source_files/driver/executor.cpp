@@ -157,12 +157,26 @@ storedriver::Executor::Executor(nlohmann::json json_command)
     this->request = json_command;
 }
 
+storedriver::Executor::~Executor()
+{
+#ifdef DEBUG
+    std::cout << "Deleting Executor" << std::endl;
+#endif
+}
+
 void storedriver::Executor::validate_request(store::StoreSystem *s_system)
 {
     return;
 }
 
 storedriver::AddInventoryExecutor::AddInventoryExecutor(nlohmann::json json_command) : Executor(json_command) {}
+
+storedriver::AddInventoryExecutor::~AddInventoryExecutor()
+{
+#ifdef DEBUG
+    std::cout << "Deleting add inventory executor" << std::endl;
+#endif
+}
 
 nlohmann::json storedriver::AddInventoryExecutor::execute(store::StoreSystem *s_system)
 {
@@ -176,6 +190,13 @@ nlohmann::json storedriver::AddInventoryExecutor::execute(store::StoreSystem *s_
 }
 
 storedriver::PurchaseInventoryExecutor::PurchaseInventoryExecutor(nlohmann::json json_command) : Executor(json_command) {}
+
+storedriver::PurchaseInventoryExecutor::~PurchaseInventoryExecutor()
+{
+#ifdef DEBUG
+    std::cout << "Deleting Purchase inventory executor" << std::endl;
+#endif
+}
 
 void storedriver::PurchaseInventoryExecutor::add_purchase_entry(store::PurchaseTransaction *p, std::string item_db, double price_per_item, int item_qty)
 {
@@ -206,6 +227,14 @@ nlohmann::json storedriver::PurchaseInventoryExecutor::execute(store::StoreSyste
 }
 
 storedriver::PurchaseAssetsExecutor::PurchaseAssetsExecutor(nlohmann::json json_command) : Executor(json_command) {}
+
+storedriver::PurchaseAssetsExecutor::~PurchaseAssetsExecutor()
+{
+#ifdef DEBUG
+    std::cout << "Deleting Purchase Assets executor" << std::endl;
+#endif
+}
+
 nlohmann::json storedriver::PurchaseAssetsExecutor::execute(store::StoreSystem *s_system)
 {
     util::Date *date_purchased = new util::Date(this->request.at("date"));
@@ -221,6 +250,14 @@ nlohmann::json storedriver::PurchaseAssetsExecutor::execute(store::StoreSystem *
 }
 
 storedriver::CapitalizeAssetExecutor::CapitalizeAssetExecutor(nlohmann::json json_command) : Executor(json_command) {}
+
+storedriver::CapitalizeAssetExecutor::~CapitalizeAssetExecutor()
+{
+#ifdef DEBUG
+    std::cout << "Deleting Capitalize asset executor" << std::endl;
+#endif
+}
+
 nlohmann::json storedriver::CapitalizeAssetExecutor::execute(store::StoreSystem *s_system)
 {
     util::Date *trans_date = new util::Date(this->request.at("date"));
@@ -239,6 +276,13 @@ nlohmann::json storedriver::CapitalizeAssetExecutor::execute(store::StoreSystem 
 }
 
 storedriver::SellInventoryExecutor::SellInventoryExecutor(nlohmann::json json_command) : Executor(json_command) {}
+
+storedriver::SellInventoryExecutor::~SellInventoryExecutor()
+{
+#ifdef DEBUG
+    std::cout << "Deleting Sell Inventory Executor" << std::endl;
+#endif
+}
 
 void storedriver::SellInventoryExecutor::validate_request(store::StoreSystem *s_system)
 {
@@ -296,6 +340,14 @@ nlohmann::json storedriver::SellInventoryExecutor::execute(store::StoreSystem *s
 }
 
 storedriver::SellAssetExecutor::SellAssetExecutor(nlohmann::json json_command) : Executor(json_command) {}
+
+storedriver::SellAssetExecutor::~SellAssetExecutor()
+{
+#ifdef DEBUG
+    std::cout << "Deleting Sell asset executor" << std::endl;
+#endif
+}
+
 nlohmann::json storedriver::SellAssetExecutor::execute(store::StoreSystem *s_system)
 {
     util::Date *date = new util::Date(this->request.at("date"));
@@ -314,6 +366,14 @@ nlohmann::json storedriver::SellAssetExecutor::execute(store::StoreSystem *s_sys
 }
 
 storedriver::EndOfYearExecutor::EndOfYearExecutor(nlohmann::json json_command) : Executor(json_command) {}
+
+storedriver::EndOfYearExecutor::~EndOfYearExecutor()
+{
+#ifdef DEBUG
+    std::cout << "Deleting End of year executor" << std::endl;
+#endif
+}
+
 nlohmann::json storedriver::EndOfYearExecutor::execute(store::StoreSystem *s_system)
 {
     s_system->end_year_adjustment();
@@ -321,6 +381,14 @@ nlohmann::json storedriver::EndOfYearExecutor::execute(store::StoreSystem *s_sys
 }
 
 storedriver::InventoriesInfoExecutor::InventoriesInfoExecutor(nlohmann::json json_command) : Executor(json_command) {}
+
+storedriver::InventoriesInfoExecutor::~InventoriesInfoExecutor()
+{
+#ifdef DEBUG
+    std::cout << "Deleting Inventories Info Executor" << std::endl;
+#endif
+}
+
 nlohmann::json storedriver::InventoriesInfoExecutor::execute(store::StoreSystem *s_system)
 {
     nlohmann::json to_ret;
@@ -341,6 +409,14 @@ nlohmann::json storedriver::InventoriesInfoExecutor::execute(store::StoreSystem 
 }
 
 storedriver::AssetsInfoExecutor::AssetsInfoExecutor(nlohmann::json json_command) : Executor(json_command) {}
+
+storedriver::AssetsInfoExecutor::~AssetsInfoExecutor()
+{
+#ifdef DEBUG
+    std::cout << "Deleting Asset info executor" << std::endl;
+#endif
+}
+
 nlohmann::json storedriver::AssetsInfoExecutor::execute(store::StoreSystem *s_system)
 {
     nlohmann::json to_ret;

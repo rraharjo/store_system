@@ -28,6 +28,10 @@ Asset::Asset(util::enums::PrimaryKeyPrefix primary_key_prefix,
 
 Asset::~Asset()
 {
+
+    #ifdef DEBUG
+    std::cout << "Deleting Asset" << std::endl;
+#endif
 }
 
 void Asset::add_existing_purchase_entry(PurchaseEntry *entry)

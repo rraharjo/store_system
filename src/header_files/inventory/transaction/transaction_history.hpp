@@ -33,6 +33,8 @@ namespace inventory
     public:
         PurchaseHistory();
 
+        ~PurchaseHistory();
+
         double sell_item_first_in(int qty);
 
         double sell_item_last_in(int qty);
@@ -43,6 +45,8 @@ namespace inventory
     {
     public:
         SellingHistory();
+
+        ~SellingHistory();
     };
 };
 

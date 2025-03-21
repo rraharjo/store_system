@@ -162,6 +162,13 @@ Table::Table(std::string table_name, std::string sequence_name)
     this->table_name = table_name;
     this->sequence_name = sequence_name;
 }
+
+Table::~Table()
+{
+#ifdef DEBUG
+    std::cout << "Deleting Table " << std::endl;
+#endif
+}
 std::string Table::get_table_name()
 {
     return this->table_name;
@@ -414,7 +421,10 @@ InventoryTable::InventoryTable(std::string table_name, std::string sequence_name
 
 InventoryTable::~InventoryTable()
 {
-    InventoryTable::instance = NULL;
+// InventoryTable::instance = NULL;
+#ifdef DEBUG
+    std::cout << "Deleting Inventory Table" << std::endl;
+#endif
 }
 
 InventoryTable *InventoryTable::get_instance()
@@ -440,6 +450,9 @@ PurchaseTransactionTable::PurchaseTransactionTable(std::string table_name, std::
 
 PurchaseTransactionTable::~PurchaseTransactionTable()
 {
+#ifdef DEBUG
+    std::cout << "Deleting Purchase Transaction Table" << std::endl;
+#endif
 }
 
 PurchaseTransactionTable *PurchaseTransactionTable::get_instance()
@@ -488,6 +501,9 @@ PurchaseEntryTable::PurchaseEntryTable(std::string table_name, std::string seque
 
 PurchaseEntryTable::~PurchaseEntryTable()
 {
+#ifdef DEBUG
+    std::cout << "Deleting Purchase Entry Table" << std::endl;
+#endif
 }
 
 PurchaseEntryTable *PurchaseEntryTable::get_instance()
@@ -513,6 +529,9 @@ SellingEntryTable::SellingEntryTable(std::string table_name, std::string sequenc
 
 SellingEntryTable::~SellingEntryTable()
 {
+#ifdef DEBUG
+    std::cout << "Deleting Selling Entry Table" << std::endl;
+#endif
 }
 
 SellingEntryTable *SellingEntryTable::get_instance()
@@ -538,6 +557,9 @@ SellingTransactionTable::SellingTransactionTable(std::string table_name, std::st
 
 SellingTransactionTable::~SellingTransactionTable()
 {
+#ifdef DEBUG
+    std::cout << "Deleting Selling Transaction Table" << std::endl;
+#endif
 }
 
 SellingTransactionTable *SellingTransactionTable::get_instance()
@@ -562,6 +584,9 @@ AssetsTable::AssetsTable(std::string table_name, std::string sequence_name) : Ta
 
 AssetsTable::~AssetsTable()
 {
+#ifdef DEBUG
+    std::cout << "Deleting Assets Table" << std::endl;
+#endif
 }
 
 AssetsTable *AssetsTable::get_instance()
@@ -588,6 +613,9 @@ AccountingTransactionTable::AccountingTransactionTable(std::string table_name, s
 
 AccountingTransactionTable::~AccountingTransactionTable()
 {
+#ifdef DEBUG
+    std::cout << "Deleting Accounting Tranaction Table" << std::endl;
+#endif
 }
 
 AccountingTransactionTable *AccountingTransactionTable::get_instance()
@@ -614,6 +642,9 @@ AccountingEntryTable::AccountingEntryTable(std::string table_name, std::string s
 
 AccountingEntryTable::~AccountingEntryTable()
 {
+#ifdef DEBUG
+    std::cout << "Deleting Accounting Entry Table" << std::endl;
+#endif
 }
 
 AccountingEntryTable *AccountingEntryTable::get_instance()
@@ -713,6 +744,9 @@ TAccountTable::TAccountTable(std::string table_name)
 
 TAccountTable::~TAccountTable()
 {
+#ifdef DEBUG
+    std::cout << "Deleting TAccount Table" << std::endl;
+#endif
 }
 
 TAccountTable *TAccountTable::get_instance()

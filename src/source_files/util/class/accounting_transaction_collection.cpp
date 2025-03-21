@@ -12,6 +12,12 @@ namespace util
             this->entries_collection = std::unique_ptr<AccountingEntryCollection>(new AccountingEntryCollection());
         }
 
+        AccountingTransactionCollection::~AccountingTransactionCollection(){
+            #ifdef DEBUG
+            std::cout << "Deleting Accounting Transaction collection" << std::endl;
+        #endif
+        }
+
         void AccountingTransactionCollection::insert_new_item(HasTable *new_item)
         {
             Collection::validate_insert(new_item);

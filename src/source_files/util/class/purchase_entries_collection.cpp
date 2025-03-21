@@ -10,6 +10,12 @@ namespace util
         {
         }
 
+        PurchaseEntriesCollection::~PurchaseEntriesCollection(){
+            #ifdef DEBUG
+            std::cout << "Deleting Purchase Entries Collection" << std::endl;
+        #endif
+        }
+
         void PurchaseEntriesCollection::insert_new_item(HasTable *new_item)
         {
             Collection::validate_insert(new_item);

@@ -1,6 +1,9 @@
 #include "accounting/accounting_system.hpp"
 
 using namespace accounting;
+
+std::shared_ptr<AccountingSystem> AccountingSystem::instance = NULL;
+
 AccountingSystem::AccountingSystem()
 {
     this->transactions = std::unique_ptr<util::baseclass::AccountingTransactionCollection>(new util::baseclass::AccountingTransactionCollection());
@@ -9,7 +12,9 @@ AccountingSystem::AccountingSystem()
 
 AccountingSystem::~AccountingSystem()
 {
-
+#ifdef DEBUG
+    std::cout << "Deleting Accounting System" << std::endl;
+#endif
 }
 
 void AccountingSystem::add_existing_transaction(Transaction *transaction)
@@ -35,13 +40,13 @@ void AccountingSystem::add_entry(Entry *entry)
     delete t_account_from_db;
 }
 
-AccountingSystem *AccountingSystem::get_instance()
+std::shared_ptr<AccountingSystem> AccountingSystem::get_instance()
 {
     if (AccountingSystem::instance.get() == NULL)
     {
         AccountingSystem::instance.reset(new AccountingSystem());
     }
-    return AccountingSystem::instance.get();
+    return AccountingSystem::instance;
 }
 
 void AccountingSystem::add_transaction(Transaction *transaction)
@@ -71,7 +76,8 @@ void AccountingSystem::end_year_adjustment()
         util::factory::ClosingTemporaryAccountsFactory(now, transaction_title, temporary_accounts)
             .create_transaction();
     this->add_transaction(close_the_book);
-    for (util::baseclass::HasTable *item : items){
+    for (util::baseclass::HasTable *item : items)
+    {
         delete item;
     }
     delete close_the_book;
@@ -87,5 +93,3 @@ std::string AccountingSystem::to_string()
     // to_ret += this->stockholders_equity->to_string();
     return to_ret;
 }
-
-std::unique_ptr<AccountingSystem> AccountingSystem::instance = NULL;

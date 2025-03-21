@@ -38,6 +38,9 @@ Transaction::Transaction(std::string name) : Transaction::Transaction(name, new 
 
 Transaction::~Transaction()
 {
+#ifdef DEBUG
+    std::cout << "Deleting Accounting Transaction" << std::endl;
+#endif
 }
 
 std::string Transaction::get_name()

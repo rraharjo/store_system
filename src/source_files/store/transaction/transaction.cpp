@@ -21,7 +21,12 @@ Transaction::Transaction(util::enums::PrimaryKeyPrefix primary_key_prefix, util:
 {
 }
 
-Transaction::~Transaction() {}
+Transaction::~Transaction()
+{
+#ifdef DEBUG
+    std::cout << "Deleting store transaction" << std::endl;
+#endif
+}
 
 double Transaction::get_paid_cash()
 {
@@ -90,6 +95,13 @@ PurchaseTransaction::PurchaseTransaction(std::string db_code,
     this->seller = seller;
 }
 
+PurchaseTransaction::~PurchaseTransaction()
+{
+#ifdef DEBUG
+    std::cout << "Deleting Purchase transaction" << std::endl;
+#endif
+}
+
 std::string PurchaseTransaction::get_seller()
 {
     return this->seller;
@@ -108,4 +120,11 @@ SellingTransaction::SellingTransaction(std::string db_code,
                                        double paid_credit)
     : Transaction::Transaction(util::enums::PrimaryKeyPrefix::SELLINGTRANSACTION, db_code, transaction_date, paid_cash, paid_credit)
 {
+}
+
+SellingTransaction::~SellingTransaction()
+{
+#ifdef DEBUG
+    std::cout << "Deleting Selling Transaction" << std::endl;
+#endif
 }

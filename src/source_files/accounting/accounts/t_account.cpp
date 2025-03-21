@@ -18,6 +18,9 @@ TAccount::TAccount(util::enums::TAccounts title)
 
 TAccount::~TAccount()
 {
+#ifdef DEBUG
+    std::cout << "Deleting T Account" << std::endl;
+#endif
 }
 
 util::enums::TAccounts TAccount::get_title()
@@ -44,7 +47,7 @@ void TAccount::add_entry(Entry *entry)
 }
 
 double TAccount::get_debit_amount()
-{  
+{
     return this->debit_amount;
 }
 

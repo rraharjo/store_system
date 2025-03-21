@@ -28,6 +28,8 @@ namespace accounting
               double amount,
               util::enums::TAccounts t_account);
 
+        ~Entry();
+
         bool is_debit();
 
         double get_amount();

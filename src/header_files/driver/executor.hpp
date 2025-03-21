@@ -37,6 +37,8 @@ namespace storedriver
         static nlohmann::json execute(store::StoreSystem *, std::string, bool);
 
         Executor(nlohmann::json);
+
+        virtual ~Executor();
     };
 
     class AddInventoryExecutor : public Executor
@@ -44,7 +46,10 @@ namespace storedriver
     protected:
     public:
         nlohmann::json execute(store::StoreSystem *) override;
+
         AddInventoryExecutor(nlohmann::json);
+
+        ~AddInventoryExecutor();
     };
     class PurchaseInventoryExecutor : public Executor
     {
@@ -53,7 +58,10 @@ namespace storedriver
 
     public:
         nlohmann::json execute(store::StoreSystem *) override;
+
         PurchaseInventoryExecutor(nlohmann::json);
+
+        ~PurchaseInventoryExecutor();
     };
 
     class PurchaseAssetsExecutor : public Executor
@@ -61,7 +69,10 @@ namespace storedriver
 
     public:
         nlohmann::json execute(store::StoreSystem *) override;
+
         PurchaseAssetsExecutor(nlohmann::json);
+
+        ~PurchaseAssetsExecutor();
     };
 
     class CapitalizeAssetExecutor : public Executor
@@ -69,7 +80,10 @@ namespace storedriver
 
     public:
         nlohmann::json execute(store::StoreSystem *) override;
+
         CapitalizeAssetExecutor(nlohmann::json);
+
+        ~CapitalizeAssetExecutor();
     };
     class SellInventoryExecutor : public Executor
     {
@@ -78,21 +92,30 @@ namespace storedriver
 
     public:
         nlohmann::json execute(store::StoreSystem *) override;
+
         SellInventoryExecutor(nlohmann::json);
+
+        ~SellInventoryExecutor();
     };
     class SellAssetExecutor : public Executor
     {
 
     public:
         nlohmann::json execute(store::StoreSystem *) override;
+
         SellAssetExecutor(nlohmann::json);
+
+        ~SellAssetExecutor();
     };
     class EndOfYearExecutor : public Executor
     {
 
     public:
         nlohmann::json execute(store::StoreSystem *) override;
+
         EndOfYearExecutor(nlohmann::json);
+
+        ~EndOfYearExecutor();
     };
 
     class InventoriesInfoExecutor : public Executor
@@ -100,7 +123,10 @@ namespace storedriver
 
     public:
         nlohmann::json execute(store::StoreSystem *) override;
+
         InventoriesInfoExecutor(nlohmann::json);
+
+        ~InventoriesInfoExecutor();
     };
 
     class AssetsInfoExecutor : public Executor
@@ -108,7 +134,10 @@ namespace storedriver
 
     public:
         nlohmann::json execute(store::StoreSystem *) override;
+
         AssetsInfoExecutor(nlohmann::json);
+
+        ~AssetsInfoExecutor();
     };
 }
 #endif

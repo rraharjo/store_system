@@ -14,23 +14,30 @@ void check_transaction(Transaction *transaction)
     }
 }
 
-std::unique_ptr<StoreSystem> StoreSystem::instance = NULL;
+std::shared_ptr<StoreSystem> StoreSystem::instance = NULL;
 
-StoreSystem *StoreSystem::get_instance()
+std::shared_ptr<StoreSystem> StoreSystem::get_instance()
 {
     if (StoreSystem::instance.get() == NULL)
     {
         StoreSystem::instance.reset(new StoreSystem());
     }
-    return StoreSystem::instance.get();
+    return StoreSystem::instance;
 }
 
 StoreSystem::StoreSystem()
 {
     this->a_system = accounting::AccountingSystem::get_instance();
     this->i_system = inventory::InventorySystem::get_instance();
-    this->purchase_transactions.reset(new util::baseclass::PurchaseTransactionCollection());
-    this->selling_transactions.reset(new util::baseclass::SellingTransactionCollection());
+    this->purchase_transactions = std::make_unique<util::baseclass::PurchaseTransactionCollection>();
+    this->selling_transactions = std::make_unique<util::baseclass::SellingTransactionCollection>();
+}
+
+StoreSystem::~StoreSystem()
+{
+#ifdef DEBUG
+    std::cout << "Deleting store system" << std::endl;
+#endif
 }
 
 void StoreSystem::sell_item(SellingTransaction *selling_transaction)
@@ -90,8 +97,8 @@ void StoreSystem::capitalize_asset(PurchaseTransaction *purchase_transaction)
     {
         amount += entry->get_price();
         this->i_system->purchase_properties(entry);
-        //amount is wrong
-        //entry is deleted on purchase_properties
+        // amount is wrong
+        // entry is deleted on purchase_properties
     }
     util::Date *transaction_date = new util::Date();
     std::string description = "Purchase asset";

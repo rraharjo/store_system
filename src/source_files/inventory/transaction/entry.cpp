@@ -18,6 +18,13 @@ Entry::Entry(util::enums::PrimaryKeyPrefix primary_key_prefix, std::string item_
     this->qty = qty;
 }
 
+Entry::~Entry()
+{
+#ifdef DEBUG
+    std::cout << "Deleting inventory Entry (parent)" << std::endl;
+#endif
+}
+
 void Entry::set_item_db_code(std::string db_code)
 {
     if (!db_code.compare(0, 3, util::enums::primary_key_prefix_map[util::enums::PrimaryKeyPrefix::INVENTORY]))
@@ -113,6 +120,13 @@ PurchaseEntry::PurchaseEntry(std::string inventory_db_code, std::string transact
 {
 }
 
+PurchaseEntry::~PurchaseEntry()
+{
+#ifdef DEBUG
+    std::cout << "Deleting inventory Purchase Entry" << std::endl;
+#endif
+}
+
 int PurchaseEntry::get_available_qty()
 {
     return this->available_qty;
@@ -134,4 +148,11 @@ SellingEntry::SellingEntry(std::string db_code, std::string sellable_db_code, st
     : Entry(util::enums::PrimaryKeyPrefix::SELLINGENTRY, sellable_db_code, transaction_code, price, qty)
 {
     this->set_db_code(db_code);
+}
+
+SellingEntry::~SellingEntry()
+{
+#ifdef DEBUG
+    std::cout << "Deleting Inventory Selling entry" << std::endl;
+#endif
 }

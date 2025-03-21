@@ -22,6 +22,12 @@ Entry::Entry(std::string transaction_db_code, bool debit, double amount, util::e
 {
 }
 
+Entry::~Entry(){
+    #ifdef DEBUG
+        std::cout << "Deleting Accounting Entry" << std::endl;
+    #endif
+}
+
 bool Entry::is_debit()
 {
     return this->debit;

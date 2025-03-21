@@ -12,6 +12,12 @@ namespace util
             this->selling_history_collection = std::unique_ptr<SellingEntriesCollection>(new SellingEntriesCollection());
         }
 
+        EquipmentCollection::~EquipmentCollection(){
+            #ifdef DEBUG
+            std::cout << "Deleting Equipment Collection" << std::endl;
+        #endif
+        }
+
         void EquipmentCollection::insert_new_item(HasTable *new_item)
         {
             Collection::validate_insert(new_item);
