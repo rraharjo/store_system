@@ -3,7 +3,7 @@ using namespace accounting;
 
 void Account::add_t_account(util::enums::TAccounts t_account)
 {
-    this->t_accounts[t_account] = TAccount::generate_from_database(t_account);
+    //this->t_accounts[t_account] = TAccount::generate_from_database(t_account);
 }
 
 Account::Account(bool debit, util::enums::AccountTitles title)

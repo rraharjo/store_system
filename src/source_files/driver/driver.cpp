@@ -8,6 +8,13 @@ storedriver::Driver::Driver(bool json_input) : json_input(json_input)
     this->s_system = store::StoreSystem::get_instance();
 };
 
+storedriver::Driver::~Driver()
+{
+#ifdef DEBUG
+    std::cout << "Deleting Driver (parent)" << std::endl;
+#endif
+}
+
 nlohmann::json storedriver::Driver::execute_command(std::string command)
 {
     nlohmann::json response;
@@ -17,7 +24,7 @@ nlohmann::json storedriver::Driver::execute_command(std::string command)
         response["status"] = true;
         response["body"] = body;
     }
-    catch (std::exception& e)
+    catch (std::exception &e)
     {
         nlohmann::json body;
         body["message"] = e.what();
@@ -27,8 +34,16 @@ nlohmann::json storedriver::Driver::execute_command(std::string command)
     return response;
 }
 
-storedriver::StdIODriver::StdIODriver(bool json_input) : storedriver::Driver(json_input)
+storedriver::StdIODriver::StdIODriver(bool json_input)
+    : storedriver::Driver(json_input)
 {
+}
+
+storedriver::StdIODriver::~StdIODriver()
+{
+#ifdef DEBUG
+    std::cout << "Deleting Standard IO driver" << std::endl;
+#endif
 }
 
 void storedriver::StdIODriver::start()
@@ -47,7 +62,8 @@ void storedriver::StdIODriver::start()
         {
             break;
         }
-        std::cout << this->execute_command(buff).dump() << std::endl;;
+        std::cout << this->execute_command(buff).dump() << std::endl;
+        ;
     }
 }
 
@@ -61,6 +77,13 @@ storedriver::PipeIODriver::PipeIODriver(bool json_input) : storedriver::Driver(j
     {
         throw std::runtime_error("error on output _pipe()");
     }
+}
+
+storedriver::PipeIODriver::~PipeIODriver()
+{
+#ifdef DEBUG
+    std::cout << "Deleting Pipe IO Driver" << std::endl;
+#endif
 }
 
 std::string storedriver::PipeIODriver::read_input()

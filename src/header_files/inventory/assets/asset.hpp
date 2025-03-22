@@ -8,33 +8,40 @@ namespace inventory
     class Asset : public Item
     {
     protected:
-        static util::Table *class_table;
         std::string name;
         double value = 0;
         double residual_value;
         int year_useful_life;
-        util::Date *expiry_date;
-        util::Date *last_depreciation_date;
-        util::Date *date_bought;
+        std::unique_ptr<util::Date> expiry_date;
+        std::unique_ptr<util::Date> last_depreciation_date;
+        std::unique_ptr<util::Date> date_bought;
 
-        void add_existing_purchase_entry(PurchaseEntry *entry) override;
+        void add_existing_purchase_entry(std::unique_ptr<PurchaseEntry> entry) override;
 
-        std::vector<std::string> get_update_parameter() override;
+        Asset(util::enums::PrimaryKeyPrefix primary_key_prefix,
+              std::string db_code,
+              std::string name,
+              std::string item_code,
+              double total_value,
+              double residual_value,
+              int year_useful_life,
+              std::unique_ptr<util::Date> date_bought,
+              std::unique_ptr<util::Date> last_depreciation_date,
+              std::unique_ptr<util::Date> date_sold);
 
-        Asset(std::string db_code, std::string name, std::string item_code,
-              double total_value, double residual_value, int year_useful_life,
-              util::Date *date_bought, util::Date *last_depreciation_date, util::Date *date_sold);
-
-        Asset(std::string name, std::string item_code, double residual_value, int year_useful_life, util::Date *date_bought);
+        Asset(util::enums::PrimaryKeyPrefix primary_key_prefix,
+              std::string name,
+              std::string item_code,
+              double residual_value,
+              int year_useful_life,
+              std::unique_ptr<util::Date> date_bought);
 
     public:
-        void insert_to_db() override;
+        virtual ~Asset();
 
-        void update_to_db() override;
+        void add_purchase(std::shared_ptr<PurchaseEntry> entry) override;
 
-        void add_purchase(PurchaseEntry *entry) override;
-
-        double sell_items(SellingEntry *entry) override;
+        double sell_items(std::shared_ptr<SellingEntry> entry) override;
 
         virtual double get_reduced_value_at_year(int year) = 0;
 
@@ -56,7 +63,7 @@ namespace inventory
 
         virtual void set_total_value(double new_value);
 
-        void set_last_depreciation_date(util::Date *);
+        void set_last_depreciation_date(std::unique_ptr<util::Date> new_date);
 
         std::string to_string();
 

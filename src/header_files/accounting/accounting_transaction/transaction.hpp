@@ -1,6 +1,7 @@
 #include <iostream>
 #include <algorithm>
 #include <vector>
+#include <memory>
 #include "accounting/accounting_transaction/entry.hpp"
 #include "util/date.hpp"
 #include "util/class/base_class.hpp"
@@ -13,30 +14,18 @@ namespace accounting
     class Transaction : public util::baseclass::HasTable
     {
     private:
-        static util::Table *class_table;
-        std::vector<Entry *> debit_entries;
-        std::vector<Entry *> credit_entries;
+        std::vector<std::shared_ptr<Entry>> debit_entries;
+        std::vector<std::shared_ptr<Entry>> credit_entries;
         std::string name;
-        util::Date *transaction_date;
+        std::unique_ptr<util::Date> transaction_date;
         std::string entity_id;
 
-    protected:
-        std::vector<std::string> get_insert_parameter() override;
-
-        std::vector<std::string> get_update_parameter() override;
-
     public:
-        static std::vector<Transaction *> generate_from_database();
+        Transaction(std::string db_code, std::string name, std::unique_ptr<util::Date> transaction_date, std::string pid);
 
-        void insert_to_db() override;
+        Transaction(std::string name, std::unique_ptr<util::Date> transaction_date, std::string pid);
 
-        void update_to_db() override;
-
-        Transaction(std::string db_code, std::string name, util::Date *transaction_date, std::string pid);
-
-        Transaction(std::string name, util::Date *transaction_date, std::string pid);
-
-        Transaction(std::string name, util::Date *transaction_date);
+        Transaction(std::string name, std::unique_ptr<util::Date> transaction_date);
 
         Transaction(std::string name, std::string pid);
 
@@ -44,15 +33,21 @@ namespace accounting
 
         ~Transaction();
 
-        std::vector<Entry *> &get_debit_entries();
+        std::string get_name();
 
-        std::vector<Entry *> &get_credit_entries();
+        std::string get_entity_id();
+
+        util::Date* get_transaction_date();
+
+        std::vector<std::shared_ptr<Entry>> get_debit_entries();
+
+        std::vector<std::shared_ptr<Entry>> get_credit_entries();
 
         double get_debit_amount();
 
         double get_credit_amount();
 
-        void add_entry(Entry *entry);
+        void add_entry(std::unique_ptr<Entry> entry);
 
         bool is_balanced();
 

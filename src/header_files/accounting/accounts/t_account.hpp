@@ -7,34 +7,19 @@
 
 #ifndef TACCOUNT
 #define TACCOUNT
+//TODO: this class may not be needed
 namespace accounting
 {
     class TAccount : public util::baseclass::HasTable
     {
     private:
-        static util::Table *class_table;
-
-        static void initiate_t_account_on_db();
-
-        static TAccount *generate_from_database(util::enums::TAccounts);
-
         util::enums::TAccounts title;
+        util::enums::AccountTitles account_title;
         double debit_amount;
         double credit_amount;
-        std::vector<Entry *> debit_entries;
-        std::vector<Entry *> credit_entries;
-
-    protected:
-        std::vector<std::string> get_insert_parameter() override;
-
-        std::vector<std::string> get_update_parameter() override;
 
     public:
-        void insert_to_db() override;
-
-        void update_to_db() override;
-
-        TAccount(util::enums::TAccounts title, double debit, double credit);
+        TAccount(util::enums::TAccounts title, util::enums::AccountTitles account_title, double debit, double credit);
 
         TAccount(util::enums::TAccounts title);
 

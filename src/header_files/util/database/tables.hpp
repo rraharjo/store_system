@@ -1,5 +1,6 @@
 #include <vector>
 #include <string>
+#include <memory>
 #include "util/enums/database/table_schema.hpp"
 #include "util/database/db.hpp"
 #ifndef DATABASETABLE_HPP
@@ -39,9 +40,13 @@ namespace util
         Table(std::string table_name, std::string sequence_name);
 
     public:
+        virtual ~Table();
+        
         virtual std::vector<std::vector<std::string>> get_records(std::vector<std::string>, std::vector<TableCondition>);
 
         virtual std::vector<std::vector<std::string>> get_records(std::vector<TableCondition>);
+
+        virtual std::vector<std::vector<std::string>> get_records_or_conditions(std::vector<TableCondition>);
 
         std::vector<std::vector<std::string>> get_records();
 
@@ -59,7 +64,7 @@ namespace util
     class InventoryTable : public Table
     {
     private:
-        static InventoryTable *instance;
+        static std::unique_ptr<InventoryTable> instance;
 
     protected:
         InventoryTable(std::string table_name, std::string sequence_name);
@@ -73,7 +78,7 @@ namespace util
     class PurchaseTransactionTable : public Table
     {
     private:
-        static PurchaseTransactionTable *instance;
+        static std::unique_ptr<PurchaseTransactionTable> instance;
 
     protected:
         PurchaseTransactionTable(std::string table_name, std::string sequence_name);
@@ -87,7 +92,7 @@ namespace util
     class PurchaseEntryTable : public Table
     {
     private:
-        static PurchaseEntryTable *instance;
+        static std::unique_ptr<PurchaseEntryTable> instance;
 
     protected:
         PurchaseEntryTable(std::string table_name, std::string sequence_name);
@@ -103,7 +108,7 @@ namespace util
     class SellingEntryTable : public Table
     {
     private:
-        static SellingEntryTable *instance;
+        static std::unique_ptr<SellingEntryTable> instance;
 
     protected:
         SellingEntryTable(std::string table_name, std::string sequence_name);
@@ -117,7 +122,7 @@ namespace util
     class SellingTransactionTable : public Table
     {
     private:
-        static SellingTransactionTable *instance;
+        static std::unique_ptr<SellingTransactionTable> instance;
 
     protected:
         SellingTransactionTable(std::string table_name, std::string sequence_name);
@@ -131,7 +136,7 @@ namespace util
     class AssetsTable : public Table
     {
     private:
-        static AssetsTable *instance;
+        static std::unique_ptr<AssetsTable> instance;
 
     protected:
         AssetsTable(std::string table_name, std::string sequence_name);
@@ -145,7 +150,7 @@ namespace util
     class AccountingTransactionTable : public Table
     {
     private:
-        static AccountingTransactionTable *instance;
+        static std::unique_ptr<AccountingTransactionTable> instance;
 
     protected:
         AccountingTransactionTable(std::string table_name, std::string sequence_name);
@@ -159,7 +164,7 @@ namespace util
     class AccountingEntryTable : public Table
     {
     private:
-        static AccountingEntryTable *instance;
+        static std::unique_ptr<AccountingEntryTable> instance;
 
     protected:
         AccountingEntryTable(std::string table_name, std::string sequence_name);
@@ -173,7 +178,7 @@ namespace util
     class TAccountTable : public Table
     {
     private:
-        static TAccountTable *instance;
+        static std::unique_ptr<TAccountTable> instance;
 
     protected:
         TAccountTable(std::string table_name);

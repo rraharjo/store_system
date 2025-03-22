@@ -1,0 +1,35 @@
+#ifndef EQUIPMENTCOLLECTION_HPP
+#define EQUIPMENTCOLLECTION_HPP
+#include "collection.hpp"
+#include "inventory/assets/equipment.hpp"
+#include "purchase_entries_collection.hpp"
+#include "selling_entries_collection.hpp"
+
+
+namespace util
+{
+    namespace baseclass
+    {
+        class EquipmentCollection : public Collection
+        {
+        private:
+            std::unique_ptr<PurchaseEntriesCollection> purchase_history_collection;
+            std::unique_ptr<SellingEntriesCollection> selling_history_collection;
+
+        public:
+            EquipmentCollection();
+
+            ~EquipmentCollection();
+
+            void insert_new_item(HasTable *new_item) override;
+
+            void update_existing_item(HasTable *existing_item) override;
+
+            std::unique_ptr<HasTable> get_from_database(std::string db_code) override;
+
+            std::vector<std::unique_ptr<HasTable>> get_from_database(std::vector<util::TableCondition>& conditions) override;
+        };
+    }
+}
+
+#endif

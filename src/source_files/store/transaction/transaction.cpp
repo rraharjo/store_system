@@ -1,19 +1,31 @@
 #include "store/transaction/transaction.hpp"
 using namespace store;
 
-Transaction::Transaction(util::Date *transaction_date, double paid_cash, double paid_credit)
-    : util::baseclass::HasTable()
+Transaction::Transaction(util::enums::PrimaryKeyPrefix primary_key_prefix,
+                         std::string db_code,
+                         std::unique_ptr<util::Date> transaction_date,
+                         double paid_cash,
+                         double paid_credit)
+    : util::baseclass::HasTable(primary_key_prefix)
 {
-    this->transaction_date = transaction_date;
+    this->set_db_code(db_code);
+    this->transaction_date = std::move(transaction_date);
     this->paid_cash = paid_cash;
     this->paid_credit = paid_credit;
     this->is_finished = this->paid_credit == 0.0 ? true : false;
     this->entries = {};
 }
 
-Transaction::Transaction(util::Date *transaction_date)
-    : Transaction::Transaction(transaction_date, 0, 0)
+Transaction::Transaction(util::enums::PrimaryKeyPrefix primary_key_prefix, std::unique_ptr<util::Date> transaction_date)
+    : Transaction::Transaction(primary_key_prefix, "", std::move(transaction_date), 0, 0)
 {
+}
+
+Transaction::~Transaction()
+{
+#ifdef DEBUG
+    std::cout << "Deleting store transaction" << std::endl;
+#endif
 }
 
 double Transaction::get_paid_cash()
@@ -29,21 +41,23 @@ double Transaction::get_paid_credit()
 double Transaction::get_transaction_amount()
 {
     double to_ret = 0.0;
-    for (inventory::Entry *entry : this->entries)
+    for (std::shared_ptr<inventory::Entry> entry : this->entries)
     {
-        to_ret += entry->get_price() * entry->get_qty();
+        to_ret += entry.get()->get_price() * entry.get()->get_qty();
     }
     return to_ret;
 }
 
 util::Date *Transaction::get_date()
 {
-    return this->transaction_date;
+    return this->transaction_date.get();
 }
 
-void Transaction::add_entry(inventory::Entry *entry)
+void Transaction::add_entry(std::unique_ptr<inventory::Entry> entry)
 {
-    this->entries.push_back(entry);
+    std::shared_ptr<inventory::Entry> to_add;
+    to_add.reset(entry.release());
+    this->entries.push_back(to_add);
 }
 
 void Transaction::set_paid_cash(double amount)
@@ -58,32 +72,38 @@ void Transaction::set_paid_credit(double amount)
     this->is_finished = this->paid_credit == 0 ? true : false;
 }
 
-std::vector<inventory::Entry *> Transaction::get_all_entries()
+std::vector<std::shared_ptr<inventory::Entry>> Transaction::get_all_entries()
 {
     return this->entries;
 }
 
 /************************PURCHASETRANSACTION****************************/
-util::Table *PurchaseTransaction::class_table = util::PurchaseTransactionTable::get_instance();
 
-void PurchaseTransaction::insert_to_db()
-{
-    this->insert_to_db_with_table(PurchaseTransaction::class_table);
-    for (inventory::Entry *entry : this->get_all_entries())
-    {
-        entry->set_transaction_db_code(this->get_db_code());
-        entry->insert_to_db();
-    }
-};
-
-void PurchaseTransaction::update_to_db()
-{
-    this->update_to_db_with_table(PurchaseTransaction::class_table);
-};
-
-PurchaseTransaction::PurchaseTransaction(std::string seller, util::Date *purchase_date) : Transaction::Transaction(purchase_date)
+PurchaseTransaction::PurchaseTransaction(std::string seller, std::unique_ptr<util::Date> purchase_date)
+    : Transaction::Transaction(util::enums::PrimaryKeyPrefix::PURCHASETRANSACTION, std::move(purchase_date))
 {
     this->seller = seller;
+}
+
+PurchaseTransaction::PurchaseTransaction(std::string db_code,
+                                         std::string seller,
+                                         std::unique_ptr<util::Date> purchase_date,
+                                         double paid_cash,
+                                         double paid_credit)
+    : Transaction::Transaction(util::enums::PrimaryKeyPrefix::PURCHASETRANSACTION,
+                               db_code,
+                               std::move(purchase_date),
+                               paid_cash,
+                               paid_credit)
+{
+    this->seller = seller;
+}
+
+PurchaseTransaction::~PurchaseTransaction()
+{
+#ifdef DEBUG
+    std::cout << "Deleting Purchase transaction" << std::endl;
+#endif
 }
 
 std::string PurchaseTransaction::get_seller()
@@ -91,69 +111,28 @@ std::string PurchaseTransaction::get_seller()
     return this->seller;
 }
 
-std::vector<std::string> PurchaseTransaction::get_insert_parameter()
-{
-    std::vector<std::string> args;
-    args.push_back(util::enums::primary_key_codes_map[util::enums::PrimaryKeyCodes::PURCHASETRANSACTION]);
-    args.push_back(this->get_date()->to_db_format());
-    args.push_back(this->get_seller());
-    args.push_back(std::to_string(this->get_paid_cash()));
-    args.push_back(std::to_string(this->get_paid_credit()));
-    args.push_back(this->is_finished ? "true" : "false");
-    return args;
-}
-
-std::vector<std::string> PurchaseTransaction::get_update_parameter()
-{
-    std::vector<std::string> args;
-    args.push_back(this->get_date()->to_db_format());
-    args.push_back(this->get_seller());
-    args.push_back(std::to_string(this->get_paid_cash()));
-    args.push_back(std::to_string(this->get_paid_credit()));
-    args.push_back(this->is_finished ? "true" : "false");
-    return args;
-}
-
 /*********************SELLINGTRANSACTION***********************/
 
-util::Table *SellingTransaction::class_table = util::SellingTransactionTable::get_instance();
-
-void SellingTransaction::insert_to_db()
-{
-    this->insert_to_db_with_table(SellingTransaction::class_table);
-    for (inventory::Entry *entry : this->get_all_entries())
-    {
-        entry->set_transaction_db_code(this->get_db_code());
-        entry->insert_to_db();
-    }
-};
-
-void SellingTransaction::update_to_db()
-{
-    this->update_to_db_with_table(SellingTransaction::class_table);
-};
-
-SellingTransaction::SellingTransaction(util::Date *transaction_date) : Transaction::Transaction(transaction_date)
+SellingTransaction::SellingTransaction(std::unique_ptr<util::Date> transaction_date)
+    : Transaction::Transaction(util::enums::PrimaryKeyPrefix::SELLINGTRANSACTION, std::move(transaction_date))
 {
 }
 
-std::vector<std::string> SellingTransaction::get_insert_parameter()
+SellingTransaction::SellingTransaction(std::string db_code,
+                                       std::unique_ptr<util::Date> transaction_date,
+                                       double paid_cash,
+                                       double paid_credit)
+    : Transaction::Transaction(util::enums::PrimaryKeyPrefix::SELLINGTRANSACTION,
+                               db_code,
+                               std::move(transaction_date),
+                               paid_cash,
+                               paid_credit)
 {
-    std::vector<std::string> args;
-    args.push_back(util::enums::primary_key_codes_map[util::enums::PrimaryKeyCodes::SELLINGTRANSACTION]);
-    args.push_back(this->get_date()->to_db_format());
-    args.push_back(std::to_string(this->get_paid_cash()));
-    args.push_back(std::to_string(this->get_paid_credit()));
-    args.push_back(this->is_finished ? "true" : "false");
-    return args;
 }
 
-std::vector<std::string> SellingTransaction::get_update_parameter()
+SellingTransaction::~SellingTransaction()
 {
-    std::vector<std::string> args;
-    args.push_back(this->get_date()->to_db_format());
-    args.push_back(std::to_string(this->get_paid_cash()));
-    args.push_back(std::to_string(this->get_paid_credit()));
-    args.push_back(this->is_finished ? "true" : "false");
-    return args;
+#ifdef DEBUG
+    std::cout << "Deleting Selling Transaction" << std::endl;
+#endif
 }

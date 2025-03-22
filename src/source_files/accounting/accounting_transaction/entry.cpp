@@ -1,63 +1,12 @@
 #include "accounting/accounting_transaction/entry.hpp"
 using namespace accounting;
 
-util::Table *Entry::class_table = util::AccountingEntryTable::get_instance();
-
-std::vector<Entry *> Entry::generate_from_db(std::string transaction_code)
-{
-    std::vector<Entry *> to_ret;
-    std::vector<util::TableCondition> conditions;
-    util::TableCondition cond1 = util::TableCondition();
-    cond1.col = util::enums::accounting_entry_table_columns[util::enums::AccountingEntryTable::ATDBCODE];
-    cond1.comparator = util::TableComparator::EQUAL;
-    cond1.value = transaction_code;
-    conditions.push_back(cond1);
-    std::vector<std::vector<std::string>> records = class_table->get_records(conditions);
-    for (std::vector<std::string> &record : records)
-    {
-        Entry *new_entry = new Entry(record[0], record[1], record[2] == "t" ? true : false, std::stod(record[3]),
-                                    util::enums::get_t_account_enum(record[4]));
-        to_ret.push_back(new_entry);
-    }
-    return to_ret;
-}
-
-void Entry::insert_to_db()
-{
-    this->insert_to_db_with_table(Entry::class_table);
-};
-
-void Entry::update_to_db()
-{
-    this->update_to_db_with_table(Entry::class_table);
-};
-
-std::vector<std::string> Entry::get_insert_parameter()
-{
-    std::vector<std::string> to_ret;
-    to_ret.push_back(util::enums::primary_key_codes_map[util::enums::PrimaryKeyCodes::ACCOUNTINGENTRY]);
-    to_ret.push_back(this->transaction_db);
-    to_ret.push_back(this->debit ? "true" : "false");
-    to_ret.push_back(std::to_string(this->amount));
-    to_ret.push_back(util::enums::t_accounts_name_map[this->t_account]);
-    to_ret.push_back(util::enums::account_titles_map[this->account]);
-    return to_ret;
-}
-
-std::vector<std::string> Entry::get_update_parameter()
-{
-    std::vector<std::string> to_ret;
-    to_ret.push_back(this->transaction_db);
-    to_ret.push_back(this->debit ? "true" : "false");
-    to_ret.push_back(std::to_string(this->amount));
-    to_ret.push_back(util::enums::t_accounts_name_map[this->t_account]);
-    to_ret.push_back(util::enums::account_titles_map[this->account]);
-    return to_ret;
-}
-
-Entry::Entry(std::string db_code, std::string transaction_db_code, bool debit, double amount,
+Entry::Entry(std::string db_code,
+             std::string transaction_db_code,
+             bool debit,
+             double amount,
              util::enums::TAccounts t_account)
-    : util::baseclass::HasTable()
+    : util::baseclass::HasTable(util::enums::PrimaryKeyPrefix::ACCOUNTINGENTRY)
 {
     this->set_db_code(db_code);
     this->debit = debit;
@@ -68,10 +17,16 @@ Entry::Entry(std::string db_code, std::string transaction_db_code, bool debit, d
     this->transaction_db = transaction_db_code;
 }
 
-Entry::Entry(std::string transaction_db_code, bool debit, double amount,
-             util::enums::TAccounts t_account)
+Entry::Entry(std::string transaction_db_code, bool debit, double amount, util::enums::TAccounts t_account)
     : Entry::Entry("", transaction_db_code, debit, amount, t_account)
 {
+}
+
+Entry::~Entry()
+{
+#ifdef DEBUG
+    std::cout << "Deleting Accounting Entry" << std::endl;
+#endif
 }
 
 bool Entry::is_debit()

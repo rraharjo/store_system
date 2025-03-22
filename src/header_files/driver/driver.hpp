@@ -23,6 +23,8 @@ namespace storedriver
     public:
         Driver(bool);
 
+        virtual ~Driver();
+
         virtual void start() = 0;
 
         nlohmann::json execute_command(std::string);
@@ -32,6 +34,8 @@ namespace storedriver
     {
     public:
         StdIODriver(bool);
+
+        ~StdIODriver();
 
         void start() override;
     };
@@ -47,6 +51,8 @@ namespace storedriver
         void write_output(std::string);
     public:
         PipeIODriver(bool);
+
+        ~PipeIODriver();
 
         void start() override;
 

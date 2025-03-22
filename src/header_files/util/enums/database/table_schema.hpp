@@ -24,9 +24,10 @@ namespace util
     };
     namespace enums
     {
-        enum class PrimaryKeyCodes
+        enum class PrimaryKeyPrefix
         {
-            INVENTORY = 0,
+            NOKEY = 0,
+            INVENTORY,
             PURCHASEENTRY,
             PURCHASETRANSACTION,
             SELLINGENTRY,
@@ -36,7 +37,7 @@ namespace util
             ACCOUNTINGENTRY
         };
 
-        extern std::map<PrimaryKeyCodes, std::string> primary_key_codes_map;
+        extern std::map<PrimaryKeyPrefix, std::string> primary_key_prefix_map;
 
         enum class SequenceNames
         {
@@ -162,6 +163,7 @@ namespace util
 
         enum class TAccountTable{
             TITLE = 0,
+            ACCOUNT,
             DEBITAMOUNT,
             CREDITAMOUNT
         };

@@ -6,19 +6,22 @@
 #include "util/database/tables.hpp"
 #ifndef INVENTORYPURCHASEHISTORY_HPP
 #define INVENTORYPURCHASEHISTORY_HPP
-// FIX THIS FIRST (7/28/2024)
 namespace inventory
 {
     /*************************************Transaction History (parent class)*************************************/
     class TransactionHistory
     {
     protected:
-        std::deque<Entry *> entries;
+        std::deque<std::shared_ptr<Entry>> entries;
 
         TransactionHistory();
 
     public:
-        void add_entry(Entry *entry);
+        virtual ~TransactionHistory();
+
+        void add_entry(std::shared_ptr<Entry> entry);
+
+        std::vector<std::shared_ptr<Entry>> get_entries();
     };
 
     /*************************************Purchase History*************************************/
@@ -30,6 +33,8 @@ namespace inventory
     public:
         PurchaseHistory();
 
+        ~PurchaseHistory();
+
         double sell_item_first_in(int qty);
 
         double sell_item_last_in(int qty);
@@ -40,6 +45,8 @@ namespace inventory
     {
     public:
         SellingHistory();
+
+        ~SellingHistory();
     };
 };
 

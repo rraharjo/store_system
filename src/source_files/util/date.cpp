@@ -25,6 +25,10 @@ Date::Date(std::string date_string)
     this->tp = this->parse_string_date_dd_MM_YYYY_separeted_by_slash(date_string);
 }
 
+Date::Date(const Date &date){
+    this->tp = date.tp;
+}
+
 std::chrono::system_clock::time_point Date::parse_string_date(std::string date_string, std::string format)
 {
     std::tm tm = {};

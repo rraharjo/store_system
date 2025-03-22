@@ -1,27 +1,42 @@
 #include <string>
 #include <vector>
+#include <memory>
 #include "util/date.hpp"
 #include "util/database/tables.hpp"
 #include "util/class/base_class.hpp"
 #include "inventory/transaction/entry.hpp"
 #ifndef STORETRANSACTION_HPP
 #define STORETRANSACTION_HPP
+namespace util
+{
+    namespace baseclass
+    {
+        class PurchaseTransactionCollection;
+        class SellingTransactionCollection;
+    }
+}
 namespace store
 {
     class Transaction : public util::baseclass::HasTable
     {
     private:
-        util::Date *transaction_date;
+        std::unique_ptr<util::Date> transaction_date;
         double paid_cash;
         double paid_credit;
-        std::vector<inventory::Entry *> entries;
+        std::vector<std::shared_ptr<inventory::Entry>> entries;
 
     protected:
         bool is_finished;
 
-        Transaction(util::Date *transaction_date, double paid_cash, double paid_credit);
+        Transaction(util::enums::PrimaryKeyPrefix primary_key_prefix,
+                    std::string db_code,
+                    std::unique_ptr<util::Date> transaction_date,
+                    double paid_cash,
+                    double paid_credit);
 
-        Transaction(util::Date *transaction_date);
+        Transaction(util::enums::PrimaryKeyPrefix primary_key_prefix, std::unique_ptr<util::Date> transaction_date);
+
+        virtual ~Transaction();
 
     public:
         util::Date *get_date();
@@ -32,13 +47,13 @@ namespace store
 
         double get_transaction_amount();
 
-        void add_entry(inventory::Entry *entry);
+        void add_entry(std::unique_ptr<inventory::Entry> entry);
 
         void set_paid_cash(double amount);
 
         void set_paid_credit(double amount);
 
-        std::vector<inventory::Entry *> get_all_entries();
+        std::vector<std::shared_ptr<inventory::Entry>> get_all_entries();
     };
 
     /*****************************************PURCHASETRANSACTION*****************************************/
@@ -46,43 +61,36 @@ namespace store
     class PurchaseTransaction : public Transaction
     {
     private:
-        static util::Table *class_table;
         std::string seller;
 
-    protected:
-        std::vector<std::string> get_insert_parameter() override;
-
-        std::vector<std::string> get_update_parameter() override;
-
     public:
-        void insert_to_db() override;
+        PurchaseTransaction(std::string seller, std::unique_ptr<util::Date> purchase_date);
 
-        void update_to_db() override;
+        PurchaseTransaction(std::string db_code,
+                            std::string seller,
+                            std::unique_ptr<util::Date> purchase_date,
+                            double paid_cash,
+                            double paid_credit);
 
-        PurchaseTransaction(std::string seller, util::Date *purchase_date);
+        ~PurchaseTransaction();
 
         std::string get_seller();
+
+        friend class util::baseclass::PurchaseTransactionCollection;
     };
 
     /*****************************************SELLINGTRANSACTION*****************************************/
 
     class SellingTransaction : public Transaction
     {
-
-    private:
-        static util::Table *class_table;
-
     public:
-        void insert_to_db() override;
+        SellingTransaction(std::unique_ptr<util::Date> transaction_date);
 
-        void update_to_db() override;
+        SellingTransaction(std::string db_code, std::unique_ptr<util::Date> transaction_date, double paid_cash, double paid_credit);
 
-        SellingTransaction(util::Date *transaction_date);
+        ~SellingTransaction();
 
-    protected:
-        std::vector<std::string> get_insert_parameter() override;
-
-        std::vector<std::string> get_update_parameter() override;
+        friend class util::baseclass::SellingTransactionCollection;
     };
 };
 #endif

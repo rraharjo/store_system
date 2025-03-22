@@ -3,28 +3,41 @@
 #include "inventory/assets/asset.hpp"
 #ifndef EQUIPMENTINVENTORY_HPP
 #define EQUIPMENTINVENTORY_HPP
+namespace util
+{
+    namespace baseclass
+    {
+        class EquipmentCollection;
+    }
+}
+
 namespace inventory
 {
     class Equipment : public Asset
     {
     private:
-        util::DepreciationMethod *depreciation_method;
-
-    protected:
-        void add_existing_purchase_entry(PurchaseEntry *entry) override;
-
-        std::vector<std::string> get_insert_parameter() override;
+        std::unique_ptr<util::DepreciationMethod> depreciation_method;
 
     public:
-        static std::vector<Asset *> generate_from_database();
-
         void set_total_value(double new_value) override;
 
-        Equipment(std::string db_code, std::string name, std::string item_code,
-                  double total_value, double residual_value, int year_useful_life, 
-                  util::Date *date_bought,  util::Date *last_depreciation_date, util::Date *date_sold);
+        Equipment(std::string db_code,
+                  std::string name,
+                  std::string item_code,
+                  double total_value,
+                  double residual_value,
+                  int year_useful_life,
+                  std::unique_ptr<util::Date> date_bought,
+                  std::unique_ptr<util::Date> last_depreciation_date,
+                  std::unique_ptr<util::Date> date_sold);
 
-        Equipment(std::string name, std::string item_code, double residual_value, int year_useful_life, util::Date *date_bought);
+        Equipment(std::string name,
+                  std::string item_code,
+                  double residual_value,
+                  int year_useful_life,
+                  std::unique_ptr<util::Date> date_bought);
+
+        ~Equipment();
 
         double get_reduced_value_at_year(int year) override;
 
@@ -41,6 +54,8 @@ namespace inventory
         double get_current_accumulated_depreciation();
 
         double get_current_value();
+
+        friend class util::baseclass::EquipmentCollection;
     };
 }
 

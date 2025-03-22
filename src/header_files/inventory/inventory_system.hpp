@@ -1,6 +1,8 @@
 #include "./assets/inventory.hpp"
 #include "./assets/equipment.hpp"
 #include "accounting/accounting_system.hpp"
+#include "util/class/equipment_collection.hpp"
+#include "util/class/inventories_collection.hpp"
 #include "util/factory/transaction_factory.hpp"
 #ifndef INVENTORYSYSTEM_HPP
 #define INVENTORYSYSTEM_HPP
@@ -9,37 +11,40 @@ namespace inventory
     class InventorySystem
     {
     private:
-        static InventorySystem *instance;
+        static std::unique_ptr<InventorySystem> instance;
+
         accounting::AccountingSystem *a_system;
-        std::map<std::string, Inventory *> sellables;
-        std::map<std::string, Asset *> assets; 
+        std::unique_ptr<util::baseclass::EquipmentCollection> equipments;
+        std::unique_ptr<util::baseclass::InventoryCollection> inventories;
 
         InventorySystem();
 
         void add_existing_asset(Asset *);
 
         void add_existing_inventory(Inventory *);
+
     public:
-    
         static InventorySystem *get_instance();
 
-        Asset *get_property(std::string db_code);
+        ~InventorySystem();
 
-        Inventory *get_inventory(std::string db_code);
+        std::unique_ptr<Asset> get_property(std::string db_code);
 
-        std::vector<Inventory *> get_inventory();
+        std::unique_ptr<Inventory> get_inventory(std::string db_code);
 
-        std::vector<Asset *> get_assets();
+        std::vector<std::unique_ptr<Inventory>> get_inventory();
+
+        std::vector<std::unique_ptr<Asset>> get_assets();
 
         void set_a_system(accounting::AccountingSystem *a_system);
 
-        double sell_sellables(Entry *new_entry); // return the COGS
+        double sell_sellables(std::shared_ptr<Entry> new_entry); // return the COGS
 
-        void purchase_sellables(Entry *new_entry);
+        void purchase_sellables(std::shared_ptr<Entry> new_entry);
 
-        double sell_properties(Entry *new_entry);
+        double sell_properties(std::shared_ptr<Entry> new_entry);
 
-        void purchase_properties(Entry *new_entry);
+        void purchase_properties(std::shared_ptr<Entry> new_entry);
 
         void add_new_item(Inventory *new_sellable);
 

@@ -12,5 +12,12 @@ External libraries:
   -> add include file (no Lib or .cpp files) during compilation (e.g. ".vscode/tasks.json")
 
 Loaded data:
-assets and its purchase entries
-inventories and its purchase entries
+None (use LRU maybe ?)
+
+pointer notes:
+a function returns a raw pointer: ownership belongs to the function
+a function returns a unique_ptr: ownership belongs to the caller
+a function returns a shared_ptr: both parties have ownership
+a function request a raw pointer: ownership belongs to caller
+a function request a unique_ptr: ownership belongs to function
+a function request a shared_ptr: both parties have ownership

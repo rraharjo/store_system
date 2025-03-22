@@ -1,69 +1,73 @@
 #include "inventory/assets/asset.hpp"
 using namespace inventory;
 
-util::Table *Asset::class_table = util::AssetsTable::get_instance();
-
-void Asset::insert_to_db()
-{
-    this->insert_to_db_with_table(Asset::class_table);
-};
-
-void Asset::update_to_db()
-{
-    this->update_to_db_with_table(Asset::class_table);
-};
-
-Asset::Asset(std::string db_code, std::string name, std::string item_code,
-             double total_value, double residual_value, int year_useful_life,
-             util::Date *date_bought, util::Date *last_depreciation_date, util::Date *date_sold)
-    : Item(name, item_code)
+Asset::Asset(util::enums::PrimaryKeyPrefix primary_key_prefix,
+             std::string db_code,
+             std::string name,
+             std::string item_code,
+             double total_value,
+             double residual_value,
+             int year_useful_life,
+             std::unique_ptr<util::Date> date_bought,
+             std::unique_ptr<util::Date> last_depreciation_date,
+             std::unique_ptr<util::Date> date_sold)
+    : Item(primary_key_prefix, name, item_code)
 {
     this->set_db_code(db_code);
     this->name = name;
     this->value = total_value;
     this->residual_value = residual_value;
     this->year_useful_life = year_useful_life;
-    this->date_bought = date_bought;
-    this->last_depreciation_date = last_depreciation_date;
-    this->expiry_date = date_sold;
+    this->date_bought = std::move(date_bought);
+    this->last_depreciation_date = std::move(last_depreciation_date);
+    this->expiry_date = std::move(date_sold);
 }
 
-Asset::Asset(std::string name, std::string item_code, double residual_value, int year_useful_life, util::Date *date_bought)
-    : Asset("", name, item_code, 0, residual_value, year_useful_life, date_bought, NULL, NULL)
+Asset::Asset(util::enums::PrimaryKeyPrefix primary_key_prefix,
+             std::string name,
+             std::string item_code,
+             double residual_value,
+             int year_useful_life,
+             std::unique_ptr<util::Date> date_bought)
+    : Asset(primary_key_prefix,
+            "",
+            name,
+            item_code,
+            0,
+            residual_value,
+            year_useful_life,
+            std::move(date_bought),
+            NULL,
+            NULL)
 {
 }
 
-void Asset::add_existing_purchase_entry(PurchaseEntry *entry)
+Asset::~Asset()
 {
-    Item::add_existing_purchase_entry(entry);
+#ifdef DEBUG
+    std::cout << "Deleting Asset" << std::endl;
+#endif
 }
 
-std::vector<std::string> Asset::get_update_parameter()
+void Asset::add_existing_purchase_entry(std::unique_ptr<PurchaseEntry> entry)
 {
-    std::vector<std::string> args;
-    args.push_back(this->name);
-    args.push_back(std::to_string(this->get_total_value()));
-    args.push_back(std::to_string(this->get_residual_value()));
-    args.push_back(std::to_string(this->get_year_useful_life()));
-    args.push_back(this->get_date_bought()->to_db_format());
-    args.push_back(this->get_last_depreciation_date() ? this->get_last_depreciation_date()->to_db_format() : "NULL");
-    args.push_back(this->get_expiry_date() ? this->get_expiry_date()->to_db_format() : "NULL");
-    return args;
-};
+    Item::add_existing_purchase_entry(std::move(entry));
+}
 
-double Asset::sell_items(SellingEntry *entry)
+double Asset::sell_items(std::shared_ptr<SellingEntry> entry)
 {
-    this->selling_history->add_entry(entry);
-    this->expiry_date = entry->get_transaction_date();
-    this->update_to_db();
+    std::shared_ptr<Entry> to_add(entry);
+    this->selling_history->add_entry(to_add);
+    util::Date *new_date = new util::Date(*(entry->get_transaction_date()));
+    this->expiry_date.reset(new_date);
     return this->get_total_value();
 }
 
-void Asset::add_purchase(PurchaseEntry *entry)
+void Asset::add_purchase(std::shared_ptr<PurchaseEntry> entry)
 {
+    std::shared_ptr<Entry> to_add(entry);
     set_total_value(this->value + entry->get_price());
-    this->purchase_history->add_entry(entry);
-    this->update_to_db();
+    this->purchase_history->add_entry(to_add);
 }
 
 double Asset::get_total_value()
@@ -83,17 +87,17 @@ int Asset::get_year_useful_life()
 
 util::Date *Asset::get_date_bought()
 {
-    return this->date_bought;
+    return this->date_bought.get();
 }
 
 util::Date *Asset::get_last_depreciation_date()
 {
-    return this->last_depreciation_date;
+    return this->last_depreciation_date.get();
 }
 
 util::Date *Asset::get_expiry_date()
 {
-    return this->expiry_date;
+    return this->expiry_date.get();
 }
 
 double Asset::get_current_value()
@@ -106,10 +110,10 @@ void Asset::set_total_value(double new_value)
     this->value = new_value;
 }
 
-void Asset::set_last_depreciation_date(util::Date *depreciation_date)
+void Asset::set_last_depreciation_date(std::unique_ptr<util::Date> new_date)
 {
-    this->last_depreciation_date = depreciation_date;
-    this->update_to_db();
+    this->last_depreciation_date.reset();
+    this->last_depreciation_date = std::move(new_date);
 }
 
 std::string Asset::to_string()

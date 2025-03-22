@@ -18,6 +18,7 @@ namespace util
         Date();
         Date(std::string date_string);
         Date(std::string date_string, std::string format);
+        Date(const Date &date);
         std::string to_string();
         std::string to_db_format();
         bool is_leap_year();

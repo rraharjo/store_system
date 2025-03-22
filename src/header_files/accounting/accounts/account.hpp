@@ -8,7 +8,7 @@
 namespace accounting
 {
 
-    class Account
+    class __declspec(deprecated("**Account class is deprecated**")) Account
     {
     private:
         bool debit;

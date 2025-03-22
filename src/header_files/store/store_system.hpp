@@ -1,4 +1,7 @@
+#include <memory>
 #include "store/transaction/transaction.hpp"
+#include "util/class/purchase_transaction_collection.hpp"
+#include "util/class/selling_transaction_collection.hpp"
 #include "inventory/inventory_system.hpp"
 #include "accounting/accounting_system.hpp"
 #include "util/factory/transaction_factory.hpp"
@@ -9,9 +12,9 @@ namespace store
     class StoreSystem
     {
     private:
-        static StoreSystem *instance;
-        std::vector<PurchaseTransaction *> purchase_transactions;
-        std::vector<SellingTransaction *> selling_transactions;
+        static std::unique_ptr<StoreSystem> instance;
+        std::unique_ptr<util::baseclass::PurchaseTransactionCollection> purchase_transactions;
+        std::unique_ptr<util::baseclass::SellingTransactionCollection> selling_transactions;
         accounting::AccountingSystem *a_system;
         inventory::InventorySystem *i_system;
 
@@ -19,6 +22,8 @@ namespace store
 
     public:
         static StoreSystem *get_instance();
+
+        ~StoreSystem();
 
         void sell_item(SellingTransaction *sell_transaction);
 
@@ -34,11 +39,11 @@ namespace store
 
         void end_year_adjustment();
 
-        std::vector<inventory::Inventory *> get_inventory();
+        std::vector<std::unique_ptr<inventory::Inventory>> get_inventory();
 
-        inventory::Inventory *get_inventory(std::string db_code);
+        std::unique_ptr<inventory::Inventory> get_inventory(std::string db_code);
 
-        std::vector<inventory::Asset *> get_assets();
+        std::vector<std::unique_ptr<inventory::Asset>> get_assets();
 
         std::string to_string_inv();
 
