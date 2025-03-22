@@ -22,7 +22,7 @@ void AccountingSystem::add_existing_transaction(Transaction *transaction)
     this->add_transaction(transaction);
 }
 
-void AccountingSystem::add_entry(Entry *entry)
+void AccountingSystem::add_entry(std::shared_ptr<Entry> entry)
 {
     std::unique_ptr<util::baseclass::HasTable> item_from_db = NULL;
     try
@@ -35,7 +35,7 @@ void AccountingSystem::add_entry(Entry *entry)
         this->t_accounts->insert_new_item(item_from_db.get());
     }
     std::unique_ptr<accounting::TAccount> t_account_from_db((accounting::TAccount *)item_from_db.release());
-    t_account_from_db->add_entry(entry);
+    t_account_from_db->add_entry(entry.get());
     this->t_accounts->update_existing_item(t_account_from_db.get());
 }
 
@@ -51,11 +51,11 @@ AccountingSystem *AccountingSystem::get_instance()
 void AccountingSystem::add_transaction(Transaction *transaction)
 {
     this->transactions->insert_new_item(transaction);
-    for (Entry *entry : transaction->get_debit_entries())
+    for (std::shared_ptr<Entry> entry : transaction->get_debit_entries())
     {
         this->add_entry(entry);
     }
-    for (Entry *entry : transaction->get_credit_entries())
+    for (std::shared_ptr<Entry> entry : transaction->get_credit_entries())
     {
         this->add_entry(entry);
     }
@@ -71,11 +71,10 @@ void AccountingSystem::end_year_adjustment()
     {
         temporary_accounts.push_back((TAccount *)item.get());
     }
-    accounting::Transaction *close_the_book =
+    std::unique_ptr<accounting::Transaction> close_the_book =
         util::factory::ClosingTemporaryAccountsFactory(now, transaction_title, temporary_accounts)
             .create_transaction();
-    this->add_transaction(close_the_book);
-    delete close_the_book;
+    this->add_transaction(close_the_book.get());
 }
 
 std::string AccountingSystem::to_string()

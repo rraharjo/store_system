@@ -145,11 +145,10 @@ void InventorySystem::apply_depreciation(std::string asset_db_code)
     util::Date *new_depreciation_date = new util::Date();
     asset->set_last_depreciation_date(new_depreciation_date);
     std::string acct_transaction_title = "Incurred depreciation expense";
-    accounting::Transaction *new_transaction =
+    std::unique_ptr<accounting::Transaction> new_transaction =
         util::factory::ApplyDepreciationFactory(now, acct_transaction_title, asset_db_code, depreciation_amt_this_year)
             .create_transaction();
-    this->a_system->add_transaction(new_transaction);
-    delete new_transaction;
+    this->a_system->add_transaction(new_transaction.get());
 }
 
 void InventorySystem::apply_all_depreciation()

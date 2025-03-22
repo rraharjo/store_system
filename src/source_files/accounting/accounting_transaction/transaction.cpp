@@ -58,24 +58,14 @@ util::Date *Transaction::get_transaction_date()
     return this->transaction_date.get();
 }
 
-std::vector<Entry *> Transaction::get_debit_entries()
+std::vector<std::shared_ptr<Entry>> Transaction::get_debit_entries()
 {
-    std::vector<Entry *> to_ret;
-    for (std::shared_ptr<Entry> shared : this->debit_entries)
-    {
-        to_ret.push_back(shared.get());
-    }
-    return to_ret;
+    return this->debit_entries;
 }
 
-std::vector<Entry *> Transaction::get_credit_entries()
+std::vector<std::shared_ptr<Entry>> Transaction::get_credit_entries()
 {
-    std::vector<Entry *> to_ret;
-    for (std::shared_ptr<Entry> shared : this->credit_entries)
-    {
-        to_ret.push_back(shared.get());
-    }
-    return to_ret;
+    return this->credit_entries;
 }
 
 double Transaction::get_debit_amount()

@@ -31,15 +31,15 @@ namespace util
             };
             std::vector<std::string> res = this->table->insert_row(parameter);
             Collection::set_db_code(new_transaction, res[0]);
-            for (accounting::Entry *new_entry : new_transaction->get_debit_entries())
+            for (std::shared_ptr<accounting::Entry> new_entry : new_transaction->get_debit_entries())
             {
                 new_entry->set_transaction_db(new_transaction->get_db_code());
-                this->entries_collection.get()->insert_new_item(new_entry);
+                this->entries_collection.get()->insert_new_item(new_entry.get());
             }
-            for (accounting::Entry *new_entry : new_transaction->get_credit_entries())
+            for (std::shared_ptr<accounting::Entry>new_entry : new_transaction->get_credit_entries())
             {
                 new_entry->set_transaction_db(new_transaction->get_db_code());
-                this->entries_collection.get()->insert_new_item(new_entry);
+                this->entries_collection.get()->insert_new_item(new_entry.get());
             }
         };
 
@@ -52,13 +52,13 @@ namespace util
                 existing_transaction->get_transaction_date()->to_db_format(),
                 existing_transaction->get_entity_id() == "" ? "NULL" : existing_transaction->get_entity_id(),
             };
-            for (accounting::Entry *existing_entry : existing_transaction->get_debit_entries())
+            for (std::shared_ptr<accounting::Entry> existing_entry : existing_transaction->get_debit_entries())
             {
-                this->entries_collection.get()->insert_new_item(existing_entry);
+                this->entries_collection.get()->insert_new_item(existing_entry.get());
             }
-            for (accounting::Entry *existing_entry : existing_transaction->get_credit_entries())
+            for (std::shared_ptr<accounting::Entry> existing_entry : existing_transaction->get_credit_entries())
             {
-                this->entries_collection.get()->insert_new_item(existing_entry);
+                this->entries_collection.get()->insert_new_item(existing_entry.get());
             }
         };
 

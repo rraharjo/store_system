@@ -18,7 +18,7 @@ namespace accounting
 
         AccountingSystem();
 
-        void add_entry(Entry *entry);
+        void add_entry(std::shared_ptr<Entry> entry);
 
         void add_existing_transaction(Transaction *transaction);
 

@@ -54,17 +54,15 @@ void StoreSystem::sell_item(SellingTransaction *selling_transaction)
     util::Date *transaction_date = new util::Date();
     std::string inc_rev_desc = "Selling inventory";
     std::string inc_cogs_desc = "Increase cost of goods sold";
-    accounting::Transaction *acct_transaction =
+    std::unique_ptr<accounting::Transaction> acct_transaction =
         util::factory::GoodsSellingFactory(transaction_date, inc_rev_desc, selling_transaction->get_db_code(), sell_amount,
                                            selling_transaction->get_paid_cash(), selling_transaction->get_paid_credit())
             .create_transaction();
-    accounting::Transaction *acct_transaction_2 =
+    std::unique_ptr<accounting::Transaction> acct_transaction_2 =
         util::factory::GoodsSoldCOGSFactory(transaction_date, inc_cogs_desc, selling_transaction->get_db_code(), cogs)
             .create_transaction();
-    this->a_system->add_transaction(acct_transaction);
-    this->a_system->add_transaction(acct_transaction_2);
-    delete acct_transaction;
-    delete acct_transaction_2;
+    this->a_system->add_transaction(acct_transaction.get());
+    this->a_system->add_transaction(acct_transaction_2.get());
 }
 
 void StoreSystem::buy_item(PurchaseTransaction *purchase_transaction)
@@ -79,12 +77,11 @@ void StoreSystem::buy_item(PurchaseTransaction *purchase_transaction)
     }
     util::Date *transaction_date = new util::Date();
     std::string description = "Purchase inventory";
-    accounting::Transaction *acct_transaction =
+    std::unique_ptr<accounting::Transaction> acct_transaction =
         util::factory::GoodsPurchaseFactory(transaction_date, description, purchase_transaction->get_db_code(),
                                             purchase_amount, purchase_transaction->get_paid_cash(), purchase_transaction->get_paid_credit())
             .create_transaction();
-    this->a_system->add_transaction(acct_transaction);
-    delete acct_transaction;
+    this->a_system->add_transaction(acct_transaction.get());
 }
 
 void StoreSystem::capitalize_asset(PurchaseTransaction *purchase_transaction)
@@ -96,17 +93,14 @@ void StoreSystem::capitalize_asset(PurchaseTransaction *purchase_transaction)
     {
         amount += entry->get_price();
         this->i_system->purchase_properties(entry);
-        // amount is wrong
-        // entry is deleted on purchase_properties
     }
     util::Date *transaction_date = new util::Date();
     std::string description = "Purchase asset";
-    accounting::Transaction *acct_transaction =
+    std::unique_ptr<accounting::Transaction> acct_transaction =
         util::factory::BuyEquipmentFactory(transaction_date, description, purchase_transaction->get_db_code(),
                                            amount, purchase_transaction->get_paid_cash(), purchase_transaction->get_paid_credit())
             .create_transaction();
-    this->a_system->add_transaction(acct_transaction);
-    delete acct_transaction;
+    this->a_system->add_transaction(acct_transaction.get());
 }
 void StoreSystem::dispose_asset(SellingTransaction *selling_transaction)
 { // one transaction one property
@@ -125,13 +119,12 @@ void StoreSystem::dispose_asset(SellingTransaction *selling_transaction)
     }
     util::Date *transaction_date = new util::Date();
     std::string description = "Asset disposal";
-    accounting::Transaction *acct_transaction =
+    std::unique_ptr<accounting::Transaction> acct_transaction =
         util::factory::SellEquipmentFactory(transaction_date, description, selling_transaction->get_db_code(),
                                             to_dispose->get_current_accumulated_depreciation(), prop_valuation,
                                             selling_transaction->get_paid_cash(), selling_transaction->get_paid_credit())
             .create_transaction();
-    this->a_system->add_transaction(acct_transaction);
-    delete acct_transaction;
+    this->a_system->add_transaction(acct_transaction.get());
 }
 
 void StoreSystem::add_item(inventory::Inventory *new_sellable)

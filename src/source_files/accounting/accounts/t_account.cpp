@@ -43,7 +43,6 @@ void TAccount::add_entry(Entry *entry)
     {
         this->credit_amount += entry->get_amount();
     }
-    // this->update_to_db();
 }
 
 double TAccount::get_debit_amount()

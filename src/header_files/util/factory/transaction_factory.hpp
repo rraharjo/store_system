@@ -13,7 +13,7 @@ namespace util
             std::string transaction_name;
             std::string foreign_id;
 
-            virtual accounting::Transaction *create_transaction() = 0;
+            virtual std::unique_ptr<accounting::Transaction> create_transaction() = 0;
 
             AccountingTransactionFactory(util::Date *, std::string, std::string);
         };
@@ -26,7 +26,7 @@ namespace util
             double paid_credit;
 
         public:
-            accounting::Transaction *create_transaction() override;
+            std::unique_ptr<accounting::Transaction> create_transaction() override;
 
             GoodsPurchaseFactory(util::Date *, std::string, std::string,
                                  double purchase_amount, double paid_cash, double paid_credit);
@@ -40,7 +40,7 @@ namespace util
             double paid_credit;
 
         public:
-            accounting::Transaction *create_transaction() override;
+            std::unique_ptr<accounting::Transaction> create_transaction() override;
 
             // GoodsSellingFactory &setForeignID(std::string);
 
@@ -53,7 +53,7 @@ namespace util
             double cogs;
 
         public:
-            accounting::Transaction *create_transaction() override;
+            std::unique_ptr<accounting::Transaction> create_transaction() override;
 
             GoodsSoldCOGSFactory(util::Date *, std::string, std::string, double cogs);
         };
@@ -66,7 +66,7 @@ namespace util
             double paid_credit;
 
         public:
-            accounting::Transaction *create_transaction() override;
+            std::unique_ptr<accounting::Transaction> create_transaction() override;
 
             BuyEquipmentFactory(util::Date *, std::string, std::string,
                                 double equipment_value, double paid_cash, double paid_credit);
@@ -81,7 +81,7 @@ namespace util
             double paid_credit;
 
         public:
-            accounting::Transaction *create_transaction() override;
+            std::unique_ptr<accounting::Transaction> create_transaction() override;
 
             SellEquipmentFactory(util::Date *, std::string, std::string,
                                  double accumulated_depreciation, double initial_value, double paid_cash, double paid_credit);
@@ -93,7 +93,7 @@ namespace util
             double depreciation_amount;
 
         public:
-            accounting::Transaction *create_transaction() override;
+            std::unique_ptr<accounting::Transaction> create_transaction() override;
 
             ApplyDepreciationFactory(util::Date *, std::string, std::string, double depreciation_amount);
         };
@@ -104,7 +104,7 @@ namespace util
             double wages_amount;
 
         public:
-            accounting::Transaction *create_transaction() override;
+            std::unique_ptr<accounting::Transaction> create_transaction() override;
 
             EmployeeWagesFactory(util::Date *, std::string, std::string, double wages_amount);
         };
@@ -115,8 +115,8 @@ namespace util
             std::vector<accounting::TAccount *> t_accounts;
 
         public:
-            accounting::Transaction *create_transaction() override;
-            
+            std::unique_ptr<accounting::Transaction> create_transaction() override;
+
             ClosingTemporaryAccountsFactory(util::Date *, std::string, std::vector<accounting::TAccount *> &);
         };
     }

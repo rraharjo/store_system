@@ -39,9 +39,9 @@ namespace accounting
 
         util::Date* get_transaction_date();
 
-        std::vector<Entry *> get_debit_entries();
+        std::vector<std::shared_ptr<Entry>> get_debit_entries();
 
-        std::vector<Entry *> get_credit_entries();
+        std::vector<std::shared_ptr<Entry>> get_credit_entries();
 
         double get_debit_amount();
 
