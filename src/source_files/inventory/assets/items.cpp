@@ -18,17 +18,17 @@ Item::~Item()
 #endif
 }
 
-void Item::add_existing_purchase_entry(PurchaseEntry *entry)
+void Item::add_existing_purchase_entry(std::unique_ptr<PurchaseEntry> entry)
 {
     std::shared_ptr<Entry> to_add;
-    to_add.reset(entry);
+    to_add.reset(entry.release());
     this->purchase_history->add_entry(to_add);
 }
 
-void Item::add_existing_selling_entry(SellingEntry *entry)
+void Item::add_existing_selling_entry(std::unique_ptr<SellingEntry> entry)
 {
     std::shared_ptr<Entry> to_add;
-    to_add.reset(entry);
+    to_add.reset(entry.release());
     this->selling_history->add_entry(to_add);
 }
 

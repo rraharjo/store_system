@@ -3,7 +3,6 @@
 #include "collection.hpp"
 #include "accounting/accounting_transaction/entry.hpp"
 
-
 namespace util
 {
     namespace baseclass
@@ -19,9 +18,9 @@ namespace util
 
             void update_existing_item(HasTable *existing_item) override;
 
-            HasTable *get_from_database(std::string db_code) override;
+            std::unique_ptr<HasTable> get_from_database(std::string db_code) override;
 
-            std::vector<HasTable*> get_from_database(std::vector<util::TableCondition>& conditions) override;
+            std::vector<std::unique_ptr<HasTable>> get_from_database(std::vector<util::TableCondition> &conditions) override;
         };
     }
 }

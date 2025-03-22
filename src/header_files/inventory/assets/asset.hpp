@@ -16,7 +16,7 @@ namespace inventory
         std::unique_ptr<util::Date> last_depreciation_date;
         std::unique_ptr<util::Date> date_bought;
 
-        void add_existing_purchase_entry(PurchaseEntry *entry) override;
+        void add_existing_purchase_entry(std::unique_ptr<PurchaseEntry> entry) override;
 
         Asset(util::enums::PrimaryKeyPrefix primary_key_prefix, std::string db_code, std::string name, std::string item_code,
               double total_value, double residual_value, int year_useful_life,

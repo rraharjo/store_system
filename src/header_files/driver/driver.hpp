@@ -15,7 +15,7 @@ namespace storedriver
     class Driver
     {
     private:
-        std::shared_ptr<store::StoreSystem> s_system = NULL;
+        store::StoreSystem *s_system = NULL;
 
     protected:
         bool json_input;

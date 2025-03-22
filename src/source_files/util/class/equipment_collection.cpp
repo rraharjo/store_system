@@ -12,10 +12,11 @@ namespace util
             this->selling_history_collection = std::unique_ptr<SellingEntriesCollection>(new SellingEntriesCollection());
         }
 
-        EquipmentCollection::~EquipmentCollection(){
-            #ifdef DEBUG
+        EquipmentCollection::~EquipmentCollection()
+        {
+#ifdef DEBUG
             std::cout << "Deleting Equipment Collection" << std::endl;
-        #endif
+#endif
         }
 
         void EquipmentCollection::insert_new_item(HasTable *new_item)
@@ -62,25 +63,29 @@ namespace util
             this->table->update_row(existing_equipment->get_db_code(), parameter);
             for (std::shared_ptr<inventory::PurchaseEntry> entry : existing_equipment->get_purchase_entries())
             {
-                if (entry->get_db_code() == ""){
+                if (entry->get_db_code() == "")
+                {
                     this->purchase_history_collection->insert_new_item(entry.get());
                 }
-                else{
+                else
+                {
                     this->purchase_history_collection->update_existing_item(entry.get());
                 }
             }
             for (std::shared_ptr<inventory::SellingEntry> entry : existing_equipment->get_selling_entries())
             {
-                if (entry->get_db_code() == ""){
+                if (entry->get_db_code() == "")
+                {
                     this->selling_history_collection->insert_new_item(entry.get());
                 }
-                else{
+                else
+                {
                     this->selling_history_collection->update_existing_item(entry.get());
                 }
             }
         }
 
-        HasTable *EquipmentCollection::get_from_database(std::string db_code)
+        std::unique_ptr<HasTable> EquipmentCollection::get_from_database(std::string db_code)
         {
             std::string this_primary_key_prefix_string = util::enums::primary_key_prefix_map[this->primary_key_prefix];
             if (db_code.rfind(this_primary_key_prefix_string) != 0)
@@ -120,10 +125,11 @@ namespace util
             equal_asset_code.comparator = util::TableComparator::EQUAL;
             equal_asset_code.value = new_equipment->get_db_code();
             conditions.push_back(equal_asset_code);
-            std::vector<util::baseclass::HasTable *> purchase_entries = this->purchase_history_collection.get()->get_from_database(conditions);
-            for (util::baseclass::HasTable *purchase_entry : purchase_entries)
+            std::vector<std::unique_ptr<util::baseclass::HasTable>> purchase_entries = this->purchase_history_collection.get()->get_from_database(conditions);
+            for (std::unique_ptr<util::baseclass::HasTable> &purchase_entry : purchase_entries)
             {
-                new_equipment->add_existing_purchase_entry((inventory::PurchaseEntry *)purchase_entry);
+                std::unique_ptr<inventory::PurchaseEntry> casted_ptr((inventory::PurchaseEntry *)purchase_entry.release());
+                new_equipment->add_existing_purchase_entry(std::move(casted_ptr));
             }
 
             conditions.clear();
@@ -131,16 +137,18 @@ namespace util
             equal_asset_code.comparator = util::TableComparator::EQUAL;
             equal_asset_code.value = new_equipment->get_db_code();
             conditions.push_back(equal_asset_code);
-            std::vector<util::baseclass::HasTable *> selling_entries = this->selling_history_collection.get()->get_from_database(conditions);
-            for (util::baseclass::HasTable *selling_entry : selling_entries)
+            std::vector<std::unique_ptr<util::baseclass::HasTable>> selling_entries = this->selling_history_collection.get()->get_from_database(conditions);
+            for (std::unique_ptr<util::baseclass::HasTable> &selling_entry : selling_entries)
             {
-                new_equipment->add_existing_selling_entry((inventory::SellingEntry *)selling_entry);
+                std::unique_ptr<inventory::SellingEntry> casted_ptr((inventory::SellingEntry *)selling_entry.release());
+                new_equipment->add_existing_selling_entry(std::move(casted_ptr));
             }
-            return new_equipment;
+            std::unique_ptr<HasTable> to_ret((HasTable *)new_equipment);
+            return to_ret;
         }
-        std::vector<HasTable *> EquipmentCollection::get_from_database(std::vector<util::TableCondition> &conditions)
+        std::vector<std::unique_ptr<HasTable>> EquipmentCollection::get_from_database(std::vector<util::TableCondition> &conditions)
         {
-            std::vector<HasTable *> to_ret;
+            std::vector<std::unique_ptr<HasTable>> to_ret;
             std::vector<std::vector<std::string>> records = this->table->get_records(conditions);
             for (std::vector<std::string> &record : records)
             {
@@ -157,9 +165,17 @@ namespace util
                 {
                     sold = new util::Date(record[6], "%Y-%m-%d");
                 }
-                inventory::Equipment *equipment_from_db = new inventory::Equipment(record[0], record[1], "", std::stod(record[2]),
-                                                                                   std::stod(record[3]), std::stoi(record[4]), purchase, depreciation_date, sold);
-                to_ret.push_back(equipment_from_db);
+                inventory::Equipment *equipment_from_db = new inventory::Equipment(record[0],
+                                                                                   record[1],
+                                                                                   "",
+                                                                                   std::stod(record[2]),
+                                                                                   std::stod(record[3]),
+                                                                                   std::stoi(record[4]),
+                                                                                   purchase,
+                                                                                   depreciation_date,
+                                                                                   sold);
+                std::unique_ptr<HasTable> to_add(equipment_from_db);
+                to_ret.push_back(std::move(to_add));
             }
             return to_ret;
         }

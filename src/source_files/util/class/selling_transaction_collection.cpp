@@ -11,10 +11,11 @@ namespace util
             this->selling_entries = std::unique_ptr<SellingEntriesCollection>(new SellingEntriesCollection());
         }
 
-        SellingTransactionCollection::~SellingTransactionCollection(){
-            #ifdef DEBUG
-                std::cout << "Deleting Selling Transaction Collection" << std::endl;
-            #endif
+        SellingTransactionCollection::~SellingTransactionCollection()
+        {
+#ifdef DEBUG
+            std::cout << "Deleting Selling Transaction Collection" << std::endl;
+#endif
         }
 
         void SellingTransactionCollection::insert_new_item(HasTable *new_item)
@@ -55,7 +56,7 @@ namespace util
             }
         }
 
-        HasTable *SellingTransactionCollection::get_from_database(std::string db_code)
+        std::unique_ptr<HasTable> SellingTransactionCollection::get_from_database(std::string db_code)
         {
             std::string this_primary_key_prefix_string = util::enums::primary_key_prefix_map[this->primary_key_prefix];
             if (db_code.rfind(this_primary_key_prefix_string) != 0)
@@ -85,12 +86,14 @@ namespace util
             equal_transaction_code.comparator = util::TableComparator::EQUAL;
             equal_transaction_code.value = transaction_from_db->get_db_code();
             conditions.push_back(equal_transaction_code);
-            std::vector<util::baseclass::HasTable *> entries = this->selling_entries.get()->get_from_database(conditions);
-            for (util::baseclass::HasTable *entry : entries)
+            std::vector<std::unique_ptr<util::baseclass::HasTable>> entries = this->selling_entries.get()->get_from_database(conditions);
+            for (std::unique_ptr<util::baseclass::HasTable> &entry : entries)
             {
-                transaction_from_db->add_entry((inventory::SellingEntry *)entry);
+                std::unique_ptr<inventory::SellingEntry> to_add((inventory::SellingEntry *)entry.release());
+                transaction_from_db->add_entry(std::move(to_add));
             }
-            return transaction_from_db;
+            std::unique_ptr<HasTable> to_ret((HasTable *)transaction_from_db);
+            return std::move(to_ret);
         }
 
     };

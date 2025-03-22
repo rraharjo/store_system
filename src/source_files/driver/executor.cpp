@@ -203,8 +203,9 @@ void storedriver::PurchaseInventoryExecutor::add_purchase_entry(store::PurchaseT
     std::string item_code = item_db;
     double price = price_per_item;
     int qty = item_qty;
-    inventory::PurchaseEntry *new_entry = new inventory::PurchaseEntry(item_code, p->get_db_code(), price, qty);
-    p->add_entry(new_entry);
+    std::unique_ptr<inventory::PurchaseEntry> new_entry =
+        std::make_unique<inventory::PurchaseEntry>(item_code, p->get_db_code(), price, qty);
+    p->add_entry(std::move(new_entry));
     return;
 }
 
@@ -265,8 +266,9 @@ nlohmann::json storedriver::CapitalizeAssetExecutor::execute(store::StoreSystem 
     double capitalized_amt = (double)this->request.at("cost");
 
     store::PurchaseTransaction *new_transaction = new store::PurchaseTransaction("", trans_date);
-    inventory::PurchaseEntry *new_entry = new inventory::PurchaseEntry(item_db_code, new_transaction->get_db_code(), capitalized_amt, 1);
-    new_transaction->add_entry(new_entry);
+    std::unique_ptr<inventory::PurchaseEntry> new_entry =
+        std::make_unique<inventory::PurchaseEntry>(item_db_code, new_transaction->get_db_code(), capitalized_amt, 1);
+    new_transaction->add_entry(std::move(new_entry));
     double paid_cash = (double)this->request.at("paid_cash");
     new_transaction->set_paid_cash(paid_cash);
     new_transaction->set_paid_credit(new_transaction->get_transaction_amount() - paid_cash);
@@ -296,8 +298,9 @@ void storedriver::SellInventoryExecutor::validate_request(store::StoreSystem *s_
     {
         std::string item_code = item.at("dbcode");
         int qty = item.at("qty");
-        int available_qty = s_system->get_inventory(item_code)->get_qty();
-        double item_price = s_system->get_inventory(item_code)->get_selling_price();
+        std::unique_ptr<inventory::Inventory> inv_from_db = s_system->get_inventory(item_code);
+        int available_qty = inv_from_db->get_qty();
+        double item_price = inv_from_db->get_selling_price();
         if (qty > available_qty)
         {
             throw std::invalid_argument("Item " + item_code + ": " + std::to_string(available_qty) +
@@ -328,8 +331,9 @@ nlohmann::json storedriver::SellInventoryExecutor::execute(store::StoreSystem *s
         std::string item_code = item.at("dbcode");
         int qty = item.at("qty");
         double price = s_system->get_inventory(item_code)->get_selling_price();
-        inventory::SellingEntry *new_entry = new inventory::SellingEntry(item_code, new_transaction->get_db_code(), price, qty);
-        new_transaction->add_entry(new_entry);
+        std::unique_ptr<inventory::SellingEntry> new_entry =
+            std::make_unique<inventory::SellingEntry>(item_code, new_transaction->get_db_code(), price, qty);
+        new_transaction->add_entry(std::move(new_entry));
     }
     double paid_cash = (double)this->request.at("paid_cash");
     new_transaction->set_paid_cash(paid_cash);
@@ -355,8 +359,9 @@ nlohmann::json storedriver::SellAssetExecutor::execute(store::StoreSystem *s_sys
     double price = (double)this->request.at("price");
 
     store::SellingTransaction *new_transaction = new store::SellingTransaction(date);
-    inventory::SellingEntry *new_entry = new inventory::SellingEntry(item_code, new_transaction->get_db_code(), price, 1);
-    new_transaction->add_entry(new_entry);
+    std::unique_ptr<inventory::SellingEntry> new_entry =
+        std::make_unique<inventory::SellingEntry>(item_code, new_transaction->get_db_code(), price, 1);
+    new_transaction->add_entry(std::move(new_entry));
     double paid_cash = (double)this->request.at("paid_cash");
     new_transaction->set_paid_cash(paid_cash);
     new_transaction->set_paid_credit(new_transaction->get_transaction_amount() - paid_cash);
@@ -393,8 +398,8 @@ nlohmann::json storedriver::InventoriesInfoExecutor::execute(store::StoreSystem 
 {
     nlohmann::json to_ret;
     std::vector<nlohmann::json> data;
-    std::vector<inventory::Inventory *> inventories = s_system->get_inventory();
-    for (inventory::Inventory *item : inventories)
+    std::vector<std::unique_ptr<inventory::Inventory>> inventories = s_system->get_inventory();
+    for (std::unique_ptr<inventory::Inventory> &item : inventories)
     {
         nlohmann::json item_json;
         item_json["dbcode"] = item->get_db_code();
@@ -421,8 +426,8 @@ nlohmann::json storedriver::AssetsInfoExecutor::execute(store::StoreSystem *s_sy
 {
     nlohmann::json to_ret;
     std::vector<nlohmann::json> data;
-    std::vector<inventory::Asset *> inventories = s_system->get_assets();
-    for (inventory::Asset *item : inventories)
+    std::vector<std::unique_ptr<inventory::Asset>> inventories = s_system->get_assets();
+    for (std::unique_ptr<inventory::Asset> &item : inventories)
     {
         nlohmann::json item_json;
         item_json["dbcode"] = item->get_db_code();

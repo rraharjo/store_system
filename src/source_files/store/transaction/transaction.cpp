@@ -53,10 +53,10 @@ util::Date *Transaction::get_date()
     return this->transaction_date.get();
 }
 
-void Transaction::add_entry(inventory::Entry *entry)
+void Transaction::add_entry(std::unique_ptr<inventory::Entry> entry)
 {
     std::shared_ptr<inventory::Entry> to_add;
-    to_add.reset(entry);
+    to_add.reset(entry.release());
     this->entries.push_back(to_add);
 }
 

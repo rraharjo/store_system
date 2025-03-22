@@ -10,10 +10,11 @@ namespace util
         {
         }
 
-        PurchaseEntriesCollection::~PurchaseEntriesCollection(){
-            #ifdef DEBUG
+        PurchaseEntriesCollection::~PurchaseEntriesCollection()
+        {
+#ifdef DEBUG
             std::cout << "Deleting Purchase Entries Collection" << std::endl;
-        #endif
+#endif
         }
 
         void PurchaseEntriesCollection::insert_new_item(HasTable *new_item)
@@ -40,10 +41,12 @@ namespace util
             std::string inv_db_code, asset_db_code;
             inv_db_code = existing_entry->get_sellable_db_code();
             asset_db_code = existing_entry->get_properties_db_code();
-            if (inv_db_code == ""){
+            if (inv_db_code == "")
+            {
                 inv_db_code = "NULL";
             }
-            if (asset_db_code == ""){
+            if (asset_db_code == "")
+            {
                 asset_db_code = "NULL";
             }
             std::vector<std::string> values = {
@@ -56,7 +59,7 @@ namespace util
             this->table->update_row(existing_entry->get_db_code(), values);
         }
 
-        HasTable *PurchaseEntriesCollection::get_from_database(std::string db_code)
+        std::unique_ptr<HasTable> PurchaseEntriesCollection::get_from_database(std::string db_code)
         {
             std::string this_primary_key_prefix_string = util::enums::primary_key_prefix_map[this->primary_key_prefix];
             if (db_code.rfind(this_primary_key_prefix_string) != 0)
@@ -90,12 +93,13 @@ namespace util
                                                                                             std::stod(record[4]),
                                                                                             std::stoi(record[5]),
                                                                                             std::stoi(record[6]));
-            return purchase_entry_from_db;
+            std::unique_ptr<HasTable> to_ret((HasTable *)purchase_entry_from_db);
+            return std::move(to_ret);
         }
 
-        std::vector<HasTable *> PurchaseEntriesCollection::get_from_database(std::vector<util::TableCondition> &conditions)
+        std::vector<std::unique_ptr<HasTable>> PurchaseEntriesCollection::get_from_database(std::vector<util::TableCondition> &conditions)
         {
-            std::vector<HasTable *> to_ret;
+            std::vector<std::unique_ptr<HasTable>> to_ret;
             std::vector<std::vector<std::string>> records = this->table->get_records(conditions);
             for (std::vector<std::string> &record : records)
             {
@@ -114,7 +118,8 @@ namespace util
                                                                                                 std::stod(record[4]),
                                                                                                 std::stoi(record[5]),
                                                                                                 std::stoi(record[6]));
-                to_ret.push_back(purchase_entry_from_db);
+                std::unique_ptr<HasTable> to_add((HasTable *)purchase_entry_from_db);
+                to_ret.push_back(std::move(to_add));
             }
             return to_ret;
         }

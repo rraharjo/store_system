@@ -47,7 +47,7 @@ namespace store
 
         double get_transaction_amount();
 
-        void add_entry(inventory::Entry *entry);
+        void add_entry(std::unique_ptr<inventory::Entry> entry);
 
         void set_paid_cash(double amount);
 

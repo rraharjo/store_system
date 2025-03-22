@@ -23,7 +23,7 @@ namespace util
 
             void update_existing_item(HasTable *existing_item) override;
 
-            HasTable *get_from_database(std::string db_code) override;
+            std::unique_ptr<HasTable> get_from_database(std::string db_code) override;
         };
     }
 }

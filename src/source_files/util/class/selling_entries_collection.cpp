@@ -10,10 +10,11 @@ namespace util
         {
         }
 
-        SellingEntriesCollection::~SellingEntriesCollection(){
-            #ifdef DEBUG
+        SellingEntriesCollection::~SellingEntriesCollection()
+        {
+#ifdef DEBUG
             std::cout << "Deleting Selling Entries Collection" << std::endl;
-        #endif
+#endif
         }
 
         void SellingEntriesCollection::insert_new_item(HasTable *new_item)
@@ -32,7 +33,7 @@ namespace util
             Collection::set_db_code(new_item, result[0]);
         }
 
-        HasTable *SellingEntriesCollection::get_from_database(std::string db_code)
+        std::unique_ptr<HasTable> SellingEntriesCollection::get_from_database(std::string db_code)
         {
             std::string this_primary_key_prefix_string = util::enums::primary_key_prefix_map[this->primary_key_prefix];
             if (db_code.rfind(this_primary_key_prefix_string) != 0)
@@ -66,7 +67,8 @@ namespace util
                                                                                             std::stod(record[4]),
                                                                                             std::stoi(record[5]),
                                                                                             std::stoi(record[6]));
-            return purchase_entry_from_db;
+            std::unique_ptr<HasTable> to_ret((HasTable *)purchase_entry_from_db);
+            return std::move(to_ret);
         }
 
         void SellingEntriesCollection::update_existing_item(HasTable *existing_item)
@@ -92,9 +94,9 @@ namespace util
             this->table->update_row(existing_entry->get_db_code(), values);
         };
 
-        std::vector<HasTable *> SellingEntriesCollection::get_from_database(std::vector<util::TableCondition> &conditions)
+        std::vector<std::unique_ptr<HasTable>> SellingEntriesCollection::get_from_database(std::vector<util::TableCondition> &conditions)
         {
-            std::vector<HasTable *> to_ret;
+            std::vector<std::unique_ptr<HasTable>> to_ret;
             std::vector<std::vector<std::string>> records = this->table->get_records(conditions);
             for (std::vector<std::string> &record : records)
             {
@@ -112,7 +114,8 @@ namespace util
                                                                                              record[3],
                                                                                              std::stod(record[4]),
                                                                                              std::stoi(record[5]));
-                to_ret.push_back(selling_entry_from_db);
+                std::unique_ptr<HasTable> to_add((HasTable *)selling_entry_from_db);
+                to_ret.push_back(std::move(to_add));
             }
             return to_ret;
         }

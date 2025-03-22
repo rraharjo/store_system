@@ -28,15 +28,14 @@ Asset::Asset(util::enums::PrimaryKeyPrefix primary_key_prefix,
 
 Asset::~Asset()
 {
-
-    #ifdef DEBUG
+#ifdef DEBUG
     std::cout << "Deleting Asset" << std::endl;
 #endif
 }
 
-void Asset::add_existing_purchase_entry(PurchaseEntry *entry)
+void Asset::add_existing_purchase_entry(std::unique_ptr<PurchaseEntry> entry)
 {
-    Item::add_existing_purchase_entry(entry);
+    Item::add_existing_purchase_entry(std::move(entry));
 }
 
 double Asset::sell_items(std::shared_ptr<SellingEntry> entry)

@@ -1,16 +1,16 @@
 #include "inventory/inventory_system.hpp"
 using namespace inventory;
 
-std::shared_ptr<InventorySystem> InventorySystem::instance = NULL;
+std::unique_ptr<InventorySystem> InventorySystem::instance = NULL;
 
-std::shared_ptr<InventorySystem> InventorySystem::get_instance()
+InventorySystem *InventorySystem::get_instance()
 {
     if (InventorySystem::instance.get() == NULL)
     {
         InventorySystem::instance.reset(new InventorySystem());
         InventorySystem::instance->set_a_system(accounting::AccountingSystem::get_instance());
     }
-    return InventorySystem::instance;
+    return InventorySystem::instance.get();
 }
 
 InventorySystem::InventorySystem()
@@ -26,7 +26,7 @@ InventorySystem::~InventorySystem()
 #endif
 }
 
-void InventorySystem::set_a_system(std::shared_ptr<accounting::AccountingSystem> a_system)
+void InventorySystem::set_a_system(accounting::AccountingSystem *a_system)
 {
     this->a_system = a_system;
 }
@@ -41,77 +41,83 @@ void InventorySystem::add_existing_asset(Asset *asset)
     this->add_new_property(asset);
 }
 
-Asset *InventorySystem::get_property(std::string db_code)
+std::unique_ptr<Asset> InventorySystem::get_property(std::string db_code)
 {
-    return (Asset *)this->equipments.get()->get_from_database(db_code);
+    std::unique_ptr<util::baseclass::HasTable> from_collection = this->equipments.get()->get_from_database(db_code);
+    std::unique_ptr<Asset> to_ret((Asset *)from_collection.release());
+    return std::move(to_ret);
 }
 
-Inventory *InventorySystem::get_inventory(std::string db_code)
+std::unique_ptr<Inventory> InventorySystem::get_inventory(std::string db_code)
 {
-    return (Inventory *)this->inventories.get()->get_from_database(db_code);
+    std::unique_ptr<util::baseclass::HasTable> from_collection = this->inventories.get()->get_from_database(db_code);
+    std::unique_ptr<Inventory> to_ret((Inventory *)from_collection.release());
+    return std::move(to_ret);
 }
 
-std::vector<Inventory *> InventorySystem::get_inventory()
+std::vector<std::unique_ptr<Inventory>> InventorySystem::get_inventory()
 {
-    std::vector<Inventory *> to_ret;
+    std::vector<std::unique_ptr<Inventory>> to_ret;
     std::vector<util::TableCondition> conditions;
-    std::vector<util::baseclass::HasTable *> inventories_from_db = this->inventories.get()->get_from_database(conditions);
-    for (util::baseclass::HasTable *inventory_from_db : inventories_from_db)
+    std::vector<std::unique_ptr<util::baseclass::HasTable>> inventories_from_db = this->inventories.get()->get_from_database(conditions);
+    for (std::unique_ptr<util::baseclass::HasTable> &inventory_from_db : inventories_from_db)
     {
-        to_ret.push_back((Inventory *)inventory_from_db);
+        std::unique_ptr<Inventory> to_add((Inventory *)inventory_from_db.release());
+        to_ret.push_back(std::move(to_add));
     }
     return to_ret;
 }
 
-std::vector<Asset *> InventorySystem::get_assets()
+std::vector<std::unique_ptr<Asset>> InventorySystem::get_assets()
 {
-    std::vector<Asset *> to_ret;
+    std::vector<std::unique_ptr<Asset>> to_ret;
     std::vector<util::TableCondition> conditions;
-    std::vector<util::baseclass::HasTable *> equipments_from_db = this->equipments.get()->get_from_database(conditions);
-    for (util::baseclass::HasTable *equipment_from_db : equipments_from_db)
+    std::vector<std::unique_ptr<util::baseclass::HasTable>> equipments_from_db = this->equipments.get()->get_from_database(conditions);
+    for (std::unique_ptr<util::baseclass::HasTable> &equipment_from_db : equipments_from_db)
     {
-        to_ret.push_back((Asset *)equipment_from_db);
+        std::unique_ptr<Asset> to_add((Asset *)equipment_from_db.release());
+        to_ret.push_back(std::move(to_add));
     }
     return to_ret;
 }
 
 double InventorySystem::sell_sellables(std::shared_ptr<Entry> new_entry)
 {
-    Inventory *inventory = (Inventory *)this->inventories->get_from_database(new_entry->get_sellable_db_code());
+    std::unique_ptr<util::baseclass::HasTable> base = this->inventories->get_from_database(new_entry->get_sellable_db_code());
+    std::unique_ptr<Inventory> inventory((Inventory *)base.release());
     std::shared_ptr<SellingEntry> casted_entry = std::static_pointer_cast<SellingEntry>(new_entry);
     double to_ret = inventory->sell_items(casted_entry);
-    this->inventories->update_existing_item(inventory);
-    delete inventory;
+    this->inventories->update_existing_item(inventory.get());
     return to_ret;
 }
 
 void InventorySystem::purchase_sellables(std::shared_ptr<Entry> new_entry)
 {
-    Inventory *inventory = (Inventory *)this->inventories->get_from_database(new_entry->get_sellable_db_code());
+    std::unique_ptr<util::baseclass::HasTable> base = this->inventories->get_from_database(new_entry->get_sellable_db_code());
+    std::unique_ptr<Inventory> inventory((Inventory *)base.release());
     std::shared_ptr<PurchaseEntry> casted_entry = std::static_pointer_cast<PurchaseEntry>(new_entry);
     inventory->add_purchase(casted_entry);
-    delete inventory;
 }
 
 double InventorySystem::sell_properties(std::shared_ptr<Entry> new_entry)
 {
-    Equipment *to_sell = (Equipment *)this->equipments.get()->get_from_database(
+    std::unique_ptr<util::baseclass::HasTable> base = this->equipments.get()->get_from_database(
         new_entry->get_properties_db_code());
+    std::unique_ptr<Equipment> to_sell((Equipment *)base.release());
     std::shared_ptr<SellingEntry> casted_entry = std::static_pointer_cast<SellingEntry>(new_entry);
     double to_ret = to_sell->sell_items(casted_entry);
-    this->equipments->update_existing_item(to_sell);
-    delete to_sell;
+    this->equipments->update_existing_item(to_sell.get());
     return to_ret;
 }
 
 void InventorySystem::purchase_properties(std::shared_ptr<Entry> new_entry)
 {
-    Equipment *to_sell = (Equipment *)this->equipments.get()->get_from_database(
+    std::unique_ptr<util::baseclass::HasTable> base = this->equipments.get()->get_from_database(
         new_entry->get_properties_db_code());
+    std::unique_ptr<Equipment> to_sell((Equipment *)base.release());
     std::shared_ptr<PurchaseEntry> casted_entry = std::static_pointer_cast<PurchaseEntry>(new_entry);
     to_sell->add_purchase(casted_entry);
-    this->equipments->update_existing_item(to_sell);
-    delete to_sell;
+    this->equipments->update_existing_item(to_sell.get());
 }
 
 void InventorySystem::add_new_item(Inventory *new_sellable)
@@ -126,7 +132,8 @@ void InventorySystem::add_new_property(Asset *new_depreciable)
 
 void InventorySystem::apply_depreciation(std::string asset_db_code)
 {
-    Asset *asset = (Asset *)this->equipments->get_from_database(asset_db_code);
+    std::unique_ptr<util::baseclass::HasTable> base = this->equipments->get_from_database(asset_db_code);
+    std::unique_ptr<Asset> asset((Asset *)base.release());
     util::Date *now = new util::Date();
     if ((!asset->get_last_depreciation_date() && now->diff_years_to(asset->get_date_bought()) >= 0) ||
         now->diff_years_to(asset->get_last_depreciation_date()) >= 0)
@@ -142,18 +149,16 @@ void InventorySystem::apply_depreciation(std::string asset_db_code)
         util::factory::ApplyDepreciationFactory(now, acct_transaction_title, asset_db_code, depreciation_amt_this_year)
             .create_transaction();
     this->a_system->add_transaction(new_transaction);
-    delete asset;
     delete new_transaction;
 }
 
 void InventorySystem::apply_all_depreciation()
 {
     std::vector<util::TableCondition> conditions;
-    std::vector<util::baseclass::HasTable *> all = this->equipments->get_from_database(conditions);
-    for (util::baseclass::HasTable *single : all)
+    std::vector<std::unique_ptr<util::baseclass::HasTable>> all = this->equipments->get_from_database(conditions);
+    for (std::unique_ptr<util::baseclass::HasTable> &single : all)
     {
         this->apply_depreciation(single->get_db_code());
-        delete single;
     }
 }
 

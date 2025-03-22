@@ -14,15 +14,15 @@ void check_transaction(Transaction *transaction)
     }
 }
 
-std::shared_ptr<StoreSystem> StoreSystem::instance = NULL;
+std::unique_ptr<StoreSystem> StoreSystem::instance = NULL;
 
-std::shared_ptr<StoreSystem> StoreSystem::get_instance()
+StoreSystem *StoreSystem::get_instance()
 {
     if (StoreSystem::instance.get() == NULL)
     {
         StoreSystem::instance.reset(new StoreSystem());
     }
-    return StoreSystem::instance;
+    return StoreSystem::instance.get();
 }
 
 StoreSystem::StoreSystem()
@@ -72,7 +72,6 @@ void StoreSystem::buy_item(PurchaseTransaction *purchase_transaction)
     check_transaction(purchase_transaction);
     this->purchase_transactions->insert_new_item(purchase_transaction);
     double purchase_amount = 0;
-    // entry does not have inventory code
     for (std::shared_ptr<inventory::Entry> entry : purchase_transaction->get_all_entries())
     {
         purchase_amount += entry->get_price() * entry->get_qty();
@@ -113,7 +112,7 @@ void StoreSystem::dispose_asset(SellingTransaction *selling_transaction)
 { // one transaction one property
     check_transaction(selling_transaction);
     this->selling_transactions->insert_new_item(selling_transaction);
-    inventory::Equipment *to_dispose = NULL;
+    std::unique_ptr<inventory::Equipment> to_dispose = NULL;
     double sell_amount = 0.0;
     double prop_valuation = 0.0;
     for (std::shared_ptr<inventory::Entry> entry : selling_transaction->get_all_entries())
@@ -121,7 +120,8 @@ void StoreSystem::dispose_asset(SellingTransaction *selling_transaction)
         sell_amount += entry->get_price();
         entry->set_transaction_date(selling_transaction->get_date());
         prop_valuation += this->i_system->sell_properties(entry);
-        to_dispose = (inventory::Equipment *)this->i_system->get_property(entry->get_properties_db_code()); // possible mem_leak
+        std::unique_ptr<util::baseclass::HasTable> from_collection = this->i_system->get_property(entry->get_properties_db_code());
+        to_dispose.reset((inventory::Equipment *)from_collection.release());
     }
     util::Date *transaction_date = new util::Date();
     std::string description = "Asset disposal";
@@ -131,7 +131,6 @@ void StoreSystem::dispose_asset(SellingTransaction *selling_transaction)
                                             selling_transaction->get_paid_cash(), selling_transaction->get_paid_credit())
             .create_transaction();
     this->a_system->add_transaction(acct_transaction);
-    delete to_dispose;
     delete acct_transaction;
 }
 
@@ -151,19 +150,19 @@ void StoreSystem::end_year_adjustment()
     this->a_system->end_year_adjustment();
 }
 
-inventory::Inventory *StoreSystem::get_inventory(std::string db_code)
+std::unique_ptr<inventory::Inventory> StoreSystem::get_inventory(std::string db_code)
 {
-    return this->i_system->get_inventory(db_code);
+    return std::move(this->i_system->get_inventory(db_code));
 }
 
-std::vector<inventory::Inventory *> StoreSystem::get_inventory()
+std::vector<std::unique_ptr<inventory::Inventory>> StoreSystem::get_inventory()
 {
     return this->i_system->get_inventory();
 }
 
-std::vector<inventory::Asset *> StoreSystem::get_assets()
+std::vector<std::unique_ptr<inventory::Asset>> StoreSystem::get_assets()
 {
-    return this->i_system->get_assets();
+    return std::move(this->i_system->get_assets());
 }
 
 std::string StoreSystem::to_string_inv()

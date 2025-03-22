@@ -47,7 +47,7 @@ namespace accounting
 
         double get_credit_amount();
 
-        void add_entry(Entry *entry);
+        void add_entry(std::unique_ptr<Entry> entry);
 
         bool is_balanced();
 

@@ -7,12 +7,12 @@ namespace util
         //Object returned by collection does not belong to the collection class anymore
         Collection::Collection(util::enums::PrimaryKeyPrefix primary_key_prefix, util::Table *table) : primary_key_prefix(primary_key_prefix), table(table) {}
 
-        std::vector<util::baseclass::HasTable *> Collection::get_from_database(std::vector<util::TableCondition> &conditions)
+        std::vector<std::unique_ptr<util::baseclass::HasTable>> Collection::get_from_database(std::vector<util::TableCondition> &conditions)
         {
             std::string exception_msg = util::enums::primary_key_prefix_map[this->primary_key_prefix] +
                                         " get_from_database with conditions is unimplemented...";
             throw std::runtime_error(exception_msg);
-            return std::vector<util::baseclass::HasTable *>();
+            return std::vector<std::unique_ptr<util::baseclass::HasTable>>();
         }
 
         Collection::~Collection(){

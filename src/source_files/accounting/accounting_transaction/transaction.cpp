@@ -98,22 +98,22 @@ double Transaction::get_credit_amount()
     return total;
 }
 
-void Transaction::add_entry(Entry *entry)
+void Transaction::add_entry(std::unique_ptr<Entry> entry)
 {
+    entry->set_transaction_db(this->get_db_code());
+    entry->set_transaction_title(this->name);
     if (entry->is_debit())
     {
         std::shared_ptr<Entry> to_add;
-        to_add.reset(entry);
+        to_add.reset(entry.release());
         this->debit_entries.push_back(to_add);
     }
     else
     {
         std::shared_ptr<Entry> to_add;
-        to_add.reset(entry);
+        to_add.reset(entry.release());
         this->credit_entries.push_back(to_add);
     }
-    entry->set_transaction_db(this->get_db_code());
-    entry->set_transaction_title(this->name);
 }
 
 bool Transaction::is_balanced()

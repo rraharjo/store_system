@@ -11,10 +11,11 @@ namespace util
         {
         }
 
-        AccountingEntryCollection::~AccountingEntryCollection(){
-            #ifdef DEBUG
-                std::cout << "Deleting Accounting Entry Collection" << std::endl;
-            #endif
+        AccountingEntryCollection::~AccountingEntryCollection()
+        {
+#ifdef DEBUG
+            std::cout << "Deleting Accounting Entry Collection" << std::endl;
+#endif
         }
 
         void AccountingEntryCollection::insert_new_item(HasTable *new_item)
@@ -47,7 +48,7 @@ namespace util
             this->table->update_row(existing_entry->get_db_code(), parameter);
         }
 
-        HasTable *AccountingEntryCollection::get_from_database(std::string db_code)
+        std::unique_ptr<HasTable> AccountingEntryCollection::get_from_database(std::string db_code)
         {
             if (db_code.rfind(util::enums::primary_key_prefix_map[this->primary_key_prefix]) != 0)
             {
@@ -71,12 +72,13 @@ namespace util
                                                                  record[2] == "t" ? true : false,
                                                                  std::stod(record[3]),
                                                                  util::enums::get_t_account_enum(record[4]));
-            return new_entry;
+            std::unique_ptr<HasTable> to_ret((HasTable *)new_entry);
+            return to_ret;
         }
 
-        std::vector<HasTable *> AccountingEntryCollection::get_from_database(std::vector<util::TableCondition> &conditions)
+        std::vector<std::unique_ptr<HasTable>> AccountingEntryCollection::get_from_database(std::vector<util::TableCondition> &conditions)
         {
-            std::vector<HasTable *> to_ret;
+            std::vector<std::unique_ptr<HasTable>> to_ret;
             std::vector<std::vector<std::string>> records = this->table->get_records(conditions);
             for (std::vector<std::string> &record : records)
             {
@@ -85,7 +87,8 @@ namespace util
                                                                      record[2] == "t" ? true : false,
                                                                      std::stod(record[3]),
                                                                      util::enums::get_t_account_enum(record[4]));
-                to_ret.push_back(new_entry);
+                std::unique_ptr<HasTable> to_add((HasTable *)new_entry);
+                to_ret.push_back(std::move(to_add));
             }
             return to_ret;
         }

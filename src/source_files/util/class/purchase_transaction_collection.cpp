@@ -11,10 +11,11 @@ namespace util
             this->purchase_entries = std::unique_ptr<PurchaseEntriesCollection>(new PurchaseEntriesCollection());
         }
 
-        PurchaseTransactionCollection::~PurchaseTransactionCollection(){
-            #ifdef DEBUG
-                std::cout << "Deleting Purchase Transaction Collection" << std::endl;
-            #endif
+        PurchaseTransactionCollection::~PurchaseTransactionCollection()
+        {
+#ifdef DEBUG
+            std::cout << "Deleting Purchase Transaction Collection" << std::endl;
+#endif
         }
 
         void PurchaseTransactionCollection::insert_new_item(HasTable *new_item)
@@ -58,7 +59,7 @@ namespace util
             }
         }
 
-        HasTable *PurchaseTransactionCollection::get_from_database(std::string db_code)
+        std::unique_ptr<HasTable> PurchaseTransactionCollection::get_from_database(std::string db_code)
         {
             std::string this_primary_key_prefix_string = util::enums::primary_key_prefix_map[this->primary_key_prefix];
             if (db_code.rfind(this_primary_key_prefix_string) != 0)
@@ -89,17 +90,19 @@ namespace util
             equal_transaction_code.comparator = util::TableComparator::EQUAL;
             equal_transaction_code.value = transaction_from_db->get_db_code();
             conditions.push_back(equal_transaction_code);
-            std::vector<util::baseclass::HasTable *> entries = this->purchase_entries.get()->get_from_database(conditions);
-            for (util::baseclass::HasTable *entry : entries)
+            std::vector<std::unique_ptr<util::baseclass::HasTable>> entries = this->purchase_entries.get()->get_from_database(conditions);
+            for (std::unique_ptr<util::baseclass::HasTable> &entry : entries)
             {
-                transaction_from_db->add_entry((inventory::PurchaseEntry *)entry);
+                std::unique_ptr<inventory::Entry> to_add((inventory::Entry *)entry.release());
+                transaction_from_db->add_entry(std::move(to_add));
             }
-            return transaction_from_db;
+            std::unique_ptr<HasTable> to_ret((HasTable *)transaction_from_db);
+            return std::move(to_ret);
         }
 
-        std::vector<HasTable *> PurchaseTransactionCollection::get_from_database(std::vector<util::TableCondition> &conditions)
+        std::vector<std::unique_ptr<HasTable>> PurchaseTransactionCollection::get_from_database(std::vector<util::TableCondition> &conditions)
         {
-            std::vector<HasTable *> to_ret;
+            std::vector<std::unique_ptr<HasTable>> to_ret;
             std::vector<std::vector<std::string>> records = this->table->get_records(conditions);
             conditions.clear();
             for (std::vector<std::string> &record : records)
@@ -115,12 +118,14 @@ namespace util
                 equal_transaction_code.comparator = util::TableComparator::EQUAL;
                 equal_transaction_code.value = transaction_from_db->get_db_code();
                 conditions.push_back(equal_transaction_code);
-                std::vector<util::baseclass::HasTable *> entries = this->purchase_entries.get()->get_from_database(conditions);
-                for (util::baseclass::HasTable *entry : entries)
+                std::vector<std::unique_ptr<util::baseclass::HasTable>> entries = this->purchase_entries.get()->get_from_database(conditions);
+                for (std::unique_ptr<util::baseclass::HasTable> &entry : entries)
                 {
-                    transaction_from_db->add_entry((inventory::PurchaseEntry *)entry);
+                    std::unique_ptr<inventory::Entry> to_add((inventory::Entry *)entry.release());
+                    transaction_from_db->add_entry(std::move(to_add));
                 }
-                to_ret.push_back(transaction_from_db);
+                std::unique_ptr<HasTable> to_add((HasTable *)transaction_from_db);
+                to_ret.push_back(std::move(to_add));
             }
             return to_ret;
         }

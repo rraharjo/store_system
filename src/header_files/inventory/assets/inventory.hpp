@@ -23,7 +23,7 @@ namespace inventory
         double selling_price;
         // tax
 
-        void add_existing_purchase_entry(PurchaseEntry *) override;
+        void add_existing_purchase_entry(std::unique_ptr<PurchaseEntry> existing_entry) override;
 
     public:
         Inventory(std::string, std::string, std::string, double);

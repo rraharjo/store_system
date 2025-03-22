@@ -10,10 +10,11 @@ namespace util
         {
         }
 
-        TAccountCollection::~TAccountCollection(){
-            #ifdef DEBUG
+        TAccountCollection::~TAccountCollection()
+        {
+#ifdef DEBUG
             std::cout << "Deleting TAccount Collection" << std::endl;
-        #endif
+#endif
         }
 
         void TAccountCollection::insert_new_item(HasTable *new_item)
@@ -52,12 +53,14 @@ namespace util
             this->table->update_row(t_acc->get_title_name(), values);
         }
 
-        HasTable *TAccountCollection::get_from_database(std::string db_code)
+        std::unique_ptr<HasTable> TAccountCollection::get_from_database(std::string db_code)
         {
             throw std::invalid_argument("use get_from_database with util::enums::TAccounts paremeter");
+            std::unique_ptr<HasTable> to_ret;
+            return std::move(to_ret);
         }
 
-        HasTable *TAccountCollection::get_from_database(util::enums::TAccounts title)
+        std::unique_ptr<HasTable> TAccountCollection::get_from_database(util::enums::TAccounts title)
         {
             std::string t_account_name = util::enums::t_accounts_name_map[title];
             std::vector<util::TableCondition> conditions;
@@ -77,10 +80,11 @@ namespace util
                                                                                 util::enums::t_accounts_acc_title_map[title],
                                                                                 std::stod(record[2]),
                                                                                 std::stod(record[3]));
-            return t_acc_from_db;
+            std::unique_ptr<HasTable> to_ret((HasTable *)t_acc_from_db);
+            return std::move(to_ret);
         }
 
-        std::vector<HasTable *> TAccountCollection::get_temporary_accounts()
+        std::vector<std::unique_ptr<HasTable>> TAccountCollection::get_temporary_accounts()
         {
             std::vector<util::enums::TAccounts> temporary_account = {
                 util::enums::TAccounts::REV,
@@ -100,7 +104,7 @@ namespace util
                 conditions.push_back(this_condition);
             }
             std::vector<std::vector<std::string>> rows = this->table->get_records_or_conditions(conditions);
-            std::vector<HasTable *> to_ret;
+            std::vector<std::unique_ptr<HasTable>> to_ret;
             for (const std::vector<std::string> &row : rows)
             {
                 util::enums::TAccounts this_t_acc = util::enums::t_accounts_name_map_inversed[row[0]];
@@ -108,7 +112,8 @@ namespace util
                                                                                     util::enums::t_accounts_acc_title_map[this_t_acc],
                                                                                     std::stod(row[2]),
                                                                                     std::stod(row[3]));
-                to_ret.push_back(t_acc_from_db);                                                                    
+                std::unique_ptr<HasTable> to_add((HasTable *)t_acc_from_db);
+                to_ret.push_back(std::move(to_add));
             }
             return to_ret;
         }

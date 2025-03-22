@@ -12,10 +12,11 @@ namespace util
             this->entries_collection = std::unique_ptr<AccountingEntryCollection>(new AccountingEntryCollection());
         }
 
-        AccountingTransactionCollection::~AccountingTransactionCollection(){
-            #ifdef DEBUG
+        AccountingTransactionCollection::~AccountingTransactionCollection()
+        {
+#ifdef DEBUG
             std::cout << "Deleting Accounting Transaction collection" << std::endl;
-        #endif
+#endif
         }
 
         void AccountingTransactionCollection::insert_new_item(HasTable *new_item)
@@ -61,7 +62,7 @@ namespace util
             }
         };
 
-        HasTable *AccountingTransactionCollection::get_from_database(std::string db_code)
+        std::unique_ptr<HasTable> AccountingTransactionCollection::get_from_database(std::string db_code)
         {
             std::string this_primary_key_prefix_string = util::enums::primary_key_prefix_map[this->primary_key_prefix];
             if (db_code.rfind(this_primary_key_prefix_string) != 0)
@@ -94,12 +95,14 @@ namespace util
             equal_at_db_code.comparator = TableComparator::EQUAL;
             equal_at_db_code.value = transaction_from_db->get_db_code();
             conditions.push_back(equal_at_db_code);
-            std::vector<HasTable *> entries = this->entries_collection.get()->get_from_database(conditions);
-            for (HasTable *entry : entries)
+            std::vector<std::unique_ptr<HasTable>> entries = this->entries_collection.get()->get_from_database(conditions);
+            for (std::unique_ptr<HasTable> &entry : entries)
             {
-                transaction_from_db->add_entry((accounting::Entry *)entry);
+                std::unique_ptr<accounting::Entry> to_add((accounting::Entry *)entry.release());
+                transaction_from_db->add_entry(std::move(to_add));
             }
-            return transaction_from_db;
+            std::unique_ptr<HasTable> to_ret((HasTable *)transaction_from_db);
+            return std::move(to_ret);
         }
     }
 }

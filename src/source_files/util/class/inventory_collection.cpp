@@ -11,10 +11,11 @@ namespace util
             this->selling_history_collection = std::unique_ptr<SellingEntriesCollection>(new SellingEntriesCollection());
         }
 
-        InventoryCollection::~InventoryCollection(){
-            #ifdef DEBUG
+        InventoryCollection::~InventoryCollection()
+        {
+#ifdef DEBUG
             std::cout << "Deleting Inventory Collection" << std::endl;
-        #endif
+#endif
         }
 
         void InventoryCollection::insert_new_item(HasTable *new_item)
@@ -52,7 +53,7 @@ namespace util
             }
         }
 
-        HasTable *InventoryCollection::get_from_database(std::string db_code)
+        std::unique_ptr<HasTable> InventoryCollection::get_from_database(std::string db_code)
         {
             std::string this_primary_key_prefix_string = util::enums::primary_key_prefix_map[this->primary_key_prefix];
             if (db_code.rfind(this_primary_key_prefix_string) != 0)
@@ -78,54 +79,59 @@ namespace util
             equal_inventory_code.comparator = util::TableComparator::EQUAL;
             equal_inventory_code.value = inventory_from_db->get_db_code();
             conditions.push_back(equal_inventory_code);
-            std::vector<util::baseclass::HasTable *> purchase_entries = this->purchase_history_collection.get()->get_from_database(conditions);
-            for (util::baseclass::HasTable *purchase_entry : purchase_entries)
+            std::vector<std::unique_ptr<util::baseclass::HasTable>> purchase_entries = this->purchase_history_collection.get()->get_from_database(conditions);
+            for (std::unique_ptr<util::baseclass::HasTable> &purchase_entry : purchase_entries)
             {
-                inventory_from_db->add_existing_purchase_entry((inventory::PurchaseEntry *)purchase_entry);
+                std::unique_ptr<inventory::PurchaseEntry> casted_ptr((inventory::PurchaseEntry *)purchase_entry.release());
+                inventory_from_db->add_existing_purchase_entry(std::move(casted_ptr));
             }
             conditions.clear();
             equal_inventory_code.col = util::enums::selling_entry_table_columns[util::enums::SellingEntryTable::INVENTORYDBCODE];
             equal_inventory_code.comparator = util::TableComparator::EQUAL;
             equal_inventory_code.value = inventory_from_db->get_db_code();
             conditions.push_back(equal_inventory_code);
-            std::vector<util::baseclass::HasTable *> selling_entries = this->selling_history_collection.get()->get_from_database(conditions);
-            for (util::baseclass::HasTable *selling_entry : selling_entries)
+            std::vector<std::unique_ptr<util::baseclass::HasTable>> selling_entries = this->selling_history_collection.get()->get_from_database(conditions);
+            for (std::unique_ptr<util::baseclass::HasTable> &selling_entry : selling_entries)
             {
-                inventory_from_db->add_existing_selling_entry((inventory::SellingEntry *)selling_entry);
+                std::unique_ptr<inventory::SellingEntry> casted_ptr((inventory::SellingEntry *)selling_entry.release());
+                inventory_from_db->add_existing_selling_entry(std::move(casted_ptr));
             }
-            return inventory_from_db;
+            std::unique_ptr<HasTable> to_ret(inventory_from_db);
+            return std::move(to_ret);
         }
 
-        std::vector<HasTable *> InventoryCollection::get_from_database(std::vector<util::TableCondition> &conditions)
+        std::vector<std::unique_ptr<HasTable>> InventoryCollection::get_from_database(std::vector<util::TableCondition> &conditions)
         {
-            std::vector<HasTable *> to_ret;
+            std::vector<std::unique_ptr<HasTable>> to_ret;
             std::vector<std::vector<std::string>> records = this->table->get_records(conditions);
             for (std::vector<std::string> &record : records)
             {
                 inventory::Inventory *to_add = new inventory::Inventory(record[0], record[1], record[2], std::stod(record[3]));
-                to_ret.push_back(to_add);
                 std::vector<util::TableCondition> inventory_condition;
                 util::TableCondition equal_inventory_code;
                 equal_inventory_code.col = util::enums::purchase_entry_table_columns[util::enums::PurchaseEntryTable::INVENTORYDBCODE];
                 equal_inventory_code.comparator = util::TableComparator::EQUAL;
                 equal_inventory_code.value = to_add->get_db_code();
                 inventory_condition.push_back(equal_inventory_code);
-                std::vector<util::baseclass::HasTable *> purchase_entries = this->purchase_history_collection.get()->get_from_database(inventory_condition);
-                for (util::baseclass::HasTable *purchase_entry : purchase_entries)
+                std::vector<std::unique_ptr<util::baseclass::HasTable>> purchase_entries = this->purchase_history_collection.get()->get_from_database(inventory_condition);
+                for (std::unique_ptr<util::baseclass::HasTable> &purchase_entry : purchase_entries)
                 {
-                    to_add->add_existing_purchase_entry((inventory::PurchaseEntry *)purchase_entry);
+                    std::unique_ptr<inventory::PurchaseEntry> casted_ptr((inventory::PurchaseEntry *)purchase_entry.release());
+                    to_add->add_existing_purchase_entry(std::move(casted_ptr));
                 }
                 inventory_condition.clear();
                 equal_inventory_code.col = util::enums::selling_entry_table_columns[util::enums::SellingEntryTable::INVENTORYDBCODE];
                 equal_inventory_code.comparator = util::TableComparator::EQUAL;
                 equal_inventory_code.value = to_add->get_db_code();
                 inventory_condition.push_back(equal_inventory_code);
-                std::vector<util::baseclass::HasTable *> selling_entries = this->selling_history_collection.get()->get_from_database(inventory_condition);
-                for (util::baseclass::HasTable *selling_entry : selling_entries)
+                std::vector<std::unique_ptr<util::baseclass::HasTable>> selling_entries = this->selling_history_collection.get()->get_from_database(inventory_condition);
+                for (std::unique_ptr<util::baseclass::HasTable> &selling_entry : selling_entries)
                 {
-                    to_add->add_existing_selling_entry((inventory::SellingEntry *)selling_entry);
+                    std::unique_ptr<inventory::SellingEntry> casted_ptr((inventory::SellingEntry *)selling_entry.release());
+                    to_add->add_existing_selling_entry(std::move(casted_ptr));
                 }
-                
+                std::unique_ptr<HasTable> casted_ptr((inventory::Inventory *)to_add);
+                to_ret.push_back(std::move(casted_ptr));
             }
             return to_ret;
         }

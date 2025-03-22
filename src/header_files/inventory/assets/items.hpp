@@ -17,9 +17,10 @@ namespace inventory
 
         Item(util::enums::PrimaryKeyPrefix primary_key_prefix, std::string name, std::string item_code);
 
-        virtual void add_existing_purchase_entry(PurchaseEntry *);
+        /* Item takes over the ownership */
+        virtual void add_existing_purchase_entry(std::unique_ptr<PurchaseEntry> existing_entry);
 
-        void add_existing_selling_entry(SellingEntry *);
+        void add_existing_selling_entry(std::unique_ptr<SellingEntry> existing_entry);
 
         std::vector<std::shared_ptr<PurchaseEntry>> get_purchase_entries();
 

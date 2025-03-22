@@ -14,9 +14,8 @@
 #define SELL_ASS 6
 #define EO_YEAR 7
 #define INV_INFO 8
-// Below are not implemented yet
-// TODO: Implement the following command
 #define ASSETS_INFO 9
+// Below aren't implemented
 #define INV_PURC_HIST 10
 #define INV_SELL_HIST 11
 #define ASSETS_PURC_HIST 12

@@ -20,7 +20,7 @@ nlohmann::json storedriver::Driver::execute_command(std::string command)
     nlohmann::json response;
     try
     {
-        nlohmann::json body = storedriver::Executor::execute(this->s_system.get(), command, this->json_input);
+        nlohmann::json body = storedriver::Executor::execute(this->s_system, command, this->json_input);
         response["status"] = true;
         response["body"] = body;
     }
@@ -34,7 +34,8 @@ nlohmann::json storedriver::Driver::execute_command(std::string command)
     return response;
 }
 
-storedriver::StdIODriver::StdIODriver(bool json_input) : storedriver::Driver(json_input)
+storedriver::StdIODriver::StdIODriver(bool json_input)
+    : storedriver::Driver(json_input)
 {
 }
 

@@ -21,10 +21,10 @@ Inventory::~Inventory(){
 #endif
 }
 
-void Inventory::add_existing_purchase_entry(PurchaseEntry *entry)
+void Inventory::add_existing_purchase_entry(std::unique_ptr<PurchaseEntry> entry)
 {
-    Item::add_existing_purchase_entry(entry);
     this->qty += entry->get_available_qty();
+    Item::add_existing_purchase_entry(std::move(entry));
 }
 
 double Inventory::sell_items(std::shared_ptr<SellingEntry> entry)
