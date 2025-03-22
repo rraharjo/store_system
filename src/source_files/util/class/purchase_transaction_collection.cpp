@@ -78,10 +78,10 @@ namespace util
                 throw std::invalid_argument("No item with code " + db_code + " in the database");
             }
             std::vector<std::string> record = records[0];
-            util::Date *transaction_date = new util::Date(record[1], "%Y-%m-%d");
+            std::unique_ptr<util::Date> transaction_date = std::make_unique<util::Date>(record[1], "%Y-%m-%d");
             store::PurchaseTransaction *transaction_from_db = new store::PurchaseTransaction(record[0],
                                                                                              record[2],
-                                                                                             transaction_date,
+                                                                                             std::move(transaction_date),
                                                                                              std::stod(record[3]),
                                                                                              std::stod(record[4]));
             conditions.clear();
@@ -107,10 +107,10 @@ namespace util
             conditions.clear();
             for (std::vector<std::string> &record : records)
             {
-                util::Date *transaction_date = new util::Date(record[1], "%Y-%m-%d");
+                std::unique_ptr<util::Date> transaction_date = std::make_unique<util::Date>(record[1], "%Y-%m-%d");
                 store::PurchaseTransaction *transaction_from_db = new store::PurchaseTransaction(record[0],
                                                                                                  record[2],
-                                                                                                 transaction_date,
+                                                                                                 std::move(transaction_date),
                                                                                                  std::stod(record[3]),
                                                                                                  std::stod(record[4]));
                 util::TableCondition equal_transaction_code;

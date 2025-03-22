@@ -94,9 +94,10 @@ void Asset::set_total_value(double new_value)
     this->value = new_value;
 }
 
-void Asset::set_last_depreciation_date(util::Date *depreciation_date)
+void Asset::set_last_depreciation_date(std::unique_ptr<util::Date> new_date)
 {
-    this->last_depreciation_date.reset(depreciation_date);
+    this->last_depreciation_date.reset();
+    this->last_depreciation_date = std::move(new_date);
 }
 
 std::string Asset::to_string()

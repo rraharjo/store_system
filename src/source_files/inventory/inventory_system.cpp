@@ -134,19 +134,18 @@ void InventorySystem::apply_depreciation(std::string asset_db_code)
 {
     std::unique_ptr<util::baseclass::HasTable> base = this->equipments->get_from_database(asset_db_code);
     std::unique_ptr<Asset> asset((Asset *)base.release());
-    util::Date *now = new util::Date();
+    std::unique_ptr<util::Date> now = std::make_unique<util::Date>();
     if ((!asset->get_last_depreciation_date() && now->diff_years_to(asset->get_date_bought()) >= 0) ||
         now->diff_years_to(asset->get_last_depreciation_date()) >= 0)
     {
-        delete now;
         return;
     }
     double depreciation_amt_this_year = asset->get_reduced_value_current_year();
-    util::Date *new_depreciation_date = new util::Date();
-    asset->set_last_depreciation_date(new_depreciation_date);
+    std::unique_ptr<util::Date> new_depreciation_date = std::make_unique<util::Date>();
+    asset->set_last_depreciation_date(std::move(new_depreciation_date));
     std::string acct_transaction_title = "Incurred depreciation expense";
     std::unique_ptr<accounting::Transaction> new_transaction =
-        util::factory::ApplyDepreciationFactory(now, acct_transaction_title, asset_db_code, depreciation_amt_this_year)
+        util::factory::ApplyDepreciationFactory(std::move(now), acct_transaction_title, asset_db_code, depreciation_amt_this_year)
             .create_transaction();
     this->a_system->add_transaction(new_transaction.get());
 }

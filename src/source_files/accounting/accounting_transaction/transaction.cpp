@@ -1,38 +1,38 @@
 #include "accounting/accounting_transaction/transaction.hpp"
 using namespace accounting;
 
-Transaction::Transaction(std::string db_code, std::string name, util::Date *transaction_date, std::string pid)
+Transaction::Transaction(std::string db_code, std::string name, std::unique_ptr<util::Date> transaction_date, std::string pid)
     : util::baseclass::HasTable(util::enums::PrimaryKeyPrefix::ACCOUNTINGTRANSACTION)
 {
     this->set_db_code(db_code);
     this->name = name;
     this->debit_entries = {};
     this->credit_entries = {};
-    this->transaction_date.reset(transaction_date);
+    this->transaction_date = std::move(transaction_date);
     this->entity_id = pid;
 }
 
-Transaction::Transaction(std::string name, util::Date *transaction_date, std::string pid)
+Transaction::Transaction(std::string name, std::unique_ptr<util::Date> transaction_date, std::string pid)
     : util::baseclass::HasTable(util::enums::PrimaryKeyPrefix::ACCOUNTINGTRANSACTION)
 {
     this->name = name;
     this->debit_entries = {};
     this->credit_entries = {};
-    this->transaction_date.reset(transaction_date);
+    this->transaction_date = std::move(transaction_date);
     this->entity_id = pid;
 }
 
-Transaction::Transaction(std::string name, util::Date *transaction_date)
-    : Transaction::Transaction(name, transaction_date, "")
+Transaction::Transaction(std::string name, std::unique_ptr<util::Date> transaction_date)
+    : Transaction::Transaction(name, std::move(transaction_date), "")
 {
 }
 
 Transaction::Transaction(std::string name, std::string pid)
-    : Transaction::Transaction(name, new util::Date(), pid)
+    : Transaction::Transaction(name, std::make_unique<util::Date>(), pid)
 {
 }
 
-Transaction::Transaction(std::string name) : Transaction::Transaction(name, new util::Date())
+Transaction::Transaction(std::string name) : Transaction::Transaction(name, std::make_unique<util::Date>())
 {
 }
 

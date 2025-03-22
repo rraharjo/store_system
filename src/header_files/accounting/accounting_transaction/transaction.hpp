@@ -21,11 +21,11 @@ namespace accounting
         std::string entity_id;
 
     public:
-        Transaction(std::string db_code, std::string name, util::Date *transaction_date, std::string pid);
+        Transaction(std::string db_code, std::string name, std::unique_ptr<util::Date> transaction_date, std::string pid);
 
-        Transaction(std::string name, util::Date *transaction_date, std::string pid);
+        Transaction(std::string name, std::unique_ptr<util::Date> transaction_date, std::string pid);
 
-        Transaction(std::string name, util::Date *transaction_date);
+        Transaction(std::string name, std::unique_ptr<util::Date> transaction_date);
 
         Transaction(std::string name, std::string pid);
 

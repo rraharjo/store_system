@@ -51,7 +51,7 @@ namespace inventory
 
         virtual void set_total_value(double new_value);
 
-        void set_last_depreciation_date(util::Date *);
+        void set_last_depreciation_date(std::unique_ptr<util::Date> new_date);
 
         std::string to_string();
 

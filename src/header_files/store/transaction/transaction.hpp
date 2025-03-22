@@ -30,11 +30,11 @@ namespace store
 
         Transaction(util::enums::PrimaryKeyPrefix primary_key_prefix,
                     std::string db_code,
-                    util::Date *transaction_date,
+                    std::unique_ptr<util::Date> transaction_date,
                     double paid_cash,
                     double paid_credit);
 
-        Transaction(util::enums::PrimaryKeyPrefix primary_key_prefix, util::Date *transaction_date);
+        Transaction(util::enums::PrimaryKeyPrefix primary_key_prefix, std::unique_ptr<util::Date> transaction_date);
 
         virtual ~Transaction();
 
@@ -64,9 +64,13 @@ namespace store
         std::string seller;
 
     public:
-        PurchaseTransaction(std::string seller, util::Date *purchase_date);
+        PurchaseTransaction(std::string seller, std::unique_ptr<util::Date> purchase_date);
 
-        PurchaseTransaction(std::string db_code, std::string seller, util::Date *purchase_date, double paid_cash, double paid_credit);
+        PurchaseTransaction(std::string db_code,
+                            std::string seller,
+                            std::unique_ptr<util::Date> purchase_date,
+                            double paid_cash,
+                            double paid_credit);
 
         ~PurchaseTransaction();
 
@@ -80,9 +84,9 @@ namespace store
     class SellingTransaction : public Transaction
     {
     public:
-        SellingTransaction(util::Date *transaction_date);
+        SellingTransaction(std::unique_ptr<util::Date> transaction_date);
 
-        SellingTransaction(std::string db_code, util::Date *transaction_date, double paid_cash, double paid_credit);
+        SellingTransaction(std::string db_code, std::unique_ptr<util::Date> transaction_date, double paid_cash, double paid_credit);
 
         ~SellingTransaction();
 

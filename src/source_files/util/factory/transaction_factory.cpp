@@ -1,9 +1,9 @@
 #include "util/factory/transaction_factory.hpp"
 using namespace util::factory;
 
-AccountingTransactionFactory::AccountingTransactionFactory(util::Date *transaction_date, std::string transaction_name, std::string foreign_id)
+AccountingTransactionFactory::AccountingTransactionFactory(std::unique_ptr<util::Date> transaction_date, std::string transaction_name, std::string foreign_id)
 {
-    this->transaction_date = transaction_date;
+    this->transaction_date = std::move(transaction_date);
     this->transaction_name = transaction_name;
     this->foreign_id = foreign_id;
 }
@@ -38,7 +38,13 @@ std::unique_ptr<accounting::Transaction> GoodsPurchaseFactory::create_transactio
     return std::move(new_transaction);
 };
 
-GoodsPurchaseFactory::GoodsPurchaseFactory(util::Date *transaction_date, std::string transaction_name, std::string foreign_id, double purchase_amount, double paid_cash, double paid_credit) : AccountingTransactionFactory(transaction_date, transaction_name, foreign_id)
+GoodsPurchaseFactory::GoodsPurchaseFactory(std::unique_ptr<util::Date> transaction_date,
+                                           std::string transaction_name,
+                                           std::string foreign_id,
+                                           double purchase_amount,
+                                           double paid_cash,
+                                           double paid_credit)
+    : AccountingTransactionFactory(std::move(transaction_date), transaction_name, foreign_id)
 {
     this->purchase_amount = purchase_amount;
     this->paid_cash = paid_cash;
@@ -76,7 +82,13 @@ std::unique_ptr<accounting::Transaction> GoodsSellingFactory::create_transaction
     return std::move(new_transaction);
 }
 
-GoodsSellingFactory::GoodsSellingFactory(util::Date *transaction_date, std::string transaction_name, std::string foreign_id, double sell_amount, double paid_cash, double paid_credit) : AccountingTransactionFactory(transaction_date, transaction_name, foreign_id)
+GoodsSellingFactory::GoodsSellingFactory(std::unique_ptr<util::Date> transaction_date,
+                                         std::string transaction_name,
+                                         std::string foreign_id,
+                                         double sell_amount,
+                                         double paid_cash,
+                                         double paid_credit)
+    : AccountingTransactionFactory(std::move(transaction_date), transaction_name, foreign_id)
 {
     this->sell_amount = sell_amount;
     this->paid_cash = paid_cash;
@@ -99,9 +111,9 @@ std::unique_ptr<accounting::Transaction> GoodsSoldCOGSFactory::create_transactio
     return std::move(new_transaction);
 }
 
-GoodsSoldCOGSFactory::GoodsSoldCOGSFactory(util::Date *transaction_date, std::string transaction_name,
+GoodsSoldCOGSFactory::GoodsSoldCOGSFactory(std::unique_ptr<util::Date> transaction_date, std::string transaction_name,
                                            std::string foreign_id, double cogs)
-    : AccountingTransactionFactory(transaction_date, transaction_name, foreign_id)
+    : AccountingTransactionFactory(std::move(transaction_date), transaction_name, foreign_id)
 {
     this->cogs = cogs;
 }
@@ -136,9 +148,9 @@ std::unique_ptr<accounting::Transaction> BuyEquipmentFactory::create_transaction
     return new_transaction;
 }
 
-BuyEquipmentFactory::BuyEquipmentFactory(util::Date *transaction_date, std::string transaction_name,
+BuyEquipmentFactory::BuyEquipmentFactory(std::unique_ptr<util::Date> transaction_date, std::string transaction_name,
                                          std::string foreign_id, double equipment_value, double paid_cash, double paid_credit)
-    : AccountingTransactionFactory(transaction_date, transaction_name, foreign_id)
+    : AccountingTransactionFactory(std::move(transaction_date), transaction_name, foreign_id)
 {
     this->equipment_value = equipment_value;
     this->paid_cash = paid_cash;
@@ -190,7 +202,14 @@ std::unique_ptr<accounting::Transaction> SellEquipmentFactory::create_transactio
     return std::move(new_transaction);
 }
 
-SellEquipmentFactory::SellEquipmentFactory(util::Date *transaction_date, std::string transaction_name, std::string foreign_id, double accumulated_depreciation, double initial_value, double paid_cash, double paid_credit) : AccountingTransactionFactory(transaction_date, transaction_name, foreign_id)
+SellEquipmentFactory::SellEquipmentFactory(std::unique_ptr<util::Date> transaction_date,
+                                           std::string transaction_name,
+                                           std::string foreign_id,
+                                           double accumulated_depreciation,
+                                           double initial_value,
+                                           double paid_cash,
+                                           double paid_credit)
+    : AccountingTransactionFactory(std::move(transaction_date), transaction_name, foreign_id)
 {
     this->accumulated_depreciation = accumulated_depreciation;
     this->initial_value = initial_value;
@@ -214,7 +233,11 @@ std::unique_ptr<accounting::Transaction> ApplyDepreciationFactory::create_transa
     return std::move(new_transaction);
 }
 
-ApplyDepreciationFactory::ApplyDepreciationFactory(util::Date *transaction_date, std::string transaction_name, std::string foreign_id, double depreciation_amount) : AccountingTransactionFactory(transaction_date, transaction_name, foreign_id)
+ApplyDepreciationFactory::ApplyDepreciationFactory(std::unique_ptr<util::Date> transaction_date,
+                                                   std::string transaction_name,
+                                                   std::string foreign_id,
+                                                   double depreciation_amount)
+    : AccountingTransactionFactory(std::move(transaction_date), transaction_name, foreign_id)
 {
     this->depreciation_amount = depreciation_amount;
 }
@@ -235,7 +258,11 @@ std::unique_ptr<accounting::Transaction> EmployeeWagesFactory::create_transactio
     return std::move(new_transaction);
 }
 
-EmployeeWagesFactory::EmployeeWagesFactory(util::Date *transaction_date, std::string transaction_name, std::string foreign_id, double wages_amount) : AccountingTransactionFactory(transaction_date, transaction_name, foreign_id)
+EmployeeWagesFactory::EmployeeWagesFactory(std::unique_ptr<util::Date> transaction_date,
+                                           std::string transaction_name,
+                                           std::string foreign_id,
+                                           double wages_amount)
+    : AccountingTransactionFactory(std::move(transaction_date), transaction_name, foreign_id)
 {
 }
 
@@ -284,10 +311,10 @@ std::unique_ptr<accounting::Transaction> ClosingTemporaryAccountsFactory::create
 }
 
 ClosingTemporaryAccountsFactory::ClosingTemporaryAccountsFactory(
-    util::Date *transaction_date,
+    std::unique_ptr<util::Date> transaction_date,
     std::string transaction_name,
     std::vector<accounting::TAccount *> &temporary_accounts)
-    : AccountingTransactionFactory(transaction_date, transaction_name, "")
+    : AccountingTransactionFactory(std::move(transaction_date), transaction_name, "")
 {
     this->t_accounts = temporary_accounts;
 }

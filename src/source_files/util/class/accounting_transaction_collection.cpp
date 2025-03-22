@@ -36,7 +36,7 @@ namespace util
                 new_entry->set_transaction_db(new_transaction->get_db_code());
                 this->entries_collection.get()->insert_new_item(new_entry.get());
             }
-            for (std::shared_ptr<accounting::Entry>new_entry : new_transaction->get_credit_entries())
+            for (std::shared_ptr<accounting::Entry> new_entry : new_transaction->get_credit_entries())
             {
                 new_entry->set_transaction_db(new_transaction->get_db_code());
                 this->entries_collection.get()->insert_new_item(new_entry.get());
@@ -82,10 +82,10 @@ namespace util
                 throw std::invalid_argument("No item with code " + db_code + " in the database");
             }
             std::vector<std::string> record = records[0];
-            util::Date *transaction_date = new util::Date(record[2], "%Y-%m-%d");
+            std::unique_ptr<util::Date> transaction_date = std::make_unique<util::Date>(record[2], "%Y-%m-%d");
             accounting::Transaction *transaction_from_db = new accounting::Transaction(record[0],
                                                                                        record[1],
-                                                                                       transaction_date,
+                                                                                       std::move(transaction_date),
                                                                                        record[3]);
 
             // Generate the entries attached to the transaction

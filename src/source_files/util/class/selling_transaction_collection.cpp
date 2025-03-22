@@ -75,9 +75,9 @@ namespace util
                 throw std::invalid_argument("No item with code " + db_code + " in the database");
             }
             std::vector<std::string> record = records[0];
-            util::Date *transaction_date = new util::Date(record[1], "%Y-%m-%d");
+            std::unique_ptr<util::Date> transaction_date = std::make_unique<util::Date>(record[1], "%Y-%m-%d");
             store::SellingTransaction *transaction_from_db = new store::SellingTransaction(record[0],
-                                                                                           transaction_date,
+                                                                                           std::move(transaction_date),
                                                                                            std::stod(record[2]),
                                                                                            std::stod(record[3]));
             conditions.clear();

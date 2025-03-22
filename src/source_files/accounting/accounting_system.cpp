@@ -63,7 +63,7 @@ void AccountingSystem::add_transaction(Transaction *transaction)
 
 void AccountingSystem::end_year_adjustment()
 {
-    util::Date *now = new util::Date();
+    std::unique_ptr<util::Date> now = std::make_unique<util::Date>();
     std::string transaction_title = "Closing the book";
     std::vector<std::unique_ptr<util::baseclass::HasTable>> items = this->t_accounts->get_temporary_accounts();
     std::vector<TAccount *> temporary_accounts;
@@ -72,7 +72,7 @@ void AccountingSystem::end_year_adjustment()
         temporary_accounts.push_back((TAccount *)item.get());
     }
     std::unique_ptr<accounting::Transaction> close_the_book =
-        util::factory::ClosingTemporaryAccountsFactory(now, transaction_title, temporary_accounts)
+        util::factory::ClosingTemporaryAccountsFactory(std::move(now), transaction_title, temporary_accounts)
             .create_transaction();
     this->add_transaction(close_the_book.get());
 }

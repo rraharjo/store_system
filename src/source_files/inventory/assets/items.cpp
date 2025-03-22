@@ -13,7 +13,7 @@ Item::Item(util::enums::PrimaryKeyPrefix primary_key_prefix, std::string name = 
 
 Item::~Item()
 {
-    #ifdef DEBUG
+#ifdef DEBUG
     std::cout << "Deleting Item" << std::endl;
 #endif
 }

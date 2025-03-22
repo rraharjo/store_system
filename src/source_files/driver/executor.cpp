@@ -183,9 +183,8 @@ nlohmann::json storedriver::AddInventoryExecutor::execute(store::StoreSystem *s_
     std::string name = this->request.at("product_name");
     std::string item_code = this->request.at("item_code");
     double price = (double)this->request.at("price");
-    inventory::Inventory *new_inventory = new inventory::Inventory(item_code, name, price);
-    s_system->add_item(new_inventory);
-    delete new_inventory;
+    std::unique_ptr<inventory::Inventory> new_inventory = std::make_unique<inventory::Inventory>(item_code, name, price);
+    s_system->add_item(new_inventory.get());
     return nlohmann::json(R"({})"_json);
 }
 
@@ -211,19 +210,19 @@ void storedriver::PurchaseInventoryExecutor::add_purchase_entry(store::PurchaseT
 
 nlohmann::json storedriver::PurchaseInventoryExecutor::execute(store::StoreSystem *s_system)
 {
-    util::Date *trans_date = new util::Date(this->request.at("date"));
+    std::unique_ptr<util::Date> transaction_date = std::make_unique<util::Date>(this->request.at("date"));
     std::string seller = this->request.at("seller");
-    store::PurchaseTransaction *new_transaction = new store::PurchaseTransaction(seller, trans_date);
+    std::unique_ptr<store::PurchaseTransaction> new_transaction =
+        std::make_unique<store::PurchaseTransaction>(seller, std::move(transaction_date));
     std::vector<nlohmann::json> items = this->request.at("items");
     for (const nlohmann::json &item : items)
     {
-        add_purchase_entry(new_transaction, item.at("dbcode"), (double)item.at("price"), item.at("qty"));
+        add_purchase_entry(new_transaction.get(), item.at("dbcode"), (double)item.at("price"), item.at("qty"));
     }
     double paid_cash = (double)this->request.at("paid_cash");
     new_transaction->set_paid_cash(paid_cash);
     new_transaction->set_paid_credit(new_transaction->get_transaction_amount() - paid_cash);
-    s_system->buy_item(new_transaction);
-    delete new_transaction;
+    s_system->buy_item(new_transaction.get());
     return nlohmann::json(R"({})"_json);
 }
 
@@ -261,19 +260,19 @@ storedriver::CapitalizeAssetExecutor::~CapitalizeAssetExecutor()
 
 nlohmann::json storedriver::CapitalizeAssetExecutor::execute(store::StoreSystem *s_system)
 {
-    util::Date *trans_date = new util::Date(this->request.at("date"));
+    std::unique_ptr<util::Date> transaction_date = std::make_unique<util::Date>(this->request.at("date"));
     std::string item_db_code = this->request.at("dbcode");
     double capitalized_amt = (double)this->request.at("cost");
 
-    store::PurchaseTransaction *new_transaction = new store::PurchaseTransaction("", trans_date);
+    std::unique_ptr<store::PurchaseTransaction> new_transaction =
+        std::make_unique<store::PurchaseTransaction>("", std::move(transaction_date));
     std::unique_ptr<inventory::PurchaseEntry> new_entry =
         std::make_unique<inventory::PurchaseEntry>(item_db_code, new_transaction->get_db_code(), capitalized_amt, 1);
     new_transaction->add_entry(std::move(new_entry));
     double paid_cash = (double)this->request.at("paid_cash");
     new_transaction->set_paid_cash(paid_cash);
     new_transaction->set_paid_credit(new_transaction->get_transaction_amount() - paid_cash);
-    s_system->capitalize_asset(new_transaction);
-    delete new_transaction;
+    s_system->capitalize_asset(new_transaction.get());
     return nlohmann::json(R"({})"_json);
 }
 
@@ -323,9 +322,9 @@ void storedriver::SellInventoryExecutor::validate_request(store::StoreSystem *s_
 nlohmann::json storedriver::SellInventoryExecutor::execute(store::StoreSystem *s_system)
 {
     this->validate_request(s_system);
-    util::Date *date = new util::Date(request.at("date"));
+    std::unique_ptr<util::Date> date = std::make_unique<util::Date>(request.at("date"));
     std::vector<nlohmann::json> items = request.at("items");
-    store::SellingTransaction *new_transaction = new store::SellingTransaction(date);
+    std::unique_ptr<store::SellingTransaction> new_transaction = std::make_unique<store::SellingTransaction>(std::move(date));
     for (const nlohmann::json &item : items)
     {
         std::string item_code = item.at("dbcode");
@@ -338,8 +337,7 @@ nlohmann::json storedriver::SellInventoryExecutor::execute(store::StoreSystem *s
     double paid_cash = (double)this->request.at("paid_cash");
     new_transaction->set_paid_cash(paid_cash);
     new_transaction->set_paid_credit(new_transaction->get_transaction_amount() - paid_cash);
-    s_system->sell_item(new_transaction);
-    delete new_transaction;
+    s_system->sell_item(new_transaction.get());
     return nlohmann::json(R"({})"_json);
 }
 
@@ -354,19 +352,18 @@ storedriver::SellAssetExecutor::~SellAssetExecutor()
 
 nlohmann::json storedriver::SellAssetExecutor::execute(store::StoreSystem *s_system)
 {
-    util::Date *date = new util::Date(this->request.at("date"));
+    std::unique_ptr<util::Date> date = std::make_unique<util::Date>(this->request.at("date"));
     std::string item_code = this->request.at("dbcode");
     double price = (double)this->request.at("price");
 
-    store::SellingTransaction *new_transaction = new store::SellingTransaction(date);
+    std::unique_ptr<store::SellingTransaction>new_transaction = std::make_unique<store::SellingTransaction>(std::move(date));
     std::unique_ptr<inventory::SellingEntry> new_entry =
         std::make_unique<inventory::SellingEntry>(item_code, new_transaction->get_db_code(), price, 1);
     new_transaction->add_entry(std::move(new_entry));
     double paid_cash = (double)this->request.at("paid_cash");
     new_transaction->set_paid_cash(paid_cash);
     new_transaction->set_paid_credit(new_transaction->get_transaction_amount() - paid_cash);
-    s_system->dispose_asset(new_transaction);
-    delete new_transaction;
+    s_system->dispose_asset(new_transaction.get());
     return nlohmann::json(R"({})"_json);
 }
 

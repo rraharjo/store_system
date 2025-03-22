@@ -3,21 +3,21 @@ using namespace store;
 
 Transaction::Transaction(util::enums::PrimaryKeyPrefix primary_key_prefix,
                          std::string db_code,
-                         util::Date *transaction_date,
+                         std::unique_ptr<util::Date> transaction_date,
                          double paid_cash,
                          double paid_credit)
     : util::baseclass::HasTable(primary_key_prefix)
 {
     this->set_db_code(db_code);
-    this->transaction_date.reset(transaction_date);
+    this->transaction_date = std::move(transaction_date);
     this->paid_cash = paid_cash;
     this->paid_credit = paid_credit;
     this->is_finished = this->paid_credit == 0.0 ? true : false;
     this->entries = {};
 }
 
-Transaction::Transaction(util::enums::PrimaryKeyPrefix primary_key_prefix, util::Date *transaction_date)
-    : Transaction::Transaction(primary_key_prefix, "", transaction_date, 0, 0)
+Transaction::Transaction(util::enums::PrimaryKeyPrefix primary_key_prefix, std::unique_ptr<util::Date> transaction_date)
+    : Transaction::Transaction(primary_key_prefix, "", std::move(transaction_date), 0, 0)
 {
 }
 
@@ -79,18 +79,22 @@ std::vector<std::shared_ptr<inventory::Entry>> Transaction::get_all_entries()
 
 /************************PURCHASETRANSACTION****************************/
 
-PurchaseTransaction::PurchaseTransaction(std::string seller, util::Date *purchase_date)
-    : Transaction::Transaction(util::enums::PrimaryKeyPrefix::PURCHASETRANSACTION, purchase_date)
+PurchaseTransaction::PurchaseTransaction(std::string seller, std::unique_ptr<util::Date> purchase_date)
+    : Transaction::Transaction(util::enums::PrimaryKeyPrefix::PURCHASETRANSACTION, std::move(purchase_date))
 {
     this->seller = seller;
 }
 
 PurchaseTransaction::PurchaseTransaction(std::string db_code,
                                          std::string seller,
-                                         util::Date *purchase_date,
+                                         std::unique_ptr<util::Date> purchase_date,
                                          double paid_cash,
                                          double paid_credit)
-    : Transaction::Transaction(util::enums::PrimaryKeyPrefix::PURCHASETRANSACTION, db_code, purchase_date, paid_cash, paid_credit)
+    : Transaction::Transaction(util::enums::PrimaryKeyPrefix::PURCHASETRANSACTION,
+                               db_code,
+                               std::move(purchase_date),
+                               paid_cash,
+                               paid_credit)
 {
     this->seller = seller;
 }
@@ -109,16 +113,20 @@ std::string PurchaseTransaction::get_seller()
 
 /*********************SELLINGTRANSACTION***********************/
 
-SellingTransaction::SellingTransaction(util::Date *transaction_date)
-    : Transaction::Transaction(util::enums::PrimaryKeyPrefix::SELLINGTRANSACTION, transaction_date)
+SellingTransaction::SellingTransaction(std::unique_ptr<util::Date> transaction_date)
+    : Transaction::Transaction(util::enums::PrimaryKeyPrefix::SELLINGTRANSACTION, std::move(transaction_date))
 {
 }
 
 SellingTransaction::SellingTransaction(std::string db_code,
-                                       util::Date *transaction_date,
+                                       std::unique_ptr<util::Date> transaction_date,
                                        double paid_cash,
                                        double paid_credit)
-    : Transaction::Transaction(util::enums::PrimaryKeyPrefix::SELLINGTRANSACTION, db_code, transaction_date, paid_cash, paid_credit)
+    : Transaction::Transaction(util::enums::PrimaryKeyPrefix::SELLINGTRANSACTION,
+                               db_code,
+                               std::move(transaction_date),
+                               paid_cash,
+                               paid_credit)
 {
 }
 
