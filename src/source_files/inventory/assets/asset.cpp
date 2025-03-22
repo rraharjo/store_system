@@ -1,9 +1,16 @@
 #include "inventory/assets/asset.hpp"
 using namespace inventory;
 
-Asset::Asset(util::enums::PrimaryKeyPrefix primary_key_prefix, std::string db_code, std::string name, std::string item_code,
-             double total_value, double residual_value, int year_useful_life,
-             util::Date *date_bought, util::Date *last_depreciation_date, util::Date *date_sold)
+Asset::Asset(util::enums::PrimaryKeyPrefix primary_key_prefix,
+             std::string db_code,
+             std::string name,
+             std::string item_code,
+             double total_value,
+             double residual_value,
+             int year_useful_life,
+             std::unique_ptr<util::Date> date_bought,
+             std::unique_ptr<util::Date> last_depreciation_date,
+             std::unique_ptr<util::Date> date_sold)
     : Item(primary_key_prefix, name, item_code)
 {
     this->set_db_code(db_code);
@@ -11,9 +18,9 @@ Asset::Asset(util::enums::PrimaryKeyPrefix primary_key_prefix, std::string db_co
     this->value = total_value;
     this->residual_value = residual_value;
     this->year_useful_life = year_useful_life;
-    this->date_bought.reset(date_bought);
-    this->last_depreciation_date.reset(last_depreciation_date);
-    this->expiry_date.reset(date_sold);
+    this->date_bought = std::move(date_bought);
+    this->last_depreciation_date = std::move(last_depreciation_date);
+    this->expiry_date = std::move(date_sold);
 }
 
 Asset::Asset(util::enums::PrimaryKeyPrefix primary_key_prefix,
@@ -21,8 +28,17 @@ Asset::Asset(util::enums::PrimaryKeyPrefix primary_key_prefix,
              std::string item_code,
              double residual_value,
              int year_useful_life,
-             util::Date *date_bought)
-    : Asset(primary_key_prefix, "", name, item_code, 0, residual_value, year_useful_life, date_bought, NULL, NULL)
+             std::unique_ptr<util::Date> date_bought)
+    : Asset(primary_key_prefix,
+            "",
+            name,
+            item_code,
+            0,
+            residual_value,
+            year_useful_life,
+            std::move(date_bought),
+            NULL,
+            NULL)
 {
 }
 

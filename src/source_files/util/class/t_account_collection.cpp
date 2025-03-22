@@ -76,11 +76,12 @@ namespace util
                 throw std::invalid_argument(error_msg);
             }
             std::vector<std::string> record = records[0];
-            util::baseclass::HasTable *t_acc_from_db = new accounting::TAccount(title,
-                                                                                util::enums::t_accounts_acc_title_map[title],
-                                                                                std::stod(record[2]),
-                                                                                std::stod(record[3]));
-            std::unique_ptr<HasTable> to_ret((HasTable *)t_acc_from_db);
+            std::unique_ptr<accounting::TAccount> t_acc_from_db =
+                std::make_unique<accounting::TAccount>(title,
+                                                       util::enums::t_accounts_acc_title_map[title],
+                                                       std::stod(record[2]),
+                                                       std::stod(record[3]));
+            std::unique_ptr<HasTable> to_ret((HasTable *)t_acc_from_db.release());
             return std::move(to_ret);
         }
 
@@ -108,11 +109,12 @@ namespace util
             for (const std::vector<std::string> &row : rows)
             {
                 util::enums::TAccounts this_t_acc = util::enums::t_accounts_name_map_inversed[row[0]];
-                util::baseclass::HasTable *t_acc_from_db = new accounting::TAccount(this_t_acc,
-                                                                                    util::enums::t_accounts_acc_title_map[this_t_acc],
-                                                                                    std::stod(row[2]),
-                                                                                    std::stod(row[3]));
-                std::unique_ptr<HasTable> to_add((HasTable *)t_acc_from_db);
+                std::unique_ptr<accounting::TAccount> t_acc_from_db =
+                    std::make_unique<accounting::TAccount>(this_t_acc,
+                                                           util::enums::t_accounts_acc_title_map[this_t_acc],
+                                                           std::stod(row[2]),
+                                                           std::stod(row[3]));
+                std::unique_ptr<HasTable> to_add((HasTable *)t_acc_from_db.release());
                 to_ret.push_back(std::move(to_add));
             }
             return to_ret;

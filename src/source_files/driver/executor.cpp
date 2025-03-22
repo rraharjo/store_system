@@ -237,13 +237,18 @@ storedriver::PurchaseAssetsExecutor::~PurchaseAssetsExecutor()
 
 nlohmann::json storedriver::PurchaseAssetsExecutor::execute(store::StoreSystem *s_system)
 {
-    util::Date *date_purchased = new util::Date(this->request.at("date"));
+    std::unique_ptr<util::Date> date_purchased = std::make_unique<util::Date>(this->request.at("date"));
     std::string name = this->request.at("name");
     std::string item_code = this->request.at("item_code");
     double residual_value = (double)this->request.at("residual_value");
     int useful_life = this->request.at("useful_life");
-    inventory::Equipment *new_eqp = new inventory::Equipment(name, item_code, residual_value, useful_life, date_purchased);
-    s_system->add_property(new_eqp);
+    std::unique_ptr<inventory::Equipment> new_eqp =
+        std::make_unique<inventory::Equipment>(name,
+                                               item_code,
+                                               residual_value,
+                                               useful_life,
+                                               std::move(date_purchased));
+    s_system->add_property(new_eqp.get());
     nlohmann::json to_ret;
     to_ret["dbcode"] = new_eqp->get_db_code();
     return to_ret;
@@ -356,7 +361,7 @@ nlohmann::json storedriver::SellAssetExecutor::execute(store::StoreSystem *s_sys
     std::string item_code = this->request.at("dbcode");
     double price = (double)this->request.at("price");
 
-    std::unique_ptr<store::SellingTransaction>new_transaction = std::make_unique<store::SellingTransaction>(std::move(date));
+    std::unique_ptr<store::SellingTransaction> new_transaction = std::make_unique<store::SellingTransaction>(std::move(date));
     std::unique_ptr<inventory::SellingEntry> new_entry =
         std::make_unique<inventory::SellingEntry>(item_code, new_transaction->get_db_code(), price, 1);
     new_transaction->add_entry(std::move(new_entry));

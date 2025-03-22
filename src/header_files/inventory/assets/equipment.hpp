@@ -27,11 +27,15 @@ namespace inventory
                   double total_value,
                   double residual_value,
                   int year_useful_life,
-                  util::Date *date_bought,
-                  util::Date *last_depreciation_date,
-                  util::Date *date_sold);
+                  std::unique_ptr<util::Date> date_bought,
+                  std::unique_ptr<util::Date> last_depreciation_date,
+                  std::unique_ptr<util::Date> date_sold);
 
-        Equipment(std::string name, std::string item_code, double residual_value, int year_useful_life, util::Date *date_bought);
+        Equipment(std::string name,
+                  std::string item_code,
+                  double residual_value,
+                  int year_useful_life,
+                  std::unique_ptr<util::Date> date_bought);
 
         ~Equipment();
 

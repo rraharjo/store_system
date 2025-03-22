@@ -9,7 +9,7 @@ namespace util
                   util::enums::PrimaryKeyPrefix::ACCOUNTINGTRANSACTION,
                   util::AccountingTransactionTable::get_instance())
         {
-            this->entries_collection = std::unique_ptr<AccountingEntryCollection>(new AccountingEntryCollection());
+            this->entries_collection = std::make_unique<AccountingEntryCollection>();
         }
 
         AccountingTransactionCollection::~AccountingTransactionCollection()
@@ -83,10 +83,11 @@ namespace util
             }
             std::vector<std::string> record = records[0];
             std::unique_ptr<util::Date> transaction_date = std::make_unique<util::Date>(record[2], "%Y-%m-%d");
-            accounting::Transaction *transaction_from_db = new accounting::Transaction(record[0],
-                                                                                       record[1],
-                                                                                       std::move(transaction_date),
-                                                                                       record[3]);
+            std::unique_ptr<accounting::Transaction> transaction_from_db =
+                std::make_unique<accounting::Transaction>(record[0],
+                                                          record[1],
+                                                          std::move(transaction_date),
+                                                          record[3]);
 
             // Generate the entries attached to the transaction
             conditions.clear();
@@ -101,7 +102,7 @@ namespace util
                 std::unique_ptr<accounting::Entry> to_add((accounting::Entry *)entry.release());
                 transaction_from_db->add_entry(std::move(to_add));
             }
-            std::unique_ptr<HasTable> to_ret((HasTable *)transaction_from_db);
+            std::unique_ptr<HasTable> to_ret((HasTable *)transaction_from_db.release());
             return std::move(to_ret);
         }
     }

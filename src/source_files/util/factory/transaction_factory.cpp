@@ -73,11 +73,10 @@ std::unique_ptr<accounting::Transaction> GoodsSellingFactory::create_transaction
     }
     if (this->paid_credit > 0.0)
     {
-        accounting::Entry *increase_receivable =
-            new accounting::Entry(new_transaction->get_db_code(), true, this->paid_credit,
-                                  util::enums::TAccounts::ACCTRCV);
-        std::unique_ptr<accounting::Entry> to_add(increase_receivable);
-        new_transaction->add_entry(std::move(to_add));
+        std::unique_ptr<accounting::Entry> increase_receivable =
+            std::make_unique<accounting::Entry>(new_transaction->get_db_code(), true, this->paid_credit,
+                                                util::enums::TAccounts::ACCTRCV);
+        new_transaction->add_entry(std::move(increase_receivable));
     }
     return std::move(new_transaction);
 }

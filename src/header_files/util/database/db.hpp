@@ -2,6 +2,7 @@
 #include <vector>
 #include <iostream>
 #include <cstring>
+#include <memory>
 #include "libpq-fe.h"
 #include ".env/private.hpp"
 
@@ -9,11 +10,10 @@
 #define DBCONNECTION_HPP
 namespace util
 {
-    //namespace database
     class DB
     {
     private:
-        static DB *instance;
+        static std::unique_ptr<DB> instance;
         PGconn *connection;
         DB();
 
@@ -21,7 +21,7 @@ namespace util
         static DB *get_instance();
         std::vector<std::vector<std::string>> execute_query(std::string query);
 
-        std::vector<std::vector<std::string>> execute_query_parameterized(std::string query, std::vector<std::string>& values);
+        std::vector<std::vector<std::string>> execute_query_parameterized(std::string query, std::vector<std::string> &values);
     };
 };
 #endif

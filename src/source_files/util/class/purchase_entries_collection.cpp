@@ -87,13 +87,14 @@ namespace util
             {
                 item_index = 1;
             }
-            inventory::PurchaseEntry *purchase_entry_from_db = new inventory::PurchaseEntry(record[0],
-                                                                                            record[item_index],
-                                                                                            record[3],
-                                                                                            std::stod(record[4]),
-                                                                                            std::stoi(record[5]),
-                                                                                            std::stoi(record[6]));
-            std::unique_ptr<HasTable> to_ret((HasTable *)purchase_entry_from_db);
+            std::unique_ptr<inventory::PurchaseEntry> purchase_entry_from_db =
+                std::make_unique<inventory::PurchaseEntry>(record[0],
+                                                           record[item_index],
+                                                           record[3],
+                                                           std::stod(record[4]),
+                                                           std::stoi(record[5]),
+                                                           std::stoi(record[6]));
+            std::unique_ptr<HasTable> to_ret((HasTable *)purchase_entry_from_db.release());
             return std::move(to_ret);
         }
 
@@ -112,13 +113,14 @@ namespace util
                 {
                     item_index = 1;
                 }
-                inventory::PurchaseEntry *purchase_entry_from_db = new inventory::PurchaseEntry(record[0],
-                                                                                                record[item_index],
-                                                                                                record[3],
-                                                                                                std::stod(record[4]),
-                                                                                                std::stoi(record[5]),
-                                                                                                std::stoi(record[6]));
-                std::unique_ptr<HasTable> to_add((HasTable *)purchase_entry_from_db);
+                std::unique_ptr<inventory::PurchaseEntry> purchase_entry_from_db =
+                    std::make_unique<inventory::PurchaseEntry>(record[0],
+                                                               record[item_index],
+                                                               record[3],
+                                                               std::stod(record[4]),
+                                                               std::stoi(record[5]),
+                                                               std::stoi(record[6]));
+                std::unique_ptr<HasTable> to_add((HasTable *)purchase_entry_from_db.release());
                 to_ret.push_back(std::move(to_add));
             }
             return to_ret;

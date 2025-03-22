@@ -6,8 +6,8 @@ std::unique_ptr<AccountingSystem> AccountingSystem::instance = NULL;
 
 AccountingSystem::AccountingSystem()
 {
-    this->transactions = std::unique_ptr<util::baseclass::AccountingTransactionCollection>(new util::baseclass::AccountingTransactionCollection());
-    this->t_accounts = std::unique_ptr<util::baseclass::TAccountCollection>(new util::baseclass::TAccountCollection());
+    this->transactions = std::make_unique<util::baseclass::AccountingTransactionCollection>();
+    this->t_accounts = std::make_unique<util::baseclass::TAccountCollection>();
 }
 
 AccountingSystem::~AccountingSystem()
@@ -31,7 +31,7 @@ void AccountingSystem::add_entry(std::shared_ptr<Entry> entry)
     }
     catch (const std::exception &e)
     {
-        item_from_db.reset(new accounting::TAccount(entry->get_t_account()));
+        item_from_db = std::make_unique<accounting::TAccount>(entry->get_t_account());
         this->t_accounts->insert_new_item(item_from_db.get());
     }
     std::unique_ptr<accounting::TAccount> t_account_from_db((accounting::TAccount *)item_from_db.release());

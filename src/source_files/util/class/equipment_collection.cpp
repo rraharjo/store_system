@@ -8,8 +8,8 @@ namespace util
             : Collection(util::enums::PrimaryKeyPrefix::EQUIPMENT,
                          util::AssetsTable::get_instance())
         {
-            this->purchase_history_collection = std::unique_ptr<PurchaseEntriesCollection>(new PurchaseEntriesCollection());
-            this->selling_history_collection = std::unique_ptr<SellingEntriesCollection>(new SellingEntriesCollection());
+            this->purchase_history_collection = std::make_unique<PurchaseEntriesCollection>();
+            this->selling_history_collection = std::make_unique<SellingEntriesCollection>();
         }
 
         EquipmentCollection::~EquipmentCollection()
@@ -104,21 +104,29 @@ namespace util
                 throw std::invalid_argument("No item with code " + db_code + " in the database");
             }
             std::vector<std::string> record = records[0];
-            util::Date *purchase = NULL, *depreciation_date = NULL, *sold = NULL;
+            std::unique_ptr<util::Date> purchase = NULL, depreciation_date = NULL, sold = NULL;
             if (record[5] != "")
             {
-                purchase = new util::Date(record[5], "%Y-%m-%d");
+                purchase = std::make_unique<util::Date>(record[5], "%Y-%m-%d");
             }
             if (record[6] != "")
             {
-                depreciation_date = new util::Date(record[6], "%Y-%m-%d");
+                depreciation_date = std::make_unique<util::Date>(record[6], "%Y-%m-%d");
             }
             if (record[7] != "")
             {
-                sold = new util::Date(record[6], "%Y-%m-%d");
+                sold = std::make_unique<util::Date>(record[6], "%Y-%m-%d");
             }
-            inventory::Equipment *new_equipment = new inventory::Equipment(record[0], record[1], "", std::stod(record[2]),
-                                                                           std::stod(record[3]), std::stoi(record[4]), purchase, depreciation_date, sold);
+            std::unique_ptr<inventory::Equipment> new_equipment =
+                std::make_unique<inventory::Equipment>(record[0],
+                                                       record[1],
+                                                       "",
+                                                       std::stod(record[2]),
+                                                       std::stod(record[3]),
+                                                       std::stoi(record[4]),
+                                                       std::move(purchase),
+                                                       std::move(depreciation_date),
+                                                       std::move(sold));
             conditions.clear();
             util::TableCondition equal_asset_code;
             equal_asset_code.col = util::enums::purchase_entry_table_columns[util::enums::PurchaseEntryTable::ASSETSCODE];
@@ -143,8 +151,8 @@ namespace util
                 std::unique_ptr<inventory::SellingEntry> casted_ptr((inventory::SellingEntry *)selling_entry.release());
                 new_equipment->add_existing_selling_entry(std::move(casted_ptr));
             }
-            std::unique_ptr<HasTable> to_ret((HasTable *)new_equipment);
-            return to_ret;
+            std::unique_ptr<HasTable> to_ret((HasTable *)new_equipment.release());
+            return std::move(to_ret);
         }
         std::vector<std::unique_ptr<HasTable>> EquipmentCollection::get_from_database(std::vector<util::TableCondition> &conditions)
         {
@@ -152,29 +160,30 @@ namespace util
             std::vector<std::vector<std::string>> records = this->table->get_records(conditions);
             for (std::vector<std::string> &record : records)
             {
-                util::Date *purchase = NULL, *depreciation_date = NULL, *sold = NULL;
+                std::unique_ptr<util::Date> purchase = NULL, depreciation_date = NULL, sold = NULL;
                 if (record[5] != "")
                 {
-                    purchase = new util::Date(record[5], "%Y-%m-%d");
+                    purchase = std::make_unique<util::Date>(record[5], "%Y-%m-%d");
                 }
                 if (record[6] != "")
                 {
-                    depreciation_date = new util::Date(record[6], "%Y-%m-%d");
+                    depreciation_date = std::make_unique<util::Date>(record[6], "%Y-%m-%d");
                 }
                 if (record[7] != "")
                 {
-                    sold = new util::Date(record[6], "%Y-%m-%d");
+                    sold = std::make_unique<util::Date>(record[6], "%Y-%m-%d");
                 }
-                inventory::Equipment *equipment_from_db = new inventory::Equipment(record[0],
-                                                                                   record[1],
-                                                                                   "",
-                                                                                   std::stod(record[2]),
-                                                                                   std::stod(record[3]),
-                                                                                   std::stoi(record[4]),
-                                                                                   purchase,
-                                                                                   depreciation_date,
-                                                                                   sold);
-                std::unique_ptr<HasTable> to_add(equipment_from_db);
+                std::unique_ptr<inventory::Equipment> equipment_from_db =
+                    std::make_unique<inventory::Equipment>(record[0],
+                                                           record[1],
+                                                           "",
+                                                           std::stod(record[2]),
+                                                           std::stod(record[3]),
+                                                           std::stoi(record[4]),
+                                                           std::move(purchase),
+                                                           std::move(depreciation_date),
+                                                           std::move(sold));
+                std::unique_ptr<HasTable> to_add((HasTable *)equipment_from_db.release());
                 to_ret.push_back(std::move(to_add));
             }
             return to_ret;

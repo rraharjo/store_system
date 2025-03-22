@@ -421,7 +421,6 @@ InventoryTable::InventoryTable(std::string table_name, std::string sequence_name
 
 InventoryTable::~InventoryTable()
 {
-// InventoryTable::instance = NULL;
 #ifdef DEBUG
     std::cout << "Deleting Inventory Table" << std::endl;
 #endif

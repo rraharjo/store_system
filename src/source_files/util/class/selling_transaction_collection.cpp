@@ -8,7 +8,7 @@ namespace util
             : Collection(util::enums::PrimaryKeyPrefix::SELLINGTRANSACTION,
                          util::SellingTransactionTable::get_instance())
         {
-            this->selling_entries = std::unique_ptr<SellingEntriesCollection>(new SellingEntriesCollection());
+            this->selling_entries = std::make_unique<SellingEntriesCollection>();
         }
 
         SellingTransactionCollection::~SellingTransactionCollection()
@@ -76,10 +76,11 @@ namespace util
             }
             std::vector<std::string> record = records[0];
             std::unique_ptr<util::Date> transaction_date = std::make_unique<util::Date>(record[1], "%Y-%m-%d");
-            store::SellingTransaction *transaction_from_db = new store::SellingTransaction(record[0],
-                                                                                           std::move(transaction_date),
-                                                                                           std::stod(record[2]),
-                                                                                           std::stod(record[3]));
+            std::unique_ptr<store::SellingTransaction> transaction_from_db =
+                std::make_unique<store::SellingTransaction>(record[0],
+                                                            std::move(transaction_date),
+                                                            std::stod(record[2]),
+                                                            std::stod(record[3]));
             conditions.clear();
             util::TableCondition equal_transaction_code;
             equal_transaction_code.col = util::enums::selling_entry_table_columns[util::enums::SellingEntryTable::ASSETSCODE];
@@ -92,7 +93,7 @@ namespace util
                 std::unique_ptr<inventory::SellingEntry> to_add((inventory::SellingEntry *)entry.release());
                 transaction_from_db->add_entry(std::move(to_add));
             }
-            std::unique_ptr<HasTable> to_ret((HasTable *)transaction_from_db);
+            std::unique_ptr<HasTable> to_ret((HasTable *)transaction_from_db.release());
             return std::move(to_ret);
         }
 

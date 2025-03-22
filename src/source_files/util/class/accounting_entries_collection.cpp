@@ -67,12 +67,13 @@ namespace util
                 throw std::invalid_argument("No item with code " + db_code + " in the database");
             }
             std::vector<std::string> record = records[0];
-            accounting::Entry *new_entry = new accounting::Entry(record[0],
-                                                                 record[1],
-                                                                 record[2] == "t" ? true : false,
-                                                                 std::stod(record[3]),
-                                                                 util::enums::get_t_account_enum(record[4]));
-            std::unique_ptr<HasTable> to_ret((HasTable *)new_entry);
+            std::unique_ptr<accounting::Entry> new_entry =
+                std::make_unique<accounting::Entry>(record[0],
+                                                    record[1],
+                                                    record[2] == "t" ? true : false,
+                                                    std::stod(record[3]),
+                                                    util::enums::get_t_account_enum(record[4]));
+            std::unique_ptr<HasTable> to_ret((HasTable *)new_entry.release());
             return to_ret;
         }
 
@@ -82,12 +83,13 @@ namespace util
             std::vector<std::vector<std::string>> records = this->table->get_records(conditions);
             for (std::vector<std::string> &record : records)
             {
-                accounting::Entry *new_entry = new accounting::Entry(record[0],
-                                                                     record[1],
-                                                                     record[2] == "t" ? true : false,
-                                                                     std::stod(record[3]),
-                                                                     util::enums::get_t_account_enum(record[4]));
-                std::unique_ptr<HasTable> to_add((HasTable *)new_entry);
+                std::unique_ptr<accounting::Entry> new_entry =
+                    std::make_unique<accounting::Entry>(record[0],
+                                                        record[1],
+                                                        record[2] == "t" ? true : false,
+                                                        std::stod(record[3]),
+                                                        util::enums::get_t_account_enum(record[4]));
+                std::unique_ptr<HasTable> to_add((HasTable *)new_entry.release());
                 to_ret.push_back(std::move(to_add));
             }
             return to_ret;

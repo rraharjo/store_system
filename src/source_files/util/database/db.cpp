@@ -7,7 +7,7 @@ const std::string connection_info = "dbname=" + dotenv::local_postgres.db_name +
                                     " password=" + dotenv::local_postgres.password +
                                     " port=" + dotenv::local_postgres.port;
 
-DB *DB::instance = NULL;
+std::unique_ptr<DB> DB::instance = NULL;
 
 DB::DB()
 {
@@ -22,9 +22,9 @@ DB *DB::get_instance()
 {
     if (DB::instance == NULL)
     {
-        DB::instance = new DB();
+        DB::instance.reset(new DB());
     }
-    return DB::instance;
+    return DB::instance.get();
 }
 
 std::vector<std::vector<std::string>> DB::execute_query(std::string query)

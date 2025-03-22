@@ -15,8 +15,8 @@ InventorySystem *InventorySystem::get_instance()
 
 InventorySystem::InventorySystem()
 {
-    this->equipments = std::unique_ptr<util::baseclass::EquipmentCollection>(new util::baseclass::EquipmentCollection());
-    this->inventories = std::unique_ptr<util::baseclass::InventoryCollection>(new util::baseclass::InventoryCollection());
+    this->equipments = std::make_unique<util::baseclass::EquipmentCollection>();
+    this->inventories = std::make_unique<util::baseclass::InventoryCollection>();
 }
 
 InventorySystem::~InventorySystem()

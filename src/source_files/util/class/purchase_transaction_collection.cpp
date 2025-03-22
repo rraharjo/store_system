@@ -8,7 +8,7 @@ namespace util
             : Collection(util::enums::PrimaryKeyPrefix::PURCHASETRANSACTION,
                          util::PurchaseTransactionTable::get_instance())
         {
-            this->purchase_entries = std::unique_ptr<PurchaseEntriesCollection>(new PurchaseEntriesCollection());
+            this->purchase_entries = std::make_unique<PurchaseEntriesCollection>();
         }
 
         PurchaseTransactionCollection::~PurchaseTransactionCollection()
@@ -79,11 +79,12 @@ namespace util
             }
             std::vector<std::string> record = records[0];
             std::unique_ptr<util::Date> transaction_date = std::make_unique<util::Date>(record[1], "%Y-%m-%d");
-            store::PurchaseTransaction *transaction_from_db = new store::PurchaseTransaction(record[0],
-                                                                                             record[2],
-                                                                                             std::move(transaction_date),
-                                                                                             std::stod(record[3]),
-                                                                                             std::stod(record[4]));
+            std::unique_ptr<store::PurchaseTransaction> transaction_from_db =
+                std::make_unique<store::PurchaseTransaction>(record[0],
+                                                             record[2],
+                                                             std::move(transaction_date),
+                                                             std::stod(record[3]),
+                                                             std::stod(record[4]));
             conditions.clear();
             util::TableCondition equal_transaction_code;
             equal_transaction_code.col = util::enums::purchase_entry_table_columns[util::enums::PurchaseEntryTable::ASSETSCODE];
@@ -96,7 +97,7 @@ namespace util
                 std::unique_ptr<inventory::Entry> to_add((inventory::Entry *)entry.release());
                 transaction_from_db->add_entry(std::move(to_add));
             }
-            std::unique_ptr<HasTable> to_ret((HasTable *)transaction_from_db);
+            std::unique_ptr<HasTable> to_ret((HasTable *)transaction_from_db.release());
             return std::move(to_ret);
         }
 
@@ -108,11 +109,12 @@ namespace util
             for (std::vector<std::string> &record : records)
             {
                 std::unique_ptr<util::Date> transaction_date = std::make_unique<util::Date>(record[1], "%Y-%m-%d");
-                store::PurchaseTransaction *transaction_from_db = new store::PurchaseTransaction(record[0],
-                                                                                                 record[2],
-                                                                                                 std::move(transaction_date),
-                                                                                                 std::stod(record[3]),
-                                                                                                 std::stod(record[4]));
+                std::unique_ptr<store::PurchaseTransaction> transaction_from_db =
+                    std::make_unique<store::PurchaseTransaction>(record[0],
+                                                                 record[2],
+                                                                 std::move(transaction_date),
+                                                                 std::stod(record[3]),
+                                                                 std::stod(record[4]));
                 util::TableCondition equal_transaction_code;
                 equal_transaction_code.col = util::enums::purchase_entry_table_columns[util::enums::PurchaseEntryTable::ASSETSCODE];
                 equal_transaction_code.comparator = util::TableComparator::EQUAL;
@@ -124,7 +126,7 @@ namespace util
                     std::unique_ptr<inventory::Entry> to_add((inventory::Entry *)entry.release());
                     transaction_from_db->add_entry(std::move(to_add));
                 }
-                std::unique_ptr<HasTable> to_add((HasTable *)transaction_from_db);
+                std::unique_ptr<HasTable> to_add((HasTable *)transaction_from_db.release());
                 to_ret.push_back(std::move(to_add));
             }
             return to_ret;
