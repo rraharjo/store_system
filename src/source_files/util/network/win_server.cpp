@@ -1,4 +1,4 @@
-#include "winserver/win_server.hpp"
+#include "util/network/win_server.hpp"
 
 auto driver_exec_thread = [](storedriver::PipeIODriver *driver)
 {
@@ -31,7 +31,12 @@ auto handle_send_thread = [](storedriver::PipeIODriver *driver, std::queue<SOCKE
     }
 };
 
-auto recv_client_thread = [](storedriver::PipeIODriver *driver, std::queue<SOCKET *> *clients, SOCKET *client_sock, std::mutex *client_mtx, std::mutex *driver_mtx, int *num_of_client)
+auto recv_client_thread = [](storedriver::PipeIODriver *driver,
+                             std::queue<SOCKET *> *clients,
+                             SOCKET *client_sock,
+                             std::mutex *client_mtx,
+                             std::mutex *driver_mtx,
+                             int *num_of_client)
 {
     int i_result = 0;
     char recv_buff[RECV_BUFF];
@@ -65,12 +70,17 @@ auto recv_client_thread = [](storedriver::PipeIODriver *driver, std::queue<SOCKE
     std::cout << "a client disconnected..." << std::endl;
 };
 
-winnetwork::WinTCPServer::WinTCPServer(std::string ip_address, std::string port_number) : ip_address(ip_address), port_number(port_number)
+winnetwork::WinTCPServer::WinTCPServer(std::string ip_address, std::string port_number)
+    : ip_address(ip_address), port_number(port_number)
 {
     this->network_fam = AF_INET;
     this->socket_type = SOCK_STREAM;
     this->protocol = IPPROTO_TCP;
-    this->driver = new storedriver::PipeIODriver(true);
+    this->driver = std::make_unique<storedriver::PipeIODriver>(true);
+}
+
+winnetwork::WinTCPServer::~WinTCPServer()
+{
 }
 
 void winnetwork::WinTCPServer::init_socket()
@@ -118,8 +128,8 @@ void winnetwork::WinTCPServer::start_server()
     int i_result;
 
     this->init_socket();
-    std::thread driver_thread = std::thread(driver_exec_thread, this->driver);
-    std::thread send_thread = std::thread(handle_send_thread, this->driver, &this->client_commands, &this->driver_mtx);
+    std::thread driver_thread = std::thread(driver_exec_thread, this->driver.get());
+    std::thread send_thread = std::thread(handle_send_thread, this->driver.get(), &this->client_commands, &this->driver_mtx);
 
     i_result = listen(this->listen_socket, SOMAXCONN);
     if (i_result == SOCKET_ERROR)
@@ -159,7 +169,14 @@ void winnetwork::WinTCPServer::start_server()
         this->num_of_client++;
         my_lock.unlock();
 
-        std::thread new_thread = std::thread(recv_client_thread, this->driver, &this->client_commands, client_sock, &this->client_mtx, &this->driver_mtx, &this->num_of_client);
+        std::thread new_thread =
+            std::thread(recv_client_thread,
+                        this->driver.get(),
+                        &this->client_commands,
+                        client_sock,
+                        &this->client_mtx,
+                        &this->driver_mtx,
+                        &this->num_of_client);
         new_thread.detach();
         std::cout << "A new client is connected" << std::endl;
     }

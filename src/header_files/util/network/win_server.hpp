@@ -1,5 +1,6 @@
 #include <winsock2.h>
 #include <ws2tcpip.h>
+#include <memory>
 #include <queue>
 #include <stdio.h>
 #include <thread>
@@ -7,6 +8,7 @@
 #include <string>
 #include <iostream>
 #include <stdexcept>
+#include "message.hpp"
 #include "driver/driver.hpp"
 #include "nlohmann/json.hpp"
 
@@ -37,7 +39,7 @@ namespace winnetwork
         // shared resources
         std::mutex client_mtx, driver_mtx;
         int num_of_client = 0;
-        storedriver::PipeIODriver *driver;
+        std::unique_ptr<storedriver::PipeIODriver> driver;
         std::queue<SOCKET *> client_commands;
 
     private:
@@ -45,6 +47,8 @@ namespace winnetwork
 
     public:
         WinTCPServer(std::string ip_address, std::string port_number);
+
+        ~WinTCPServer();
 
         void start_server();
     };
