@@ -6,6 +6,8 @@
 #include <stdexcept>
 #include <string>
 #include <vector>
+#include <iostream>
+#define MSG_TTL 5
 #define HHEADER 0b0101010101010101
 #define MAX_PAYLOAD_LEN 1024
 #define FLAG_MSG_START 1
@@ -31,11 +33,13 @@ namespace util
         class Message
         {
         protected:
-            std::unique_ptr<char> payload = NULL;
+            char *payload = NULL;
             size_t total_payload_len;
             size_t allocated_memory = 0;
 
         public:
+            static void print_buffer(char *source, size_t source_len, bool header);
+
             // takes a payload without MessageHeader
             Message(char *payload_source, size_t payload_len);
 
@@ -46,6 +50,8 @@ namespace util
             size_t get_total_payload_len();
 
             char *get_payload();
+
+            virtual void clear_payload();
         };
     }
 }

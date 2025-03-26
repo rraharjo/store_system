@@ -1,4 +1,9 @@
 #include "util/network/inbound_message.hpp"
+void start_timer()
+{
+    std::this_thread::sleep_for(std::chrono::seconds(MSG_TTL));
+}
+
 namespace util
 {
     namespace network
@@ -34,10 +39,12 @@ namespace util
             {
                 to_allocate *= 2;
             }
-            this->payload = std::make_unique<char>(to_allocate);
+            // this->payload = std::make_unique<char>(to_allocate);
+            this->payload = new char[to_allocate];
             this->total_payload_len = payload_size;
             this->allocated_memory = to_allocate;
-            std::memcpy(this->payload.get(), msg_start, payload_size);
+            // std::memcpy(this->payload.get(), msg_start, payload_size);
+            std::memcpy(this->payload, msg_start, payload_size);
         }
 
         InboundMessage::InboundMessage() : Message(nullptr, 0)
@@ -50,7 +57,14 @@ namespace util
         {
         }
 
-        void InboundMessage::add_payload(char *msg, size_t msg_len)
+        void InboundMessage::clear_payload()
+        {
+            Message::clear_payload();
+            this->has_end = false;
+            this->has_start = false;
+        }
+
+        void InboundMessage::add_msg(char *msg, size_t msg_len)
         {
             MessageHeader *this_head = (MessageHeader *)msg;
             if (!msg || msg_len < sizeof(MessageHeader) || this_head->header_header != HHEADER)
@@ -65,6 +79,14 @@ namespace util
             {
                 throw std::invalid_argument("Adding a start payload to an existing payload");
             }
+            if (this_head->flags & FLAG_MSG_START)
+            {
+                this->has_start = true;
+            }
+            if (this_head->flags & FLAG_MSG_END)
+            {
+                this->has_end = true;
+            }
             size_t to_copy = msg_len - sizeof(MessageHeader);
 
             if (this->allocated_memory < this->total_payload_len + to_copy)
@@ -74,15 +96,30 @@ namespace util
                 {
                     new_allocate_size *= 2;
                 }
-                std::unique_ptr<char> new_allocated_memory = std::make_unique<char>(new_allocate_size);
-                std::memcpy(new_allocated_memory.get(), this->payload.get(), this->total_payload_len);
-                this->payload = std::move(new_allocated_memory);
+                // std::unique_ptr<char> new_allocated_memory = std::make_unique<char>(new_allocate_size);
+                // std::memcpy(new_allocated_memory.get(), this->payload.get(), this->total_payload_len);
+                // this->payload = std::move(new_allocated_memory);
+                char *new_allocated_memory = new char[new_allocate_size];
+                std::memcpy(new_allocated_memory, this->payload, this->total_payload_len);
+                this->payload = new_allocated_memory;
                 this->allocated_memory = new_allocate_size;
             }
 
-            char *to_add = this->payload.get() + this->total_payload_len;
+            // char *to_add = this->payload.get() + this->total_payload_len;
+            char *to_add = this->payload + this->total_payload_len;
             char *msg_start = msg + sizeof(MessageHeader);
             std::memcpy(to_add, msg_start, to_copy);
+            this->total_payload_len += to_copy;
+        }
+
+        bool InboundMessage::started()
+        {
+            return this->has_start;
+        }
+
+        bool InboundMessage::ended()
+        {
+            return this->has_end;
         }
     }
 }

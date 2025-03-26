@@ -4,6 +4,25 @@ namespace util
 {
     namespace network
     {
+        void Message::print_buffer(char *source, size_t len, bool header)
+        {
+            std::cout << "Message summary: " << std::endl;
+            if (header)
+            {
+                MessageHeader *head = (MessageHeader *)source;
+                std::cout << "Expected header_header: " << (int)HHEADER << std::endl;
+                std::cout << "This header_header: " << (int)head->header_header << std::endl;
+                std::cout << "Header length: " << (int)head->header_len << std::endl;
+                std::cout << "Payload length: " << (int)head->payload_len << std::endl;
+                std::cout << "Flags (unsigned): " << (unsigned int)head->flags << std::endl;
+                source += sizeof(MessageHeader);
+                len -= sizeof(MessageHeader);
+            }
+            std::cout << "Payload: ";
+            std::cout.write(source, len);
+            std::cout << std::endl;
+        }
+
         MessageHeader::MessageHeader(size_t header_len,
                                      size_t payload_len,
                                      uint8_t flags)
@@ -21,13 +40,16 @@ namespace util
         Message::Message(char *payload_source, size_t payload_len)
         {
             size_t to_allocate = 1;
-            while (to_allocate < payload_len){
+            while (to_allocate < payload_len)
+            {
                 to_allocate = to_allocate * 2;
             }
-            this->payload = std::make_unique<char>(to_allocate);
+            // this->payload = std::make_unique<char>(to_allocate);
+            this->payload = new char[to_allocate];
             this->total_payload_len = payload_len;
             this->allocated_memory = to_allocate;
-            std::memcpy(this->payload.get(), payload_source, payload_len);
+            //std::memcpy(this->payload.get(), payload_source, payload_len);
+            std::memcpy(this->payload, payload_source, payload_len);
         }
 
         Message::~Message()
@@ -41,7 +63,14 @@ namespace util
 
         char *Message::get_payload()
         {
-            return this->payload.get();
+            //return this->payload.get();
+            return this->payload;
         }
+
+        void Message::clear_payload()
+        {
+            this->total_payload_len = 0;
+        }
+
     }
 }

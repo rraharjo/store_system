@@ -18,7 +18,11 @@ int main(int argc, char **argv)
         else if (strcmp(argv[1], "server") == 0)
         {
             winnetwork::WinTCPServer my_server = winnetwork::WinTCPServer(LOOPBACK_ADDRESS, DEFAULT_PORT);
-            my_server.start_server();
+            my_server.start_server_with_driver();
+        }
+        else if (strcmp(argv[1], "serverdebug") == 0){
+            winnetwork::WinTCPServer my_server = winnetwork::WinTCPServer(LOOPBACK_ADDRESS, DEFAULT_PORT);
+            my_server.start_server_debug();
         }
         else
         {

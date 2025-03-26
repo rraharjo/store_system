@@ -8,7 +8,8 @@
 #include <string>
 #include <iostream>
 #include <stdexcept>
-#include "message.hpp"
+#include "inbound_message.hpp"
+#include "outbound_message.hpp"
 #include "driver/driver.hpp"
 #include "nlohmann/json.hpp"
 
@@ -18,8 +19,8 @@
 #define DEFAULT_PORT "8000"
 #define LOOPBACK_ADDRESS "127.0.0.1"
 #define MAX_CLIENT 3
-#define RECV_BUFF 1024 * 256
-#define SEND_BUFF 1024 * 256
+#define RECV_BUFF 2048
+#define SEND_BUFF 2048
 namespace winnetwork
 {
 
@@ -50,7 +51,9 @@ namespace winnetwork
 
         ~WinTCPServer();
 
-        void start_server();
+        void start_server_with_driver();
+
+        void start_server_debug();
     };
 }
 #endif

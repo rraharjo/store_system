@@ -21,12 +21,24 @@ auto handle_send_thread = [](storedriver::PipeIODriver *driver, std::queue<SOCKE
         client_sock = clients->front();
         clients->pop();
         driver_lock.unlock();
-        strcpy(send_buff, res.c_str());
-        i_result = send(*client_sock, send_buff, res_length, 0);
-        if (i_result == SOCKET_ERROR)
+        try
         {
-            int error_code = WSAGetLastError();
-            throw std::runtime_error("Error on send() with error code " + std::to_string(error_code) + "\n");
+            util::network::OutboundMessage to_send((char *)res.c_str(), res.length());
+            while (to_send.get_current_payload_len() > 0)
+            {
+                // strcpy(send_buff, res.c_str());
+                size_t this_send = to_send.dump(send_buff, SEND_BUFF);
+                i_result = send(*client_sock, send_buff, this_send, 0);
+                if (i_result == SOCKET_ERROR)
+                {
+                    int error_code = WSAGetLastError();
+                    throw std::runtime_error("Error on send() with error code " + std::to_string(error_code) + "\n");
+                }
+            }
+        }
+        catch (const std::invalid_argument &e)
+        {
+            std::cout << e.what() << std::endl;
         }
     }
 };
@@ -43,23 +55,48 @@ auto recv_client_thread = [](storedriver::PipeIODriver *driver,
     do
     {
         memset(&recv_buff, '\0', i_result);
-        i_result = recv(*client_sock, recv_buff, RECV_BUFF, 0);
-        if (i_result > 0)
+        util::network::InboundMessage to_recv;
+        int total_receive = 0;
+        try
         {
-            std::string command(recv_buff);
+            while ((i_result = recv(*client_sock, recv_buff, RECV_BUFF, 0)) > 0)
+            {
+                if (i_result == 0)
+                {
+                    break;
+                }
+                util::network::Message::print_buffer(recv_buff, i_result, true);
+                to_recv.add_msg(recv_buff, i_result);
+                total_receive += i_result;
+                if (to_recv.ended())
+                {
+                    break;
+                }
+            }
+        }
+        catch (const std::invalid_argument &e)
+        {
+            std::cout << e.what() << std::endl;
+            to_recv.clear_payload();
+            continue;
+        }
+        if (i_result < 0)
+        {
+            int error_code = WSAGetLastError();
+            throw std::runtime_error("Error on recv() with error code " + std::to_string(error_code) + "\n");
+        }
+        if (total_receive > 0)
+        {
+            size_t allocation = to_recv.get_total_payload_len() + 1;
+            std::string command(to_recv.get_payload(), to_recv.get_total_payload_len());
             std::unique_lock<std::mutex> driver_lock(*driver_mtx);
             clients->push(client_sock);
             driver->write_input(command);
             driver_lock.unlock();
         }
-        else if (i_result == 0)
-        {
-            break;
-        }
         else
         {
-            int error_code = WSAGetLastError();
-            throw std::runtime_error("Error on recv() with error code " + std::to_string(error_code) + "\n");
+            break;
         }
     } while (true);
     closesocket(*client_sock);
@@ -123,7 +160,7 @@ void winnetwork::WinTCPServer::init_socket()
     freeaddrinfo(addrinfo_result);
 }
 
-void winnetwork::WinTCPServer::start_server()
+void winnetwork::WinTCPServer::start_server_with_driver()
 {
     int i_result;
 
@@ -182,4 +219,48 @@ void winnetwork::WinTCPServer::start_server()
     }
     driver_thread.join();
     send_thread.join();
+}
+
+void winnetwork::WinTCPServer::start_server_debug()
+{
+    int i_result;
+    this->init_socket();
+    i_result = listen(this->listen_socket, SOMAXCONN);
+    if (i_result == SOCKET_ERROR)
+    {
+        int error_code = WSAGetLastError();
+        WSACleanup();
+        throw std::runtime_error("Error on listen() with error code " + std::to_string(error_code) + "\n");
+    }
+
+    SOCKET client_sock;
+    sockaddr client_addr;
+    int client_size = sizeof(sockaddr);
+    client_sock = accept(this->listen_socket, &client_addr, &client_size);
+    if (client_sock == SOCKET_ERROR)
+    {
+        printf("Accept failed %d\n", WSAGetLastError());
+        closesocket(this->listen_socket);
+        WSACleanup();
+        return;
+    }
+    char recv_buff[RECV_BUFF], send_buff[SEND_BUFF];
+    util::network::InboundMessage in_msg;
+    util::network::OutboundMessage out_msg;
+    while ((i_result = recv(client_sock, recv_buff, RECV_BUFF, 0)) > 0){
+        std::cout << "Inbound message " << std::endl;
+        util::network::Message::print_buffer(recv_buff, i_result, true);
+        in_msg.clear_payload();
+        in_msg.add_msg(recv_buff, i_result);
+        out_msg = util::network::OutboundMessage(in_msg.get_payload(), in_msg.get_total_payload_len());
+        size_t to_send = out_msg.dump(send_buff, SEND_BUFF);
+        std::cout << "Outbound message " << std::endl;
+        util::network::Message::print_buffer(send_buff, to_send, true);
+        send(client_sock, send_buff, to_send, 0);
+    }
+    if (i_result < 0){
+        throw std::runtime_error("Error on recv()");
+    }
+    closesocket(client_sock);
+    return;
 }

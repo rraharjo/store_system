@@ -13,6 +13,8 @@ namespace util
             size_t current_payload_len;
 
         public:
+            OutboundMessage();
+
             OutboundMessage(char *payload_source, size_t payload_len);
 
             ~OutboundMessage();
@@ -22,8 +24,11 @@ namespace util
             size_t get_current_payload_len();
 
             /* copy at most (buff_size - sizeof(MessageHeader)) bytes pointed by current_payload to dest
-            returns the number of bytes copied */
+            returns the number of bytes added to dest including the MessageHeader */
             size_t dump(char *dest, size_t buff_size);
+
+            // reset the state of the message
+            void reset_message();
         };
     }
 }
