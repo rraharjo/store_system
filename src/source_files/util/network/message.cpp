@@ -37,6 +37,13 @@ namespace util
         {
         }
 
+        Message::Message(const Message &other)
+            : allocated_memory(other.allocated_memory), total_payload_len(other.total_payload_len)
+        {
+            this->payload = new char[this->allocated_memory];
+            std::memcpy(this->payload, other.payload, this->total_payload_len);
+        }
+
         Message::Message(char *payload_source, size_t payload_len)
         {
             size_t to_allocate = 1;
@@ -44,16 +51,15 @@ namespace util
             {
                 to_allocate = to_allocate * 2;
             }
-            // this->payload = std::make_unique<char>(to_allocate);
             this->payload = new char[to_allocate];
             this->total_payload_len = payload_len;
             this->allocated_memory = to_allocate;
-            //std::memcpy(this->payload.get(), payload_source, payload_len);
             std::memcpy(this->payload, payload_source, payload_len);
         }
 
         Message::~Message()
         {
+            delete[] this->payload;
         }
 
         size_t Message::get_total_payload_len()
@@ -63,7 +69,6 @@ namespace util
 
         char *Message::get_payload()
         {
-            //return this->payload.get();
             return this->payload;
         }
 

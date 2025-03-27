@@ -9,6 +9,11 @@ namespace util
             this->current_expected_payload_len = 0;
         }
 
+        InboundMessage::InboundMessage(const InboundMessage &other) : Message(other)
+        {
+            this->current_expected_payload_len = 0;
+        }
+
         InboundMessage::~InboundMessage()
         {
         }
@@ -34,17 +39,12 @@ namespace util
                 {
                     new_allocate_size *= 2;
                 }
-                // std::unique_ptr<char> new_allocated_memory = std::make_unique<char>(new_allocate_size);
-                // std::memcpy(new_allocated_memory.get(), this->payload.get(), this->total_payload_len);
-                // this->payload = std::move(new_allocated_memory);
                 char *new_allocated_memory = new char[new_allocate_size];
                 std::memcpy(new_allocated_memory, this->payload, this->total_payload_len);
                 delete[] this->payload;
                 this->payload = new_allocated_memory;
                 this->allocated_memory = new_allocate_size;
             }
-
-            // char *to_add = this->payload.get() + this->total_payload_len;
             char *to_add = this->payload + this->total_payload_len;
             char *msg_start = msg + sizeof(MessageHeader);
             std::memcpy(to_add, msg_start, to_copy);

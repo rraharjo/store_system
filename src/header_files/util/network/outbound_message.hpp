@@ -15,6 +15,8 @@ namespace util
         public:
             OutboundMessage();
 
+            OutboundMessage(const OutboundMessage &other);
+
             OutboundMessage(char *payload_source, size_t payload_len);
 
             ~OutboundMessage();

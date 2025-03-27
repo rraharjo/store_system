@@ -39,10 +39,10 @@ namespace util
         public:
             static void print_buffer(char *source, size_t source_len, bool header);
 
+            Message(const Message &other);
+
             // takes a payload without MessageHeader
             Message(char *payload_source, size_t payload_len);
-
-            // Message();
 
             virtual ~Message();
 

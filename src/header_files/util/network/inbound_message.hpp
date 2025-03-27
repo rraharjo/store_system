@@ -22,6 +22,8 @@ namespace util
         public:
             InboundMessage();
 
+            InboundMessage(const InboundMessage &other);
+
             ~InboundMessage();
 
             void add_msg(char *msg, size_t msg_len);

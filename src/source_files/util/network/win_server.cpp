@@ -264,14 +264,15 @@ void winnetwork::WinTCPServer::start_server_debug()
     }
     char recv_buff[RECV_BUFF], send_buff[SEND_BUFF];
     util::network::InboundMessage in_msg;
-    util::network::OutboundMessage out_msg;
+
     while ((i_result = recv(client_sock, recv_buff, RECV_BUFF, 0)) > 0)
     {
         std::cout << "Inbound message " << std::endl;
         util::network::Message::print_buffer(recv_buff, i_result, true);
         in_msg.clear_payload();
         in_msg.add_msg(recv_buff, i_result);
-        out_msg = util::network::OutboundMessage(in_msg.get_payload(), in_msg.get_total_payload_len());
+        util::network::OutboundMessage out_msg =
+            util::network::OutboundMessage(in_msg.get_payload(), in_msg.get_total_payload_len());
         size_t to_send = out_msg.dump(send_buff, SEND_BUFF);
         std::cout << "Outbound message " << std::endl;
         util::network::Message::print_buffer(send_buff, to_send, true);

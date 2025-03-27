@@ -7,11 +7,16 @@ namespace util
         {
         }
 
+        OutboundMessage::OutboundMessage(const OutboundMessage &other) : Message(other)
+        {
+            this->current_payload_len = this->total_payload_len;
+            this->current_payload = this->payload;
+        }
+
         OutboundMessage::OutboundMessage(char *payload_source, size_t payload_len)
             : Message::Message(payload_source, payload_len)
         {
             this->current_payload_len = this->total_payload_len;
-            // this->current_payload = this->payload.get();
             this->current_payload = this->payload;
         }
 
@@ -46,7 +51,8 @@ namespace util
                 payload_start = dest + sizeof(MessageHeader);
                 to_ret += sizeof(MessageHeader);
             }
-            else{
+            else
+            {
                 this_payload_len = std::min(this->current_payload_len, buff_size);
                 payload_start = dest;
             }
@@ -59,7 +65,6 @@ namespace util
 
         void OutboundMessage::reset_message()
         {
-            // this->current_payload = this->payload.get();
             this->current_payload = this->payload;
             this->current_payload_len = this->total_payload_len;
         }
