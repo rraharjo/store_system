@@ -1,4 +1,5 @@
 #include "accounting/accounts/account.hpp"
+#ifdef _WIN32
 using namespace accounting;
 
 void Account::add_t_account(util::enums::TAccounts t_account)
@@ -117,3 +118,4 @@ std::vector<TAccount *> StockholdersEquityAccount::get_temporary_accounts()
     }
     return t_accounts;
 }
+#endif

@@ -1,5 +1,6 @@
-#include "util/network/win_server.hpp"
+#include "util/network/server.hpp"
 
+#ifdef _WIN32
 auto driver_exec_thread = [](storedriver::PipeIODriver *driver)
 {
     driver->start();
@@ -115,7 +116,7 @@ auto recv_client_thread = [](storedriver::PipeIODriver *driver,
     std::cout << "a client disconnected..." << std::endl;
 };
 
-winnetwork::WinTCPServer::WinTCPServer(std::string ip_address, std::string port_number)
+util::network::TCPServer::TCPServer(std::string ip_address, std::string port_number)
     : ip_address(ip_address), port_number(port_number)
 {
     this->network_fam = AF_INET;
@@ -124,11 +125,11 @@ winnetwork::WinTCPServer::WinTCPServer(std::string ip_address, std::string port_
     this->driver = std::make_unique<storedriver::PipeIODriver>(true);
 }
 
-winnetwork::WinTCPServer::~WinTCPServer()
+util::network::TCPServer::~TCPServer()
 {
 }
 
-void winnetwork::WinTCPServer::init_socket()
+void util::network::TCPServer::init_socket()
 {
     if (SEND_BUFF < sizeof(util::network::Message))
     {
@@ -178,7 +179,7 @@ void winnetwork::WinTCPServer::init_socket()
     freeaddrinfo(addrinfo_result);
 }
 
-void winnetwork::WinTCPServer::start_server_with_driver()
+void util::network::TCPServer::start_server_with_driver()
 {
     int i_result;
 
@@ -239,7 +240,7 @@ void winnetwork::WinTCPServer::start_server_with_driver()
     send_thread.join();
 }
 
-void winnetwork::WinTCPServer::start_server_debug()
+void util::network::TCPServer::start_server_debug()
 {
     int i_result;
     this->init_socket();
@@ -285,3 +286,4 @@ void winnetwork::WinTCPServer::start_server_debug()
     closesocket(client_sock);
     return;
 }
+#endif

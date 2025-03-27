@@ -1,10 +1,11 @@
+#ifndef DRIVER_EXECUTOR
+#define DRIVER_EXECUTOR
+
 #include "nlohmann/json.hpp"
 #include "store/store_system.hpp"
 #include "util/misc.hpp"
 #include "util/date.hpp"
 
-#ifndef DRIVER_EXECUTOR
-#define DRIVER_EXECUTOR
 #define ENDCMD "ENDCMD"
 #define ADD_INV 1
 #define PURC_INV 2
