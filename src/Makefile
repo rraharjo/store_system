@@ -13,6 +13,7 @@ SRCSHELL = source_files/.env/private.cpp $(shell find source_files -type f -name
 OBJS = $(SRCS:.cpp:.o)
 MAINSRCS = main.cpp $(SRCSHELL)
 MAINOBJS = main.o $(OBJS)
+CLIENTSRCS = sample_client.cpp source_files/util/network/inbound_message.cpp source_files/util/network/outbound_message.cpp source_files/util/network/message.cpp
 
 # create object
 %.o: %.cpp
@@ -28,3 +29,6 @@ clean:
 
 main:
 	$(CXX) $(CXXFLAGS) -o $(TARGET) -I $(INCL) -I $(INCLJSON) $(MAINSRCS) $(INCLPSQL)
+
+client:
+	$(CXX) $(CXXFLAGS) -o sample_client.exe -I $(INCL) $(CLIENTSRCS)
