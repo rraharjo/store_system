@@ -11,3 +11,5 @@ External libraries:
   -> get from https://github.com/nlohmann/json/
   -> add include folder to the project include depending on IDE (e.g. ".vscode/c_cpp_properties.json")
   -> add include file (no Lib or .cpp files) during compilation (e.g. ".vscode/tasks.json")
+
+GUI for this app: https://github.com/rraharjo/store_front

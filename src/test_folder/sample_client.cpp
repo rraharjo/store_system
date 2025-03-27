@@ -4,6 +4,7 @@
 #include <string>
 #include <iostream>
 #include <thread>
+#include "util/network/outbound_message.hpp"
 #define MY_PORT "8000"
 #define LOCAL_IP "127.0.0.1"
 #define BUFF_SIZE 512
@@ -18,7 +19,8 @@ auto handle_rcv = [](SOCKET *connect_sock)
         recv_buff[i_result] = '\0';
         printf("Server>%s\n", recv_buff);
     }
-    if (i_result < 0){
+    if (i_result < 0)
+    {
         printf("recv() error with error code %d\n", WSAGetLastError());
     }
     closesocket(*connect_sock);
@@ -72,27 +74,32 @@ int main()
         WSACleanup();
     }
 
-    char rcv_buff[BUFF_SIZE];
-    std::string send_buff;
+    char snd_buff[BUFF_SIZE];
+    std::string input_buff;
     char *buff;
     std::thread rcv_thread = std::thread(handle_rcv, &connect_socket);
     rcv_thread.detach();
     while (1)
     {
-        send_buff.erase();
-        std::getline(std::cin, send_buff);
-        if (send_buff.length() == 0)
+        input_buff.erase();
+        std::getline(std::cin, input_buff);
+
+        if (input_buff.length() == 0)
         {
             break;
         }
-        send_buff.push_back('\0');
-        iResult = send(connect_socket, send_buff.c_str(), (int)strlen(send_buff.c_str()), 0);
-        if (iResult == SOCKET_ERROR)
+        util::network::OutboundMessage to_send((char *)input_buff.c_str(), input_buff.length());
+        while (to_send.get_current_payload_len() > 0)
         {
-            printf("send failed error %d\n", WSAGetLastError());
-            closesocket(connect_socket);
-            WSACleanup();
-            return 1;
+            size_t this_send_size = to_send.dump(snd_buff, BUFF_SIZE);
+            iResult = send(connect_socket, snd_buff, this_send_size, 0);
+            if (iResult == SOCKET_ERROR)
+            {
+                printf("send failed error %d\n", WSAGetLastError());
+                closesocket(connect_socket);
+                WSACleanup();
+                return 1;
+            }
         }
     }
     iResult = shutdown(connect_socket, SD_SEND); // No more sending
