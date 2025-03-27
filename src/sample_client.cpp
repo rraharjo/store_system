@@ -5,6 +5,7 @@
 #include <iostream>
 #include <thread>
 #include "util/network/outbound_message.hpp"
+#include "util/network/inbound_message.hpp"
 #define MY_PORT "8000"
 #define LOCAL_IP "127.0.0.1"
 #define BUFF_SIZE 512
@@ -13,13 +14,29 @@ auto handle_rcv = [](SOCKET *connect_sock)
 {
     char recv_buff[BUFF_SIZE];
     int i_result = 0;
-
+    util::network::InboundMessage in_msg;
     while ((i_result = recv(*connect_sock, recv_buff, BUFF_SIZE, 0)) > 0)
     {
-        recv_buff[i_result] = '\0';
-        printf("Server>");
-        std::cout.write(recv_buff, i_result);
+        #ifdef DEBUG
+        printf("Raw> ");
+        if (in_msg.get_total_payload_len() == 0)
+        {
+            util::network::Message::print_buffer(recv_buff, i_result, true);
+        }
+        else
+        {
+            std::cout.write(recv_buff, i_result);
+        }
         std::cout << std::endl;
+        #endif
+        in_msg.add_msg(recv_buff, i_result);
+        if (in_msg.ended())
+        {
+            std::cout << "Server> ";
+            std::cout.write(in_msg.get_payload(), in_msg.get_total_payload_len());
+            std::cout << std::endl;
+            in_msg.clear_payload();
+        }
     }
     if (i_result < 0)
     {
@@ -94,7 +111,7 @@ int main()
         while (to_send.get_current_payload_len() > 0)
         {
             size_t this_send_size = to_send.dump(snd_buff, BUFF_SIZE);
-            util::network::Message::print_buffer(snd_buff, this_send_size, true);
+            // util::network::Message::print_buffer(snd_buff, this_send_size, true);
             iResult = send(connect_socket, snd_buff, this_send_size, 0);
             if (iResult == SOCKET_ERROR)
             {

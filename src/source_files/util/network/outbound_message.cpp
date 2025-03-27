@@ -6,7 +6,7 @@ namespace util
         OutboundMessage::OutboundMessage() : OutboundMessage::OutboundMessage(NULL, 0)
         {
         }
-        
+
         OutboundMessage::OutboundMessage(char *payload_source, size_t payload_len)
             : Message::Message(payload_source, payload_len)
         {
@@ -36,22 +36,25 @@ namespace util
             {
                 return 0;
             }
-            if (this->total_payload_len == this->current_payload_len)
+            size_t this_payload_len = 0, to_ret = 0;
+            char *payload_start = NULL;
+            if (this->get_current_payload_len() == this->get_total_payload_len())
             {
-                cur_flag = cur_flag | FLAG_MSG_START;
+                this_payload_len = std::min(this->current_payload_len, buff_size - sizeof(MessageHeader));
+                MessageHeader this_header = {sizeof(MessageHeader), this->total_payload_len, cur_flag};
+                memcpy(dest, &this_header, sizeof(MessageHeader));
+                payload_start = dest + sizeof(MessageHeader);
+                to_ret += sizeof(MessageHeader);
             }
-            if (buff_size >= sizeof(MessageHeader) + this->current_payload_len)
-            {
-                cur_flag = cur_flag | FLAG_MSG_END;
+            else{
+                this_payload_len = std::min(this->current_payload_len, buff_size);
+                payload_start = dest;
             }
-            size_t this_payload_len = std::min(this->current_payload_len, buff_size - sizeof(MessageHeader));
-            MessageHeader this_header = {sizeof(MessageHeader), this_payload_len, cur_flag};
-            memcpy(dest, &this_header, sizeof(MessageHeader));
-            char *payload_start = dest + sizeof(MessageHeader);
             std::memcpy(payload_start, this->get_current_payload(), this_payload_len);
             this->current_payload += this_payload_len;
             this->current_payload_len -= this_payload_len;
-            return this_payload_len + sizeof(MessageHeader);
+            to_ret += this_payload_len;
+            return to_ret;
         }
 
         void OutboundMessage::reset_message()

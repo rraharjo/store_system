@@ -9,27 +9,26 @@ namespace util
         class InboundMessage : public Message
         {
         private:
-            bool has_start;
-            bool has_end;
+            size_t current_expected_payload_len;
 
-            void finish_timer();
+            // add (len - sizeof(MessageHeader)) bytes of data from msg
+            // msg must start with a proper MessageHeader
+            void add_new_msg(char *msg, size_t msg_len);
+
+            // add payload_len bytes of payload from payload, payload does not have a header
+            // the state of this object must be expecting more or equal than payload_len bytes
+            void add_existing_msg(char *payload, size_t payload_len);
+
         public:
-            // Takes a message with formatted MessageHeader
-            InboundMessage(char *msg, size_t size);
-
             InboundMessage();
 
             ~InboundMessage();
 
-            void clear_payload() override;
-
-            // add (len - sizeof(MessageHeader)) bytes of data from msg
-            // msg must start with a proper MessageHeader
             void add_msg(char *msg, size_t msg_len);
 
-            bool started();
-
             bool ended();
+
+            size_t get_current_expected_payload_size();
         };
     }
 }

@@ -26,7 +26,6 @@ auto handle_send_thread = [](storedriver::PipeIODriver *driver, std::queue<SOCKE
             util::network::OutboundMessage to_send((char *)res.c_str(), res.length());
             while (to_send.get_current_payload_len() > 0)
             {
-                // strcpy(send_buff, res.c_str());
                 size_t this_send = to_send.dump(send_buff, SEND_BUFF);
                 i_result = send(*client_sock, send_buff, this_send, 0);
                 if (i_result == SOCKET_ERROR)
@@ -65,7 +64,6 @@ auto recv_client_thread = [](storedriver::PipeIODriver *driver,
                 {
                     break;
                 }
-                util::network::Message::print_buffer(recv_buff, i_result, true);
                 to_recv.add_msg(recv_buff, i_result);
                 total_receive += i_result;
                 if (to_recv.ended())
@@ -80,14 +78,24 @@ auto recv_client_thread = [](storedriver::PipeIODriver *driver,
             to_recv.clear_payload();
             continue;
         }
+
         if (i_result < 0)
         {
             int error_code = WSAGetLastError();
+            if (error_code == WSAECONNRESET)
+            {
+                std::cout << "Connection is reset by client" << std::endl;
+                break;
+            }
             throw std::runtime_error("Error on recv() with error code " + std::to_string(error_code) + "\n");
         }
+
         if (total_receive > 0)
         {
-            size_t allocation = to_recv.get_total_payload_len() + 1;
+            if (!to_recv.ended())
+            {
+                continue;
+            }
             std::string command(to_recv.get_payload(), to_recv.get_total_payload_len());
             std::unique_lock<std::mutex> driver_lock(*driver_mtx);
             clients->push(client_sock);
@@ -122,6 +130,16 @@ winnetwork::WinTCPServer::~WinTCPServer()
 
 void winnetwork::WinTCPServer::init_socket()
 {
+    if (SEND_BUFF < sizeof(util::network::Message))
+    {
+        throw std::runtime_error("Error: SEND_BUFF size cannot be smaller than " +
+                                 std::to_string(sizeof(util::network::Message)) + " bytes");
+    }
+    if (RECV_BUFF < sizeof(util::network::Message))
+    {
+        throw std::runtime_error("Error: RECV_BUFF size cannot be smaller than " +
+                                 std::to_string(sizeof(util::network::Message)) + " bytes");
+    }
     int i_result;
     i_result = WSAStartup(MAKEWORD(2, 2), &this->wsa_data);
     if (i_result != 0)
@@ -247,7 +265,8 @@ void winnetwork::WinTCPServer::start_server_debug()
     char recv_buff[RECV_BUFF], send_buff[SEND_BUFF];
     util::network::InboundMessage in_msg;
     util::network::OutboundMessage out_msg;
-    while ((i_result = recv(client_sock, recv_buff, RECV_BUFF, 0)) > 0){
+    while ((i_result = recv(client_sock, recv_buff, RECV_BUFF, 0)) > 0)
+    {
         std::cout << "Inbound message " << std::endl;
         util::network::Message::print_buffer(recv_buff, i_result, true);
         in_msg.clear_payload();
@@ -258,7 +277,8 @@ void winnetwork::WinTCPServer::start_server_debug()
         util::network::Message::print_buffer(send_buff, to_send, true);
         send(client_sock, send_buff, to_send, 0);
     }
-    if (i_result < 0){
+    if (i_result < 0)
+    {
         throw std::runtime_error("Error on recv()");
     }
     closesocket(client_sock);

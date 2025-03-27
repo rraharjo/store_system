@@ -7,7 +7,6 @@
 #include <string>
 #include <vector>
 #include <iostream>
-#define MSG_TTL 5
 #define HHEADER 0b0101010101010101
 #define MAX_PAYLOAD_LEN 1024
 #define FLAG_MSG_START 1
@@ -21,7 +20,7 @@ namespace util
             uint16_t header_header;
             size_t header_len;
             size_t payload_len;
-            uint8_t flags;
+            uint8_t flags;//Not sure if this field is needed
 
             MessageHeader(size_t header_len,
                           size_t payload_len,

@@ -25,7 +25,7 @@ namespace util
 
             /* copy at most (buff_size - sizeof(MessageHeader)) bytes pointed by current_payload to dest
             returns the number of bytes added to dest including the MessageHeader */
-            size_t dump(char *dest, size_t buff_size);
+            size_t dump(char *dest, size_t dest_size);
 
             // reset the state of the message
             void reset_message();
