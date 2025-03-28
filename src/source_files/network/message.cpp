@@ -23,8 +23,8 @@ namespace util
             std::cout << std::endl;
         }
 
-        MessageHeader::MessageHeader(size_t header_len,
-                                     size_t payload_len,
+        MessageHeader::MessageHeader(uint64_t header_len,
+                                     uint64_t payload_len,
                                      uint8_t flags)
         {
             this->header_header = HHEADER;

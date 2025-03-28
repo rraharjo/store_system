@@ -15,19 +15,45 @@ namespace util
 {
     namespace network
     {
+#ifdef _WIN32
+#pragma pack(push, 1)
         struct MessageHeader
         {
             uint16_t header_header;
-            size_t header_len;
-            size_t payload_len;
-            uint8_t flags;//Not sure if this field is needed
+            uint64_t header_len;
+            uint64_t payload_len;
+            uint8_t flags; // Not sure if this field is needed
 
-            MessageHeader(size_t header_len,
-                          size_t payload_len,
+            MessageHeader(uint64_t header_len,
+                          uint64_t payload_len,
                           uint8_t flags);
 
             MessageHeader();
         };
+#pragma pop()
+#endif
+
+#ifdef __linux__
+        struct __attribute__((packed)) MessageHeader
+        {
+            uint16_t header_header;
+            uint64_t header_len;
+            uint64_t payload_len;
+            uint8_t flags; // Not sure if this field is needed
+
+            MessageHeader(uint64_t header_len,
+                          uint64_t payload_len,
+                          uint8_t flags);
+
+            MessageHeader();
+        };
+#endif
+    }
+}
+namespace util
+{
+    namespace network
+    {
 
         class Message
         {
