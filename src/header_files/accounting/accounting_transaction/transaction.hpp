@@ -1,3 +1,5 @@
+#ifndef TRANSACTION_HPP
+#define TRANSACTION_HPP
 #include <iostream>
 #include <algorithm>
 #include <vector>
@@ -7,8 +9,7 @@
 #include "util/class/base_class.hpp"
 #include "util/database/tables.hpp"
 
-#ifndef TRANSACTION_HPP
-#define TRANSACTION_HPP
+
 namespace accounting
 {
     class Transaction : public util::baseclass::HasTable

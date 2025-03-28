@@ -1,11 +1,12 @@
+#ifndef ACCOUNTINGSYSTEM_HPP
+#define ACCOUNTINGSYSTEM_HPP
 #include "accounting/accounts/account.hpp"
 #include "accounting/accounting_transaction/transaction.hpp"
 #include "util/factory/transaction_factory.hpp"
 #include "util/class/accounting_transaction_collection.hpp"
 #include "util/class/t_account_collection.hpp"
 
-#ifndef ACCOUNTINGSYSTEM_HPP
-#define ACCOUNTINGSYSTEM_HPP
+
 namespace accounting
 {
     class AccountingSystem

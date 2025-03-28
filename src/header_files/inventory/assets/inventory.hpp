@@ -1,11 +1,12 @@
+#ifndef INVENTORYINVENTORY_HPP
+#define INVENTORYINVENTORY_HPP
 #include <string>
 #include <sstream>
 #include "inventory/assets/items.hpp"
 #include "util/database/tables.hpp"
 #include "util/database/db.hpp"
 
-#ifndef INVENTORYINVENTORY_HPP
-#define INVENTORYINVENTORY_HPP
+
 
 namespace util
 {

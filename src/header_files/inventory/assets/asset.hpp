@@ -1,8 +1,9 @@
+#ifndef INVENTORYASSET_HPP
+#define INVENTORYASSET_HPP
 #include "util/depreciation.hpp"
 #include "util/date.hpp"
 #include "inventory/assets/items.hpp"
-#ifndef INVENTORYASSET_HPP
-#define INVENTORYASSET_HPP
+
 namespace inventory
 {
     class Asset : public Item

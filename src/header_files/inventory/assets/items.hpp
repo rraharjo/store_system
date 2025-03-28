@@ -1,9 +1,10 @@
+#ifndef ITEMINVENTORY_HPP
+#define ITEMINVENTORY_HPP
 #include <memory>
 #include <string>
 #include "util/class/base_class.hpp"
 #include "inventory/transaction/transaction_history.hpp"
-#ifndef ITEMINVENTORY_HPP
-#define ITEMINVENTORY_HPP
+
 namespace inventory
 {
     class Item : public util::baseclass::HasTable

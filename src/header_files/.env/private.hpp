@@ -1,7 +1,7 @@
-#include <string>
-
 #ifndef ENVIRONMENT_INFORMATION_HPP
 #define ENVIRONMENT_INFORMATION_HPP
+#include <string>
+
 namespace dotenv{
     typedef struct postgresStruct{
         std::string db_name;

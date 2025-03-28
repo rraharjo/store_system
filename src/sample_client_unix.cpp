@@ -6,8 +6,8 @@
 #include <string>
 #include <iostream>
 #include <thread>
-#include "util/network/outbound_message.hpp"
-#include "util/network/inbound_message.hpp"
+#include "network/outbound_message.hpp"
+#include "network/inbound_message.hpp"
 #define SOCKET int
 #define MY_PORT "8000"
 #define LOCAL_IP "127.0.0.1"

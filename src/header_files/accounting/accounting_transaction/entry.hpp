@@ -1,11 +1,12 @@
+#ifndef ENTRY_HPP
+#define ENTRY_HPP
 #include <iostream>
 #include <string>
 #include "util/enums/accounting/t_accounts.hpp"
 #include "util/enums/accounting/account_titles.hpp"
 #include "util/class/base_class.hpp"
 
-#ifndef ENTRY_HPP
-#define ENTRY_HPP
+
 namespace accounting
 {
     class Entry : public util::baseclass::HasTable

@@ -1,4 +1,4 @@
-#include "util/network/inbound_message.hpp"
+#include "network/inbound_message.hpp"
 
 namespace util
 {

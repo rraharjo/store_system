@@ -1,9 +1,9 @@
+#ifndef DATEUTIL
+#define DATEUTIL
 #include <chrono>
 #include <string>
 #include <regex>
 
-#ifndef DATEUTIL
-#define DATEUTIL
 
 namespace util
 {

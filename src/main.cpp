@@ -1,5 +1,5 @@
 #include "driver/driver.hpp"
-#include "util/network/server.hpp"
+#include "network/server.hpp"
 
 int main(int argc, char **argv)
 {

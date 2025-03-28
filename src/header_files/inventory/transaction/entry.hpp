@@ -1,8 +1,9 @@
+#ifndef INVENTORYENTRY_HPP
+#define INVENTORYENTRY_HPP
 #include "util/class/base_class.hpp"
 #include "util/database/tables.hpp"
 #include "util/date.hpp"
-#ifndef INVENTORYENTRY_HPP
-#define INVENTORYENTRY_HPP
+
 namespace util{
     namespace baseclass{
         class PurchaseEntriesCollection;

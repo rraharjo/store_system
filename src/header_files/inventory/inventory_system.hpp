@@ -1,11 +1,12 @@
+#ifndef INVENTORYSYSTEM_HPP
+#define INVENTORYSYSTEM_HPP
 #include "./assets/inventory.hpp"
 #include "./assets/equipment.hpp"
 #include "accounting/accounting_system.hpp"
 #include "util/class/equipment_collection.hpp"
 #include "util/class/inventories_collection.hpp"
 #include "util/factory/transaction_factory.hpp"
-#ifndef INVENTORYSYSTEM_HPP
-#define INVENTORYSYSTEM_HPP
+
 namespace inventory
 {
     class InventorySystem

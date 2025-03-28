@@ -1,7 +1,8 @@
-#include <map>
-#include <string>
 #ifndef TABLE_SCHEMA_HPP
 #define TABLE_SCHEMA_HPP
+#include <map>
+#include <string>
+
 namespace util
 {
     namespace enums

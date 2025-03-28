@@ -1,8 +1,9 @@
+#ifndef MONTHENUMS_HPP
+#define MONTHENUMS_HPP
 #include <map>
 #include <string>
 
-#ifndef MONTHENUMS_HPP
-#define MONTHENUMS_HPP
+
 namespace util
 {
     namespace enums

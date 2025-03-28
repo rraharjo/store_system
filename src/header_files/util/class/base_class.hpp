@@ -1,8 +1,9 @@
+#ifndef BASECLASS_HPP
+#define BASECLASS_HPP
 #include "util/database/tables.hpp"
 #include <vector>
 #include <string>
-#ifndef BASECLASS_HPP
-#define BASECLASS_HPP
+
 namespace util
 {
     namespace baseclass
