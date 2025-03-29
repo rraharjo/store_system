@@ -1,13 +1,14 @@
+#ifndef DBCONNECTION_HPP
+#define DBCONNECTION_HPP
 #include <string>
 #include <vector>
 #include <iostream>
 #include <cstring>
 #include <memory>
-#include "libpq-fe.h"
+#include "postgresql/libpq-fe.h"
 #include ".env/private.hpp"
 
-#ifndef DBCONNECTION_HPP
-#define DBCONNECTION_HPP
+
 namespace util
 {
     class DB

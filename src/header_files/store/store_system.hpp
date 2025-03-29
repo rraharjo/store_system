@@ -1,3 +1,6 @@
+#ifndef STORE_SYSTEM_HPP
+#define STORE_SYSTEM_HPP
+
 #include <memory>
 #include "store/transaction/transaction.hpp"
 #include "util/class/purchase_transaction_collection.hpp"
@@ -5,8 +8,7 @@
 #include "inventory/inventory_system.hpp"
 #include "accounting/accounting_system.hpp"
 #include "util/factory/transaction_factory.hpp"
-#ifndef STORE_SYSTEM_HPP
-#define STORE_SYSTEM_HPP
+
 namespace store
 {
     class StoreSystem

@@ -1,5 +1,5 @@
 #include "driver/driver.hpp"
-#include "util/network/win_server.hpp"
+#include "network/server.hpp"
 
 int main(int argc, char **argv)
 {
@@ -17,11 +17,11 @@ int main(int argc, char **argv)
         }
         else if (strcmp(argv[1], "server") == 0)
         {
-            winnetwork::WinTCPServer my_server = winnetwork::WinTCPServer(LOOPBACK_ADDRESS, DEFAULT_PORT);
+            util::network::TCPServer my_server = util::network::TCPServer(LOOPBACK_ADDRESS_STR, DEFAULT_PORT_STR);
             my_server.start_server_with_driver();
         }
         else if (strcmp(argv[1], "serverdebug") == 0){
-            winnetwork::WinTCPServer my_server = winnetwork::WinTCPServer(LOOPBACK_ADDRESS, DEFAULT_PORT);
+            util::network::TCPServer my_server = util::network::TCPServer(LOOPBACK_ADDRESS_STR, DEFAULT_PORT_STR);
             my_server.start_server_debug();
         }
         else

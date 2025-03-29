@@ -1,14 +1,14 @@
+#ifndef INVENTORYPURCHASEHISTORY_HPP
+#define INVENTORYPURCHASEHISTORY_HPP
 #include <chrono>
 #include <deque>
 #include <algorithm>
 #include "inventory/transaction/entry.hpp"
 #include "util/class/base_class.hpp"
 #include "util/database/tables.hpp"
-#ifndef INVENTORYPURCHASEHISTORY_HPP
-#define INVENTORYPURCHASEHISTORY_HPP
+
 namespace inventory
 {
-    /*************************************Transaction History (parent class)*************************************/
     class TransactionHistory
     {
     protected:
@@ -24,7 +24,6 @@ namespace inventory
         std::vector<std::shared_ptr<Entry>> get_entries();
     };
 
-    /*************************************Purchase History*************************************/
     class PurchaseHistory : public TransactionHistory
     {
     private:
@@ -40,7 +39,6 @@ namespace inventory
         double sell_item_last_in(int qty);
     };
 
-    /*************************************Selling History*************************************/
     class SellingHistory : public TransactionHistory
     {
     public:

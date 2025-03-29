@@ -1,10 +1,12 @@
+#ifndef ACCOUNT_HPP
+#define ACCOUNT_HPP
+#ifdef _WIN32
 #include <iostream>
 #include <vector>
 #include <map>
 #include "accounting/accounts/t_account.hpp"
 
-#ifndef ACCOUNT_HPP
-#define ACCOUNT_HPP
+
 namespace accounting
 {
 
@@ -65,4 +67,5 @@ namespace accounting
         std::vector<TAccount *> get_temporary_accounts();
     };
 };
+#endif
 #endif

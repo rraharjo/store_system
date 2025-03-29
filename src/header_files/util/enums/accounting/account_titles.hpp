@@ -1,9 +1,10 @@
+#ifndef ACCOUNTTITLES_HPP
+#define ACCOUNTTITLES_HPP
 #include <iostream>
 #include <string>
 #include <map>
 
-#ifndef ACCOUNTTITLES_HPP
-#define ACCOUNTTITLES_HPP
+
 namespace util
 {
     namespace enums

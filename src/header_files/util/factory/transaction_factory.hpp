@@ -1,7 +1,8 @@
-#include "accounting/accounting_transaction/transaction.hpp"
-#include "accounting/accounts/t_account.hpp"
 #ifndef ACCOUNTINGTRANSACTION_HPP
 #define ACCOUNTINGTRANSACTION_HPP
+#include "accounting/accounting_transaction/transaction.hpp"
+#include "accounting/accounts/t_account.hpp"
+
 namespace util
 {
     namespace factory

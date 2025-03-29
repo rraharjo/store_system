@@ -1,3 +1,5 @@
+#ifndef TACCOUNT
+#define TACCOUNT
 #include <iostream>
 #include <vector>
 #include <algorithm>
@@ -5,9 +7,6 @@
 #include "util/enums/accounting/t_accounts.hpp"
 #include "util/class/base_class.hpp"
 
-#ifndef TACCOUNT
-#define TACCOUNT
-//TODO: this class may not be needed
 namespace accounting
 {
     class TAccount : public util::baseclass::HasTable

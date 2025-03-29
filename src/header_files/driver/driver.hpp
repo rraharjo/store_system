@@ -1,12 +1,23 @@
-#include <iostream>
+#ifndef STORE_DRIVER
+#define STORE_DRIVER
+
+#ifdef _WIN32
 #include <io.h>
+#endif
+
+#ifdef __linux__
+#include <fcntl.h>
+#include <unistd.h>
+#endif
+
+#include <cstring>
+#include <iostream>
 #include <fcntl.h>
 #include <exception>
 #include "store/store_system.hpp"
 #include "util/misc.hpp"
 #include "driver/executor.hpp"
-#ifndef STORE_DRIVER
-#define STORE_DRIVER
+
 #define STREAM_SIZE 1024 * 4
 
 

@@ -1,3 +1,6 @@
+#ifndef STORETRANSACTION_HPP
+#define STORETRANSACTION_HPP
+
 #include <string>
 #include <vector>
 #include <memory>
@@ -5,8 +8,7 @@
 #include "util/database/tables.hpp"
 #include "util/class/base_class.hpp"
 #include "inventory/transaction/entry.hpp"
-#ifndef STORETRANSACTION_HPP
-#define STORETRANSACTION_HPP
+
 namespace util
 {
     namespace baseclass

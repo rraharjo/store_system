@@ -1,11 +1,12 @@
+#ifndef TACCOUNTS_HPP
+#define TACCOUNTS_HPP
 #include <iostream>
 #include <string>
 #include <map>
 #include <vector>
 #include "util/enums/accounting/account_titles.hpp"
 
-#ifndef TACCOUNTS_HPP
-#define TACCOUNTS_HPP
+
 #define FIRST_TACCOUNT util::enums::TAccounts::CASH
 #define MAX_ASSET util::enums::TAccounts::ACCPAYABLE
 #define MAX_LIABILITY util::enums::TAccounts::COMMONSTOCK

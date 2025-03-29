@@ -1,10 +1,11 @@
+#ifndef DATABASETABLE_HPP
+#define DATABASETABLE_HPP
 #include <vector>
 #include <string>
 #include <memory>
 #include "util/enums/database/table_schema.hpp"
 #include "util/database/db.hpp"
-#ifndef DATABASETABLE_HPP
-#define DATABASETABLE_HPP
+
 namespace util
 {
     // namespace database

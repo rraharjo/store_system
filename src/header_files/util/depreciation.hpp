@@ -1,6 +1,7 @@
-#include <vector>
 #ifndef DEPRECIATION_HPP
 #define DEPRECIATION_HPP
+#include <vector>
+
 namespace util
 {
     class DepreciationMethod

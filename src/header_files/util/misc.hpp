@@ -1,11 +1,10 @@
+#ifndef MISCUTIL
+#define MISCUTIL
 #include <vector>
 #include <string>
 #include <iostream>
 #include <iomanip>
 #include <algorithm>
-
-#ifndef MISCUTIL
-#define MISCUTIL
 
 namespace util{
     void print_vec(std::vector<int>& v);

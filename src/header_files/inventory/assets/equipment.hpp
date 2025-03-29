@@ -1,8 +1,9 @@
+#ifndef EQUIPMENTINVENTORY_HPP
+#define EQUIPMENTINVENTORY_HPP
 #include "util/depreciation.hpp"
 #include "util/date.hpp"
 #include "inventory/assets/asset.hpp"
-#ifndef EQUIPMENTINVENTORY_HPP
-#define EQUIPMENTINVENTORY_HPP
+
 namespace util
 {
     namespace baseclass
